@@ -1,0 +1,36 @@
+---
+import '../styles/main.css';
+import { Font } from 'astro:assets';
+
+const { title } = Astro.props;
+---
+
+<!doctype html>
+<html lang='en'>
+	<head>
+		<meta charset='UTF-8' />
+		<meta
+			name='viewport'
+			content='width=device-width,initial-scale=1.0'
+		/>
+		<title>{title}</title>
+		<Font
+			cssVariable='--font-inter'
+			preload={[{ weight: '400' }]}
+		/>
+		<link
+			rel='icon'
+			type='image/png'
+			sizes='32x32'
+			href='/favicon.png'
+		/>
+
+		<script
+			defer
+			src='https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js'
+		></script>
+	</head>
+	<body>
+		<slot />
+	</body>
+</html>

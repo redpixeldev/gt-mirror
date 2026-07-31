@@ -1,0 +1,86 @@
+# Astro Tailwind Starter
+
+## Project Context
+
+- Astro-based static site with TailwindCSS
+- Minimal starter template structure
+- Configured for Netlify and Cloudflare Pages deployment
+- Uses Alpine.js for client-side interactivity
+
+## Code Style and Structure
+
+- Write concise Astro components with TypeScript
+- Use functional patterns and composition
+- Structure repository files as follows:
+
+src/
+├── components/ # Reusable Astro components
+├── layouts/ # Page layouts
+├── pages/ # Route pages
+└── styles/ # Global styles and Tailwind config
+public/
+├── fonts/ # Web fonts
+└── img/ # Static images
+
+## Tech Stack
+
+- Astro v5.1.8
+- TailwindCSS v4.0.0
+- Alpine.js
+- TypeScript
+- Prettier
+
+## Naming Conventions
+
+- Use kebab-case for directories and files
+- PascalCase for component files (e.g., Header.astro)
+- camelCase for utility files
+- Use descriptive prop names in components
+
+## TypeScript Usage
+
+- Use TypeScript for all components
+- Define prop interfaces for components
+- Use absolute imports with @/ aliases
+- Explicit types for component props
+
+## Syntax and Formatting
+
+- Use tabs for indentation (2 spaces)
+- Single quotes for strings
+- Trailing commas enabled
+- 120 character line width
+- One attribute per line in components
+- Format with Prettier using project config
+
+## UI and Styling
+
+- Use TailwindCSS utility classes
+- Implement @tailwindcss/typography and forms plugins
+- Follow container and utility patterns from main.css
+- Use custom theme variables for consistency
+- Implement proper font loading strategies
+
+## Documentation
+
+- Maintain clear README
+- Document component props
+- Document build and deployment process
+- Include comments for complex Tailwind utilities
+
+## Git Usage
+
+Commit Message Prefixes:
+
+- "fix:" for bug fixes
+- "feat:" for new features
+- "style:" for styling changes
+- "docs:" for documentation
+- "refactor:" for code refactoring
+
+## Development Workflow
+
+- Use pnpm for package management
+- Test builds locally before deployment
+- Follow semantic versioning
+- Maintain clean git history
