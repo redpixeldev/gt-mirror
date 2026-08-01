@@ -1,0 +1,53 @@
+---
+import ThemeToggle from '@components/ThemeToggle.astro';
+import AuthHeader from '@components/auth/AuthHeader.astro';
+import AuthShell from '@components/auth/AuthShell.astro';
+import FormStateSwitch from '@components/auth/FormStateSwitch.astro';
+import SignInForm from '@components/auth/SignInForm.astro';
+import Layout from '@layouts/Layout.astro';
+---
+
+<Layout
+	title='Sign in — The Quarry'
+	description='Members read the interviews, the transcripts and the archive.'
+	contentWidth='1320px'>
+	<ThemeToggle />
+
+	{/* `?state=loading|success|error` opens the page in that state — handy for demos and screenshots. */}
+	<div
+		x-data="{ state: ['loading', 'success', 'error'].includes(new URLSearchParams(location.search).get('state'))
+			? new URLSearchParams(location.search).get('state')
+			: 'default' }"
+		class='flex min-h-screen flex-col'>
+		<FormStateSwitch />
+
+		<AuthHeader />
+
+		<AuthShell
+			title='Sign in'
+			subhead='Members read the interviews, the transcripts and the archive.'>
+			<SignInForm />
+
+			<Fragment slot='footnotes'>
+				<p class='font-ui text-muted mt-6 text-center text-sm'>
+					Not a member yet? <a
+						href='#auth'
+						class='text-accent underline'
+						>Sign up free</a
+					>
+				</p>
+				<p class='text-muted mt-3.5 text-center font-mono text-[11px]'>
+					<a
+						href='#auth'
+						class='text-muted underline'
+						>Privacy</a
+					> · <a
+						href='#auth'
+						class='text-muted underline'
+						>Terms</a
+					>
+				</p>
+			</Fragment>
+		</AuthShell>
+	</div>
+</Layout>

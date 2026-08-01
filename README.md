@@ -29,6 +29,7 @@ Pages are built one at a time from the design source in `MIRROR *.dc.html`. Ship
 | `/about-02`           | A2 · split hero         | `MIRROR About.dc.html`           |
 | `/membership-01`      | A1 · centered cards     | `MIRROR Membership.dc.html`      |
 | `/membership-02`      | A2 · editorial split    | `MIRROR Membership.dc.html`      |
+| `/sign-in`            | A · four form states    | `MIRROR Sign In.dc.html`         |
 | `/404`                | A1 · centered           | `MIRROR 404.dc.html`             |
 | `/404-02`             | A2 · editorial split    | `MIRROR 404.dc.html`             |
 | `/styleguide`         | —                       | `MIRROR Styleguide.dc.html`      |
@@ -120,6 +121,14 @@ Light is the default. A `.dark` class on `<html>` is resolved before first paint
 `Layout.astro` (stored preference wins, otherwise `prefers-color-scheme`), and the Alpine `theme` store
 owns the toggle and its `localStorage` mirror.
 
+### Auth pages
+
+`/sign-in` renders all four form states — default, loading, success, error — as real markup, shown with
+Alpine `x-show`. A `FormStateSwitch` control (fixed, bottom-left) flips between them, and
+`?state=loading|success|error` opens the page in one directly, which is what the screenshots use. Both
+are demo affordances: drop `FormStateSwitch` and the query parsing when wiring the form to Ghost, and
+the `data-members-form` / `data-members-email` attributes are already in place for it.
+
 ### Interactivity
 
 Alpine.js from CDN (`Layout.astro`) drives the theme toggle and the toggle/disclosure card. Swiper 11 is
@@ -154,6 +163,7 @@ src/components/
 ├── recommendations/      # recommended-publication row (A1) and card (A2)
 ├── about/                # split hero, stats grid, editorial body, masthead, contact
 ├── membership/           # pricing tiers, comparison table, locked posts, quotes, FAQ
+├── auth/                 # slim header, centred card shell, sign-in form, state switch
 ├── home/                 # homepage sections and their post-card variants
 └── styleguide/           # one component per numbered styleguide section
 ```

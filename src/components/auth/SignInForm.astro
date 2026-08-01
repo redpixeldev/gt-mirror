@@ -1,0 +1,116 @@
+---
+/**
+ * The sign-in form and its four states.
+ *
+ * State lives in an Alpine `state` value on the page ('default' | 'loading' |
+ * 'success' | 'error'); submitting moves it to 'loading', as the source does.
+ * Every state is server-rendered and shown with `x-show`, so the error alert and
+ * the success panel are real markup rather than something JavaScript builds.
+ */
+interface Props {
+	/** Ghost data attributes are kept so the markup drops into a real theme. */
+	formName?: string;
+	email?: string;
+	href?: string;
+}
+
+const { formName = 'signin', email = 'erin@thequarry.press', href = '#auth' } = Astro.props;
+---
+
+<form
+	data-members-form={formName}
+	x-show="state !== 'success'"
+	x-on:submit.prevent="state = 'loading'"
+	class='flex flex-col gap-[18px]'>
+	<div
+		role='alert'
+		aria-live='assertive'
+		x-show="state === 'error'"
+		x-cloak
+		class='border-danger-border border-l-danger bg-danger-soft rounded-sm border border-l-[3px] px-[18px] py-4'>
+		<p class='font-ui text-danger text-sm font-semibold'>No account found for that address</p>
+		<p class='font-ui text-muted mt-2 text-[13.5px] leading-[1.55]'>
+			Check the spelling, or <a
+				href={href}
+				class='text-accent underline'
+				>create a free account</a
+			> — it takes an email address and nothing else.
+		</p>
+	</div>
+
+	<div class='flex flex-col gap-2'>
+		<label
+			for='signin-email'
+			class='font-ui text-[13.5px] font-semibold'>
+			Email address
+		</label>
+		<input
+			id='signin-email'
+			name='email'
+			type='email'
+			data-members-email
+			autocomplete='email'
+			required
+			aria-describedby='signin-help'
+			aria-invalid='false'
+			x-bind:aria-invalid="(state === 'error').toString()"
+			x-bind:class="state === 'error' ? 'border-danger' : 'border-border'"
+			placeholder='you@publication.com'
+			class='font-ui bg-bg text-text border-border w-full rounded-sm border px-[15px] py-[13px] text-[15.5px]'
+		/>
+		<p
+			id='signin-help'
+			class='font-ui text-muted text-[12.5px]'>
+			We'll email you a link that signs you in. No password to remember.
+		</p>
+	</div>
+
+	<button
+		type='submit'
+		x-bind:disabled="state === 'loading'"
+		x-bind:class="state === 'loading'
+			? 'border-accent-border bg-accent-soft text-accent-strong cursor-wait'
+			: 'btn-primary cursor-pointer'"
+		class='btn font-ui flex items-center justify-center gap-2.5 rounded-sm border px-[22px] py-3.5 text-[15px] font-semibold'>
+		<span
+			aria-hidden='true'
+			x-show="state === 'loading'"
+			x-cloak
+			class='spinner size-3.5 rounded-full border-2 border-current'
+		></span>
+		<span x-text="state === 'loading' ? 'Sending link…' : 'Email me a sign-in link'">Email me a sign-in link</span>
+	</button>
+
+	<p
+		aria-live='polite'
+		class='font-ui text-muted min-h-[1em] text-center text-[12.5px]'
+		x-text="state === 'loading' ? 'Sending your sign-in link…' : ''">
+	</p>
+</form>
+
+<div
+	role='status'
+	aria-live='polite'
+	x-show="state === 'success'"
+	x-cloak
+	class='text-center'>
+	<p class='text-accent font-mono text-[11px] tracking-[0.1em] uppercase'>Link sent</p>
+	<h2 class='font-display tracking-heading mt-3.5 text-2xl leading-[1.2] font-medium'>Check your email</h2>
+	<p class='text-small text-muted mx-auto mt-3.5 max-w-[38ch] leading-[1.65] text-pretty'>
+		We sent a sign-in link to <strong class='text-text'>{email}</strong>. It expires in 24 hours and works once.
+	</p>
+	<div class='mt-[26px] flex flex-wrap justify-center gap-3'>
+		<button
+			type='button'
+			x-on:click="state = 'default'"
+			class='border-border text-text font-ui cursor-pointer rounded-sm border bg-transparent px-5 py-[11px] text-sm font-semibold'>
+			Wrong address?
+		</button>
+		<button
+			type='button'
+			x-on:click="state = 'loading'"
+			class='btn btn-primary font-ui cursor-pointer rounded-sm border px-5 py-[11px] text-sm font-semibold'>
+			Resend link
+		</button>
+	</div>
+</div>

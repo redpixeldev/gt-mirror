@@ -1,0 +1,25 @@
+---
+/** Slim auth header: wordmark and a way back to the site. */
+interface Props {
+	siteTitle?: string;
+	backLabel?: string;
+	href?: string;
+}
+
+const { siteTitle = 'The Quarry', backLabel = '← Back to site', href = '#auth' } = Astro.props;
+---
+
+<header class='border-border bg-surface border-b'>
+	<div class='container flex flex-wrap items-center gap-6 py-[18px]'>
+		<a
+			href={href}
+			class='font-display tracking-display text-text mr-auto text-[22px] font-medium no-underline'>
+			{siteTitle}
+		</a>
+		<a
+			href={href}
+			class='font-ui text-muted hover:text-accent text-sm no-underline'>
+			{backLabel}
+		</a>
+	</div>
+</header>

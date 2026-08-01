@@ -1,0 +1,35 @@
+---
+/**
+ * Demo control for the auth form's four states.
+ *
+ * The design source keeps this in its own preview chrome; here it ships with the
+ * page so the states can be shown without editing code. It is not part of a real
+ * sign-in flow — drop this one component when using the template for real.
+ */
+interface Props {
+	states?: string[];
+	position?: 'fixed' | 'static';
+}
+
+const { states = ['default', 'loading', 'success', 'error'], position = 'fixed' } = Astro.props;
+
+const placement = position === 'fixed' ? 'fixed bottom-5 left-5 z-50 md:left-8' : '';
+---
+
+<div
+	role='group'
+	aria-label='Form state'
+	class:list={[placement, 'border-border bg-surface-2 rounded-pill flex gap-0.5 border p-[3px] shadow-sm']}>
+	{
+		states.map((name) => (
+			<button
+				type='button'
+				x-on:click={`state = '${name}'`}
+				x-bind:aria-pressed={`(state === '${name}').toString()`}
+				x-bind:class={`state === '${name}' ? 'bg-text text-surface' : 'bg-transparent text-muted'`}
+				class='rounded-pill font-ui cursor-pointer border-0 px-3.5 py-[7px] text-[12.5px] font-semibold capitalize'>
+				{name}
+			</button>
+		))
+	}
+</div>

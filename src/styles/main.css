@@ -42,6 +42,10 @@
 	--mirror-on-accent: #ffffff;
 	--mirror-muted-on-soft: #6b625c;
 	--mirror-danger: #b42318;
+	--mirror-danger-soft: #fdf3f2;
+	--mirror-danger-border: #f2d6d3;
+	/* The tinted field the auth cards sit on — a page background, not a surface. */
+	--mirror-page-field: #f3f1ed;
 	--mirror-code-bg: #f6f4f0;
 	--mirror-code-fg: #2a2522;
 	--mirror-code-border: #e4e0d9;
@@ -76,6 +80,9 @@
 	--mirror-on-accent: #1c1207;
 	--mirror-muted-on-soft: #b8ada2;
 	--mirror-danger: #f97066;
+	--mirror-danger-soft: #241614;
+	--mirror-danger-border: #4a2a26;
+	--mirror-page-field: #0e0c0b;
 	--mirror-code-bg: #1b1815;
 	--mirror-code-fg: #eae4db;
 	--mirror-code-border: #302b26;
@@ -168,6 +175,9 @@
 	--color-on-accent: var(--mirror-on-accent);
 	--color-muted-on-soft: var(--mirror-muted-on-soft);
 	--color-danger: var(--mirror-danger);
+	--color-danger-soft: var(--mirror-danger-soft);
+	--color-danger-border: var(--mirror-danger-border);
+	--color-page-field: var(--mirror-page-field);
 	--color-code-bg: var(--mirror-code-bg);
 	--color-code-fg: var(--mirror-code-fg);
 	--color-code-border: var(--mirror-code-border);
@@ -205,6 +215,21 @@
 /* Paywall teaser: prose fades into the page background before the upgrade card. */
 @utility paywall-fade {
 	background: linear-gradient(to bottom, var(--mirror-fade-from) 18%, var(--mirror-bg));
+}
+
+/*
+ * Button spinner (source `mr-spin`): a ring with one side knocked out. The
+ * reduced-motion rule in the base layer stops the animation without hiding it.
+ */
+@utility spinner {
+	border-top-color: transparent;
+	animation: mr-spin 0.8s linear infinite;
+}
+
+@keyframes mr-spin {
+	to {
+		transform: rotate(360deg);
+	}
 }
 
 /* Horizontal tag strip: scrollable, no visible scrollbar (source `.mr-strip`). */

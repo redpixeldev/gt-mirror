@@ -1,0 +1,40 @@
+---
+/**
+ * The centred auth column: eyebrow, title, subhead, then the card and its footnotes.
+ *
+ * The page is a full-height flex column and this is the growing middle, so the card
+ * stays optically centred on the tinted field whatever the viewport height.
+ */
+interface Props {
+	eyebrow?: string;
+	title: string;
+	subhead: string;
+	headingId?: string;
+	/** Card measure — 460px in Variant A. */
+	cardWidth?: string;
+}
+
+const { eyebrow = 'Members', title, subhead, headingId = 'auth-title', cardWidth = 'max-w-[460px]' } = Astro.props;
+---
+
+<main
+	id='auth'
+	class='bg-page-field flex flex-auto items-center justify-center px-8 py-16'>
+	<div class:list={['w-full', cardWidth]}>
+		<div class='mb-7 text-center'>
+			<p class='font-meta text-meta text-accent tracking-[0.16em] uppercase'>{eyebrow}</p>
+			<h1
+				id={headingId}
+				class='font-display tracking-display mt-3.5 text-[40px] leading-[1.08] font-medium'>
+				{title}
+			</h1>
+			<p class='text-small text-muted mx-auto mt-3 max-w-[40ch] leading-[1.6] text-pretty'>{subhead}</p>
+		</div>
+
+		<div class='border-border bg-surface rounded-md border p-9 shadow-md'>
+			<slot />
+		</div>
+
+		<slot name='footnotes' />
+	</div>
+</main>
