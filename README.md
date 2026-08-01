@@ -54,6 +54,9 @@ the blog source ships six extra posts and tags two shared ones differently, and 
 list from the other would bury that. Post photos are the source's Pexels images, downloaded to
 `public/img/` and named by their Pexels id — nothing is fetched from a third party at runtime.
 
+Why the build is the way it is — the non-obvious calls, with the measurements behind them — lives in
+[DECISIONS.md](DECISIONS.md). Read it before changing tokens, fonts or the Preflight overrides.
+
 ## Requirements
 
 - **Node 24** (`.nvmrc`) — `nvm use`
