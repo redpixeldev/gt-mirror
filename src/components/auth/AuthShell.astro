@@ -12,9 +12,18 @@ interface Props {
 	headingId?: string;
 	/** Card measure — 460px in Variant A. */
 	cardWidth?: string;
+	/** Subhead measure — 40ch on sign-in, 42ch on sign-up. */
+	subheadWidth?: string;
 }
 
-const { eyebrow = 'Members', title, subhead, headingId = 'auth-title', cardWidth = 'max-w-[460px]' } = Astro.props;
+const {
+	eyebrow = 'Members',
+	title,
+	subhead,
+	headingId = 'auth-title',
+	cardWidth = 'max-w-[460px]',
+	subheadWidth = 'max-w-[40ch]',
+} = Astro.props;
 ---
 
 <main
@@ -28,7 +37,7 @@ const { eyebrow = 'Members', title, subhead, headingId = 'auth-title', cardWidth
 				class='font-display tracking-display mt-3.5 text-[40px] leading-[1.08] font-medium'>
 				{title}
 			</h1>
-			<p class='text-small text-muted mx-auto mt-3 max-w-[40ch] leading-[1.6] text-pretty'>{subhead}</p>
+			<p class:list={['text-small text-muted mx-auto mt-3 leading-[1.6] text-pretty', subheadWidth]}>{subhead}</p>
 		</div>
 
 		<div class='border-border bg-surface rounded-md border p-9 shadow-md'>

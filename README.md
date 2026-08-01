@@ -30,6 +30,7 @@ Pages are built one at a time from the design source in `MIRROR *.dc.html`. Ship
 | `/membership-01`      | A1 · centered cards     | `MIRROR Membership.dc.html`      |
 | `/membership-02`      | A2 · editorial split    | `MIRROR Membership.dc.html`      |
 | `/sign-in`            | A · four form states    | `MIRROR Sign In.dc.html`         |
+| `/sign-up`            | A · four form states    | `MIRROR Sign Up.dc.html`         |
 | `/404`                | A1 · centered           | `MIRROR 404.dc.html`             |
 | `/404-02`             | A2 · editorial split    | `MIRROR 404.dc.html`             |
 | `/styleguide`         | —                       | `MIRROR Styleguide.dc.html`      |
@@ -123,7 +124,7 @@ owns the toggle and its `localStorage` mirror.
 
 ### Auth pages
 
-`/sign-in` renders all four form states — default, loading, success, error — as real markup, shown with
+`/sign-in` and `/sign-up` render all four form states — default, loading, success, error — as real markup, shown with
 Alpine `x-show`. A `FormStateSwitch` control (fixed, bottom-left) flips between them, and
 `?state=loading|success|error` opens the page in one directly, which is what the screenshots use. Both
 are demo affordances: drop `FormStateSwitch` and the query parsing when wiring the form to Ghost, and
@@ -163,7 +164,7 @@ src/components/
 ├── recommendations/      # recommended-publication row (A1) and card (A2)
 ├── about/                # split hero, stats grid, editorial body, masthead, contact
 ├── membership/           # pricing tiers, comparison table, locked posts, quotes, FAQ
-├── auth/                 # slim header, centred card shell, sign-in form, state switch
+├── auth/                 # slim header, card shell, sign-in/up forms, upsell, state switch
 ├── home/                 # homepage sections and their post-card variants
 └── styleguide/           # one component per numbered styleguide section
 ```

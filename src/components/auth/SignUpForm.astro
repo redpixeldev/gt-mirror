@@ -1,0 +1,136 @@
+---
+/**
+ * The sign-up form and its four states.
+ *
+ * Same state model as the sign-in form — an Alpine `state` value on the page —
+ * with every state server-rendered and shown with `x-show`. Only the email field
+ * turns danger on error; the source leaves the name field's border alone.
+ */
+interface Props {
+	/** Ghost data attributes are kept so the markup drops into a real theme. */
+	formName?: string;
+	email?: string;
+	href?: string;
+}
+
+const { formName = 'signup', email = 'erin@thequarry.press', href = '#auth' } = Astro.props;
+
+const field = 'font-ui bg-bg text-text w-full rounded-sm border px-[15px] py-[13px] text-[15.5px]';
+---
+
+<form
+	data-members-form={formName}
+	x-show="state !== 'success'"
+	x-on:submit.prevent="state = 'loading'"
+	class='flex flex-col gap-[18px]'>
+	<div
+		role='alert'
+		aria-live='assertive'
+		x-show="state === 'error'"
+		x-cloak
+		class='border-danger-border border-l-danger bg-danger-soft rounded-sm border border-l-[3px] px-[18px] py-4'>
+		<p class='font-ui text-danger text-sm font-semibold'>That address is already a member</p>
+		<p class='font-ui text-muted mt-2 text-[13.5px] leading-[1.55]'>
+			You already have an account here — <a
+				href={href}
+				class='text-accent underline'
+				>sign in instead</a
+			> and we'll email you a link.
+		</p>
+	</div>
+
+	<div class='flex flex-col gap-2'>
+		<label
+			for='signup-name'
+			class='font-ui text-[13.5px] font-semibold'>
+			Name
+		</label>
+		<input
+			id='signup-name'
+			name='name'
+			type='text'
+			data-members-name
+			autocomplete='name'
+			required
+			placeholder='Erin Laurier'
+			class:list={[field, 'border-border']}
+		/>
+	</div>
+
+	<div class='flex flex-col gap-2'>
+		<label
+			for='signup-email'
+			class='font-ui text-[13.5px] font-semibold'>
+			Email address
+		</label>
+		<input
+			id='signup-email'
+			name='email'
+			type='email'
+			data-members-email
+			autocomplete='email'
+			required
+			aria-describedby='signup-help'
+			aria-invalid='false'
+			x-bind:aria-invalid="(state === 'error').toString()"
+			x-bind:class="state === 'error' ? 'border-danger' : 'border-border'"
+			placeholder='you@publication.com'
+			class:list={[field, 'border-border']}
+		/>
+		<p
+			id='signup-help'
+			class='font-ui text-muted text-[12.5px]'>
+			We'll email you a link to confirm. No password to set.
+		</p>
+	</div>
+
+	<button
+		type='submit'
+		x-bind:disabled="state === 'loading'"
+		x-bind:class="state === 'loading'
+			? 'border-accent-border bg-accent-soft text-accent-strong cursor-wait'
+			: 'btn-primary cursor-pointer'"
+		class='btn font-ui flex items-center justify-center gap-2.5 rounded-sm border px-[22px] py-3.5 text-[15px] font-semibold'>
+		<span
+			aria-hidden='true'
+			x-show="state === 'loading'"
+			x-cloak
+			class='spinner size-3.5 rounded-full border-2 border-current'
+		></span>
+		<span x-text="state === 'loading' ? 'Creating account…' : 'Sign up free'">Sign up free</span>
+	</button>
+
+	<p
+		aria-live='polite'
+		class='font-ui text-muted min-h-[1em] text-center text-[12.5px]'
+		x-text="state === 'loading' ? 'Creating your account…' : ''">
+	</p>
+</form>
+
+<div
+	role='status'
+	aria-live='polite'
+	x-show="state === 'success'"
+	x-cloak
+	class='text-center'>
+	<p class='text-accent font-mono text-[11px] tracking-[0.1em] uppercase'>Almost there</p>
+	<h2 class='font-display tracking-heading mt-3.5 text-2xl leading-[1.2] font-medium'>Check your email</h2>
+	<p class='text-small text-muted mx-auto mt-3.5 max-w-[38ch] leading-[1.65] text-pretty'>
+		We sent a confirmation link to <strong class='text-text'>{email}</strong>. Click it and your free membership is
+		live.
+	</p>
+	<div class='mt-[26px] flex flex-wrap justify-center gap-3'>
+		<button
+			type='button'
+			x-on:click="state = 'default'"
+			class='border-border text-text font-ui cursor-pointer rounded-sm border bg-transparent px-5 py-[11px] text-sm font-semibold'>
+			Wrong address?
+		</button>
+		<button
+			type='button'
+			x-on:click="state = 'loading'"
+			class='btn btn-primary font-ui cursor-pointer rounded-sm border px-5 py-[11px] text-sm font-semibold'>
+			Resend link
+		</button>
+	</div>
+</div>

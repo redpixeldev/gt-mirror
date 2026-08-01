@@ -1,0 +1,24 @@
+---
+/** Tinted panel under the sign-up card, pointing free members at the paid plans. */
+interface Props {
+	text?: string;
+	cta?: string;
+	href?: string;
+}
+
+const {
+	text = 'Want the interviews and transcripts too? Paid plans start at $8 a month.',
+	cta = 'See plans',
+	href = '#auth',
+} = Astro.props;
+---
+
+<div
+	class='border-accent-border bg-accent-soft mt-4 flex flex-wrap items-center gap-4 rounded-md border px-[22px] py-5'>
+	<p class='font-ui text-muted flex-[1_1_200px] text-[13.5px] leading-[1.55]'>{text}</p>
+	<a
+		href={href}
+		class='btn btn-primary font-ui rounded-sm border px-[18px] py-2.5 text-[13.5px] font-semibold whitespace-nowrap no-underline'>
+		{cta}
+	</a>
+</div>
