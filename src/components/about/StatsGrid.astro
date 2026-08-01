@@ -1,0 +1,33 @@
+---
+import type { Stat } from '../../data/about';
+
+/**
+ * "By the numbers" — a hairline-ruled row of figures.
+ *
+ * The 1px grid gap over a border-coloured background is what draws the dividers,
+ * so the cells sit on `--surface` rather than carrying borders of their own.
+ */
+interface Props {
+	stats: Stat[];
+	/** Section padding — the centred hero already provides the space above on A1. */
+	padding?: string;
+}
+
+const { stats, padding = '' } = Astro.props;
+---
+
+<section
+	aria-label='By the numbers'
+	class:list={['container', padding]}>
+	<dl
+		class='border-border bg-border grid grid-cols-[repeat(auto-fit,minmax(min(160px,100%),1fr))] gap-px overflow-hidden rounded-md border'>
+		{
+			stats.map((stat) => (
+				<div class='bg-surface px-6 py-[26px]'>
+					<dt class='text-muted font-mono text-[10.5px] tracking-[0.1em] uppercase'>{stat.label}</dt>
+					<dd class='font-display tracking-display mt-2.5 text-4xl font-medium'>{stat.value}</dd>
+				</div>
+			))
+		}
+	</dl>
+</section>

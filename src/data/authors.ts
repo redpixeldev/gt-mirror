@@ -7,6 +7,8 @@
 export interface Author {
 	name: string;
 	initials: string;
+	/** Masthead role — shown on the About page. */
+	role: string;
 	count: number;
 	/** "34 posts" */
 	countLabel: string;
@@ -24,6 +26,7 @@ const img = (id: number) => `/img/pexels-${id}.jpg`;
 const RAW: (Omit<Author, 'countLabel' | 'portrait'> & { portraitId: number })[] = [
 	{
 		name: 'Erin Laurier',
+		role: 'Founding editor',
 		initials: 'EL',
 		count: 34,
 		location: 'Lisbon, PT',
@@ -35,6 +38,7 @@ const RAW: (Omit<Author, 'countLabel' | 'portrait'> & { portraitId: number })[] 
 	},
 	{
 		name: 'Marisol Ade',
+		role: 'Interviews editor',
 		initials: 'MA',
 		count: 27,
 		location: 'Mexico City, MX',
@@ -46,6 +50,7 @@ const RAW: (Omit<Author, 'countLabel' | 'portrait'> & { portraitId: number })[] 
 	},
 	{
 		name: 'Tomas Vrel',
+		role: 'Design & typography',
 		initials: 'TV',
 		count: 19,
 		location: 'Prague, CZ',
@@ -57,6 +62,7 @@ const RAW: (Omit<Author, 'countLabel' | 'portrait'> & { portraitId: number })[] 
 	},
 	{
 		name: 'Nadia Roth',
+		role: 'Craft & process',
 		initials: 'NR',
 		count: 14,
 		location: 'Glasgow, UK',
@@ -68,6 +74,7 @@ const RAW: (Omit<Author, 'countLabel' | 'portrait'> & { portraitId: number })[] 
 	},
 	{
 		name: 'Iben Falk',
+		role: 'Business & photography',
 		initials: 'IF',
 		count: 10,
 		location: 'Copenhagen, DK',

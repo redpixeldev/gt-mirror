@@ -1,0 +1,40 @@
+---
+/** A2 About hero: the statement beside a 4:3 photograph, ruled off below. */
+interface Props {
+	eyebrow?: string;
+	title: string;
+	description: string;
+	image: string;
+	alt: string;
+	headingId?: string;
+}
+
+const { eyebrow = 'About The Quarry', title, description, image, alt, headingId = 'a2-h' } = Astro.props;
+---
+
+<section
+	aria-labelledby={headingId}
+	class='border-border border-b'>
+	<div class='container py-20'>
+		<div class='grid grid-cols-[repeat(auto-fit,minmax(min(320px,100%),1fr))] items-center gap-14'>
+			<div>
+				<p class='font-meta text-meta text-accent tracking-[0.16em] uppercase'>{eyebrow}</p>
+
+				<h1
+					id={headingId}
+					class='font-display tracking-display mt-6 max-w-[18ch] text-[clamp(36px,4.8vw,58px)] leading-[1.04] font-medium text-balance'>
+					{title}
+				</h1>
+
+				<p class='text-lead text-muted mt-[22px] max-w-[46ch] leading-[1.55] text-pretty'>{description}</p>
+			</div>
+
+			<img
+				src={image}
+				alt={alt}
+				decoding='async'
+				class='border-border block aspect-[4/3] w-full rounded-md border object-cover'
+			/>
+		</div>
+	</div>
+</section>

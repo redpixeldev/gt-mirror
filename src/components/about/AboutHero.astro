@@ -1,0 +1,28 @@
+---
+/** A1 About hero: a centred statement of what the publication is. */
+interface Props {
+	eyebrow?: string;
+	title: string;
+	description: string;
+	headingId?: string;
+}
+
+const { eyebrow = 'About The Quarry', title, description, headingId = 'a1-h' } = Astro.props;
+---
+
+<section
+	aria-labelledby={headingId}
+	style='--container-max:1120px'
+	class='container pt-24 pb-18 text-center'>
+	<p class='font-meta text-meta text-accent tracking-[0.16em] uppercase'>{eyebrow}</p>
+
+	<h1
+		id={headingId}
+		class='font-display tracking-display mx-auto mt-[26px] max-w-[20ch] text-[clamp(38px,5.4vw,68px)] leading-[1.04] font-medium text-balance'>
+		{title}
+	</h1>
+
+	<p class='font-body text-muted mx-auto mt-6 max-w-[54ch] text-[22px] leading-[1.5] text-pretty italic'>
+		{description}
+	</p>
+</section>

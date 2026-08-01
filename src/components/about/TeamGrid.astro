@@ -1,0 +1,40 @@
+---
+import type { Author } from '../../data/authors';
+
+/** "The masthead" — one card per writer, name over role and a count. */
+interface Props {
+	team: Author[];
+	href?: string;
+	headingId?: string;
+	/** Grid gap — 20px in Variant A. */
+	gap?: string;
+}
+
+const { team, href = '#team', headingId = 'team', gap = 'gap-5' } = Astro.props;
+---
+
+<section
+	aria-labelledby={headingId}
+	class='container pt-20'>
+	<h2
+		id={headingId}
+		class='font-ui text-muted border-border mb-6 border-b pb-3.5 text-xs font-semibold tracking-[0.16em] uppercase'>
+		The masthead
+	</h2>
+
+	<div class:list={['grid grid-cols-[repeat(auto-fill,minmax(min(230px,100%),1fr))]', gap]}>
+		{
+			team.map((member) => (
+				<a
+					href={href}
+					class='border-border hover:border-accent bg-surface text-text block rounded-md border p-[22px] no-underline'>
+					<p class='font-display tracking-heading text-[19px] leading-[1.22] font-medium'>{member.name}</p>
+					<p class='font-meta text-meta tracking-meta text-accent mt-2.5 uppercase'>{member.role}</p>
+					<p class='text-muted mt-2.5 font-mono text-[11px]'>
+						{member.count} posts · {member.location}
+					</p>
+				</a>
+			))
+		}
+	</div>
+</section>

@@ -1,0 +1,78 @@
+---
+import CalloutCard from '../cards/CalloutCard.astro';
+import PullQuoteCard from '../cards/PullQuoteCard.astro';
+
+/** The About page's editorial body: why it exists, what it publishes, standards, funding. */
+interface Props {
+	headingId?: string;
+}
+
+const { headingId = 'mission' } = Astro.props;
+
+const h3 = 'font-display text-h3 leading-[1.28] font-medium';
+const p = 'text-body leading-body mt-5 text-pretty';
+---
+
+<section
+	aria-labelledby={headingId}
+	class='container pt-18'>
+	<div class='measure mx-auto'>
+		<h2
+			id={headingId}
+			class='font-display text-h2 tracking-heading leading-[1.2] font-medium'>
+			Why this exists
+		</h2>
+
+		<p class={p}>
+			The Quarry started in 2020 as a set of notes between four editors who had all just been made redundant in the same
+			quarter. The notes were about process — how many edits a piece should get, what a correction ought to cost,
+			whether anybody was reading past the fold. They were not meant to be published.
+		</p>
+
+		<p class={p}>
+			Six years later they are the entire publication. We write for the people who run small publications: the founders,
+			the editors, the one-person newsletters that pay a mortgage. Everything here is reported from inside that work
+			rather than about it from a distance.
+		</p>
+
+		<h3 class:list={[h3, 'mt-11']}>What we publish</h3>
+
+		<p class='text-body leading-body mt-4 text-pretty'>
+			Four beats, in rough order of volume: essays on independent media, interviews with editors and founders, field
+			notes from publications trying something specific, and craft pieces on the mechanics of editing and type.
+		</p>
+
+		<ul class='text-body leading-body mt-5 flex list-disc flex-col gap-2 pl-6'>
+			<li><strong>Essays</strong> — arguments about how the industry works and who it works for.</li>
+			<li><strong>Interviews</strong> — long, edited transcripts. The subject sees their quotes before we run.</li>
+			<li><strong>Field notes</strong> — short dispatches, usually with numbers attached.</li>
+			<li><strong>Craft</strong> — house style, editing passes, typography, the unglamorous half.</li>
+		</ul>
+
+		<PullQuoteCard
+			quote='If a piece would be better as an email to one person, we send the email instead.'
+			caption='House rule, since 2021'
+			margin='mt-13'
+		/>
+
+		<h3 class:list={[h3, 'mt-13']}>Editorial standards</h3>
+
+		<p class='text-body leading-body mt-4 text-pretty'>
+			Every piece gets three passes — structure, argument, line — and no piece ships on its first. Corrections run at
+			the top of the affected post, dated, with the original wording intact. We do not take sponsored posts, affiliate
+			links, or paid placements in the recommendations list.
+		</p>
+
+		<CalloutCard margin='mt-9'>
+			Some of the publications we cover have been clients of our writers. Where that is true, it is disclosed in the
+			piece.
+		</CalloutCard>
+
+		<h3 class:list={[h3, 'mt-13']}>How it's funded</h3>
+
+		<p class='text-body leading-body mt-4 text-pretty'>
+			Members, entirely. Free members get the weekly essay and the full archive. Paid members get the interviews, the
+			annual field report, and the knowledge that five writers are paid a rate they agreed to rather than accepted.
+		</p>
+	</div>
+</section>

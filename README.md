@@ -25,6 +25,8 @@ Pages are built one at a time from the design source in `MIRROR *.dc.html`. Ship
 | `/author-single-02`   | A2 · sticky rail        | `MIRROR Author.dc.html`          |
 | `/recommendations-01` | A1 · editorial list     | `MIRROR Recommendations.dc.html` |
 | `/recommendations-02` | A2 · image cards        | `MIRROR Recommendations.dc.html` |
+| `/about-01`           | A1 · centered statement | `MIRROR About.dc.html`           |
+| `/about-02`           | A2 · split hero         | `MIRROR About.dc.html`           |
 | `/404`                | A1 · centered           | `MIRROR 404.dc.html`             |
 | `/404-02`             | A2 · editorial split    | `MIRROR 404.dc.html`             |
 | `/styleguide`         | —                       | `MIRROR Styleguide.dc.html`      |
@@ -35,8 +37,8 @@ reserves that filename for one page, so the second 404 variant lives at `/404-02
 variant is the live not-found page is a matter of moving the body between the two files.
 
 Demo content lives in `src/data/`: `posts.ts` holds the homepage's 12 posts plus the shared
-`Post` type, tags and authors; `archive.ts` holds the blog's 18; `post.ts`, `tags.ts`, `tagArchive.ts`, `authors.ts`, `authorArchive.ts` and `recommendations.ts` hold the
-single-post, tag-directory, single-tag-archive, masthead, single-author and recommendations content. They are separate on purpose —
+`Post` type, tags and authors; `archive.ts` holds the blog's 18; `post.ts`, `tags.ts`, `tagArchive.ts`, `authors.ts`, `authorArchive.ts` `recommendations.ts` and `about.ts` hold the
+single-post, tag-directory, single-tag-archive, masthead, single-author, recommendations and About content. They are separate on purpose —
 the blog source ships six extra posts and tags two shared ones differently, and deriving one
 list from the other would bury that. Post photos are the source's Pexels images, downloaded to
 `public/img/` and named by their Pexels id — nothing is fetched from a third party at runtime.
@@ -147,6 +149,7 @@ src/components/
 ├── PageIntro.astro       # eyebrow + title + lead (masthead, recommendations)
 ├── authors/              # masthead rows/cards, single-author header + rail
 ├── recommendations/      # recommended-publication row (A1) and card (A2)
+├── about/                # hero, stats grid, editorial body, masthead, contact
 ├── home/                 # homepage sections and their post-card variants
 └── styleguide/           # one component per numbered styleguide section
 ```

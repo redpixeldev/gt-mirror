@@ -1,0 +1,32 @@
+---
+/** "Get in touch" — a ruled-off closing note with the editorial address. */
+interface Props {
+	email: string;
+	href?: string;
+	headingId?: string;
+}
+
+const { email, href = '#contact', headingId = 'contact' } = Astro.props;
+---
+
+<section
+	aria-labelledby={headingId}
+	class='container pt-18'>
+	<div class='measure border-border mx-auto border-t pt-9'>
+		<h2
+			id={headingId}
+			class='font-display text-h3 tracking-heading font-medium'>
+			Get in touch
+		</h2>
+
+		<p class='text-body leading-body mt-3.5 text-pretty'>
+			Pitches, corrections and complaints all go to the same address, and all get read:
+			{/* The source leaves this link underlined — Preflight would inherit `none` from the paragraph. */}
+			<a
+				href={href}
+				class='text-accent underline'
+				>{email}</a
+			>. We answer pitches within two weeks or not at all — if you haven't heard, it's a no.
+		</p>
+	</div>
+</section>
