@@ -1,0 +1,83 @@
+---
+import Footer from '@components/Footer.astro';
+import Header from '@components/Header.astro';
+import PageIntro from '@components/PageIntro.astro';
+import ThemeToggle from '@components/ThemeToggle.astro';
+import NewsletterBanner from '@components/home/NewsletterBanner.astro';
+import RecommendationList from '@components/recommendations/RecommendationList.astro';
+import Layout from '@layouts/Layout.astro';
+import { RECOMMENDATIONS, RECOMMENDATION_TOTAL } from '../data/recommendations';
+
+const navLinks = [
+	{ label: 'Home', href: '#recs' },
+	{ label: 'Archive', href: '#recs' },
+	{ label: 'Authors', href: '#recs' },
+	{ label: 'Recommendations', href: '#recs', current: true },
+];
+
+const footerColumns = [
+	{
+		title: 'Sections',
+		ariaLabel: 'Sections',
+		links: [
+			{ label: 'Archive', href: '#recs' },
+			{ label: 'Tags', href: '#recs' },
+			{ label: 'Interviews', href: '#recs' },
+		],
+	},
+	{
+		title: 'More',
+		ariaLabel: 'More',
+		links: [
+			{ label: 'Authors', href: '#recs' },
+			{ label: 'Membership', href: '#rec-cta' },
+			{ label: 'RSS', href: '#recs' },
+		],
+	},
+];
+
+const intro = `${RECOMMENDATION_TOTAL} publications we actually read. No affiliate deals, no swaps — subscribe to any of them in one click.`;
+---
+
+<Layout
+	title='Recommendations — The Quarry'
+	description={intro}
+	contentWidth='1320px'>
+	<ThemeToggle />
+
+	<Header
+		variant='site'
+		compact
+		titleHref='#recs'
+		links={navLinks}
+		subscribeHref='#rec-cta'
+	/>
+
+	<main>
+		<PageIntro
+			eyebrow='What we read'
+			title='Recommendations'
+			description={intro}
+			headingId='rec-title'
+			padding='pt-16 pb-14'
+			measure='max-w-[60ch]'
+		/>
+
+		<RecommendationList recs={RECOMMENDATIONS} />
+
+		<NewsletterBanner
+			id='rec-cta'
+			headingId='cta-head'
+			inputId='rc-email'
+			title='And one from us, every Thursday'
+			padding='pt-20'
+		/>
+	</main>
+
+	<Footer
+		columns={footerColumns}
+		variantLabel='Variant A1 · editorial list'
+		titleWeight='medium'
+		class='mt-24'
+	/>
+</Layout>

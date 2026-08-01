@@ -1,0 +1,28 @@
+---
+import type { Recommendation } from '../../data/recommendations';
+import RecommendationCard from './RecommendationCard.astro';
+
+/** A2 recommendations: a cover card per publication. */
+interface Props {
+	recs: Recommendation[];
+	href?: string;
+}
+
+const { recs, href = '#recs' } = Astro.props;
+---
+
+<section
+	id='recs'
+	aria-label='Recommended publications'
+	class='border-border container border-t pt-14'>
+	<div class='grid grid-cols-[repeat(auto-fill,minmax(min(330px,100%),1fr))] gap-x-9 gap-y-11'>
+		{
+			recs.map((rec) => (
+				<RecommendationCard
+					rec={rec}
+					href={href}
+				/>
+			))
+		}
+	</div>
+</section>

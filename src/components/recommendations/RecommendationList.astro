@@ -1,0 +1,27 @@
+---
+import type { Recommendation } from '../../data/recommendations';
+import RecommendationRow from './RecommendationRow.astro';
+
+/** A1 recommendations: one editorial row per publication. */
+interface Props {
+	recs: Recommendation[];
+	href?: string;
+}
+
+const { recs, href = '#recs' } = Astro.props;
+---
+
+<section
+	id='recs'
+	aria-label='Recommended publications'
+	style='--container-max:1120px'
+	class='border-border container border-t'>
+	{
+		recs.map((rec) => (
+			<RecommendationRow
+				rec={rec}
+				href={href}
+			/>
+		))
+	}
+</section>

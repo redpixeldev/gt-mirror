@@ -1,0 +1,68 @@
+---
+import type { Recommendation } from '../../data/recommendations';
+
+/** A2 recommendation card: cover image over the publication, description and actions. */
+interface Props {
+	rec: Recommendation;
+	href?: string;
+}
+
+const { rec, href = '#recs' } = Astro.props;
+
+const actionClass = 'font-ui rounded-sm border px-[18px] py-2.5 text-[13.5px] font-semibold no-underline';
+---
+
+<article class='border-border bg-surface flex flex-col overflow-hidden rounded-md border'>
+	<img
+		src={rec.image}
+		alt={rec.alt}
+		loading='lazy'
+		decoding='async'
+		class='border-border block aspect-video w-full border-b object-cover'
+	/>
+
+	<div class='flex flex-auto flex-col gap-3 p-6'>
+		<div class='flex items-center gap-3'>
+			<img
+				src={rec.favicon}
+				alt=''
+				width='32'
+				height='32'
+				loading='lazy'
+				decoding='async'
+				class='border-border block h-8 w-8 flex-none rounded-sm border object-cover'
+			/>
+
+			<div class='min-w-0'>
+				<h2 class='font-display tracking-heading text-[21px] leading-[1.2] font-medium'>
+					<a
+						href={href}
+						class='text-text no-underline'>
+						{rec.title}
+					</a>
+				</h2>
+				<p class='text-muted mt-[5px] font-mono text-[11px]'>{rec.url}</p>
+			</div>
+		</div>
+
+		<p class='text-small text-muted leading-[1.62] text-pretty'>{rec.description}</p>
+
+		<div class='mt-auto flex flex-wrap gap-2.5 pt-4'>
+			{
+				rec.oneClick && (
+					<a
+						href={href}
+						class:list={['btn btn-primary', actionClass]}>
+						Subscribe
+					</a>
+				)
+			}
+			<a
+				href={href}
+				class:list={['border-border text-text', actionClass]}>
+				{/* Archivo has no arrow glyph; the source falls through to system-ui, so pin it. */}
+				Visit <span class='font-[system-ui,sans-serif]'>→</span>
+			</a>
+		</div>
+	</div>
+</article>

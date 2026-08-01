@@ -1,0 +1,58 @@
+---
+import type { Recommendation } from '../../data/recommendations';
+
+/** A1 recommendation row: favicon, publication and description, then the actions. */
+interface Props {
+	rec: Recommendation;
+	href?: string;
+}
+
+const { rec, href = '#recs' } = Astro.props;
+
+const actionClass =
+	'font-ui rounded-sm border px-[18px] py-2.5 text-[13.5px] font-semibold whitespace-nowrap no-underline';
+---
+
+<article class='border-border grid grid-cols-[44px_minmax(0,1fr)_auto] items-start gap-7 border-b py-[34px]'>
+	<img
+		src={rec.favicon}
+		alt=''
+		width='44'
+		height='44'
+		loading='lazy'
+		decoding='async'
+		class='border-border block h-11 w-11 rounded-sm border object-cover'
+	/>
+
+	<div>
+		<h2 class='font-display tracking-heading text-[28px] leading-[1.18] font-medium'>
+			<a
+				href={href}
+				class='text-text no-underline'>
+				{rec.title}
+			</a>
+		</h2>
+
+		<p class='text-muted mt-2 font-mono text-[11.5px]'>{rec.url}</p>
+
+		<p class='text-body text-muted mt-3 max-w-[60ch] leading-[1.62] text-pretty'>{rec.description}</p>
+	</div>
+
+	<div class='flex flex-col items-end gap-2'>
+		{
+			rec.oneClick && (
+				<a
+					href={href}
+					class:list={['btn btn-primary', actionClass]}>
+					Subscribe
+				</a>
+			)
+		}
+		<a
+			href={href}
+			class:list={['border-border text-text', actionClass]}>
+			{/* Archivo has no arrow glyph; the source falls through to system-ui, so pin it. */}
+			Visit <span class='font-[system-ui,sans-serif]'>→</span>
+		</a>
+	</div>
+</article>

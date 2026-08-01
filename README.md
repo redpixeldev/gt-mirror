@@ -5,27 +5,29 @@ body sizes with optical sizing, Archivo for UI/meta, warm stone neutrals and a s
 
 Pages are built one at a time from the design source in `MIRROR *.dc.html`. Shipped so far:
 
-| Route                | Layout                  | Source file                  |
-| :------------------- | :---------------------- | :--------------------------- |
-| `/homepage-01`       | A1 · magazine cover     | `MIRROR Homepage.dc.html`    |
-| `/homepage-02`       | A2 · editorial masthead | `MIRROR Homepage.dc.html`    |
-| `/blog-01`           | A1 · two-column list    | `MIRROR Blog.dc.html`        |
-| `/blog-02`           | A2 · three-column grid  | `MIRROR Blog.dc.html`        |
-| `/post-01`           | A1 · centered classic   | `MIRROR Post.dc.html`        |
-| `/post-01-paywalled` | A1, members-only state  | `MIRROR Post.dc.html`        |
-| `/post-02`           | A2 · title page + rail  | `MIRROR Post.dc.html`        |
-| `/post-02-paywalled` | A2, members-only state  | `MIRROR Post.dc.html`        |
-| `/tags-01`           | A1 · directory list     | `MIRROR Tags.dc.html`        |
-| `/tags-02`           | A2 · tag cards          | `MIRROR Tags.dc.html`        |
-| `/tags-single-01`    | A1 · lead + list        | `MIRROR Tag Archive.dc.html` |
-| `/tags-single-02`    | A2 · card grid          | `MIRROR Tag Archive.dc.html` |
-| `/authors-01`        | A1 · editorial rows     | `MIRROR Authors.dc.html`     |
-| `/authors-02`        | A2 · cover cards        | `MIRROR Authors.dc.html`     |
-| `/author-single-01`  | A1 · centered header    | `MIRROR Author.dc.html`      |
-| `/author-single-02`  | A2 · sticky rail        | `MIRROR Author.dc.html`      |
-| `/404`               | A1 · centered           | `MIRROR 404.dc.html`         |
-| `/404-02`            | A2 · editorial split    | `MIRROR 404.dc.html`         |
-| `/styleguide`        | —                       | `MIRROR Styleguide.dc.html`  |
+| Route                 | Layout                  | Source file                      |
+| :-------------------- | :---------------------- | :------------------------------- |
+| `/homepage-01`        | A1 · magazine cover     | `MIRROR Homepage.dc.html`        |
+| `/homepage-02`        | A2 · editorial masthead | `MIRROR Homepage.dc.html`        |
+| `/blog-01`            | A1 · two-column list    | `MIRROR Blog.dc.html`            |
+| `/blog-02`            | A2 · three-column grid  | `MIRROR Blog.dc.html`            |
+| `/post-01`            | A1 · centered classic   | `MIRROR Post.dc.html`            |
+| `/post-01-paywalled`  | A1, members-only state  | `MIRROR Post.dc.html`            |
+| `/post-02`            | A2 · title page + rail  | `MIRROR Post.dc.html`            |
+| `/post-02-paywalled`  | A2, members-only state  | `MIRROR Post.dc.html`            |
+| `/tags-01`            | A1 · directory list     | `MIRROR Tags.dc.html`            |
+| `/tags-02`            | A2 · tag cards          | `MIRROR Tags.dc.html`            |
+| `/tags-single-01`     | A1 · lead + list        | `MIRROR Tag Archive.dc.html`     |
+| `/tags-single-02`     | A2 · card grid          | `MIRROR Tag Archive.dc.html`     |
+| `/authors-01`         | A1 · editorial rows     | `MIRROR Authors.dc.html`         |
+| `/authors-02`         | A2 · cover cards        | `MIRROR Authors.dc.html`         |
+| `/author-single-01`   | A1 · centered header    | `MIRROR Author.dc.html`          |
+| `/author-single-02`   | A2 · sticky rail        | `MIRROR Author.dc.html`          |
+| `/recommendations-01` | A1 · editorial list     | `MIRROR Recommendations.dc.html` |
+| `/recommendations-02` | A2 · image cards        | `MIRROR Recommendations.dc.html` |
+| `/404`                | A1 · centered           | `MIRROR 404.dc.html`             |
+| `/404-02`             | A2 · editorial split    | `MIRROR 404.dc.html`             |
+| `/styleguide`         | —                       | `MIRROR Styleguide.dc.html`      |
 
 There is deliberately no `index.astro` yet, so `/` has no page of its own — Astro's special
 `404.astro` answers it, and every other unmatched path, with the themed not-found page. Astro
@@ -33,8 +35,8 @@ reserves that filename for one page, so the second 404 variant lives at `/404-02
 variant is the live not-found page is a matter of moving the body between the two files.
 
 Demo content lives in `src/data/`: `posts.ts` holds the homepage's 12 posts plus the shared
-`Post` type, tags and authors; `archive.ts` holds the blog's 18; `post.ts`, `tags.ts`, `tagArchive.ts`, `authors.ts` and `authorArchive.ts` hold the single-post,
-tag-directory, single-tag-archive, masthead and single-author content. They are separate on purpose —
+`Post` type, tags and authors; `archive.ts` holds the blog's 18; `post.ts`, `tags.ts`, `tagArchive.ts`, `authors.ts`, `authorArchive.ts` and `recommendations.ts` hold the
+single-post, tag-directory, single-tag-archive, masthead, single-author and recommendations content. They are separate on purpose —
 the blog source ships six extra posts and tags two shared ones differently, and deriving one
 list from the other would bury that. Post photos are the source's Pexels images, downloaded to
 `public/img/` and named by their Pexels id — nothing is fetched from a third party at runtime.
@@ -142,7 +144,9 @@ src/components/
 │                         #   single-tag archive — header, lead, rows, other tags
 ├── PostListRow.astro     # compact archive row (tag + author archives)
 ├── PostGridCard.astro    # 4:3 archive card (tag + author archives)
-├── authors/              # masthead intro, rows/cards, single-author header + rail
+├── PageIntro.astro       # eyebrow + title + lead (masthead, recommendations)
+├── authors/              # masthead rows/cards, single-author header + rail
+├── recommendations/      # recommended-publication row (A1) and card (A2)
 ├── home/                 # homepage sections and their post-card variants
 └── styleguide/           # one component per numbered styleguide section
 ```

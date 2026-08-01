@@ -3,7 +3,7 @@ import Footer from '@components/Footer.astro';
 import Header from '@components/Header.astro';
 import ThemeToggle from '@components/ThemeToggle.astro';
 import AuthorGrid from '@components/authors/AuthorGrid.astro';
-import AuthorsIntro from '@components/authors/AuthorsIntro.astro';
+import PageIntro from '@components/PageIntro.astro';
 import NewsletterBanner from '@components/home/NewsletterBanner.astro';
 import Layout from '@layouts/Layout.astro';
 import { AUTHOR_TOTAL, MASTHEAD } from '../data/authors';
@@ -54,7 +54,12 @@ const intro = `${AUTHOR_TOTAL} people write here. Between them they have filed 1
 	/>
 
 	<main>
-		<AuthorsIntro description={intro} />
+		<PageIntro
+			eyebrow='The masthead'
+			title='Writers'
+			description={intro}
+			headingId='au-title'
+		/>
 
 		<AuthorGrid authors={MASTHEAD} />
 
