@@ -13,6 +13,8 @@ interface Props {
 	id?: string;
 	/** Headline measure — the tag archive sets its own. */
 	titleWidth?: string;
+	/** Submit button label — the membership page asks people to "Join free". */
+	submitLabel?: string;
 }
 
 const {
@@ -25,6 +27,7 @@ const {
 	padding = 'pt-16',
 	id = 'newsletter',
 	titleWidth = 'max-w-[24ch]',
+	submitLabel = 'Subscribe',
 } = Astro.props;
 ---
 
@@ -64,7 +67,7 @@ const {
 				<button
 					type='submit'
 					class='btn btn-primary font-ui cursor-pointer rounded-sm px-6 py-[13px] text-[15px] font-semibold'>
-					Subscribe
+					{submitLabel}
 				</button>
 			</div>
 			<p class='font-ui text-muted-on-soft text-xs'>{note}</p>

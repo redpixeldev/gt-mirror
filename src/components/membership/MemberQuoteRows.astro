@@ -1,0 +1,39 @@
+---
+import type { Quote } from '../../data/membership';
+
+/** "From members" — the A2 treatment: numbered quotes as full-width ruled rows. */
+interface Props {
+	quotes: Quote[];
+	headingId?: string;
+}
+
+const { quotes, headingId = 'quotes-h' } = Astro.props;
+---
+
+<section
+	aria-labelledby={headingId}
+	class='container pt-20'>
+	<h2
+		id={headingId}
+		class='font-ui text-muted mb-6 text-xs font-semibold tracking-[0.16em] uppercase'>
+		From members
+	</h2>
+
+	<div class='border-border border-t'>
+		{
+			quotes.map((quote, i) => (
+				<blockquote class='border-border grid grid-cols-[48px_minmax(0,1fr)_auto] items-baseline gap-8 border-b py-8'>
+					<span class='text-muted font-mono text-[11.5px]'>{String(i + 1).padStart(2, '0')}</span>
+
+					<p class='font-display tracking-heading max-w-[52ch] text-[26px] leading-[1.35] text-pretty italic'>
+						{quote.text}
+					</p>
+
+					<cite class='font-meta text-meta tracking-meta text-muted text-right whitespace-nowrap uppercase not-italic'>
+						{quote.who}
+					</cite>
+				</blockquote>
+			))
+		}
+	</div>
+</section>

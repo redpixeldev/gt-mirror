@@ -1,0 +1,29 @@
+---
+/** A2 membership hero: the headline and standfirst side by side, ruled off below. */
+interface Props {
+	eyebrow?: string;
+	title: string;
+	description: string;
+	headingId?: string;
+}
+
+const { eyebrow = 'Membership', title, description, headingId = 'mem-h2' } = Astro.props;
+---
+
+<section
+	aria-labelledby={headingId}
+	class='border-border border-b'>
+	<div class='container py-18'>
+		<p class='font-meta text-meta text-accent tracking-[0.16em] uppercase'>{eyebrow}</p>
+
+		<div class='mt-[22px] grid grid-cols-[repeat(auto-fit,minmax(min(300px,100%),1fr))] items-end gap-12'>
+			<h1
+				id={headingId}
+				class='font-display tracking-display max-w-[18ch] text-[clamp(34px,4.8vw,58px)] leading-[1.03] font-medium text-balance'>
+				{title}
+			</h1>
+
+			<p class='text-lead text-muted max-w-[48ch] leading-[1.55] text-pretty'>{description}</p>
+		</div>
+	</div>
+</section>

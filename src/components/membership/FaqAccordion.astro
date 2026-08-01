@@ -1,0 +1,64 @@
+---
+import type { Faq } from '../../data/membership';
+
+/**
+ * "Questions" — a single-open accordion.
+ *
+ * Alpine holds the open index; the first question starts open, as the source does.
+ * Answers are in the markup and hidden with `x-show`, so they stay in the document
+ * for search and for reading with JavaScript off.
+ */
+interface Props {
+	faqs: Faq[];
+	headingId?: string;
+}
+
+const { faqs, headingId = 'faq-h' } = Astro.props;
+---
+
+<section
+	aria-labelledby={headingId}
+	style='--container-max:1120px'
+	class='container pt-20'
+	x-data='{ open: 0 }'>
+	<h2
+		id={headingId}
+		class='font-ui text-muted mb-6 text-xs font-semibold tracking-[0.16em] uppercase'>
+		Questions
+	</h2>
+
+	<div class='border-border bg-surface overflow-hidden rounded-md border'>
+		{
+			faqs.map((faq, i) => (
+				<div class='border-border border-b'>
+					<button
+						type='button'
+						id={`faq-q-${i}`}
+						aria-controls={`faq-a-${i}`}
+						x-on:click={`open = open === ${i} ? -1 : ${i}`}
+						x-bind:aria-expanded={`(open === ${i}).toString()`}
+						class='font-ui text-text flex w-full cursor-pointer items-center justify-between gap-4 border-0 bg-transparent px-[22px] py-[18px] text-left text-base font-semibold'>
+						<span>{faq.question}</span>
+						<span
+							aria-hidden='true'
+							class='text-muted font-mono text-base'
+							x-text={`open === ${i} ? '−' : '+'`}>
+							−
+						</span>
+					</button>
+
+					{/* Only the first answer is open on load, so the rest are cloaked to avoid a flash. */}
+					<div
+						id={`faq-a-${i}`}
+						role='region'
+						aria-labelledby={`faq-q-${i}`}
+						x-show={`open === ${i}`}
+						x-cloak={i === 0 ? undefined : true}
+						class='px-[22px] pb-5'>
+						<p class='text-small text-muted max-w-[64ch] leading-[1.65]'>{faq.answer}</p>
+					</div>
+				</div>
+			))
+		}
+	</div>
+</section>

@@ -1,0 +1,52 @@
+---
+/**
+ * A centred page opener: accent eyebrow, oversized headline, standfirst.
+ *
+ * Shared by the About and Membership templates, which differ in the headline
+ * clamp, the standfirst's face and measure, and the section padding.
+ */
+interface Props {
+	eyebrow: string;
+	title: string;
+	description: string;
+	headingId: string;
+	/** Section padding — 96/72 on About, 88/56 on Membership. */
+	padding?: string;
+	/** Headline size and measure. */
+	titleClass?: string;
+	/** Space above the headline — 26px on About, 24px on Membership. */
+	titleSpacing?: string;
+	/** Standfirst face and measure — italic body on About, the lead size on Membership. */
+	descriptionClass?: string;
+}
+
+const {
+	eyebrow,
+	title,
+	description,
+	headingId,
+	padding = 'pt-24 pb-18',
+	titleClass = 'max-w-[20ch] text-[clamp(38px,5.4vw,68px)]',
+	titleSpacing = 'mt-[26px]',
+	descriptionClass = 'font-body mt-6 max-w-[54ch] text-[22px] leading-[1.5] italic',
+} = Astro.props;
+---
+
+<section
+	aria-labelledby={headingId}
+	style='--container-max:1120px'
+	class:list={['container text-center', padding]}>
+	<p class='font-meta text-meta text-accent tracking-[0.16em] uppercase'>{eyebrow}</p>
+
+	<h1
+		id={headingId}
+		class:list={[
+			'font-display tracking-display mx-auto leading-[1.04] font-medium text-balance',
+			titleSpacing,
+			titleClass,
+		]}>
+		{title}
+	</h1>
+
+	<p class:list={['text-muted mx-auto text-pretty', descriptionClass]}>{description}</p>
+</section>

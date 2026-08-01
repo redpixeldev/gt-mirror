@@ -1,0 +1,101 @@
+---
+import CenteredIntro from '@components/CenteredIntro.astro';
+import Footer from '@components/Footer.astro';
+import Header from '@components/Header.astro';
+import ThemeToggle from '@components/ThemeToggle.astro';
+import NewsletterBanner from '@components/home/NewsletterBanner.astro';
+import ComparisonTable from '@components/membership/ComparisonTable.astro';
+import FaqAccordion from '@components/membership/FaqAccordion.astro';
+import LockedPosts from '@components/membership/LockedPosts.astro';
+import MemberQuotes from '@components/membership/MemberQuotes.astro';
+import PricingTiers from '@components/membership/PricingTiers.astro';
+import Layout from '@layouts/Layout.astro';
+import { COMPARE, FAQS, LOCKED_POSTS, QUOTES, TIERS } from '../data/membership';
+
+const navLinks = [
+	{ label: 'Home', href: '#mem-top' },
+	{ label: 'Archive', href: '#mem-top' },
+	{ label: 'About', href: '#mem-top' },
+	{ label: 'Membership', href: '#mem-top', current: true },
+];
+
+const footerColumns = [
+	{
+		title: 'Sections',
+		ariaLabel: 'Sections',
+		links: [
+			{ label: 'Archive', href: '#mem-top' },
+			{ label: 'Tags', href: '#mem-top' },
+			{ label: 'Interviews', href: '#mem-top' },
+		],
+	},
+	{
+		title: 'More',
+		ariaLabel: 'More',
+		links: [
+			{ label: 'Authors', href: '#mem-top' },
+			{ label: 'Membership', href: '#tiers' },
+			{ label: 'RSS', href: '#mem-top' },
+		],
+	},
+];
+
+const description =
+	'No advertising, no sponsorship, no affiliate links. The Quarry is funded by the people who read it — and that is the whole business model.';
+---
+
+<Layout
+	title='Membership — The Quarry'
+	description={description}
+	contentWidth='1320px'>
+	<ThemeToggle />
+
+	<Header
+		variant='site'
+		compact
+		titleHref='#mem-top'
+		links={navLinks}
+		subscribeHref='#tiers'
+	/>
+
+	<main id='mem-top'>
+		<CenteredIntro
+			eyebrow='Membership'
+			title='Pay five writers, read everything'
+			description={description}
+			headingId='mem-h'
+			padding='pt-22 pb-14'
+			titleSpacing='mt-6'
+			titleClass='max-w-[20ch] text-[clamp(36px,5.2vw,64px)]'
+			descriptionClass='text-lead mt-[22px] max-w-[52ch] leading-[1.55]'
+		/>
+
+		<PricingTiers tiers={TIERS} />
+
+		<ComparisonTable rows={COMPARE} />
+
+		<LockedPosts posts={LOCKED_POSTS} />
+
+		<MemberQuotes quotes={QUOTES} />
+
+		<FaqAccordion faqs={FAQS} />
+
+		<NewsletterBanner
+			id='mem-cta'
+			headingId='cta-head'
+			inputId='mem-email'
+			eyebrow='Start free'
+			title='Read the Thursday essay first'
+			description='Free membership takes an email address and nothing else. Upgrade whenever the interviews start to matter.'
+			submitLabel='Join free'
+			padding='pt-20'
+		/>
+	</main>
+
+	<Footer
+		columns={footerColumns}
+		variantLabel='Variant A1 · centered cards'
+		titleWeight='medium'
+		class='mt-24'
+	/>
+</Layout>

@@ -1,0 +1,59 @@
+---
+import type { LockedPost } from '../../data/membership';
+
+/** "Behind the paywall right now" — three teasers for locked posts. */
+interface Props {
+	posts: LockedPost[];
+	href?: string;
+	headingId?: string;
+	/** Card gap — 24px in Variant A. */
+	gap?: string;
+}
+
+const { posts, href = '#tiers', headingId = 'locked-h', gap = 'gap-6' } = Astro.props;
+---
+
+<section
+	aria-labelledby={headingId}
+	class='container pt-20'>
+	<h2
+		id={headingId}
+		class='font-ui text-muted border-border mb-6 border-b pb-3.5 text-xs font-semibold tracking-[0.16em] uppercase'>
+		Behind the paywall right now
+	</h2>
+
+	<div class:list={['grid grid-cols-[repeat(auto-fill,minmax(min(280px,100%),1fr))]', gap]}>
+		{
+			posts.map((post) => (
+				<article class='border-border bg-surface flex flex-col overflow-hidden rounded-md border'>
+					<a
+						href={href}
+						class='text-text flex h-full flex-col no-underline'>
+						<img
+							src={post.img}
+							alt={post.alt}
+							loading='lazy'
+							decoding='async'
+							class='border-border block aspect-video w-full border-b object-cover'
+						/>
+
+						<div class='flex flex-auto flex-col gap-2.5 p-5'>
+							<div class='flex items-center gap-2.5'>
+								<span class='font-meta text-meta tracking-meta text-accent uppercase'>{post.tag}</span>
+								<span class='border-border text-muted rounded-pill border px-2 py-[3px] font-mono text-[10.5px] tracking-[0.06em] uppercase'>
+									{post.tier}
+								</span>
+							</div>
+
+							<h3 class='font-display tracking-heading text-[19px] leading-[1.26] font-medium'>{post.title}</h3>
+
+							<p class='font-meta text-meta tracking-meta text-muted mt-auto uppercase'>
+								{post.author} · {post.meta}
+							</p>
+						</div>
+					</a>
+				</article>
+			))
+		}
+	</div>
+</section>

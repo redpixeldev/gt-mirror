@@ -1,0 +1,68 @@
+---
+import type { CompareRow } from '../../data/membership';
+
+/** "What's included" — the benefit matrix across the three tiers. */
+interface Props {
+	rows: CompareRow[];
+	headingId?: string;
+}
+
+const { rows, headingId = 'compare-h' } = Astro.props;
+
+const th = 'font-ui border-border border-b px-[18px] py-3.5 text-center text-[13px] font-semibold';
+const td = 'border-border border-b px-[18px] py-3.5 text-center font-mono text-sm';
+---
+
+<section
+	aria-labelledby={headingId}
+	style='--container-max:1120px'
+	class='container pt-20'>
+	<h2
+		id={headingId}
+		class='font-ui text-muted mb-6 text-xs font-semibold tracking-[0.16em] uppercase'>
+		What's included
+	</h2>
+
+	<table class='border-border w-full table-auto border-collapse overflow-hidden rounded-md border'>
+		<thead>
+			<tr class='bg-surface-2'>
+				<th
+					scope='col'
+					class='border-border text-muted border-b px-[18px] py-3.5 text-left font-mono text-[10.5px] font-normal tracking-[0.08em] uppercase'>
+					Benefit
+				</th>
+				<th
+					scope='col'
+					class:list={[th, 'w-[120px]']}>
+					Free
+				</th>
+				<th
+					scope='col'
+					class:list={[th, 'w-[120px]']}>
+					Basic
+				</th>
+				<th
+					scope='col'
+					class:list={[th, 'text-accent-strong w-[120px]']}>
+					Pro
+				</th>
+			</tr>
+		</thead>
+		<tbody>
+			{
+				rows.map((row) => (
+					<tr>
+						<th
+							scope='row'
+							class='font-ui text-text border-border border-b px-[18px] py-3.5 text-left text-[14.5px] font-normal'>
+							{row.label}
+						</th>
+						<td class:list={[td, row.free === '✓' ? 'text-text' : 'text-muted']}>{row.free}</td>
+						<td class:list={[td, row.basic === '✓' ? 'text-text' : 'text-muted']}>{row.basic}</td>
+						<td class:list={[td, 'text-accent']}>{row.pro}</td>
+					</tr>
+				))
+			}
+		</tbody>
+	</table>
+</section>

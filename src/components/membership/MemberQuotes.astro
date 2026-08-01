@@ -1,0 +1,36 @@
+---
+import type { Quote } from '../../data/membership';
+
+/** "From members" — the A1 card treatment of the member quotes. */
+interface Props {
+	quotes: Quote[];
+	headingId?: string;
+	/** Card gap — 24px in Variant A. */
+	gap?: string;
+}
+
+const { quotes, headingId = 'quotes-h', gap = 'gap-6' } = Astro.props;
+---
+
+<section
+	aria-labelledby={headingId}
+	class='container pt-20'>
+	<h2
+		id={headingId}
+		class='font-ui text-muted mb-6 text-xs font-semibold tracking-[0.16em] uppercase'>
+		From members
+	</h2>
+
+	<div class:list={['grid grid-cols-[repeat(auto-fit,minmax(min(280px,100%),1fr))]', gap]}>
+		{
+			quotes.map((quote) => (
+				<blockquote class='border-border bg-surface rounded-md border p-[26px]'>
+					<p class='font-body text-body leading-[1.6] text-pretty italic'>{quote.text}</p>
+					<cite class='font-meta text-meta tracking-meta text-muted mt-[18px] block uppercase not-italic'>
+						{quote.who}
+					</cite>
+				</blockquote>
+			))
+		}
+	</div>
+</section>

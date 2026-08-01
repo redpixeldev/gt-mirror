@@ -1,0 +1,123 @@
+---
+import type { Tier } from '../../data/membership';
+
+/**
+ * The plan cards, with the monthly/yearly switch above them.
+ *
+ * Both price sets are rendered and swapped by Alpine rather than fetched, so the
+ * page stays static; `billing` starts on monthly, as the source does.
+ */
+interface Props {
+	tiers: Tier[];
+	href?: string;
+	/** Section padding — A1 has none above, A2 sits the cards below a ruled hero. */
+	padding?: string;
+	/** Card gap — 24px in Variant A. */
+	gap?: string;
+}
+
+const { tiers, href = '#tiers', padding = '', gap = 'gap-6' } = Astro.props;
+
+const pill = 'rounded-pill font-ui cursor-pointer border-0 px-5 py-[9px] text-[13px] font-semibold';
+---
+
+<section
+	id='tiers'
+	aria-labelledby='tiers-h'
+	class:list={['container', padding]}
+	x-data='{ yearly: false }'>
+	<h2
+		id='tiers-h'
+		class='sr-only'>
+		Plans
+	</h2>
+
+	<div class='mb-9 flex justify-center'>
+		<div
+			role='group'
+			aria-label='Billing period'
+			class='border-border bg-surface-2 rounded-pill flex gap-0.5 border p-[3px]'>
+			<button
+				type='button'
+				x-on:click='yearly = false'
+				x-bind:aria-pressed='(!yearly).toString()'
+				x-bind:class="yearly ? 'bg-transparent text-muted' : 'bg-text text-surface'"
+				class={pill}>
+				Monthly
+			</button>
+			<button
+				type='button'
+				x-on:click='yearly = true'
+				x-bind:aria-pressed='yearly.toString()'
+				x-bind:class="yearly ? 'bg-text text-surface' : 'bg-transparent text-muted'"
+				class={pill}>
+				Yearly <span class='font-mono text-[11px] opacity-80'>−17%</span>
+			</button>
+		</div>
+	</div>
+
+	<div class:list={['grid grid-cols-[repeat(auto-fit,minmax(min(280px,100%),1fr))] items-stretch', gap]}>
+		{
+			tiers.map((tier) => (
+				<article
+					class:list={[
+						'flex flex-col rounded-md border p-8',
+						tier.featured ? 'border-accent-border bg-accent-soft' : 'border-border bg-surface',
+					]}>
+					<div class='flex items-center gap-2.5'>
+						<h3 class='font-display tracking-heading text-[22px] font-medium'>{tier.name}</h3>
+						{tier.featured && (
+							<span class='rounded-pill bg-accent text-on-accent px-[9px] py-[3px] font-mono text-[10px] tracking-[0.08em] uppercase'>
+								Most popular
+							</span>
+						)}
+					</div>
+
+					<p class='mt-5 flex items-baseline gap-2'>
+						<span
+							class='font-display tracking-display text-[46px] leading-none font-medium'
+							x-text={`yearly ? ${JSON.stringify(tier.yearly.price)} : ${JSON.stringify(tier.monthly.price)}`}>
+							{tier.monthly.price}
+						</span>
+						<span
+							class='font-meta text-meta tracking-meta text-muted uppercase'
+							x-text={`yearly ? ${JSON.stringify(tier.yearly.period)} : ${JSON.stringify(tier.monthly.period)}`}>
+							{tier.monthly.period}
+						</span>
+					</p>
+
+					<p
+						class='text-muted mt-2.5 font-mono text-[11.5px]'
+						x-text={`yearly ? ${JSON.stringify(tier.yearly.note)} : ${JSON.stringify(tier.monthly.note)}`}>
+						{tier.monthly.note}
+					</p>
+
+					<p class='text-small text-muted mt-[18px] leading-[1.6]'>{tier.description}</p>
+
+					<ul class='mt-[22px] mb-auto flex list-none flex-col gap-[11px] p-0'>
+						{tier.benefits.map((benefit) => (
+							<li class='flex items-start gap-[11px]'>
+								<span
+									aria-hidden='true'
+									class='text-accent flex-none font-mono text-xs leading-[1.6]'>
+									✓
+								</span>
+								<span class='text-small leading-[1.6]'>{benefit}</span>
+							</li>
+						))}
+					</ul>
+
+					<a
+						href={href}
+						class:list={[
+							'btn font-ui mt-[26px] block rounded-sm border px-[22px] py-[13px] text-center text-[15px] font-semibold no-underline',
+							tier.featured ? 'btn-primary' : 'border-text text-text hover:bg-text hover:text-surface',
+						]}
+						x-text={`yearly ? ${JSON.stringify(tier.yearly.cta)} : ${JSON.stringify(tier.monthly.cta)}`}>
+						{tier.monthly.cta}
+					</a>
+				</article>
+			))
+		}
+	</div>
+</section>
