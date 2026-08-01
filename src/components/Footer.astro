@@ -1,1 +1,122 @@
-<div class='bg-green-100'>footer</div>
+---
+/** Site footer. Column links and the bottom rule are prop-driven for reuse. */
+export interface FooterLink {
+	label: string;
+	href: string;
+}
+
+export interface FooterColumn {
+	title: string;
+	ariaLabel: string;
+	links: FooterLink[];
+}
+
+interface Props {
+	siteTitle?: string;
+	tagline?: string;
+	columns?: FooterColumn[];
+	copyright?: string;
+	/** Static prefix for the bottom-right rule; the theme label is appended live. */
+	variantLabel?: string;
+	/** The wordmark sits at the display weight on the homepage, semibold in the styleguide. */
+	titleWeight?: 'medium' | 'semibold';
+	class?: string;
+}
+
+const {
+	siteTitle = 'The Quarry',
+	tagline = 'Independent writing on media, craft, and the cost of attention.',
+	columns = [
+		{
+			title: 'Sections',
+			ariaLabel: 'Sections',
+			links: [
+				{ label: 'Latest', href: '#footer' },
+				{ label: 'Essays', href: '#footer' },
+				{ label: 'Interviews', href: '#footer' },
+			],
+		},
+		{
+			title: 'More',
+			ariaLabel: 'More',
+			links: [
+				{ label: 'About', href: '#footer' },
+				{ label: 'Membership', href: '#footer' },
+				{ label: 'RSS', href: '#footer' },
+			],
+		},
+	],
+	copyright = '© 2026 The Quarry · MIRROR theme',
+	variantLabel = 'Variant A — Editorial',
+	titleWeight = 'semibold',
+	class: className,
+} = Astro.props;
+---
+
+<footer
+	id='footer'
+	class:list={['border-border bg-surface border-t', className]}>
+	<div class='container grid grid-cols-[repeat(auto-fit,minmax(min(190px,100%),1fr))] gap-9 py-14'>
+		<div>
+			<p
+				class:list={[
+					'font-display tracking-display text-[22px]',
+					titleWeight === 'medium' ? 'font-medium' : 'font-semibold',
+				]}>
+				{siteTitle}
+			</p>
+			<p class='font-ui text-muted mt-3 text-[13.5px] leading-[1.6]'>{tagline}</p>
+		</div>
+
+		{
+			columns.map((column) => (
+				<nav aria-label={column.ariaLabel}>
+					<p class='text-muted mb-3.5 font-mono text-[11px] tracking-[0.1em] uppercase'>{column.title}</p>
+					<div class='flex flex-col gap-[9px]'>
+						{column.links.map((link) => (
+							<a
+								href={link.href}
+								class='font-ui text-text hover:text-accent text-sm no-underline'>
+								{link.label}
+							</a>
+						))}
+					</div>
+				</nav>
+			))
+		}
+
+		<div>
+			<p class='text-muted mb-3.5 font-mono text-[11px] tracking-[0.1em] uppercase'>Newsletter</p>
+			<form class='flex flex-wrap gap-2'>
+				<label
+					for='sg-footer-email'
+					class='sr-only'>
+					Email address
+				</label>
+				<input
+					id='sg-footer-email'
+					type='email'
+					placeholder='Email'
+					autocomplete='email'
+					class='border-border bg-bg font-ui text-text min-w-0 flex-[1_1_130px] rounded-sm border px-3 py-2.5 text-sm'
+				/>
+				<button
+					type='submit'
+					class='btn btn-primary font-ui cursor-pointer rounded-sm px-4 py-2.5 text-sm font-semibold'>
+					Join
+				</button>
+			</form>
+		</div>
+	</div>
+
+	<div class='border-border border-t'>
+		<div
+			x-data
+			class='container flex flex-wrap justify-between gap-4 py-5'>
+			<span class='text-muted font-mono text-[11.5px]'>{copyright}</span>
+			<span class='text-muted font-mono text-[11.5px]'>
+				{variantLabel} · <span x-text='$store.theme.label'>Light</span>
+			</span>
+		</div>
+	</div>
+</footer>

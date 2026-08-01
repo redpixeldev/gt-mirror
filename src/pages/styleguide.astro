@@ -1,0 +1,32 @@
+---
+import Footer from '../components/Footer.astro';
+import ThemeToggle from '../components/ThemeToggle.astro';
+import CardsSection from '../components/styleguide/CardsSection.astro';
+import ColorTokensSection from '../components/styleguide/ColorTokensSection.astro';
+import HeroSection from '../components/styleguide/HeroSection.astro';
+import NavHeaderSection from '../components/styleguide/NavHeaderSection.astro';
+import PostContentSection from '../components/styleguide/PostContentSection.astro';
+import ScaleSection from '../components/styleguide/ScaleSection.astro';
+import TypeScaleSection from '../components/styleguide/TypeScaleSection.astro';
+import ControlsSection from '../components/styleguide/ControlsSection.astro';
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout
+	title='MIRROR — Styleguide · Variant A (Editorial)'
+	description='Colour tokens, type scale, components and rendered post content for the MIRROR Ghost theme, Variant A.'>
+	<ThemeToggle />
+
+	<main class='container pb-35'>
+		<HeroSection />
+		<ColorTokensSection />
+		<TypeScaleSection />
+		<ScaleSection />
+		<ControlsSection />
+		<NavHeaderSection />
+		<CardsSection />
+		<PostContentSection />
+	</main>
+
+	<Footer />
+</Layout>

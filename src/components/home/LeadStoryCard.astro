@@ -1,0 +1,31 @@
+---
+import type { DecoratedPost } from '../../data/posts';
+
+/** The large lead story that opens the Latest grid. */
+interface Props {
+	post: DecoratedPost;
+	href?: string;
+}
+
+const { post, href = '#latest' } = Astro.props;
+---
+
+<article>
+	<a
+		href={href}
+		class='text-text block no-underline'>
+		<img
+			src={post.img}
+			alt={post.alt}
+			loading='lazy'
+			decoding='async'
+			class='border-border block aspect-[16/10] w-full rounded-md border object-cover'
+		/>
+		<p class='font-meta text-meta tracking-meta text-accent mt-[18px] uppercase'>{post.tag}</p>
+		<h3 class='font-display tracking-heading mt-2.5 text-[32px] leading-[1.18] font-medium text-balance'>
+			{post.title}
+		</h3>
+		<p class='text-body text-muted mt-3.5 max-w-[56ch] leading-[1.6] text-pretty'>{post.excerpt}</p>
+		<p class='font-meta text-meta tracking-meta text-muted mt-4 uppercase'>{post.meta}</p>
+	</a>
+</article>

@@ -1,0 +1,45 @@
+---
+/** Variant intro: tag, title, description, and the four-family font table. */
+interface Props {
+	tag?: string;
+	title?: string;
+	description?: string;
+}
+
+const {
+	tag = 'Variant A — Editorial',
+	title = 'Warm, serif-led, and unhurried.',
+	description = 'A literary direction: Newsreader at display sizes with optical sizing, generous whitespace, warm stone neutrals, and a single burnt-amber accent. Radii stay soft, elevation stays low, meta is set in small caps. Built for essays and long interviews.',
+} = Astro.props;
+
+// `family` is the class that sets each specimen in the face it names.
+const families = [
+	{ role: 'Display', name: 'Newsreader', family: 'font-display', size: 'text-[17px]' },
+	{ role: 'Body', name: 'Newsreader', family: 'font-body', size: 'text-[17px]' },
+	{ role: 'UI / meta', name: 'Archivo', family: 'font-ui', size: 'text-[17px]' },
+	{ role: 'Mono', name: 'IBM Plex Mono', family: 'font-mono', size: 'text-[15px]' },
+];
+---
+
+<section class='border-border border-b pt-22 pb-16'>
+	<p class='text-accent mb-6 font-mono text-xs tracking-[0.1em] uppercase'>{tag}</p>
+
+	{/* Steps down to the h1 size on phones — 66px overflows a 320px screen. */}
+	<h1 class='font-display text-h1 tracking-display sm:text-display max-w-[22ch] leading-[1.04] font-medium'>
+		{title}
+	</h1>
+
+	<p class='text-lead text-muted mt-7 max-w-[62ch] leading-[1.55] text-pretty'>{description}</p>
+
+	<dl
+		class='border-border bg-border mt-12 grid grid-cols-[repeat(auto-fit,minmax(min(180px,100%),1fr))] gap-px overflow-hidden rounded-md border'>
+		{
+			families.map((font) => (
+				<div class='bg-surface px-5 py-[18px]'>
+					<dt class='text-muted font-mono text-[11px] tracking-[0.08em] uppercase'>{font.role}</dt>
+					<dd class:list={['mt-1.5 ml-0', font.family, font.size]}>{font.name}</dd>
+				</div>
+			))
+		}
+	</dl>
+</section>

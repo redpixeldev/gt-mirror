@@ -1,0 +1,74 @@
+---
+import SectionHeading from './SectionHeading.astro';
+
+const steps = [4, 8, 12, 16, 24, 32, 48, 72, 112];
+
+const radii = [
+	{ label: 'sm', class: 'h-16 w-16 rounded-sm' },
+	{ label: 'md', class: 'h-16 w-16 rounded-md' },
+	{ label: 'lg', class: 'h-16 w-16 rounded-lg' },
+	{ label: 'pill', class: 'h-9 w-16 rounded-pill' },
+];
+
+const elevations = [
+	{ label: 'sm', class: 'shadow-sm' },
+	{ label: 'md', class: 'shadow-md' },
+	{ label: 'lg', class: 'shadow-lg' },
+];
+
+const cardClass = 'rounded-md border border-border bg-surface p-6';
+const cardLabelClass = 'mb-[18px] font-mono text-[11px] tracking-[0.08em] text-muted uppercase';
+const captionClass = 'font-mono text-[11px] text-muted';
+---
+
+<section class='pt-18'>
+	<SectionHeading>03 — Spacing, radius, shadow</SectionHeading>
+
+	<div class='grid grid-cols-[repeat(auto-fit,minmax(min(280px,100%),1fr))] gap-4'>
+		<div class={cardClass}>
+			<p class={cardLabelClass}>Spacing · 4px base</p>
+			<div class='flex flex-col gap-2.5'>
+				{
+					steps.map((step) => (
+						<div class='flex items-center gap-3'>
+							<span class:list={[captionClass, 'w-[38px]']}>{step}</span>
+							{/* Width is the specimen itself, so it stays a literal value. */}
+							<span
+								class='bg-accent h-2.5'
+								style={`width:${step}px`}
+							/>
+						</div>
+					))
+				}
+			</div>
+		</div>
+
+		<div class={cardClass}>
+			<p class={cardLabelClass}>Radius · 6 / 10 / 18</p>
+			<div class='flex flex-wrap items-end gap-3.5'>
+				{
+					radii.map((radius) => (
+						<div>
+							<div class:list={['border-border bg-surface-2 border', radius.class]} />
+							<p class:list={[captionClass, 'mt-2']}>{radius.label}</p>
+						</div>
+					))
+				}
+			</div>
+		</div>
+
+		<div class={cardClass}>
+			<p class={cardLabelClass}>Elevation</p>
+			<div class='flex flex-wrap gap-4'>
+				{
+					elevations.map((elevation) => (
+						<div>
+							<div class:list={['border-border bg-surface h-14 w-[76px] rounded-md border', elevation.class]} />
+							<p class:list={[captionClass, 'mt-2.5']}>{elevation.label}</p>
+						</div>
+					))
+				}
+			</div>
+		</div>
+	</div>
+</section>

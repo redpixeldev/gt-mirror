@@ -1,0 +1,38 @@
+---
+/**
+ * Light/dark switch. State lives in the `theme` Alpine store (Layout.astro), which
+ * owns the `.dark` class on <html> and its localStorage mirror.
+ *
+ * Server-renders the "Light" label — the source's default. If the visitor's system
+ * prefers dark, the pre-paint script has already darkened the page and Alpine
+ * corrects the label on boot.
+ */
+interface Props {
+	/** `fixed` floats it over the page; `static` sits in normal flow (e.g. inside a header). */
+	position?: 'fixed' | 'static';
+}
+
+const { position = 'fixed' } = Astro.props;
+
+const placement = position === 'fixed' ? 'fixed top-5 right-5 z-50 md:right-8' : '';
+---
+
+<button
+	type='button'
+	x-data
+	x-bind:aria-pressed='$store.theme.dark'
+	aria-pressed='false'
+	aria-label='Toggle dark mode'
+	class:list={[
+		placement,
+		'btn rounded-pill border-border bg-surface font-ui text-text flex cursor-pointer items-center gap-[9px] border px-4 py-2 text-[13px] font-medium shadow-sm',
+		'hover:bg-surface-2',
+	]}
+	@click='$store.theme.toggle()'>
+	<span
+		aria-hidden='true'
+		class='bg-accent size-3 rounded-full'
+		style='box-shadow: inset -4px 0 0 0 var(--mirror-dot-inset)'
+	></span>
+	<span x-text='$store.theme.label'>Light</span>
+</button>

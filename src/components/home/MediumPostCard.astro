@@ -1,0 +1,35 @@
+---
+import type { DecoratedPost } from '../../data/posts';
+
+/** Text-left, thumbnail-right row used in the Latest sidebar. */
+interface Props {
+	post: DecoratedPost;
+	href?: string;
+}
+
+const { post, href = '#latest' } = Astro.props;
+---
+
+<article class='border-border grid grid-cols-[1fr_116px] items-start gap-5 border-b pb-7'>
+	<div>
+		<p class='font-meta text-meta tracking-meta text-accent uppercase'>{post.tag}</p>
+		<h3 class='font-display tracking-heading mt-2 text-[21px] leading-[1.26] font-medium'>
+			<a
+				href={href}
+				class='text-text hover:text-accent no-underline'>
+				{post.title}
+			</a>
+		</h3>
+		<p class='text-small text-muted mt-2.5 leading-[1.55]'>{post.excerpt}</p>
+		<p class='font-meta text-meta tracking-meta text-muted mt-3 uppercase'>{post.meta}</p>
+	</div>
+	<img
+		src={post.img}
+		alt={post.alt}
+		width='116'
+		height='88'
+		loading='lazy'
+		decoding='async'
+		class='border-border block h-22 w-[116px] rounded-sm border object-cover'
+	/>
+</article>

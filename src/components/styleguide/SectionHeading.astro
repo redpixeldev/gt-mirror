@@ -1,0 +1,17 @@
+---
+/** The numbered "01 — Color tokens" rule that opens each styleguide section. */
+interface Props {
+	children?: unknown;
+	/** Tightens the bottom margin when a lede paragraph follows the heading. */
+	tight?: boolean;
+	id?: string;
+}
+
+const { tight = false, id } = Astro.props;
+---
+
+<h2
+	id={id}
+	class:list={['font-ui text-muted text-[13px] font-semibold tracking-[0.14em] uppercase', tight ? 'mb-3' : 'mb-8']}>
+	<slot />
+</h2>

@@ -1,0 +1,136 @@
+---
+import Footer from '@components/Footer.astro';
+import Header from '@components/Header.astro';
+import ThemeToggle from '@components/ThemeToggle.astro';
+import ArchiveEmptyState from '@components/blog/ArchiveEmptyState.astro';
+import ArchiveFilterBar from '@components/blog/ArchiveFilterBar.astro';
+import ArchiveHeader from '@components/blog/ArchiveHeader.astro';
+import ArchiveList from '@components/blog/ArchiveList.astro';
+import PaginationNav from '@components/cards/PaginationNav.astro';
+import NewsletterBanner from '@components/home/NewsletterBanner.astro';
+import WritersSection from '@components/home/WritersSection.astro';
+import Layout from '@layouts/Layout.astro';
+import { ARCHIVE_POSTS, ARCHIVE_TAGS } from '../data/archive';
+import { AUTHORS } from '../data/posts';
+
+const total = ARCHIVE_POSTS.length;
+const writers = AUTHORS.length;
+const counts = Object.fromEntries(ARCHIVE_TAGS.map((t) => [t.name, t.count]));
+
+const description =
+	'Six years of essays, interviews, and field notes on independent publishing — sorted, tagged, and searchable.';
+const countLine = `${total} posts · ${writers} writers`;
+
+/**
+ * Filter + sort state for the whole archive. Kept as one scope on <main> so the
+ * masthead, filter bar, list and empty state all read the same `tag`/`oldest`.
+ */
+const archiveState = `{
+	tag: null,
+	oldest: false,
+	counts: ${JSON.stringify(counts)},
+	total: ${total},
+	writers: ${writers},
+	get visibleCount() { return this.tag === null ? this.total : (this.counts[this.tag] || 0) },
+	get isEmpty() { return this.visibleCount === 0 },
+	get kicker() { return this.tag === null ? 'All posts' : 'Tag archive' },
+	get heading() { return this.tag === null ? 'The Archive' : this.tag },
+	get description() {
+		return this.tag === null
+			? ${JSON.stringify(description)}
+			: 'Everything published under ' + this.tag + ', newest first.'
+	},
+	get countLine() {
+		const n = this.visibleCount;
+		return n + (n === 1 ? ' post' : ' posts') + (this.tag === null ? '' : ' tagged ' + this.tag) + ' · ' + this.writers + ' writers'
+	}
+}`;
+
+const navLinks = [
+	{ label: 'Home', href: '#archive' },
+	{ label: 'Archive', href: '#archive', current: true },
+	{ label: 'Interviews', href: '#archive' },
+	{ label: 'Authors', href: '#writers' },
+];
+
+const footerColumns = [
+	{
+		title: 'Sections',
+		ariaLabel: 'Sections',
+		links: [
+			{ label: 'Archive', href: '#archive' },
+			{ label: 'Essays', href: '#archive' },
+			{ label: 'Interviews', href: '#archive' },
+		],
+	},
+	{
+		title: 'More',
+		ariaLabel: 'More',
+		links: [
+			{ label: 'Authors', href: '#writers' },
+			{ label: 'Membership', href: '#newsletter' },
+			{ label: 'RSS', href: '#archive' },
+		],
+	},
+];
+---
+
+<Layout
+	title='The Archive — The Quarry'
+	description='Six years of essays, interviews, and field notes on independent publishing from The Quarry.'
+	contentWidth='1320px'>
+	<ThemeToggle />
+
+	<Header
+		variant='site'
+		titleHref='#top'
+		links={navLinks}
+		subscribeHref='#newsletter'
+	/>
+
+	<main
+		id='top'
+		x-data={archiveState}>
+		<ArchiveHeader
+			description={description}
+			countLine={countLine}
+		/>
+		<ArchiveFilterBar tags={ARCHIVE_TAGS} />
+		<ArchiveEmptyState />
+
+		{/* The list runs to a 1120px measure; everything around it stays page-width. */}
+		<div style='--container-max:1120px'>
+			<ArchiveList posts={ARCHIVE_POSTS} />
+		</div>
+
+		<section
+			aria-label='Pagination'
+			class='container pt-12'
+			x-show='!isEmpty'>
+			<PaginationNav
+				href='#archive'
+				pages={[1, 2, 3, '…', 6]}
+				framed={false}
+				size='md'
+			/>
+		</section>
+
+		<NewsletterBanner
+			inputId='bl-email'
+			padding='pt-20'
+		/>
+		<WritersSection
+			authors={AUTHORS}
+			id='writers'
+			href='#writers'
+			headingId='wr-head'
+		/>
+	</main>
+
+	<Footer
+		columns={footerColumns}
+		variantLabel='Variant A1 · two-column list'
+		titleWeight='medium'
+		class='mt-24'
+	/>
+</Layout>

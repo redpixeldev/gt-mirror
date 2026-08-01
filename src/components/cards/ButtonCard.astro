@@ -1,0 +1,26 @@
+---
+/** Koenig button card: one tinted mid-article call to action. */
+interface Props {
+	title?: string;
+	description?: string;
+	label?: string;
+	href?: string;
+}
+
+const {
+	title = 'Button card',
+	description = 'A single call to action mid-article.',
+	label = 'Become a member',
+	href = '#07',
+} = Astro.props;
+---
+
+<div class='border-accent-border bg-accent-soft mt-14 rounded-md border p-7 text-center'>
+	<p class='font-display text-text text-[22px] font-medium'>{title}</p>
+	<p class='font-ui text-muted-on-soft mt-2.5 mb-5 text-sm'>{description}</p>
+	<a
+		href={href}
+		class='btn bg-accent font-ui text-on-accent hover:bg-accent-strong inline-block rounded-sm px-[26px] py-[13px] text-[15px] font-semibold no-underline'>
+		{label}
+	</a>
+</div>

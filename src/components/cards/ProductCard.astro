@@ -1,0 +1,42 @@
+---
+/** Koenig product card: thumbnail, copy, price and buy action. */
+interface Props {
+	eyebrow?: string;
+	title?: string;
+	description?: string;
+	price?: string;
+	label?: string;
+	href?: string;
+}
+
+const {
+	eyebrow = 'Product card',
+	title = 'MIRROR — Ghost theme',
+	description = 'Two directions, dark mode, full card coverage, AA contrast throughout.',
+	price = '$149',
+	label = 'Buy',
+	href = '#07',
+} = Astro.props;
+---
+
+<div class='border-border bg-surface flex flex-wrap gap-[22px] rounded-md border p-[22px]'>
+	<div
+		aria-hidden='true'
+		class='ph border-border h-[132px] flex-[0_0_132px] rounded-sm border'>
+	</div>
+
+	<div class='flex-[1_1_220px]'>
+		<p class='text-accent font-mono text-[11px] tracking-[0.08em] uppercase'>{eyebrow}</p>
+		<p class='font-display mt-2.5 text-xl font-medium'>{title}</p>
+		<p class='font-ui text-muted mt-2 text-[13.5px] leading-[1.55]'>{description}</p>
+
+		<div class='mt-4 flex items-center gap-3.5'>
+			<span class='font-ui text-lg font-bold'>{price}</span>
+			<a
+				href={href}
+				class='btn bg-accent font-ui text-on-accent hover:bg-accent-strong rounded-sm px-[18px] py-2.5 text-sm font-semibold no-underline'>
+				{label}
+			</a>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,20 @@
+---
+/** Koenig code card: language chrome above a horizontally scrollable <pre>. */
+interface Props {
+	language?: string;
+	code: string;
+	action?: string;
+}
+
+const { language = 'css', code, action = 'copy' } = Astro.props;
+---
+
+<div class='border-code-border bg-code-bg mt-14 overflow-hidden rounded-md border'>
+	<div class='border-code-border flex items-center justify-between border-b px-4 py-2.5'>
+		<span class='text-code-muted font-mono text-[11px] tracking-[0.08em] uppercase'>{language}</span>
+		<span class='text-code-muted font-mono text-[11px]'>{action}</span>
+	</div>
+	<pre
+		tabindex='0'
+		class='sg-scroll text-code-fg overflow-x-auto px-4 py-[18px] font-mono text-[13.5px] leading-[1.7]'><code>{code}</code></pre>
+</div>

@@ -1,0 +1,57 @@
+---
+import SectionHeading from './SectionHeading.astro';
+
+// Stacks below `sm` — a 140px label column leaves nothing for the specimen on a phone.
+const rowClass = 'grid grid-cols-1 items-baseline gap-2 px-5 py-[22px] sm:grid-cols-[140px_1fr] sm:gap-6 sm:px-6';
+const labelClass = 'font-mono text-[11px] text-muted';
+---
+
+<section class='pt-18'>
+	<SectionHeading>02 — Type scale</SectionHeading>
+
+	<div class='border-border bg-surface overflow-hidden rounded-md border'>
+		<div class:list={[rowClass, 'border-border border-b']}>
+			<span class={labelClass}>display · 66px</span>
+			<span class='font-display text-display tracking-display leading-[1.05] font-medium'>Reflect the writing</span>
+		</div>
+
+		<div class:list={[rowClass, 'border-border border-b']}>
+			<span class={labelClass}>h1 · 46px</span>
+			<span class='font-display text-h1 tracking-display leading-[1.1] font-medium'>
+				A theme for serious publishers
+			</span>
+		</div>
+
+		<div class:list={[rowClass, 'border-border border-b']}>
+			<span class={labelClass}>h2 · 33px</span>
+			<span class='font-display text-h2 tracking-heading leading-[1.2] font-medium'>Section heading</span>
+		</div>
+
+		<div class:list={[rowClass, 'border-border border-b']}>
+			<span class={labelClass}>h3 · 25px</span>
+			<span class='font-display text-h3 leading-[1.28] font-medium'>Subsection heading</span>
+		</div>
+
+		<div class:list={[rowClass, 'border-border border-b']}>
+			<span class={labelClass}>h4 · 19px</span>
+			<span class='font-ui text-h4 leading-[1.35] font-semibold'>Minor heading</span>
+		</div>
+
+		<div class:list={[rowClass, 'border-border border-b']}>
+			<span class={labelClass}>body · 19px</span>
+			<span class='text-body leading-body'>
+				Long-form copy sits at this size and rides a 68ch measure for comfortable reading.
+			</span>
+		</div>
+
+		<div class:list={[rowClass, 'border-border border-b']}>
+			<span class={labelClass}>small · 16px</span>
+			<span class='font-ui text-small text-muted leading-[1.5]'>Captions, form help, footer links</span>
+		</div>
+
+		<div class={rowClass}>
+			<span class={labelClass}>meta · 12.5px</span>
+			<span class='font-meta text-meta tracking-meta text-muted uppercase'>Author · 12 Mar 2026 · 7 min read</span>
+		</div>
+	</div>
+</section>

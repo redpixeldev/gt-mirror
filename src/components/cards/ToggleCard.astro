@@ -1,0 +1,48 @@
+---
+/**
+ * Koenig toggle card. Alpine owns the disclosure; `aria-expanded` and
+ * `aria-controls` stay bound to the same state the panel is shown from.
+ */
+interface Props {
+	question?: string;
+	/** Matches the source's default — the card ships open. */
+	open?: boolean;
+	panelId?: string;
+}
+
+const {
+	question = 'Toggle card — does the theme support memberships?',
+	open = true,
+	panelId = 'sg-toggle-panel',
+} = Astro.props;
+---
+
+<div
+	x-data={`{ open: ${open} }`}
+	class='border-border bg-surface mt-10 overflow-hidden rounded-sm border'>
+	<button
+		type='button'
+		x-bind:aria-expanded='open'
+		aria-expanded={open ? 'true' : 'false'}
+		aria-controls={panelId}
+		class='font-ui text-text flex w-full cursor-pointer items-center justify-between gap-4 border-0 bg-transparent px-5 py-[18px] text-left text-base font-semibold'
+		@click='open = !open'>
+		<span>{question}</span>
+		<span
+			aria-hidden='true'
+			x-text="open ? '−' : '+'"
+			class='text-muted font-mono text-base'>
+			{open ? '−' : '+'}
+		</span>
+	</button>
+
+	<div
+		id={panelId}
+		x-show='open'
+		x-cloak={open ? undefined : true}
+		class='border-border border-t px-5 pb-5'>
+		<p class='text-small text-muted mt-4 leading-[1.6]'>
+			<slot />
+		</p>
+	</div>
+</div>

@@ -1,0 +1,30 @@
+---
+/** Koenig bookmark card: link preview with title, description, source and thumbnail. */
+interface Props {
+	href?: string;
+	title?: string;
+	description?: string;
+	source?: string;
+}
+
+const {
+	href = '#07',
+	title = 'Reading is a design problem',
+	description = 'A short study of measure, leading, and why most publishing themes get both wrong.',
+	source = 'thequarry.press · Erin Laurier',
+} = Astro.props;
+---
+
+<a
+	href={href}
+	class='border-border bg-surface text-text mt-14 flex overflow-hidden rounded-md border no-underline shadow-sm'>
+	<div class='flex-auto p-[22px]'>
+		<p class='font-ui text-base font-semibold'>{title}</p>
+		<p class='font-ui text-muted mt-2 text-[13.5px] leading-[1.55]'>{description}</p>
+		<p class='text-muted mt-3.5 font-mono text-[11px]'>{source}</p>
+	</div>
+	<div
+		aria-hidden='true'
+		class='ph border-border flex-[0_0_140px] border-l'>
+	</div>
+</a>

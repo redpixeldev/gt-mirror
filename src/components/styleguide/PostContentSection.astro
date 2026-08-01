@@ -1,0 +1,107 @@
+---
+import BookmarkCard from '../cards/BookmarkCard.astro';
+import ButtonCard from '../cards/ButtonCard.astro';
+import CalloutCard from '../cards/CalloutCard.astro';
+import CodeCard from '../cards/CodeCard.astro';
+import GalleryCard from '../cards/GalleryCard.astro';
+import ImageCard from '../cards/ImageCard.astro';
+import ProductCard from '../cards/ProductCard.astro';
+import PullQuoteCard from '../cards/PullQuoteCard.astro';
+import ToggleCard from '../cards/ToggleCard.astro';
+import SectionHeading from './SectionHeading.astro';
+
+// Held in a variable so the braces survive Astro's template expressions.
+const codeSample = `@theme {
+  --color-bg: var(--mirror-bg);
+  --color-surface: var(--mirror-surface);
+  --color-accent: var(--mirror-accent);
+}`;
+
+const bodyClass = 'text-body leading-body text-pretty';
+const codeChipClass = 'rounded-[4px] border border-border bg-surface-2 px-1.5 py-0.5 font-mono text-[0.88em]';
+---
+
+<section class='pt-18'>
+	<SectionHeading tight>07 — Rendered post content</SectionHeading>
+	<p class='text-muted mb-10 font-mono text-xs'>
+		Measure locked to 68ch. Ghost card types below map 1:1 to the editor's card set.
+	</p>
+
+	<article class='measure mx-auto'>
+		<h2 class='font-display text-h2 tracking-heading leading-[1.2] font-medium'>Heading two sets the chapter</h2>
+
+		<p class:list={['mt-5', bodyClass]}>
+			Body copy is the product. Everything else in a publishing theme exists to get out of its way — which means the
+			measure, the leading, and the space above a heading matter more than any flourish. This paragraph runs at
+			<strong>19px</strong> with a <strong>1.72</strong> line height.
+		</p>
+
+		<p class:list={['mt-5', bodyClass]}>
+			Links inside prose stay in the accent colour with a 1px underline offset by 3px, so descenders stay legible.
+			Inline <code class={codeChipClass}>code</code> gets a tinted chip.
+		</p>
+
+		<h3 class='font-display text-h3 mt-11 leading-[1.28] font-medium'>Heading three</h3>
+		<p class:list={['mt-4', bodyClass]}>
+			Headings step down by a fixed ratio and inherit the display face, keeping the vertical rhythm intact even in a
+			4,000-word essay.
+		</p>
+
+		<h4 class='font-ui text-h4 mt-8 leading-[1.35] font-semibold'>Heading four switches to the UI face</h4>
+		<p class:list={['mt-3.5', bodyClass]}>
+			A deliberate break: at this size the grotesque reads as a label rather than a title.
+		</p>
+
+		<ul class='text-body leading-body mt-[22px] flex list-disc flex-col gap-2 pl-6'>
+			<li>Unordered lists keep the body measure</li>
+			<li>Markers sit in the muted tone</li>
+			<li>Nested items indent by one step</li>
+		</ul>
+
+		<blockquote class='border-accent mt-10 border-l-[3px] py-1 pl-[26px]'>
+			<p class='font-body text-text text-[calc(var(--text-body)*1.06)] leading-[1.55] italic'>
+				A theme is a promise about how much you respect the reader's attention.
+			</p>
+			<cite class='font-meta text-meta tracking-meta text-muted mt-3.5 block uppercase not-italic'>
+				Blockquote · attribution
+			</cite>
+		</blockquote>
+
+		<PullQuoteCard />
+
+		<CodeCard code={codeSample} />
+
+		<ImageCard
+			label='image card · regular width'
+			caption='Caption sits left, one step down, muted.'
+			aspect='aspect-[3/2]'
+		/>
+
+		<ImageCard
+			label='wide image · breaks the measure'
+			caption='Wide card — measure + 2×88px.'
+			aspect='aspect-[21/9]'
+			width='wide'
+		/>
+
+		<BookmarkCard />
+
+		<GalleryCard />
+
+		<ButtonCard />
+
+		<CalloutCard>
+			Callout card — for editor's notes, corrections, and disclosures. Four accent variants ship with the theme.
+		</CalloutCard>
+
+		<ToggleCard>
+			Yes — free, paid, and comped tiers, with paywall gates, tier badges, and a members dashboard. Alpine drives the
+			disclosure; <code class='font-mono'>aria-expanded</code> and <code class='font-mono'>aria-controls</code>
+			stay bound to state.
+		</ToggleCard>
+
+		<hr class='border-border my-14 border-0 border-t' />
+
+		<ProductCard />
+	</article>
+</section>

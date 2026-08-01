@@ -1,9 +1,16 @@
 import tailwind from 'eslint-plugin-tailwindcss';
 import eslintPluginAstro from 'eslint-plugin-astro';
+import tsParser from '@typescript-eslint/parser';
 
 export default [
 	tailwind.configs.recommended,
 	...eslintPluginAstro.configs.recommended,
+	{
+		// `.astro` frontmatter is handled by the Astro plugin; standalone .ts modules
+		// (src/data/*) need the TypeScript parser or `type`/`interface` fail to parse.
+		files: ['**/*.ts'],
+		languageOptions: { parser: tsParser },
+	},
 	{
 		settings: {
 			tailwindcss: {

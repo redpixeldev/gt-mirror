@@ -2,33 +2,303 @@
 
 @import 'tailwindcss';
 
+@plugin '@tailwindcss/typography';
+
+/*
+ * `class` strategy: the forms plugin's base reset would otherwise repaint every
+ * input (blue focus ring, its own border colour) and fight the MIRROR tokens.
+ * Opt in per-element with `form-input` etc. where a reset is actually wanted.
+ */
+@plugin '@tailwindcss/forms' {
+	strategy: class;
+}
+
+/* Dark mode rides a `.dark` class on <html>, set before first paint in Layout.astro. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+/*
+ * ---------------------------------------------------------------------------
+ * MIRROR — Variant A ("Editorial")
+ * ---------------------------------------------------------------------------
+ * Transcribed from the source styleguide's `P.a.light`, `P.a.dark` and
+ * `SHADOW.a`. Only these two blocks carry raw colour values; the @theme layer
+ * below maps them onto Tailwind tokens, so flipping the theme is nothing more
+ * than swapping this variable set.
+ */
+:root {
+	color-scheme: light;
+
+	--mirror-bg: #faf9f7;
+	--mirror-bg-90: rgb(250 249 247 / 0.88);
+	--mirror-surface: #ffffff;
+	--mirror-surface-2: #f3f1ed;
+	--mirror-text: #1c1917;
+	--mirror-muted: #6b625c;
+	--mirror-border: #e4e0d9;
+	--mirror-accent: #a8580c;
+	--mirror-accent-strong: #8a4708;
+	--mirror-accent-soft: #fdf5ec;
+	--mirror-accent-border: #f0dcc4;
+	--mirror-on-accent: #ffffff;
+	--mirror-muted-on-soft: #6b625c;
+	--mirror-danger: #b42318;
+	--mirror-code-bg: #f6f4f0;
+	--mirror-code-fg: #2a2522;
+	--mirror-code-border: #e4e0d9;
+	--mirror-code-muted: #8a8078;
+	--mirror-ph-bg: #f3f1ed;
+	--mirror-ph-line: #e0dbd2;
+	--mirror-dot-inset: rgb(0 0 0 / 0.18);
+
+	--mirror-shadow-sm: 0 1px 2px rgb(28 25 23 / 0.05);
+	--mirror-shadow-md: 0 6px 20px -6px rgb(28 25 23 / 0.12);
+	--mirror-shadow-lg: 0 28px 56px -18px rgb(28 25 23 / 0.2);
+}
+
+.dark {
+	color-scheme: dark;
+
+	--mirror-bg: #12100e;
+	--mirror-bg-90: rgb(18 16 14 / 0.88);
+	--mirror-surface: #1b1815;
+	--mirror-surface-2: #231f1b;
+	--mirror-text: #f5f2ec;
+	--mirror-muted: #a8a09a;
+	--mirror-border: #302b26;
+	--mirror-accent: #e5a35a;
+	--mirror-accent-strong: #f0b877;
+	--mirror-accent-soft: #231b12;
+	--mirror-accent-border: #453425;
+	--mirror-on-accent: #1c1207;
+	--mirror-muted-on-soft: #b8ada2;
+	--mirror-danger: #f97066;
+	--mirror-code-bg: #1b1815;
+	--mirror-code-fg: #eae4db;
+	--mirror-code-border: #302b26;
+	--mirror-code-muted: #8f857c;
+	--mirror-ph-bg: #201d19;
+	--mirror-ph-line: #2e2924;
+	--mirror-dot-inset: rgb(0 0 0 / 0.45);
+
+	--mirror-shadow-sm: 0 1px 2px rgb(0 0 0 / 0.5);
+	--mirror-shadow-md: 0 8px 24px -8px rgb(0 0 0 / 0.6);
+	--mirror-shadow-lg: 0 32px 64px -20px rgb(0 0 0 / 0.75);
+}
+
 @theme {
+	/* Exactly two families. Mono is a system stack — no IBM Plex is loaded. */
 	--font-*: initial;
-	--font-heading: var(--font-inter);
-	--font-body: var(--font-inter);
+	--font-display: var(--font-newsreader);
+	--font-body: var(--font-newsreader);
+	--font-ui: var(--font-archivo);
+	--font-meta: var(--font-archivo);
+	--font-mono: ui-monospace, 'SF Mono', Menlo, monospace;
 
-	--color-brand-primary: ;
+	/* Type scale — `P.a.scale`, in rem so browser font-size settings still apply. */
+	--text-display: 4.125rem; /* 66px */
+	--text-h1: 2.875rem; /* 46px */
+	--text-h2: 2.0625rem; /* 33px */
+	--text-h3: 1.5625rem; /* 25px */
+	--text-h4: 1.1875rem; /* 19px */
+	--text-body: 1.1875rem; /* 19px */
+	--text-lead: 1.3125rem; /* 21px */
+	--text-small: 1rem; /* 16px */
+	--text-meta: 0.78125rem; /* 12.5px */
+	--text-pull: 1.9375rem; /* 31px */
+
+	--leading-body: 1.72;
+
+	/*
+	 * Mono is whatever the OS provides, and monospace faces vary a lot in natural
+	 * line box (IBM Plex Mono ~1.31em, SF Mono ~1.15em). Pinning it keeps the
+	 * vertical rhythm — and the design's spacing — identical on every machine.
+	 */
+	--leading-mono: 1.31;
+
+	/*
+	 * Tailwind pairs its built-in sizes with a line-height; MIRROR's scale does not.
+	 * Neutralising the pairings keeps leading explicit everywhere — `text-sm` sets a
+	 * size and nothing else, exactly like `text-meta` or `text-[13px]`.
+	 */
+	--text-xs--line-height: normal;
+	--text-sm--line-height: normal;
+	--text-base--line-height: normal;
+	--text-lg--line-height: normal;
+	--text-xl--line-height: normal;
+	--text-2xl--line-height: normal;
+	--text-3xl--line-height: normal;
+	--text-4xl--line-height: normal;
+
+	--tracking-display: -0.015em;
+	--tracking-heading: -0.01em;
+	--tracking-meta: 0.06em;
+
+	--radius-sm: 6px;
+	--radius-md: 10px;
+	--radius-lg: 18px;
+	--radius-pill: 999px;
+
+	/* Prose column, and how far a "wide" card breaks out of it on each side. */
+	--measure: 68ch;
+	--wide-out: 88px;
 }
 
+/*
+ * `inline` so utilities compile to `var(--mirror-*)` directly — that is what lets
+ * a single `.dark` class on <html> repaint the page with no duplicate utilities.
+ */
+@theme inline {
+	--color-bg: var(--mirror-bg);
+	--color-bg-90: var(--mirror-bg-90);
+	--color-surface: var(--mirror-surface);
+	--color-surface-2: var(--mirror-surface-2);
+	--color-text: var(--mirror-text);
+	--color-muted: var(--mirror-muted);
+	--color-border: var(--mirror-border);
+	--color-accent: var(--mirror-accent);
+	--color-accent-strong: var(--mirror-accent-strong);
+	--color-accent-soft: var(--mirror-accent-soft);
+	--color-accent-border: var(--mirror-accent-border);
+	--color-on-accent: var(--mirror-on-accent);
+	--color-muted-on-soft: var(--mirror-muted-on-soft);
+	--color-danger: var(--mirror-danger);
+	--color-code-bg: var(--mirror-code-bg);
+	--color-code-fg: var(--mirror-code-fg);
+	--color-code-border: var(--mirror-code-border);
+	--color-code-muted: var(--mirror-code-muted);
+	--color-ph-bg: var(--mirror-ph-bg);
+	--color-ph-line: var(--mirror-ph-line);
+
+	--shadow-sm: var(--mirror-shadow-sm);
+	--shadow-md: var(--mirror-shadow-md);
+	--shadow-lg: var(--mirror-shadow-lg);
+}
+
+/*
+ * Page shells differ per template (styleguide 1240px, homepage 1320px), so the
+ * cap is a variable a layout can override once rather than a prop threaded
+ * through every section, header and footer.
+ */
 @utility container {
+	width: 100%;
+	max-width: var(--container-max, 1240px);
 	margin-inline: auto;
-	padding-inline: 1rem;
+	padding-inline: 1.25rem;
+
+	@media (width >= 48rem) {
+		padding-inline: 2rem;
+	}
 }
 
-@plugin "@tailwindcss/typography";
-@plugin "@tailwindcss/forms";
+/* Scrim over the hero photo — fixed in both themes, the art is always dark. */
+@utility hero-scrim {
+	background: linear-gradient(to top, rgb(12 10 9 / 0.86) 0%, rgb(12 10 9 / 0.55) 45%, rgb(12 10 9 / 0.15) 100%);
+}
+
+/* Horizontal tag strip: scrollable, no visible scrollbar (source `.mr-strip`). */
+@utility strip {
+	scrollbar-width: none;
+
+	&::-webkit-scrollbar {
+		display: none;
+	}
+}
+
+/* Striped placeholder block — CSS only, no image file. */
+@utility ph {
+	background-color: var(--mirror-ph-bg);
+	background-image: repeating-linear-gradient(135deg, var(--mirror-ph-line) 0 6px, transparent 6px 14px);
+}
+
+@utility measure {
+	max-width: var(--measure);
+}
+
+/*
+ * Koenig "wide" cards: break the measure by --wide-out on each side. Only once
+ * the viewport can absorb the overhang — below that it would push the page into
+ * horizontal scroll.
+ */
+@utility bleed-wide {
+	@media (width >= 64rem) {
+		margin-inline: calc(-1 * var(--wide-out));
+		width: calc(100% + var(--wide-out) * 2);
+	}
+}
+
+@utility sg-scroll {
+	scrollbar-width: thin;
+
+	&::-webkit-scrollbar {
+		height: 6px;
+	}
+
+	&::-webkit-scrollbar-thumb {
+		background: var(--mirror-border);
+		border-radius: 999px;
+	}
+}
 
 @utility btn {
 	@apply transition-colors duration-300 ease-linear;
 }
 
 @utility btn-primary {
-	@apply bg-brand-primary text-white;
+	@apply border-accent bg-accent text-on-accent border;
+	@apply hover:border-accent-strong hover:bg-accent-strong;
 }
 
 @layer base {
 	html {
-		@apply font-body antialiased;
+		@apply bg-bg text-text antialiased;
+		font-family: var(--font-body);
+		font-optical-sizing: auto;
+		-webkit-text-size-adjust: 100%;
+
+		/*
+		 * Preflight defaults this to 1.5, which the source never sets — leaving it
+		 * would inflate every UI/meta element that has no explicit leading. The
+		 * scale declares its own line-heights where the design calls for one.
+		 */
+		line-height: normal;
+	}
+
+	a {
+		color: var(--mirror-accent);
+		text-decoration-thickness: 1px;
+		text-underline-offset: 3px;
+	}
+
+	a:hover {
+		color: var(--mirror-accent-strong);
+	}
+
+	/*
+	 * Setting `--tw-leading` (not just `line-height`) is what makes this hold when
+	 * the element also carries a named size utility: `text-xs` and friends compile
+	 * to `line-height: var(--tw-leading, …)`, so a plain `line-height` here would
+	 * lose to them on layer order and the mono rhythm would silently revert.
+	 * An explicit `leading-*` utility still wins, since it sets `--tw-leading` from
+	 * the utilities layer. Inline `<code>` is excluded so a code chip inherits the
+	 * leading of the prose it sits in, as in the source.
+	 */
+	.font-mono:not(code) {
+		--tw-leading: var(--leading-mono);
+		line-height: var(--leading-mono);
+	}
+
+	:focus-visible {
+		outline: 2px solid var(--mirror-accent);
+		outline-offset: 2px;
+		border-radius: 2px;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		* {
+			animation: none !important;
+			transition: none !important;
+			scroll-behavior: auto !important;
+		}
 	}
 
 	[x-cloak] {

@@ -1,0 +1,35 @@
+---
+import type { DecoratedPost } from '../../data/posts';
+
+/** Ranked list row: index number, headline block, optional membership tier chip. */
+interface Props {
+	post: DecoratedPost;
+	href?: string;
+}
+
+const { post, href = '#latest' } = Astro.props;
+---
+
+<article class='border-border grid grid-cols-[64px_1fr_auto] items-baseline gap-7 border-t py-[30px]'>
+	<span class='text-muted font-mono text-xs'>{post.num}</span>
+
+	<div>
+		<h3 class='font-display tracking-heading text-[27px] leading-[1.22] font-medium'>
+			<a
+				href={href}
+				class='text-text hover:text-accent no-underline'>
+				{post.title}
+			</a>
+		</h3>
+		<p class='text-body text-muted mt-3 max-w-[62ch] leading-[1.6] text-pretty'>{post.excerpt}</p>
+		<p class='font-meta text-meta tracking-meta text-muted mt-3.5 uppercase'>{post.tag} · {post.meta}</p>
+	</div>
+
+	{
+		post.locked && (
+			<span class='border-border text-muted rounded-pill border px-[9px] py-1 font-mono text-[10.5px] tracking-[0.06em] whitespace-nowrap uppercase'>
+				{post.tier}
+			</span>
+		)
+	}
+</article>

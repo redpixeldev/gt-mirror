@@ -1,0 +1,64 @@
+---
+/** Full-width tinted newsletter banner (wider sibling of the styleguide's card). */
+interface Props {
+	eyebrow?: string;
+	title?: string;
+	description?: string;
+	note?: string;
+	inputId?: string;
+	headingId?: string;
+	/** Section top padding — the blog sits it lower than the homepage does. */
+	padding?: string;
+}
+
+const {
+	eyebrow = 'Newsletter',
+	title = 'One considered essay, every Thursday',
+	description = 'Free members get the archive. Paid members get the interviews and the annual field report.',
+	note = 'No spam. Unsubscribe anytime.',
+	inputId = 'hp-email',
+	headingId = 'nl-head',
+	padding = 'pt-16',
+} = Astro.props;
+---
+
+<section
+	id='newsletter'
+	aria-labelledby={headingId}
+	class:list={['container', padding]}>
+	<div
+		class='border-accent-border bg-accent-soft grid grid-cols-[repeat(auto-fit,minmax(min(300px,100%),1fr))] items-center gap-9 rounded-md border px-10 py-12'>
+		<div>
+			<p class='text-accent-strong font-mono text-[11px] tracking-[0.1em] uppercase'>{eyebrow}</p>
+			<h2
+				id={headingId}
+				class='font-display text-h2 tracking-heading mt-3.5 max-w-[24ch] leading-[1.15] font-medium text-balance'>
+				{title}
+			</h2>
+			<p class='text-small text-muted-on-soft mt-3.5 max-w-[52ch] leading-[1.6]'>{description}</p>
+		</div>
+
+		<form class='flex flex-col gap-3'>
+			<label
+				for={inputId}
+				class='font-ui text-[13px] font-semibold'>
+				Email address
+			</label>
+			<div class='flex flex-wrap gap-2.5'>
+				<input
+					id={inputId}
+					type='email'
+					placeholder='you@publication.com'
+					autocomplete='email'
+					class='border-accent-border bg-surface font-ui text-text min-w-0 flex-[1_1_220px] rounded-sm border px-[15px] py-[13px] text-[15px]'
+				/>
+				<button
+					type='submit'
+					class='btn btn-primary font-ui cursor-pointer rounded-sm px-6 py-[13px] text-[15px] font-semibold'>
+					Subscribe
+				</button>
+			</div>
+			<p class='font-ui text-muted-on-soft text-xs'>{note}</p>
+		</form>
+	</div>
+</section>

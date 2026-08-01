@@ -1,0 +1,45 @@
+---
+import type { DecoratedPost } from '../../data/posts';
+import GridPostCard from './GridPostCard.astro';
+import LeadStoryCard from './LeadStoryCard.astro';
+import MediumPostCard from './MediumPostCard.astro';
+import TagStrip from './TagStrip.astro';
+
+/** Latest: tag strip, a lead story with three companion rows, then the archive grid. */
+interface Props {
+	lead: DecoratedPost;
+	mediums: DecoratedPost[];
+	grid: DecoratedPost[];
+	tags: { name: string; count?: number }[];
+	title?: string;
+	headingId?: string;
+}
+
+const { lead, mediums, grid, tags, title = 'Latest', headingId = 'a1-latest' } = Astro.props;
+---
+
+<section
+	id='latest'
+	aria-labelledby={headingId}
+	class='container pt-18'>
+	<div class='border-border mb-8 flex flex-wrap items-baseline gap-7 border-b pb-3.5'>
+		<h2
+			id={headingId}
+			class='font-display text-h2 tracking-heading font-medium'>
+			{title}
+		</h2>
+		<TagStrip tags={tags} />
+	</div>
+
+	<div class='grid items-start gap-11 lg:grid-cols-[1.35fr_1fr]'>
+		<LeadStoryCard post={lead} />
+
+		<div class='flex flex-col gap-7'>
+			{mediums.map((post) => <MediumPostCard post={post} />)}
+		</div>
+	</div>
+
+	<div class='mt-14 grid grid-cols-[repeat(auto-fill,minmax(min(280px,100%),1fr))] gap-9'>
+		{grid.map((post) => <GridPostCard post={post} />)}
+	</div>
+</section>

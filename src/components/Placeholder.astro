@@ -1,0 +1,17 @@
+---
+/**
+ * Striped placeholder block. Pure CSS (see the `ph` utility in main.css) — the
+ * theme ships no placeholder image files.
+ */
+interface Props {
+	/** Optional chip label centred in the block, e.g. "feature image · 16:9". */
+	label?: string;
+	class?: string;
+}
+
+const { label, class: className } = Astro.props;
+---
+
+<div class:list={['ph grid place-items-center', className]}>
+	{label && <span class='bg-surface text-muted rounded-sm px-2.5 py-[5px] font-mono text-[11px]'>{label}</span>}
+</div>

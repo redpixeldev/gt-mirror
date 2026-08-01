@@ -1,0 +1,19 @@
+---
+import Header from '../Header.astro';
+import SectionHeading from './SectionHeading.astro';
+---
+
+<section class='pt-18'>
+	<SectionHeading>05 — Nav header</SectionHeading>
+
+	<Header variant='demo'>
+		<div
+			slot='note'
+			class='bg-surface-2 flex items-center gap-[18px] px-5 py-3 md:px-7'>
+			<span class='text-muted font-mono text-[11px] tracking-[0.08em] uppercase'>
+				Mobile: hamburger → Alpine <code class='font-mono'>x-data</code> drawer,
+				<code class='font-mono'>aria-expanded</code> bound, focus trapped, Esc closes.
+			</span>
+		</div>
+	</Header>
+</section>

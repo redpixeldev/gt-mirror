@@ -1,0 +1,45 @@
+---
+/**
+ * "Browse by tag" — a horizontally scrollable pill strip.
+ *
+ * `sm` is the A1 sizing, tucked to the right of the section heading; `md` is the
+ * A2 sizing, a full-width row that also shows each tag's post count.
+ */
+interface Props {
+	tags: { name: string; count?: number }[];
+	label?: string;
+	href?: string;
+	size?: 'sm' | 'md';
+	showCounts?: boolean;
+}
+
+const { tags, label = 'Browse by tag', href = '#latest', size = 'sm', showCounts = false } = Astro.props;
+
+const isSm = size === 'sm';
+const wrapper = isSm
+	? 'ml-auto flex min-w-0 flex-[0_1_auto] items-center gap-3.5'
+	: 'flex flex-wrap items-center gap-[18px]';
+const stripGap = isSm ? 'gap-2' : 'gap-[9px]';
+const pill = isSm ? 'px-[13px] py-[7px] text-xs' : 'px-[15px] py-2 text-[12.5px]';
+---
+
+<div class={wrapper}>
+	<span class='font-ui text-muted text-[11.5px] font-semibold tracking-[0.16em] whitespace-nowrap uppercase'>
+		{label}
+	</span>
+	<div class:list={['strip flex overflow-x-auto p-0.5', stripGap]}>
+		{
+			tags.map((tag) => (
+				<a
+					href={href}
+					class:list={[
+						'font-meta tracking-meta border-border bg-surface text-text hover:border-accent hover:text-accent rounded-pill flex-none border whitespace-nowrap uppercase no-underline',
+						pill,
+					]}>
+					{tag.name}
+					{showCounts && tag.count !== undefined && <span class='text-muted font-mono text-[11px]'>{tag.count}</span>}
+				</a>
+			))
+		}
+	</div>
+</div>

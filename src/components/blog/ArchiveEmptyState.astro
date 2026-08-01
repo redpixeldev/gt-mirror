@@ -1,0 +1,46 @@
+---
+/** Shown when the active tag has no published posts (the source's "Archive" tag). */
+interface Props {
+	headingId?: string;
+}
+
+const { headingId = 'empty-head' } = Astro.props;
+---
+
+<section
+	aria-labelledby={headingId}
+	class='container pt-22'
+	x-show='isEmpty'
+	x-cloak>
+	<div class='border-border bg-surface rounded-md border px-10 py-16 text-center'>
+		<span
+			aria-hidden='true'
+			class='border-border text-muted mx-auto grid size-[52px] place-items-center rounded-full border font-mono text-lg'>
+			∅
+		</span>
+
+		<h2
+			id={headingId}
+			class='font-display text-h2 tracking-heading mt-6 font-medium'>
+			Nothing filed under <span x-text='tag'></span> yet
+		</h2>
+
+		<p class='text-small text-muted mx-auto mt-3.5 max-w-[46ch] leading-[1.6]'>
+			The tag exists, but no published posts carry it. Try another tag, or subscribe and we'll send the first one.
+		</p>
+
+		<div class='mt-7 flex flex-wrap justify-center gap-3'>
+			<button
+				type='button'
+				class='btn btn-primary font-ui cursor-pointer rounded-sm px-[22px] py-3 text-[15px] font-semibold'
+				@click='tag = null'>
+				Show all posts
+			</button>
+			<a
+				href='#newsletter'
+				class='btn border-text font-ui text-text hover:bg-text hover:text-surface rounded-sm border bg-transparent px-[22px] py-3 text-[15px] font-semibold no-underline'>
+				Subscribe
+			</a>
+		</div>
+	</div>
+</section>

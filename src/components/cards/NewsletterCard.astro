@@ -1,0 +1,57 @@
+---
+/** Tinted newsletter signup block. */
+interface Props {
+	eyebrow?: string;
+	title?: string;
+	description?: string;
+	note?: string;
+	/** Unique per instance so the visually hidden label stays correctly bound. */
+	inputId?: string;
+	headingId?: string;
+}
+
+const {
+	eyebrow = 'Newsletter',
+	title = 'One considered essay, every Thursday',
+	description = 'Free members get the archive. Paid members get the interviews.',
+	note = 'No spam. Unsubscribe anytime.',
+	inputId = 'sg-nl-email',
+	headingId = 'sg-nl',
+} = Astro.props;
+---
+
+<section
+	aria-labelledby={headingId}
+	class='border-accent-border bg-accent-soft flex flex-col justify-center rounded-md border p-8'>
+	<p class='text-accent-strong font-mono text-[11px] tracking-[0.1em] uppercase'>{eyebrow}</p>
+
+	<h3
+		id={headingId}
+		class='font-display tracking-heading text-text mt-3.5 text-[26px] leading-[1.2] font-medium'>
+		{title}
+	</h3>
+
+	<p class='text-small text-muted-on-soft mt-3 leading-[1.6]'>{description}</p>
+
+	<form class='mt-[22px] flex flex-wrap gap-2.5'>
+		<label
+			for={inputId}
+			class='sr-only'>
+			Email address
+		</label>
+		<input
+			id={inputId}
+			type='email'
+			placeholder='you@publication.com'
+			autocomplete='email'
+			class='border-accent-border bg-surface font-ui text-text min-w-0 flex-[1_1_200px] rounded-sm border px-[15px] py-[13px] text-[15px]'
+		/>
+		<button
+			type='submit'
+			class='btn btn-primary font-ui cursor-pointer rounded-sm px-[22px] py-[13px] text-[15px] font-semibold'>
+			Subscribe
+		</button>
+	</form>
+
+	<p class='font-ui text-muted-on-soft mt-3 text-xs'>{note}</p>
+</section>

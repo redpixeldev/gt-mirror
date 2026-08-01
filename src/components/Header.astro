@@ -1,1 +1,123 @@
-<div class='bg-blue-100'>header</div>
+---
+/**
+ * Site navigation.
+ *
+ * `variant="site"` is the real page header; `variant="demo"` is the specimen card
+ * the styleguide shows in section 05 — same nav, smaller chrome, wrapped in a
+ * bordered box instead of spanning the page.
+ */
+export interface NavLink {
+	label: string;
+	href: string;
+	current?: boolean;
+}
+
+interface Props {
+	variant?: 'site' | 'demo';
+	siteTitle?: string;
+	/** Makes the wordmark a link. Omit to render it as plain text. */
+	titleHref?: string;
+	links?: NavLink[];
+	ariaLabel?: string;
+	/** Renders Subscribe as a link; omit for a plain button. */
+	subscribeHref?: string;
+}
+
+const {
+	variant = 'demo',
+	siteTitle = 'The Quarry',
+	titleHref,
+	links = [
+		{ label: 'Latest', href: '#05', current: true },
+		{ label: 'Essays', href: '#05' },
+		{ label: 'Interviews', href: '#05' },
+		{ label: 'About', href: '#05' },
+	],
+	ariaLabel = variant === 'site' ? 'Primary' : 'Sample site navigation',
+	subscribeHref,
+} = Astro.props;
+
+const isSite = variant === 'site';
+const hasNote = Astro.slots.has('note');
+
+const Wrapper = isSite ? 'header' : 'nav';
+const Title = titleHref ? 'a' : 'span';
+const Subscribe = subscribeHref ? 'a' : 'button';
+---
+
+<Wrapper
+	aria-label={isSite ? undefined : ariaLabel}
+	class:list={['bg-surface', isSite ? 'border-border border-b' : 'border-border overflow-hidden rounded-md border']}>
+	<div
+		class:list={[
+			'flex flex-wrap items-center',
+			isSite ? 'container gap-x-[30px] gap-y-4 py-[22px]' : 'gap-x-7 gap-y-4 px-5 py-5 md:px-7',
+			hasNote && 'border-border border-b',
+		]}>
+		<Title
+			href={titleHref}
+			class:list={[
+				'font-display tracking-display text-text no-underline',
+				isSite ? 'text-[26px] font-medium' : 'text-2xl font-semibold',
+			]}>
+			{siteTitle}
+		</Title>
+
+		{/* In `demo` the outer element is already the nav, so this stays a plain div. */}
+		{
+			isSite ? (
+				<nav
+					aria-label={ariaLabel}
+					class='mr-auto flex flex-wrap gap-[22px]'>
+					{links.map((link) => (
+						<a
+							href={link.href}
+							aria-current={link.current ? 'page' : undefined}
+							class:list={[
+								'font-ui text-[15px] no-underline',
+								link.current ? 'border-accent text-text border-b-2 pb-[3px]' : 'text-muted hover:text-text',
+							]}>
+							{link.label}
+						</a>
+					))}
+				</nav>
+			) : (
+				<div class='mr-auto flex flex-wrap gap-[22px]'>
+					{links.map((link) => (
+						<a
+							href={link.href}
+							aria-current={link.current ? 'page' : undefined}
+							class:list={[
+								'font-ui text-[15px] no-underline',
+								link.current ? 'border-accent text-text border-b-2 pb-[3px]' : 'text-muted hover:text-text',
+							]}>
+							{link.label}
+						</a>
+					))}
+				</div>
+			)
+		}
+
+		<button
+			type='button'
+			aria-label='Search'
+			class:list={[
+				'btn border-border text-text hover:bg-surface-2 rounded-pill grid size-9 shrink-0 cursor-pointer place-items-center border bg-transparent font-mono',
+				isSite ? 'text-sm' : 'text-[13px]',
+			]}>
+			<span aria-hidden='true'>⌕</span>
+		</button>
+
+		<Subscribe
+			type={subscribeHref ? undefined : 'button'}
+			href={subscribeHref}
+			class:list={[
+				'btn btn-primary font-ui rounded-sm px-[18px] py-2.5 text-sm font-semibold no-underline',
+				!subscribeHref && 'cursor-pointer',
+			]}>
+			Subscribe
+		</Subscribe>
+	</div>
+
+	<slot name='note' />
+</Wrapper>

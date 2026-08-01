@@ -1,0 +1,45 @@
+---
+import type { DecoratedPost } from '../../data/posts';
+import CompactPostCard from './CompactPostCard.astro';
+import NumberedPostRow from './NumberedPostRow.astro';
+import TagStrip from './TagStrip.astro';
+
+/** A2 body: a ranked shortlist, the tag strip, then the archive grid. */
+interface Props {
+	rows: DecoratedPost[];
+	grid: DecoratedPost[];
+	tags: { name: string; count?: number }[];
+	title?: string;
+	headingId?: string;
+}
+
+const { rows, grid, tags, title = 'More from this week', headingId = 'a2-latest' } = Astro.props;
+---
+
+<section
+	id='latest'
+	aria-labelledby={headingId}
+	class='container pt-14'>
+	<h2
+		id={headingId}
+		class='font-ui text-muted mb-2 text-xs font-semibold tracking-[0.16em] uppercase'>
+		{title}
+	</h2>
+
+	<div class='flex flex-col'>
+		{rows.map((post) => <NumberedPostRow post={post} />)}
+	</div>
+
+	<div class='border-border mt-14 border-t pt-7'>
+		<TagStrip
+			tags={tags}
+			size='md'
+			showCounts
+		/>
+	</div>
+
+	<div
+		class='border-border mt-11 grid grid-cols-[repeat(auto-fill,minmax(min(300px,100%),1fr))] gap-x-9 gap-y-10 border-t pt-11'>
+		{grid.map((post) => <CompactPostCard post={post} />)}
+	</div>
+</section>

@@ -1,0 +1,42 @@
+---
+import type { DecoratedPost } from '../../data/posts';
+
+/** A2 "editorial masthead" lead: centred, typographic, no cover image. */
+interface Props {
+	post: DecoratedPost;
+	href?: string;
+	headingId?: string;
+}
+
+const { post, href = '#latest', headingId = 'a2-lead' } = Astro.props;
+---
+
+<section
+	aria-labelledby={headingId}
+	class='border-border container border-b pt-20 text-center'>
+	<p class='font-meta text-meta text-muted tracking-[0.16em] uppercase'>{post.tag} · {post.date}</p>
+
+	<h1
+		id={headingId}
+		class='font-display tracking-display mt-6 text-[clamp(36px,4.6vw,60px)] leading-[1.08] font-medium text-balance'>
+		<a
+			href={href}
+			class='text-text no-underline'>
+			{post.title}
+		</a>
+	</h1>
+
+	<p class='font-body text-muted mx-auto mt-[22px] max-w-[58ch] text-[21px] leading-[1.55] text-pretty italic'>
+		{post.excerpt}
+	</p>
+
+	<div class='mt-7 mb-11 flex items-center justify-center gap-3'>
+		<span
+			aria-hidden='true'
+			class='bg-accent-soft font-ui text-accent-strong grid size-8 place-items-center rounded-full text-xs font-semibold'>
+			{post.initials}
+		</span>
+		<span class='font-ui text-sm font-semibold'>{post.author}</span>
+		<span class='font-meta text-meta tracking-meta text-muted uppercase'>{post.read}</span>
+	</div>
+</section>

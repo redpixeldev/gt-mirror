@@ -1,0 +1,75 @@
+---
+import type { DecoratedPost } from '../../data/posts';
+
+/**
+ * A1 archive row: fixed-width thumbnail beside the headline block.
+ *
+ * The image link is hidden from assistive tech and removed from the tab order —
+ * the headline right beside it is the real link, so exposing both would make a
+ * screen reader announce every post twice.
+ */
+interface Props {
+	post: DecoratedPost;
+	/** Publication order, used by the list's sort. */
+	order: number;
+	href?: string;
+}
+
+const { post, order, href = '#archive' } = Astro.props;
+
+// The row's own tag is baked into the expression — Alpine's scope only holds the
+// active filter, not per-item data.
+const visible = `tag === null || tag === ${JSON.stringify(post.tag)}`;
+---
+
+<article
+	class='border-border grid grid-cols-[300px_1fr] items-start gap-9 border-b py-11'
+	data-order={order}
+	x-show={visible}>
+	<a
+		href={href}
+		tabindex='-1'
+		aria-hidden='true'
+		class='block'>
+		<img
+			src={post.img}
+			alt=''
+			loading='lazy'
+			decoding='async'
+			class='border-border block aspect-[4/3] w-full rounded-md border object-cover'
+		/>
+	</a>
+
+	<div>
+		<div class='flex items-center gap-3'>
+			<span class='font-meta text-meta tracking-meta text-accent uppercase'>{post.tag}</span>
+			{
+				post.locked && (
+					<span class='border-border text-muted rounded-pill border px-2 py-[3px] font-mono text-[10.5px] tracking-[0.06em] uppercase'>
+						{post.tier}
+					</span>
+				)
+			}
+		</div>
+
+		<h2 class='font-display tracking-heading mt-3 text-[30px] leading-[1.18] font-medium text-balance'>
+			<a
+				href={href}
+				class='text-text hover:text-accent no-underline'>
+				{post.title}
+			</a>
+		</h2>
+
+		<p class='text-body text-muted mt-3.5 max-w-[62ch] leading-[1.6] text-pretty'>{post.excerpt}</p>
+
+		<div class='mt-5 flex items-center gap-3'>
+			<span
+				aria-hidden='true'
+				class='bg-accent-soft font-ui text-accent-strong grid size-[30px] place-items-center rounded-full text-xs font-semibold'>
+				{post.initials}
+			</span>
+			<span class='font-ui text-[13.5px] font-semibold'>{post.author}</span>
+			<span class='font-meta text-meta tracking-meta text-muted uppercase'>{post.meta}</span>
+		</div>
+	</div>
+</article>

@@ -1,0 +1,21 @@
+---
+/** Koenig callout card: accent-ruled aside for editor's notes and disclosures. */
+interface Props {
+	/** Emoji or glyph shown in the accent badge. */
+	symbol?: string;
+}
+
+const { symbol = 'i' } = Astro.props;
+---
+
+<aside
+	class='border-border border-l-accent bg-surface-2 mt-10 flex gap-4 rounded-sm border border-l-[3px] px-[22px] py-5'>
+	<span
+		aria-hidden='true'
+		class='bg-accent font-ui text-on-accent grid size-[22px] flex-none place-items-center rounded-full text-[13px] font-bold'>
+		{symbol}
+	</span>
+	<p class='text-small leading-[1.6]'>
+		<slot />
+	</p>
+</aside>

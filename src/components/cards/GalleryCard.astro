@@ -1,0 +1,95 @@
+---
+/** Koenig gallery card, driven by Swiper 11. */
+interface Props {
+	label?: string;
+	/** Slide captions; the count also drives the "Slide n of m" readout. */
+	slides?: string[];
+}
+
+const { label = 'Gallery card · Swiper', slides = ['01', '02', '03', '04'] } = Astro.props;
+---
+
+<div class='mt-14'>
+	<p class='text-muted mb-3.5 font-mono text-[11px] tracking-[0.08em] uppercase'>{label}</p>
+
+	<div
+		data-gallery
+		class='border-border bg-surface relative rounded-md border p-3.5'>
+		<div class='swiper overflow-hidden rounded-sm'>
+			<div class='swiper-wrapper'>
+				{
+					slides.map((slide) => (
+						<div class='swiper-slide'>
+							<div class='ph grid aspect-[4/3] place-items-center rounded-sm'>
+								<span class='text-muted font-mono text-[11px]'>{slide}</span>
+							</div>
+						</div>
+					))
+				}
+			</div>
+		</div>
+
+		<div class='mt-3.5 flex items-center justify-between'>
+			<span
+				data-gallery-status
+				aria-live='polite'
+				class='font-ui text-muted text-[13px]'>
+				Slide 1 of {slides.length}
+			</span>
+			<div class='flex gap-2'>
+				<button
+					type='button'
+					data-gallery-prev
+					aria-label='Previous slide'
+					class='btn rounded-pill border-border bg-surface text-text hover:bg-surface-2 grid size-9 cursor-pointer place-items-center border font-mono'>
+					<span aria-hidden='true'>←</span>
+				</button>
+				<button
+					type='button'
+					data-gallery-next
+					aria-label='Next slide'
+					class='btn rounded-pill border-border bg-surface text-text hover:bg-surface-2 grid size-9 cursor-pointer place-items-center border font-mono'>
+					<span aria-hidden='true'>→</span>
+				</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+	import Swiper from 'swiper';
+	import { A11y } from 'swiper/modules';
+	import 'swiper/css';
+
+	document.querySelectorAll<HTMLElement>('[data-gallery]').forEach((root) => {
+		const el = root.querySelector<HTMLElement>('.swiper');
+		if (!el) return;
+
+		const status = root.querySelector<HTMLElement>('[data-gallery-status]');
+		const total = el.querySelectorAll('.swiper-slide').length;
+
+		// Honour the same reduced-motion contract as the rest of the theme.
+		const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+		const swiper = new Swiper(el, {
+			modules: [A11y],
+			slidesPerView: 1.15,
+			spaceBetween: 12,
+			speed: reduce ? 0 : 400,
+			breakpoints: { 700: { slidesPerView: 2.2 } },
+			on: {
+				slideChange: (instance) => {
+					if (status) status.textContent = `Slide ${instance.activeIndex + 1} of ${total}`;
+				},
+			},
+		});
+
+		// The measure is set in `ch`, so the column narrows once Newsreader loads.
+		// Swiper caches its size at init, so re-measure or the slides stay sized to
+		// the fallback-font layout.
+		document.fonts.ready.then(() => swiper.update());
+
+		root.querySelector('[data-gallery-prev]')?.addEventListener('click', () => swiper.slidePrev());
+		root.querySelector('[data-gallery-next]')?.addEventListener('click', () => swiper.slideNext());
+	});
+</script>

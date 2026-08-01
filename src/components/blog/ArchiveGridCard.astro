@@ -1,0 +1,47 @@
+---
+import type { DecoratedPost } from '../../data/posts';
+
+/** A2 archive card: 4:3 image above tag, headline, excerpt and a full byline. */
+interface Props {
+	post: DecoratedPost;
+	/** Publication order, used by the list's sort. */
+	order: number;
+	href?: string;
+}
+
+const { post, order, href = '#archive' } = Astro.props;
+
+// The card's own tag is baked in — Alpine's scope holds only the active filter.
+const visible = `tag === null || tag === ${JSON.stringify(post.tag)}`;
+---
+
+<article
+	data-order={order}
+	x-show={visible}>
+	<a
+		href={href}
+		class='text-text block no-underline'>
+		<img
+			src={post.img}
+			alt={post.alt}
+			loading='lazy'
+			decoding='async'
+			class='border-border block aspect-[4/3] w-full rounded-md border object-cover'
+		/>
+
+		<div class='mt-[18px] flex items-center gap-2.5'>
+			<span class='font-meta text-meta tracking-meta text-accent uppercase'>{post.tag}</span>
+			{
+				post.locked && (
+					<span class='border-border text-muted rounded-pill border px-2 py-[3px] font-mono text-[10.5px] tracking-[0.06em] uppercase'>
+						{post.tier}
+					</span>
+				)
+			}
+		</div>
+
+		<h2 class='font-display tracking-heading mt-3 text-2xl leading-[1.22] font-medium text-balance'>{post.title}</h2>
+		<p class='text-small text-muted mt-3 leading-[1.58]'>{post.excerpt}</p>
+		<p class='font-meta text-meta tracking-meta text-muted mt-4 uppercase'>{post.metaFull}</p>
+	</a>
+</article>

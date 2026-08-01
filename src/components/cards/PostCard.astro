@@ -1,0 +1,65 @@
+---
+import Placeholder from '../Placeholder.astro';
+
+/** Feature-image post card — Ghost's post loop item. */
+interface Props {
+	tag?: string;
+	tagHref?: string;
+	title?: string;
+	href?: string;
+	excerpt?: string;
+	authorInitials?: string;
+	authorName?: string;
+	meta?: string;
+	imageLabel?: string;
+}
+
+const {
+	tag = 'Essays',
+	tagHref = '#06',
+	title = 'The quiet economics of a one-person publication',
+	href = '#06',
+	excerpt = 'What five years of running a paid newsletter taught me about pricing, churn, and the cost of caring about design.',
+	authorInitials = 'EL',
+	authorName = 'Erin Laurier',
+	meta = '12 Mar 2026 · 7 min read',
+	imageLabel = 'feature image · 16:9',
+} = Astro.props;
+---
+
+<article class='border-border bg-surface overflow-hidden rounded-md border shadow-sm'>
+	<Placeholder
+		label={imageLabel}
+		class='border-border aspect-video border-b'
+	/>
+
+	<div class='p-6'>
+		<a
+			href={tagHref}
+			class='font-meta tracking-meta text-accent text-xs uppercase no-underline'>
+			{tag}
+		</a>
+
+		<h3 class='font-display text-h3 tracking-heading mt-3 leading-[1.22] font-medium'>
+			<a
+				href={href}
+				class='text-text hover:text-accent no-underline'>
+				{title}
+			</a>
+		</h3>
+
+		<p class='text-small text-muted mt-3 leading-[1.6] text-pretty'>{excerpt}</p>
+
+		<div class='border-border mt-[22px] flex items-center gap-3 border-t pt-[18px]'>
+			<span
+				aria-hidden='true'
+				class='bg-accent-soft font-ui text-accent-strong grid size-[34px] place-items-center rounded-full text-[13px] font-semibold'>
+				{authorInitials}
+			</span>
+			<div class='flex flex-col gap-0.5'>
+				<span class='font-ui text-[13px] font-semibold'>{authorName}</span>
+				<span class='font-meta text-meta tracking-meta text-muted uppercase'>{meta}</span>
+			</div>
+		</div>
+	</div>
+</article>

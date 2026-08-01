@@ -1,0 +1,45 @@
+---
+/** Centred author card — avatar initials, role, bio, and two actions. */
+interface Props {
+	initials?: string;
+	name?: string;
+	role?: string;
+	bio?: string;
+	postsHref?: string;
+	followHref?: string;
+}
+
+const {
+	initials = 'EL',
+	name = 'Erin Laurier',
+	role = 'Founding editor · 84 posts',
+	bio = 'Writes about independent media, typography, and the business of attention.',
+	postsHref = '#06',
+	followHref = '#06',
+} = Astro.props;
+---
+
+<article class='border-border bg-surface rounded-md border p-[26px] text-center'>
+	<span
+		aria-hidden='true'
+		class='bg-accent-soft font-ui text-accent-strong mx-auto grid size-[72px] place-items-center rounded-full text-[22px] font-semibold'>
+		{initials}
+	</span>
+
+	<h3 class='font-display mt-4 text-[22px] font-medium'>{name}</h3>
+	<p class='font-meta text-meta tracking-meta text-muted mt-2 uppercase'>{role}</p>
+	<p class='text-small text-muted mt-3.5 leading-[1.6]'>{bio}</p>
+
+	<div class='mt-[18px] flex justify-center gap-2.5'>
+		<a
+			href={postsHref}
+			class='btn border-border font-ui text-text hover:bg-surface-2 rounded-sm border px-4 py-[9px] text-[13px] font-semibold no-underline'>
+			All posts
+		</a>
+		<a
+			href={followHref}
+			class='btn btn-primary font-ui rounded-sm px-4 py-[9px] text-[13px] font-semibold no-underline'>
+			Follow
+		</a>
+	</div>
+</article>

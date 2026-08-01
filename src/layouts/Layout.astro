@@ -2,7 +2,14 @@
 import '../styles/main.css';
 import { Font } from 'astro:assets';
 
-const { title } = Astro.props;
+interface Props {
+	title: string;
+	description?: string;
+	/** Overrides the `container` cap for this page, e.g. '1320px'. */
+	contentWidth?: string;
+}
+
+const { title, description, contentWidth } = Astro.props;
 ---
 
 <!doctype html>
@@ -14,10 +21,37 @@ const { title } = Astro.props;
 			content='width=device-width,initial-scale=1.0'
 		/>
 		<title>{title}</title>
+		{
+			description && (
+				<meta
+					name='description'
+					content={description}
+				/>
+			)
+		}
+
+		{/* Resolve the theme before first paint so dark mode never flashes light. */}
+		<script is:inline>
+			(() => {
+				try {
+					const stored = localStorage.getItem('mirror-theme');
+					const dark = stored ? stored === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+					document.documentElement.classList.toggle('dark', dark);
+				} catch {
+					/* private mode / storage disabled — light is the default */
+				}
+			})();
+		</script>
+
 		<Font
-			cssVariable='--font-inter'
+			cssVariable='--font-newsreader'
 			preload={[{ weight: '400' }]}
 		/>
+		<Font
+			cssVariable='--font-archivo'
+			preload={[{ weight: '400' }]}
+		/>
+
 		<link
 			rel='icon'
 			type='image/png'
@@ -25,12 +59,35 @@ const { title } = Astro.props;
 			href='/favicon.png'
 		/>
 
+		{/* Inline (not deferred) so the listener exists before Alpine boots below. */}
+		<script is:inline>
+			document.addEventListener('alpine:init', () => {
+				Alpine.store('theme', {
+					dark: document.documentElement.classList.contains('dark'),
+					toggle() {
+						this.dark = !this.dark;
+						document.documentElement.classList.toggle('dark', this.dark);
+						try {
+							localStorage.setItem('mirror-theme', this.dark ? 'dark' : 'light');
+						} catch {
+							/* nothing to persist to */
+						}
+					},
+					get label() {
+						return this.dark ? 'Dark' : 'Light';
+					},
+				});
+			});
+		</script>
+
 		<script
 			defer
 			src='https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js'
 		></script>
 	</head>
-	<body>
+	<body
+		class='bg-bg font-body text-text min-h-screen'
+		style={contentWidth ? `--container-max:${contentWidth}` : undefined}>
 		<slot />
 	</body>
 </html>

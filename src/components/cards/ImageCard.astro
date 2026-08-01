@@ -1,0 +1,25 @@
+---
+import Placeholder from '../Placeholder.astro';
+
+/**
+ * Koenig image card. `width="wide"` breaks the measure by --wide-out on each
+ * side, matching the editor's regular/wide/full options.
+ */
+interface Props {
+	label?: string;
+	caption?: string;
+	/** Tailwind aspect utility, e.g. `aspect-[3/2]`. */
+	aspect?: string;
+	width?: 'regular' | 'wide';
+}
+
+const { label, caption, aspect = 'aspect-[3/2]', width = 'regular' } = Astro.props;
+---
+
+<figure class:list={['mt-14', width === 'wide' && 'bleed-wide']}>
+	<Placeholder
+		label={label}
+		class:list={['border-border rounded-md border', aspect]}
+	/>
+	{caption && <figcaption class='font-ui text-small text-muted mt-3'>{caption}</figcaption>}
+</figure>

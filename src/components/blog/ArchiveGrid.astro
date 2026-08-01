@@ -1,0 +1,40 @@
+---
+import type { DecoratedPost } from '../../data/posts';
+import ArchiveGridCard from './ArchiveGridCard.astro';
+
+/**
+ * A2 archive grid.
+ *
+ * Every post is rendered once and filtered with `x-show`. Sorting re-appends the
+ * cards in the new order rather than reordering them in CSS, so the DOM sequence
+ * a screen reader follows always matches what is on screen.
+ */
+interface Props {
+	posts: DecoratedPost[];
+}
+
+const { posts } = Astro.props;
+
+const sort =
+	'Array.from($el.children)' +
+	'.sort((a, b) => (oldest ? -1 : 1) * (Number(a.dataset.order) - Number(b.dataset.order)))' +
+	'.forEach((node) => $el.appendChild(node))';
+---
+
+<section
+	aria-label='Posts'
+	class='container pt-12'
+	x-show='!isEmpty'>
+	<div
+		class='grid grid-cols-[repeat(auto-fill,minmax(min(320px,100%),1fr))] gap-x-10 gap-y-13'
+		x-effect={sort}>
+		{
+			posts.map((post, i) => (
+				<ArchiveGridCard
+					post={post}
+					order={i}
+				/>
+			))
+		}
+	</div>
+</section>

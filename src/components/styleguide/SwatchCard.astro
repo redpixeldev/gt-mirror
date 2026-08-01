@@ -1,0 +1,33 @@
+---
+/**
+ * One colour swatch. The chip paints straight from the live CSS variable, so it
+ * follows the theme; the two hex captions are swapped by the `dark` variant
+ * because a hex string is content, not a colour that can be re-derived.
+ */
+interface Props {
+	/** Token name as documented, e.g. `--bg`. */
+	token: string;
+	/** The variable that actually paints it, e.g. `--mirror-bg`. */
+	cssVar: string;
+	lightHex: string;
+	darkHex: string;
+	note: string;
+}
+
+const { token, cssVar, lightHex, darkHex, note } = Astro.props;
+---
+
+<div class='border-border bg-surface overflow-hidden rounded-md border'>
+	<div
+		class='border-border h-22 border-b'
+		style={`background:var(${cssVar})`}>
+	</div>
+	<div class='px-3.5 py-3'>
+		<p class='font-mono text-xs'>{token}</p>
+		<p class='text-muted mt-[5px] font-mono text-[11px]'>
+			<span class='dark:hidden'>{lightHex}</span>
+			<span class='hidden dark:inline'>{darkHex}</span>
+		</p>
+		<p class='font-ui text-muted mt-2 text-[11px]'>{note}</p>
+	</div>
+</div>

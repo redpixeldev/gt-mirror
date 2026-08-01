@@ -1,0 +1,106 @@
+---
+import type { DecoratedPost } from '../../data/posts';
+
+/** Featured strip — a Swiper carousel of 4:3 cards with prev/next controls. */
+interface Props {
+	posts: DecoratedPost[];
+	title?: string;
+	href?: string;
+	headingId?: string;
+}
+
+const { posts, title = 'Featured', href = '#latest', headingId = 'a1-featured' } = Astro.props;
+---
+
+<section
+	aria-labelledby={headingId}
+	class='container pt-16'>
+	<div class='border-border flex items-baseline justify-between gap-5 border-b pb-3.5'>
+		<h2
+			id={headingId}
+			class='font-display text-h2 tracking-heading font-medium'>
+			{title}
+		</h2>
+		<div class='flex gap-2'>
+			<button
+				type='button'
+				data-featured-prev
+				aria-label='Previous featured posts'
+				class='btn border-border bg-surface text-text hover:bg-surface-2 rounded-pill grid size-9 cursor-pointer place-items-center border font-mono'>
+				<span aria-hidden='true'>←</span>
+			</button>
+			<button
+				type='button'
+				data-featured-next
+				aria-label='Next featured posts'
+				class='btn border-border bg-surface text-text hover:bg-surface-2 rounded-pill grid size-9 cursor-pointer place-items-center border font-mono'>
+				<span aria-hidden='true'>→</span>
+			</button>
+		</div>
+	</div>
+
+	{
+		/*
+		The spacing lives on a wrapper, not on `.swiper`: `swiper/css` sets
+		`padding: 0` from outside any cascade layer, so it would beat a Tailwind
+		utility on the carousel element itself.
+	*/
+	}
+	<div class='pt-7'>
+		<div
+			data-featured
+			class='swiper overflow-hidden'>
+			<div class='swiper-wrapper'>
+				{
+					posts.map((post) => (
+						<div class='swiper-slide'>
+							<article>
+								<a
+									href={href}
+									class='text-text block no-underline'>
+									<img
+										src={post.img}
+										alt={post.alt}
+										loading='lazy'
+										decoding='async'
+										class='border-border block aspect-[4/3] w-full rounded-md border object-cover'
+									/>
+									<p class='font-meta text-meta tracking-meta text-accent mt-3.5 uppercase'>{post.tag}</p>
+									<h3 class='font-display tracking-heading mt-2 text-[21px] leading-[1.25] font-medium'>
+										{post.title}
+									</h3>
+									<p class='font-meta text-meta tracking-meta text-muted mt-2.5 uppercase'>{post.meta}</p>
+								</a>
+							</article>
+						</div>
+					))
+				}
+			</div>
+		</div>
+	</div>
+</section>
+
+<script>
+	import Swiper from 'swiper';
+	import { A11y } from 'swiper/modules';
+	import 'swiper/css';
+
+	document.querySelectorAll<HTMLElement>('[data-featured]').forEach((el) => {
+		const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+		const swiper = new Swiper(el, {
+			modules: [A11y],
+			slidesPerView: 1.15,
+			spaceBetween: 20,
+			speed: reduce ? 0 : 420,
+			breakpoints: { 640: { slidesPerView: 2.2 }, 1000: { slidesPerView: 3.3 } },
+		});
+
+		// Swiper caches its width at init; re-measure once the webfonts settle.
+		document.fonts.ready.then(() => swiper.update());
+
+		const section = el.closest('section');
+		section?.querySelector('[data-featured-prev]')?.addEventListener('click', () => swiper.slidePrev());
+		section?.querySelector('[data-featured-next]')?.addEventListener('click', () => swiper.slideNext());
+	});
+</script>

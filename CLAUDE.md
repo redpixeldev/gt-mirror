@@ -2,13 +2,15 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-This is a **starter scaffold**, not a finished site. `Header.astro`/`Footer.astro` are placeholder stubs, `fonts.css` is a commented-out template, and `--color-brand-primary` in `main.css` is intentionally blank — fill these in per project.
+This repo builds the **MIRROR Ghost theme, Variant A ("Editorial")** as a static Astro site, one page at a time from the design sources in `~/Downloads/Mirror Ghost Theme/MIRROR *.dc.html`. Ignore every Variant B config value in those sources. See `README.md` for how the tokens, fonts, and card components fit together.
+
+`fonts.css` remains a commented-out template (the Fonts API is used instead).
 
 ## Commands
 
 ```bash
 pnpm install      # Install dependencies (Node 24, see .nvmrc)
-pnpm dev          # Start dev server at localhost:4321
+pnpm dev          # Start dev server at localhost:4380 (server.port in astro.config.mjs)
 pnpm build        # Build production site to ./dist/
 pnpm preview      # Preview production build locally
 npx eslint .      # Lint (no script defined; astro + tailwindcss plugins)
@@ -47,7 +49,10 @@ Changing these affects anything that references assets by exact filename — cha
 ## Tailwind CSS v4 (CSS-first config)
 
 No `tailwind.config.js`. Everything lives in `src/styles/main.css`:
-- `@theme { }` — theme tokens (`--font-heading`, `--font-body`, `--color-brand-primary`). `--font-*: initial` clears Tailwind's default font scale. `--font-heading`/`--font-body` both point at `var(--font-inter)` (see Fonts below).
+- `@theme { }` — static tokens: font families (`--font-*: initial` clears Tailwind's defaults first), the MIRROR type scale, tracking, radii, `--measure`, `--wide-out`. Tailwind's built-in font-size line-height pairings are cleared here so leading is always explicit.
+- `@theme inline { }` — colour and shadow tokens mapped onto the `--mirror-*` variables defined in `:root`/`.dark`. `inline` is what lets one class on `<html>` repaint the page; those two blocks are the only place raw colour values live.
+- `@custom-variant dark` — the `dark:` variant keys off a `.dark` class, not `prefers-color-scheme`.
+- `@plugin "@tailwindcss/forms"` uses `strategy: class` so its base reset does not fight the theme's own input styling.
 - `@utility name { }` — custom utilities: `container`, `btn`, `btn-primary`.
 - `@plugin "..."` — registers `@tailwindcss/typography` and `@tailwindcss/forms`.
 - Tailwind is wired via the **Vite plugin** `@tailwindcss/vite` (in `astro.config.mjs` under `vite.plugins`), not the PostCSS plugin — there is no `postcss.config.cjs`. The Vite plugin is the recommended Astro + Tailwind v4 integration and avoids the `@import 'tailwindcss'` resolution failure the PostCSS plugin hits in Astro's static build.
@@ -57,9 +62,9 @@ No `tailwind.config.js`. Everything lives in `src/styles/main.css`:
 
 Uses Astro's **experimental Fonts API** (gated behind `experimental.fonts` in `astro.config.mjs` on Astro 5.x — it graduates to a stable top-level `fonts` config in Astro 6; revisit on upgrade). Fonts are fetched from Google and **self-hosted at build** — no runtime third-party request.
 
-- **Default family**: Inter, weights `[400, 500, 600, 700]`, `normal` style only. Astro registers it as the `--font-inter` CSS variable.
-- **Wiring**: `--font-heading`/`--font-body` in `main.css` resolve to `var(--font-inter)`. Repoint a token to use a different family for that role without touching the Astro config. To add a family, add an entry to `experimental.fonts` and a matching `<Font />` in `Layout.astro`.
-- **Render**: `<Font cssVariable="--font-inter" preload={[{ weight: '400' }]} />` in `Layout.astro`'s `<head>` emits the `@font-face` styles + a preload hint for the 400 weight.
+- **Families**: exactly two. **Newsreader** (`--font-newsreader`) — variable, weights `'300 600'`, roman + italic, with the `opsz` axis requested via `options.experimental.variableAxis`; dropping that axis makes Google serve a fixed-optical-size instance that renders ~5% wider than the design source. **Archivo** (`--font-archivo`) — weights `[400, 500, 600, 700]`, `normal` only.
+- **Wiring**: `--font-display`/`--font-body` resolve to `var(--font-newsreader)`, `--font-ui`/`--font-meta` to `var(--font-archivo)`, and `--font-mono` is a system stack. Repoint a token to change a role without touching the Astro config. Do **not** add IBM Plex Sans/Mono, even though the design source references them.
+- **Render**: a `<Font cssVariable="…" preload={[{ weight: '400' }]} />` per family in `Layout.astro`'s `<head>` emits the `@font-face` styles + a preload hint.
 - **Fallbacks**: Astro auto-generates a metric-matched `sans-serif` fallback (optimizedFallbacks on by default) to minimize layout shift.
 - `fonts.css` remains an escape hatch for manual `@font-face` (local fonts in `public/fonts/`); it is independent of the Fonts API.
 

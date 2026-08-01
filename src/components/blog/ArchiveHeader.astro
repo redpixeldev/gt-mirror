@@ -1,0 +1,52 @@
+---
+/**
+ * Archive masthead. Kicker, title, description and the live count all react to
+ * the active tag, so they read from the `archive` Alpine scope on the page. The
+ * unfiltered copy is server-rendered so the page is complete without JS.
+ */
+interface Props {
+	kicker?: string;
+	title?: string;
+	description?: string;
+	countLine: string;
+	headingId?: string;
+}
+
+const {
+	kicker = 'All posts',
+	title = 'The Archive',
+	description = 'Six years of essays, interviews, and field notes on independent publishing — sorted, tagged, and searchable.',
+	countLine,
+	headingId = 'arch-head',
+} = Astro.props;
+---
+
+<section
+	aria-labelledby={headingId}
+	class='container pt-16'>
+	<p
+		class='text-accent font-mono text-[11px] tracking-[0.1em] uppercase'
+		x-text='kicker'>
+		{kicker}
+	</p>
+
+	<h1
+		id={headingId}
+		class='font-display tracking-display mt-[18px] text-[clamp(34px,4.4vw,56px)] leading-[1.06] font-medium'
+		x-text='heading'>
+		{title}
+	</h1>
+
+	<p
+		class='text-lead text-muted mt-5 max-w-[60ch] leading-[1.55] text-pretty'
+		x-text='description'>
+		{description}
+	</p>
+
+	<p
+		aria-live='polite'
+		class='text-muted mt-5 font-mono text-xs'
+		x-text='countLine'>
+		{countLine}
+	</p>
+</section>

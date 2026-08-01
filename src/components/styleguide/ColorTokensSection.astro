@@ -1,0 +1,40 @@
+---
+import SectionHeading from './SectionHeading.astro';
+import SwatchCard from './SwatchCard.astro';
+
+// Mirrors the source's `swatches()` rows, with both palettes carried side by side.
+const swatches = [
+	{ token: '--bg', cssVar: '--mirror-bg', lightHex: '#FAF9F7', darkHex: '#12100E', note: 'page canvas' },
+	{ token: '--surface', cssVar: '--mirror-surface', lightHex: '#FFFFFF', darkHex: '#1B1815', note: 'cards, header' },
+	{
+		token: '--surface-2',
+		cssVar: '--mirror-surface-2',
+		lightHex: '#F3F1ED',
+		darkHex: '#231F1B',
+		note: 'subtle fills',
+	},
+	{ token: '--text', cssVar: '--mirror-text', lightHex: '#1C1917', darkHex: '#F5F2EC', note: 'body + headings' },
+	{ token: '--muted', cssVar: '--mirror-muted', lightHex: '#6B625C', darkHex: '#A8A09A', note: 'meta, captions' },
+	{ token: '--border', cssVar: '--mirror-border', lightHex: '#E4E0D9', darkHex: '#302B26', note: 'hairlines' },
+	{ token: '--accent', cssVar: '--mirror-accent', lightHex: '#A8580C', darkHex: '#E5A35A', note: 'links, CTA' },
+	{
+		token: '--accent-soft',
+		cssVar: '--mirror-accent-soft',
+		lightHex: '#FDF5EC',
+		darkHex: '#231B12',
+		note: 'tinted blocks',
+	},
+];
+---
+
+<section class='pt-18'>
+	<SectionHeading>01 — Color tokens</SectionHeading>
+
+	<div class='grid grid-cols-[repeat(auto-fill,minmax(min(184px,100%),1fr))] gap-4'>
+		{swatches.map((swatch) => <SwatchCard {...swatch} />)}
+	</div>
+
+	<p class='text-muted mt-5 font-mono text-xs'>
+		Every pair below meets WCAG 2.2 AA — body text ≥ 7:1, muted text ≥ 4.6:1, accent-on-bg ≥ 4.5:1, in both modes.
+	</p>
+</section>

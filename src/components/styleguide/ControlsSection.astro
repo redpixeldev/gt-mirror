@@ -1,0 +1,109 @@
+---
+import SectionHeading from './SectionHeading.astro';
+
+const cardClass = 'rounded-md border border-border bg-surface p-7';
+const cardLabelClass = 'mb-5 font-mono text-[11px] tracking-[0.08em] text-muted uppercase';
+const tagClass = 'font-meta text-xs tracking-meta uppercase rounded-pill px-3.5 py-1.5 no-underline';
+---
+
+<section class='pt-18'>
+	<SectionHeading>04 — Buttons, tags, forms</SectionHeading>
+
+	<div class='grid grid-cols-[repeat(auto-fit,minmax(min(300px,100%),1fr))] gap-4'>
+		<div class={cardClass}>
+			<p class={cardLabelClass}>Buttons</p>
+
+			<div class='flex flex-wrap items-center gap-3'>
+				<button
+					type='button'
+					class='btn btn-primary font-ui cursor-pointer rounded-sm px-[22px] py-3 text-[15px] font-semibold'>
+					Subscribe
+				</button>
+				<button
+					type='button'
+					class='btn border-text font-ui text-text hover:bg-text hover:text-surface cursor-pointer rounded-sm border bg-transparent px-[22px] py-3 text-[15px] font-semibold'>
+					Read more
+				</button>
+				<button
+					type='button'
+					class='btn font-ui text-accent hover:bg-surface-2 cursor-pointer rounded-sm border border-transparent bg-transparent px-3.5 py-3 text-[15px] font-semibold'>
+					Sign in →
+				</button>
+			</div>
+
+			<div class='mt-4 flex flex-wrap items-center gap-3'>
+				<button
+					type='button'
+					class='btn btn-primary font-ui cursor-pointer rounded-sm px-4 py-2 text-[13px] font-semibold'>
+					Small
+				</button>
+				<button
+					type='button'
+					disabled
+					class='border-border bg-surface-2 font-ui text-muted cursor-not-allowed rounded-sm border px-[22px] py-3 text-[15px] font-semibold'>
+					Disabled
+				</button>
+			</div>
+		</div>
+
+		<div class={cardClass}>
+			<p class={cardLabelClass}>Tags &amp; pills</p>
+
+			<div class='flex flex-wrap gap-2.5'>
+				<a
+					href='#04'
+					class:list={[tagClass, 'bg-accent-soft text-accent-strong']}>
+					Essays
+				</a>
+				<a
+					href='#04'
+					class:list={[tagClass, 'border-border text-muted border']}>
+					Interviews
+				</a>
+				<a
+					href='#04'
+					class:list={[tagClass, 'bg-text text-surface']}>
+					Members only
+				</a>
+				<span class='border-border bg-surface-2 text-muted rounded-sm border px-3 py-1.5 font-mono text-xs'>
+					#field-notes
+				</span>
+			</div>
+
+			<div class='mt-[18px] flex flex-wrap gap-2.5'>
+				<span class='bg-accent font-ui text-on-accent rounded-sm px-[11px] py-[5px] text-xs font-semibold'>New</span>
+				<span class='border-border font-ui text-muted rounded-sm border px-[11px] py-[5px] text-xs font-semibold'>
+					Draft
+				</span>
+			</div>
+		</div>
+
+		<div class={cardClass}>
+			<p class={cardLabelClass}>Inputs</p>
+
+			<label
+				for='sg-email'
+				class='font-ui mb-2 block text-[13px] font-semibold'>
+				Email address
+			</label>
+			<input
+				id='sg-email'
+				type='email'
+				placeholder='you@publication.com'
+				autocomplete='email'
+				aria-describedby='sg-email-help sg-email-error'
+				class='border-border bg-bg font-ui text-text w-full rounded-sm border px-3.5 py-3 text-[15px]'
+			/>
+			<p
+				id='sg-email-help'
+				class='font-ui text-muted mt-2 text-[13px]'>
+				Help text explains the field.
+			</p>
+			<p
+				id='sg-email-error'
+				class='font-ui text-danger mt-3.5 text-[13px]'>
+				Error state — enter a valid address.
+			</p>
+		</div>
+	</div>
+</section>

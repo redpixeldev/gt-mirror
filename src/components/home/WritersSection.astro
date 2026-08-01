@@ -1,0 +1,44 @@
+---
+/** Writers: a grid of author chips with initials avatar and post count. */
+interface Props {
+	authors: { name: string; initials: string; count: number }[];
+	title?: string;
+	href?: string;
+	headingId?: string;
+	/** Anchor id — the homepage links to #authors, the blog to #writers. */
+	id?: string;
+}
+
+const { authors, title = 'Writers', href = '#authors', headingId = 'au-head', id = 'authors' } = Astro.props;
+---
+
+<section
+	id={id}
+	aria-labelledby={headingId}
+	class='container pt-16'>
+	<h2
+		id={headingId}
+		class='font-ui text-muted mb-6 text-xs font-semibold tracking-[0.16em] uppercase'>
+		{title}
+	</h2>
+
+	<div class='grid grid-cols-[repeat(auto-fill,minmax(min(210px,100%),1fr))] gap-4'>
+		{
+			authors.map((author) => (
+				<a
+					href={href}
+					class='border-border bg-surface text-text hover:border-accent flex items-center gap-3.5 rounded-md border p-4 no-underline'>
+					<span
+						aria-hidden='true'
+						class='bg-accent-soft font-ui text-accent-strong grid size-[42px] flex-none place-items-center rounded-full text-sm font-semibold'>
+						{author.initials}
+					</span>
+					<span class='flex min-w-0 flex-col gap-[3px]'>
+						<span class='font-ui text-[14.5px] font-semibold'>{author.name}</span>
+						<span class='text-muted font-mono text-[11px]'>{author.count} posts</span>
+					</span>
+				</a>
+			))
+		}
+	</div>
+</section>
