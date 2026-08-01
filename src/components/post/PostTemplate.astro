@@ -1,0 +1,147 @@
+---
+import Footer from '../Footer.astro';
+import Header from '../Header.astro';
+import ThemeToggle from '../ThemeToggle.astro';
+import NewsletterBanner from '../home/NewsletterBanner.astro';
+import PostBody from './PostBody.astro';
+import PostEndBlocks from './PostEndBlocks.astro';
+import PostHero from './PostHero.astro';
+import PostRail from './PostRail.astro';
+import PostPaywall from './PostPaywall.astro';
+import PostShare from './PostShare.astro';
+import PostTitlePage from './PostTitlePage.astro';
+import PostToc from './PostToc.astro';
+import PostTocSpy from './PostTocSpy.astro';
+import RelatedReading from './RelatedReading.astro';
+import { ADJACENT, POST, POST_TAGS, RELATED, TOC } from '../../data/post';
+
+/**
+ * Post template.
+ *
+ * `layout` picks the head and the reading column: `a1` is the centered classic
+ * (cover photo, inline table of contents), `a2` is the title page with a sticky
+ * side rail. `paywalled` swaps the article body for the members-only gate and
+ * drops the section navigation, exactly as the source does — in a real Ghost
+ * theme that switch is made server-side from the reader's access.
+ */
+interface Props {
+	layout?: 'a1' | 'a2';
+	paywalled?: boolean;
+}
+
+const { layout = 'a1', paywalled = false } = Astro.props;
+
+const rail = layout === 'a2';
+const variantLabel = rail ? 'Variant A2 · title page + rail' : 'Variant A1 · centered classic';
+
+const navLinks = [
+	{ label: 'Home', href: '#post' },
+	{ label: 'Archive', href: '#post' },
+	{ label: 'Interviews', href: '#post', current: true },
+];
+
+const footerColumns = [
+	{
+		title: 'Sections',
+		ariaLabel: 'Sections',
+		links: [
+			{ label: 'Archive', href: '#post' },
+			{ label: 'Essays', href: '#post' },
+			{ label: 'Interviews', href: '#post' },
+		],
+	},
+	{
+		title: 'More',
+		ariaLabel: 'More',
+		links: [
+			{ label: 'Authors', href: '#post' },
+			{ label: 'Membership', href: '#end-newsletter' },
+			{ label: 'RSS', href: '#post' },
+		],
+	},
+];
+---
+
+<ThemeToggle />
+
+<Header
+	variant='site'
+	compact
+	titleHref='#post'
+	links={navLinks}
+	subscribeHref='#end-newsletter'
+/>
+
+<main id='post'>
+	{rail ? <PostTitlePage post={POST} /> : <PostHero post={POST} />}
+
+	<div class='container pt-14'>
+		<div
+			class:list={[
+				'grid items-start',
+				rail ? 'grid-cols-[232px_minmax(0,1fr)] gap-[72px]' : 'grid-cols-[minmax(0,1fr)]',
+			]}>
+			{
+				rail && (
+					<PostRail
+						items={TOC}
+						showToc={!paywalled}
+					/>
+				)
+			}
+
+			<div class:list={['measure min-w-0', rail ? '' : 'mx-auto']}>
+				{!rail && !paywalled && <PostToc items={TOC} />}
+
+				<article>
+					<p class='text-body leading-body text-pretty'>
+						Every editor I spoke to this winter described the same problem in different words: the audience is no longer
+						a mass, and the tools still assume one. What replaces the mass is not a niche so much as a relationship —
+						smaller, slower, and far less forgiving of sloppiness.
+					</p>
+					<p class='text-body leading-body mt-[22px] text-pretty'>
+						That relationship is what this piece is about: how four independent publications rebuilt their editorial
+						process around it, what it cost them, and which of their decisions I would steal.
+					</p>
+
+					{
+						paywalled ? (
+							<PostPaywall minutes={POST.minutes} />
+						) : (
+							<PostBody
+								post={POST}
+								tags={POST_TAGS}
+							/>
+						)
+					}
+
+					<PostShare />
+				</article>
+
+				<PostEndBlocks
+					post={POST}
+					adjacent={ADJACENT}
+					detail={!rail}
+				/>
+			</div>
+		</div>
+	</div>
+
+	<RelatedReading posts={RELATED} />
+
+	<NewsletterBanner
+		id='end-newsletter'
+		inputId='po-email'
+		headingId='end-nl-head'
+		padding='pt-18'
+	/>
+
+	<PostTocSpy />
+</main>
+
+<Footer
+	columns={footerColumns}
+	variantLabel={variantLabel}
+	titleWeight='medium'
+	class='mt-24'
+/>

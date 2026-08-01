@@ -1,0 +1,58 @@
+---
+/**
+ * Members-only gate: a clipped teaser paragraph fading into the page, then the
+ * upgrade card. Replaces the article body when the post is locked.
+ */
+interface Props {
+	/** Reading time quoted in the pitch, e.g. "12 minutes". */
+	minutes: string;
+	writers?: number;
+}
+
+const { minutes, writers = 5 } = Astro.props;
+---
+
+<div>
+	<div class='relative mt-[22px] max-h-[150px] overflow-hidden'>
+		<p class='text-body leading-body text-pretty'>
+			The first conversation set the pattern. She had pulled her dashboard down to three numbers, kept a folder of
+			reader replies open in a second window, and called the folder the only metric that had ever changed an editorial
+			decision. Everything after that was a variation on the same argument, made by people who had never met each other
+			and who disagreed about almost everything else — including whether any of it was replicable.
+		</p>
+		<div
+			aria-hidden='true'
+			class='paywall-fade absolute inset-0'>
+		</div>
+	</div>
+
+	<div class='border-accent-border bg-accent-soft rounded-md border px-8 py-9 text-center'>
+		<p class='text-accent-strong font-mono text-[11px] tracking-[0.1em] uppercase'>Paid members only</p>
+
+		<h2 class='font-display text-h2 tracking-heading mt-4 leading-[1.2] font-medium'>
+			Keep reading with a paid membership
+		</h2>
+
+		<p class='text-small text-muted-on-soft mx-auto mt-3.5 max-w-[46ch] leading-[1.6]'>
+			This interview runs {minutes} and includes the full transcript. Paid members also get the annual field report and the
+			complete interview archive.
+		</p>
+
+		<div class='mt-[26px] flex flex-wrap justify-center gap-3'>
+			<a
+				href='#end-newsletter'
+				class='btn btn-primary font-ui rounded-sm px-6 py-[13px] text-[15px] font-semibold no-underline'>
+				Upgrade — $8/month
+			</a>
+			<a
+				href='#end-newsletter'
+				class='btn border-text font-ui text-text hover:bg-text hover:text-surface rounded-sm border bg-transparent px-6 py-[13px] text-[15px] font-semibold no-underline'>
+				Sign in
+			</a>
+		</div>
+
+		<p class='font-ui text-muted-on-soft mt-[18px] text-[12.5px]'>
+			Already a member? Your subscription supports {writers} writers.
+		</p>
+	</div>
+</div>

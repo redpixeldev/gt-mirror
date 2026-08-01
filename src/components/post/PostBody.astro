@@ -1,0 +1,149 @@
+---
+import CalloutCard from '../cards/CalloutCard.astro';
+import CodeCard from '../cards/CodeCard.astro';
+import PullQuoteCard from '../cards/PullQuoteCard.astro';
+import PostFigure from './PostFigure.astro';
+import type { POST } from '../../data/post';
+
+/** The unlocked article body: four sections of prose, figures and Koenig cards. */
+interface Props {
+	post: typeof POST;
+	tags: string[];
+}
+
+const { post, tags } = Astro.props;
+
+// Held in a variable so the braces survive Astro's template expressions.
+const corrections = `{
+  "corrected_at": "2026-03-14",
+  "field": "subhead",
+  "was": "four newsrooms",
+  "now": "three newsrooms"
+}`;
+
+const bodyClass = 'text-body leading-body text-pretty';
+const headingClass = 'font-display text-h2 tracking-heading leading-[1.2] font-medium';
+const codeChipClass = 'rounded-[4px] border border-border bg-surface-2 px-1.5 py-0.5 font-mono text-[0.88em]';
+---
+
+<div>
+	<h2
+		id='sec-1'
+		class:list={[headingClass, 'mt-13']}>
+		The audience stopped being a number
+	</h2>
+	<p class:list={['mt-5', bodyClass]}>
+		Traffic was always a proxy. It was a bad one, but it was legible, and legibility is what sold advertising. When the
+		proxy collapsed, the publications that survived were the ones that had quietly been measuring something else —
+		replies, renewals, forwarded issues.
+	</p>
+	<p class:list={['mt-5', bodyClass]}>
+		One editor described her dashboard as "three numbers and a folder of emails." The folder, she insisted, was the
+		important half. Inline <code class={codeChipClass}>open rate</code> told her less than a single unsubscribe note.
+	</p>
+
+	<blockquote class='border-accent mt-10 border-l-[3px] py-1 pl-[26px]'>
+		<p class='font-body text-[calc(var(--text-body)*1.06)] leading-[1.55] italic'>
+			We stopped asking how many people read it and started asking whether the right forty would miss it.
+		</p>
+		<cite class='font-meta text-meta tracking-meta text-muted mt-3.5 block uppercase not-italic'>
+			Editor, weekly culture publication
+		</cite>
+	</blockquote>
+
+	<h2
+		id='sec-2'
+		class:list={[headingClass, 'mt-14']}>
+		What a slower calendar buys you
+	</h2>
+	<p class:list={['mt-5', bodyClass]}>
+		Cutting output in half is the most common intervention and the least discussed. Every publication that did it
+		reported the same sequence: a nervous quarter, a flat quarter, then a step change in renewals.
+	</p>
+
+	<PostFigure
+		src={post.inline1}
+		alt='Minimalist desk with a lamp casting hard shadows'
+		caption='A working desk at one of the four publications. Nothing on it was bought after 2019.'
+		aspect='aspect-[3/2]'
+	/>
+
+	<h3 class='font-display text-h3 mt-11 leading-[1.28] font-medium'>Three edits, not one</h3>
+	<p class:list={['mt-4', bodyClass]}>
+		The house rule that appeared in every interview: no piece ships on its first edit. Structure, then argument, then
+		line. Two of the four keep the passes on separate days.
+	</p>
+	<ul class='text-body leading-body mt-5 flex list-disc flex-col gap-2 pl-6'>
+		<li>Structural pass — does the piece need to exist in this shape?</li>
+		<li>Argument pass — is anything asserted that is not evidenced?</li>
+		<li>Line pass — read aloud, always.</li>
+	</ul>
+
+	<CalloutCard>
+		Disclosure: two of the four publications quoted here are past clients. Neither reviewed this piece before
+		publication.
+	</CalloutCard>
+
+	<PostFigure
+		src={post.inline2}
+		alt='Minimalist concrete architectural space with tall walls'
+		caption='The office none of them rent any more.'
+		aspect='aspect-[21/9]'
+		margin='mt-14'
+	/>
+
+	<h2
+		id='sec-3'
+		class:list={[headingClass, 'mt-14']}>
+		The correction policy as a product
+	</h2>
+	<p class:list={['mt-5', bodyClass]}>
+		Three of the four publish corrections at the top of the piece, dated, with the original wording intact. All three
+		said it increased paid conversion. None of them could prove it, and all of them kept doing it.
+	</p>
+
+	<PullQuoteCard
+		quote='A correction is the cheapest advertisement for your standards.'
+		caption='Pull quote'
+		margin='mt-12'
+	/>
+
+	<p class:list={['mt-9', bodyClass]}>
+		The mechanics are unglamorous. Each of them stores corrections as structured data, which is what makes the display
+		consistent:
+	</p>
+
+	<CodeCard
+		language='json'
+		code={corrections}
+		margin='mt-6'
+	/>
+
+	<h2
+		id='sec-4'
+		class:list={[headingClass, 'mt-14']}>
+		What I would steal
+	</h2>
+	<p class:list={['mt-5', bodyClass]}>
+		The three-pass edit, the dated correction, and the folder of emails. None of it requires a platform decision, a
+		redesign, or a new hire — which is precisely why it took four conversations to notice it.
+	</p>
+	<p class:list={['mt-5', bodyClass]}>
+		The rest of the transcript, including the parts about pricing, runs in next week's issue.
+	</p>
+
+	<hr class='border-border mt-14 border-0 border-t' />
+
+	<div class='mt-8 flex flex-wrap items-center gap-2.5'>
+		<span class='text-muted mr-1.5 font-mono text-[10.5px] tracking-[0.1em] uppercase'>Filed under</span>
+		{
+			tags.map((tag) => (
+				<a
+					href='#post'
+					class='font-meta tracking-meta border-border bg-surface text-text rounded-pill border px-3.5 py-[7px] text-[12.5px] uppercase no-underline'>
+					{tag}
+				</a>
+			))
+		}
+	</div>
+</div>

@@ -5,13 +5,17 @@ body sizes with optical sizing, Archivo for UI/meta, warm stone neutrals and a s
 
 Pages are built one at a time from the design source in `MIRROR *.dc.html`. Shipped so far:
 
-| Route          | Layout                  | Source file                 |
-| :------------- | :---------------------- | :-------------------------- |
-| `/homepage-01` | A1 · magazine cover     | `MIRROR Homepage.dc.html`   |
-| `/homepage-02` | A2 · editorial masthead | `MIRROR Homepage.dc.html`   |
-| `/blog-01`     | A1 · two-column list    | `MIRROR Blog.dc.html`       |
-| `/blog-02`     | A2 · three-column grid  | `MIRROR Blog.dc.html`       |
-| `/styleguide`  | —                       | `MIRROR Styleguide.dc.html` |
+| Route                | Layout                  | Source file                 |
+| :------------------- | :---------------------- | :-------------------------- |
+| `/homepage-01`       | A1 · magazine cover     | `MIRROR Homepage.dc.html`   |
+| `/homepage-02`       | A2 · editorial masthead | `MIRROR Homepage.dc.html`   |
+| `/blog-01`           | A1 · two-column list    | `MIRROR Blog.dc.html`       |
+| `/blog-02`           | A2 · three-column grid  | `MIRROR Blog.dc.html`       |
+| `/post-01`           | A1 · centered classic   | `MIRROR Post.dc.html`       |
+| `/post-01-paywalled` | A1, members-only state  | `MIRROR Post.dc.html`       |
+| `/post-02`           | A2 · title page + rail  | `MIRROR Post.dc.html`       |
+| `/post-02-paywalled` | A2, members-only state  | `MIRROR Post.dc.html`       |
+| `/styleguide`        | —                       | `MIRROR Styleguide.dc.html` |
 
 There is deliberately no `index.astro` yet, so `/` 404s — each page is built under its own
 name while the set comes together.
@@ -113,9 +117,18 @@ src/components/
 │   ├── PullQuoteCard · CodeCard · ImageCard · BookmarkCard · GalleryCard
 │   └── ButtonCard · CalloutCard · ToggleCard · ProductCard
 ├── blog/                 # archive masthead, tag/sort bar, list row, empty state
+├── post/                 # post hero, TOC, body, paywall gate, bio/adjacent, related
 ├── home/                 # homepage sections and their post-card variants
 └── styleguide/           # one component per numbered styleguide section
 ```
+
+`post/PostTemplate.astro` holds the whole post; all four post routes are thin wrappers over it.
+`layout` picks the head and reading column — `a1` is the centered classic (cover photo, inline
+table of contents), `a2` is the title page with a sticky 232px rail. `paywalled` swaps the
+article body for the members-only gate and drops the section navigation, which is what the
+source does; in a real Ghost theme that switch is made server-side from the reader's access
+level. The two layouts also differ in their prev/next links: A1 shows each neighbour's title
+and date, A2 shows only the direction (`detail` on `PostEndBlocks`).
 
 The blog's tag filter and sort are real: one Alpine scope on `<main>` holds `tag`/`oldest`, and
 both layouts (`/blog-01` list, `/blog-02` grid) read the same scope — only the posts section

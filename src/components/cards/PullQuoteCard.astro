@@ -3,13 +3,17 @@
 interface Props {
 	quote?: string;
 	caption?: string;
+	margin?: string;
 }
 
-const { quote = "Pull quotes break the column and reset the reader's pace.", caption = 'Pull quote card' } =
-	Astro.props;
+const {
+	quote = "Pull quotes break the column and reset the reader's pace.",
+	caption = 'Pull quote card',
+	margin = 'mt-14',
+} = Astro.props;
 ---
 
-<figure class='mt-14 text-center'>
+<figure class:list={['text-center', margin]}>
 	<p class='font-display text-pull tracking-display text-text leading-[1.22] font-medium text-balance'>
 		{quote}
 	</p>

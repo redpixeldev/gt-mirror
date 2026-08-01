@@ -4,12 +4,14 @@ interface Props {
 	language?: string;
 	code: string;
 	action?: string;
+	/** Top margin — the styleguide spaces cards further apart than a post does. */
+	margin?: string;
 }
 
-const { language = 'css', code, action = 'copy' } = Astro.props;
+const { language = 'css', code, action = 'copy', margin = 'mt-14' } = Astro.props;
 ---
 
-<div class='border-code-border bg-code-bg mt-14 overflow-hidden rounded-md border'>
+<div class:list={['border-code-border bg-code-bg overflow-hidden rounded-md border', margin]}>
 	<div class='border-code-border flex items-center justify-between border-b px-4 py-2.5'>
 		<span class='text-code-muted font-mono text-[11px] tracking-[0.08em] uppercase'>{language}</span>
 		<span class='text-code-muted font-mono text-[11px]'>{action}</span>

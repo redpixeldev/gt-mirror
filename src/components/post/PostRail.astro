@@ -1,0 +1,59 @@
+---
+/**
+ * Sticky side rail for the A2 layout: section navigation plus share actions.
+ * The navigation is dropped when the post is paywalled — there are no sections
+ * to jump to — but the share block stays.
+ */
+interface Props {
+	items: { id: string; label: string; href: string; num: string }[];
+	showToc?: boolean;
+}
+
+const { items, showToc = true } = Astro.props;
+
+const railButton =
+	'btn border-border bg-surface font-ui text-text hover:bg-surface-2 cursor-pointer rounded-sm border px-3 py-2 text-[12.5px] font-semibold';
+---
+
+<aside
+	aria-label='Post details'
+	class='sticky top-[120px]'>
+	{
+		showToc && (
+			<nav
+				aria-label='On this page'
+				class='border-border border-b pb-5'>
+				<p class='text-muted mb-3.5 font-mono text-[10.5px] tracking-[0.1em] uppercase'>On this page</p>
+				<ol class='m-0 flex list-none flex-col gap-[11px] p-0'>
+					{items.map((item) => (
+						<li class='flex gap-2.5'>
+							<span class='text-muted font-mono text-[11px]'>{item.num}</span>
+							<a
+								href={item.href}
+								data-toc-link={item.id}
+								class='font-ui text-muted text-[13.5px] leading-[1.4] no-underline'>
+								{item.label}
+							</a>
+						</li>
+					))}
+				</ol>
+			</nav>
+		)
+	}
+
+	<div class='pt-5'>
+		<p class='text-muted mb-3 font-mono text-[10.5px] tracking-[0.1em] uppercase'>Share</p>
+		<div class='flex flex-wrap gap-2'>
+			<button
+				type='button'
+				class={railButton}>
+				Copy link
+			</button>
+			<button
+				type='button'
+				class={railButton}>
+				Email
+			</button>
+		</div>
+	</div>
+</aside>

@@ -1,0 +1,45 @@
+---
+/** Three related-post cards below the article. */
+interface Props {
+	posts: { title: string; tag: string; meta: string; img: string; alt: string }[];
+	title?: string;
+	headingId?: string;
+}
+
+const { posts, title = 'Related reading', headingId = 'rel-head' } = Astro.props;
+---
+
+<section
+	aria-labelledby={headingId}
+	class='container pt-20'>
+	<h2
+		id={headingId}
+		class='font-ui text-muted mb-6 text-xs font-semibold tracking-[0.16em] uppercase'>
+		{title}
+	</h2>
+
+	<div class='grid grid-cols-[repeat(auto-fit,minmax(min(280px,100%),1fr))] gap-6'>
+		{
+			posts.map((post) => (
+				<article class='border-border bg-surface overflow-hidden rounded-md border'>
+					<a
+						href='#post'
+						class='text-text block no-underline'>
+						<img
+							src={post.img}
+							alt={post.alt}
+							loading='lazy'
+							decoding='async'
+							class='border-border block aspect-video w-full border-b object-cover'
+						/>
+						<div class='p-5'>
+							<span class='font-meta text-meta tracking-meta text-accent uppercase'>{post.tag}</span>
+							<h3 class='font-display tracking-heading mt-2.5 text-xl leading-[1.26] font-medium'>{post.title}</h3>
+							<p class='font-meta text-meta tracking-meta text-muted mt-3 uppercase'>{post.meta}</p>
+						</div>
+					</a>
+				</article>
+			))
+		}
+	</div>
+</section>

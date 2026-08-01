@@ -9,6 +9,8 @@ interface Props {
 	headingId?: string;
 	/** Section top padding — the blog sits it lower than the homepage does. */
 	padding?: string;
+	/** Anchor id; the post template links to #end-newsletter. */
+	id?: string;
 }
 
 const {
@@ -19,11 +21,12 @@ const {
 	inputId = 'hp-email',
 	headingId = 'nl-head',
 	padding = 'pt-16',
+	id = 'newsletter',
 } = Astro.props;
 ---
 
 <section
-	id='newsletter'
+	id={id}
 	aria-labelledby={headingId}
 	class:list={['container', padding]}>
 	<div

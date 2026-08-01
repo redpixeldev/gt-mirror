@@ -1,0 +1,40 @@
+---
+/**
+ * Highlights whichever section the reader has reached. Shared by both post
+ * layouts — the A1 inline disclosure and the A2 sticky rail render the same
+ * `data-toc-link` anchors, and this no-ops when neither is present.
+ */
+---
+
+<script>
+	const links = Array.from(document.querySelectorAll<HTMLElement>('[data-toc-link]'));
+	if (links.length) {
+		const ids = links.map((el) => el.dataset.tocLink!);
+		let frame = 0;
+
+		const sync = () => {
+			frame = 0;
+			let active: string | null = null;
+			for (const id of ids) {
+				const heading = document.getElementById(id);
+				if (heading && heading.getBoundingClientRect().top <= 160) active = id;
+			}
+			for (const el of links) {
+				const on = el.dataset.tocLink === active;
+				el.classList.toggle('text-accent', on);
+				el.classList.toggle('font-semibold', on);
+				el.classList.toggle('text-muted', !on);
+				if (on) el.setAttribute('aria-current', 'true');
+				else el.removeAttribute('aria-current');
+			}
+		};
+
+		const onScroll = () => {
+			if (!frame) frame = requestAnimationFrame(sync);
+		};
+
+		addEventListener('scroll', onScroll, { passive: true });
+		addEventListener('resize', onScroll);
+		sync();
+	}
+</script>

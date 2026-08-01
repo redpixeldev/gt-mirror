@@ -3,13 +3,17 @@
 interface Props {
 	/** Emoji or glyph shown in the accent badge. */
 	symbol?: string;
+	margin?: string;
 }
 
-const { symbol = 'i' } = Astro.props;
+const { symbol = 'i', margin = 'mt-10' } = Astro.props;
 ---
 
 <aside
-	class='border-border border-l-accent bg-surface-2 mt-10 flex gap-4 rounded-sm border border-l-[3px] px-[22px] py-5'>
+	class:list={[
+		'border-border border-l-accent bg-surface-2 flex gap-4 rounded-sm border border-l-[3px] px-[22px] py-5',
+		margin,
+	]}>
 	<span
 		aria-hidden='true'
 		class='bg-accent font-ui text-on-accent grid size-[22px] flex-none place-items-center rounded-full text-[13px] font-bold'>

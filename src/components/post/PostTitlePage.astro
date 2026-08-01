@@ -1,0 +1,36 @@
+---
+import type { POST } from '../../data/post';
+
+/** A2 "title page" head: no cover image, the titling carries the page. */
+interface Props {
+	post: typeof POST;
+}
+
+const { post } = Astro.props;
+---
+
+<div class='border-border border-b'>
+	<div class='container pt-20 pb-14'>
+		<p class='font-meta text-meta text-accent tracking-[0.16em] uppercase'>{post.tag} · {post.date}</p>
+
+		<h1
+			class='font-display tracking-display mt-[26px] max-w-[24ch] text-[clamp(38px,6vw,76px)] leading-[1.02] font-medium text-balance'>
+			{post.title}
+		</h1>
+
+		<div class='border-border mt-9 grid grid-cols-[repeat(auto-fit,minmax(min(260px,100%),1fr))] gap-8 border-t pt-7'>
+			<p class='font-body text-muted max-w-[46ch] text-[21px] leading-[1.5] text-pretty'>{post.excerpt}</p>
+
+			<dl class='flex flex-wrap gap-10 self-start'>
+				<div>
+					<dt class='text-muted font-mono text-[10.5px] tracking-[0.1em] uppercase'>Written by</dt>
+					<dd class='font-ui mt-2 ml-0 text-[15px] font-semibold'>{post.author}</dd>
+				</div>
+				<div>
+					<dt class='text-muted font-mono text-[10.5px] tracking-[0.1em] uppercase'>Length</dt>
+					<dd class='font-ui mt-2 ml-0 text-[15px] font-semibold'>{post.read}</dd>
+				</div>
+			</dl>
+		</div>
+	</div>
+</div>

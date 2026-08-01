@@ -21,6 +21,8 @@ interface Props {
 	ariaLabel?: string;
 	/** Renders Subscribe as a link; omit for a plain button. */
 	subscribeHref?: string;
+	/** The post template's tighter bar: smaller wordmark, less padding, no search. */
+	compact?: boolean;
 }
 
 const {
@@ -35,6 +37,7 @@ const {
 	],
 	ariaLabel = variant === 'site' ? 'Primary' : 'Sample site navigation',
 	subscribeHref,
+	compact = false,
 } = Astro.props;
 
 const isSite = variant === 'site';
@@ -51,14 +54,14 @@ const Subscribe = subscribeHref ? 'a' : 'button';
 	<div
 		class:list={[
 			'flex flex-wrap items-center',
-			isSite ? 'container gap-x-[30px] gap-y-4 py-[22px]' : 'gap-x-7 gap-y-4 px-5 py-5 md:px-7',
+			isSite ? ['container gap-x-[30px] gap-y-4', compact ? 'py-5' : 'py-[22px]'] : 'gap-x-7 gap-y-4 px-5 py-5 md:px-7',
 			hasNote && 'border-border border-b',
 		]}>
 		<Title
 			href={titleHref}
 			class:list={[
 				'font-display tracking-display text-text no-underline',
-				isSite ? 'text-[26px] font-medium' : 'text-2xl font-semibold',
+				isSite ? [compact ? 'text-2xl' : 'text-[26px]', 'font-medium'] : 'text-2xl font-semibold',
 			]}>
 			{siteTitle}
 		</Title>
@@ -98,15 +101,19 @@ const Subscribe = subscribeHref ? 'a' : 'button';
 			)
 		}
 
-		<button
-			type='button'
-			aria-label='Search'
-			class:list={[
-				'btn border-border text-text hover:bg-surface-2 rounded-pill grid size-9 shrink-0 cursor-pointer place-items-center border bg-transparent font-mono',
-				isSite ? 'text-sm' : 'text-[13px]',
-			]}>
-			<span aria-hidden='true'>⌕</span>
-		</button>
+		{
+			!compact && (
+				<button
+					type='button'
+					aria-label='Search'
+					class:list={[
+						'btn border-border text-text hover:bg-surface-2 rounded-pill grid size-9 shrink-0 cursor-pointer place-items-center border bg-transparent font-mono',
+						isSite ? 'text-sm' : 'text-[13px]',
+					]}>
+					<span aria-hidden='true'>⌕</span>
+				</button>
+			)
+		}
 
 		<Subscribe
 			type={subscribeHref ? undefined : 'button'}

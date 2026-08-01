@@ -49,6 +49,8 @@
 	--mirror-ph-bg: #f3f1ed;
 	--mirror-ph-line: #e0dbd2;
 	--mirror-dot-inset: rgb(0 0 0 / 0.18);
+	/* Same colour as --mirror-bg at zero alpha, so the paywall fade has no grey cast. */
+	--mirror-fade-from: rgb(250 249 247 / 0);
 
 	--mirror-shadow-sm: 0 1px 2px rgb(28 25 23 / 0.05);
 	--mirror-shadow-md: 0 6px 20px -6px rgb(28 25 23 / 0.12);
@@ -79,6 +81,7 @@
 	--mirror-ph-bg: #201d19;
 	--mirror-ph-line: #2e2924;
 	--mirror-dot-inset: rgb(0 0 0 / 0.45);
+	--mirror-fade-from: rgb(18 16 14 / 0);
 
 	--mirror-shadow-sm: 0 1px 2px rgb(0 0 0 / 0.5);
 	--mirror-shadow-md: 0 8px 24px -8px rgb(0 0 0 / 0.6);
@@ -193,6 +196,11 @@
 /* Scrim over the hero photo — fixed in both themes, the art is always dark. */
 @utility hero-scrim {
 	background: linear-gradient(to top, rgb(12 10 9 / 0.86) 0%, rgb(12 10 9 / 0.55) 45%, rgb(12 10 9 / 0.15) 100%);
+}
+
+/* Paywall teaser: prose fades into the page background before the upgrade card. */
+@utility paywall-fade {
+	background: linear-gradient(to bottom, var(--mirror-fade-from) 18%, var(--mirror-bg));
 }
 
 /* Horizontal tag strip: scrollable, no visible scrollbar (source `.mr-strip`). */

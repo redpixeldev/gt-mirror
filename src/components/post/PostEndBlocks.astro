@@ -1,0 +1,90 @@
+---
+import type { ADJACENT, POST } from '../../data/post';
+
+/** Author bio and prev/next links — siblings of the article, not part of it. */
+interface Props {
+	post: typeof POST;
+	adjacent: typeof ADJACENT;
+	postCount?: string;
+	bio?: string;
+	/** A1/B2 show the adjacent post's title and date; A2/B1 show only the direction. */
+	detail?: boolean;
+}
+
+const {
+	post,
+	adjacent,
+	postCount = '27 posts',
+	bio = 'Interviews editor at The Quarry. Previously eleven years on a national culture desk.',
+	detail = true,
+} = Astro.props;
+
+// Without the detail block the cards shrink to label chips and sit at the row's ends.
+const adjacentCard = [
+	'btn border-border bg-surface text-text hover:border-accent rounded-md border no-underline',
+	detail ? 'p-[22px]' : 'px-[18px] py-[11px]',
+];
+const adjacentGrid = detail ? 'grid-cols-[repeat(auto-fit,minmax(min(240px,100%),1fr))]' : 'grid-cols-[auto_auto]';
+---
+
+<section
+	aria-labelledby='bio-head'
+	class='border-border bg-surface mt-14 flex flex-wrap gap-5 rounded-md border p-7'>
+	<span
+		aria-hidden='true'
+		class='bg-accent-soft font-ui text-accent-strong grid size-14 flex-none place-items-center rounded-full text-lg font-semibold'>
+		{post.initials}
+	</span>
+	<div class='min-w-0 flex-[1_1_260px]'>
+		<h2
+			id='bio-head'
+			class='font-display tracking-heading text-[21px] font-medium'>
+			{post.author}
+		</h2>
+		<p class='font-meta text-meta tracking-meta text-muted mt-2 uppercase'>{postCount}</p>
+		<p class='text-small text-muted mt-3 max-w-[52ch] leading-[1.6]'>{bio}</p>
+		<div class='mt-4 flex flex-wrap gap-2.5'>
+			<a
+				href='#post'
+				class='btn border-border font-ui text-text hover:bg-surface-2 rounded-sm border px-4 py-[9px] text-[13px] font-semibold no-underline'>
+				All posts
+			</a>
+			<a
+				href='#end-newsletter'
+				class='btn btn-primary font-ui rounded-sm px-4 py-[9px] text-[13px] font-semibold no-underline'>
+				Follow
+			</a>
+		</div>
+	</div>
+</section>
+
+<nav
+	aria-label='Adjacent posts'
+	class:list={['mt-5 grid justify-between gap-4', adjacentGrid]}>
+	<a
+		href='#post'
+		class:list={adjacentCard}>
+		<span class='text-muted font-mono text-[10.5px] tracking-[0.1em] uppercase'>← Previous</span>
+		{
+			detail && (
+				<div>
+					<p class='font-display tracking-heading mt-3 text-lg leading-[1.3] font-medium'>{adjacent.prev.title}</p>
+					<p class='font-meta text-meta tracking-meta text-muted mt-2.5 uppercase'>{adjacent.prev.meta}</p>
+				</div>
+			)
+		}
+	</a>
+	<a
+		href='#post'
+		class:list={[adjacentCard, 'text-right']}>
+		<span class='text-muted font-mono text-[10.5px] tracking-[0.1em] uppercase'>Next →</span>
+		{
+			detail && (
+				<div>
+					<p class='font-display tracking-heading mt-3 text-lg leading-[1.3] font-medium'>{adjacent.next.title}</p>
+					<p class='font-meta text-meta tracking-meta text-muted mt-2.5 uppercase'>{adjacent.next.meta}</p>
+				</div>
+			)
+		}
+	</a>
+</nav>

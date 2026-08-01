@@ -1,0 +1,24 @@
+---
+/** In-article photo with caption. */
+interface Props {
+	src: string;
+	alt: string;
+	caption: string;
+	/** Tailwind aspect utility, e.g. `aspect-[3/2]`. */
+	aspect?: string;
+	margin?: string;
+}
+
+const { src, alt, caption, aspect = 'aspect-[3/2]', margin = 'mt-11' } = Astro.props;
+---
+
+<figure class:list={['w-full', margin]}>
+	<img
+		src={src}
+		alt={alt}
+		loading='lazy'
+		decoding='async'
+		class:list={['border-border block w-full rounded-md border object-cover', aspect]}
+	/>
+	<figcaption class='font-ui text-small text-muted mt-3'>{caption}</figcaption>
+</figure>

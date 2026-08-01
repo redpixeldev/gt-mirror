@@ -1,0 +1,36 @@
+---
+/**
+ * Inline table of contents. A1 has no sticky rail, so the TOC sits above the
+ * article as an open disclosure. Hidden entirely when the post is paywalled —
+ * there are no sections to jump to.
+ */
+interface Props {
+	items: { id: string; label: string; href: string; num: string }[];
+}
+
+const { items } = Astro.props;
+---
+
+<details
+	open
+	class='border-border bg-surface mb-11 rounded-sm border'>
+	<summary
+		class='font-ui text-muted cursor-pointer px-[18px] py-3.5 text-[13px] font-semibold tracking-[0.06em] uppercase'>
+		On this page
+	</summary>
+	<ol class='m-0 flex list-none flex-col gap-2.5 px-[18px] pb-[18px]'>
+		{
+			items.map((item) => (
+				<li class='flex gap-3'>
+					<span class='text-muted font-mono text-[11px]'>{item.num}</span>
+					<a
+						href={item.href}
+						data-toc-link={item.id}
+						class='font-ui text-muted text-sm no-underline'>
+						{item.label}
+					</a>
+				</li>
+			))
+		}
+	</ol>
+</details>
