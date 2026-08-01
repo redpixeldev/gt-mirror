@@ -155,7 +155,7 @@ export const FOOTER_COLUMNS: FooterColumn[] = [
 	},
 ];
 
-export const SITE_TITLE = 'The Quarry';
+export const SITE_TITLE = 'Mirror';
 export const SITE_TAGLINE = 'Independent writing on media, craft, and the cost of attention.';
 
 /**

@@ -129,6 +129,22 @@ Light is the default. A `.dark` class on `<html>` is resolved before first paint
 `Layout.astro` (stored preference wins, otherwise `prefers-color-scheme`), and the Alpine `theme` store
 owns the toggle and its `localStorage` mirror.
 
+### Logo
+
+`Logo.astro` renders the site logo as an image linked to the homepage, sized by height so the artwork
+can be any width. It is used by the header (26px, 24px when compact, 22px on the auth pages) and the
+footer (22px).
+
+`public/img/logo.png` is the dark-ink artwork and `logo-dark.png` the light-ink one, swapped by the
+`.dark` class. Both are trimmed to the letterforms and share one crop, so they align exactly; the
+height utilities are therefore cap-height, not font-size (`h-[19px]` reads as the 26px wordmark it
+replaced). Replace either file at the same path. If your artwork reads on both backgrounds, pass
+`darkSrc={undefined}` and one file serves both.
+
+The site name lives in `SITE_TITLE` (`data/navigation.ts`) and feeds the logo's alt text, the footer
+wordmark and the © line. Body copy transcribed from the design source still says "The Quarry" — that is
+demo content, not chrome.
+
 ### Search
 
 The header's search button swaps the nav for a field in the same row, so the header never changes

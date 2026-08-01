@@ -1,0 +1,63 @@
+---
+import { ROUTES, SITE_TITLE } from '../data/navigation';
+
+/**
+ * The site logo, linked to the homepage.
+ *
+ * Sized by height so the artwork can be any width — replace `public/img/logo.png`
+ * and the header keeps its proportions. The files are trimmed to the letterforms,
+ * so the heights here are cap-height rather than font-size: `h-[19px]` reads as the
+ * 26px wordmark it replaced.
+ *
+ * `logo-dark.png` is the light-ink version, swapped in by `.dark`. If your artwork
+ * reads on both backgrounds, pass `darkSrc={undefined}` and one file serves both.
+ */
+interface Props {
+	/** Height utility — cap-height of the trimmed artwork, not the old font-size. */
+	height?: string;
+	src?: string;
+	darkSrc?: string;
+	alt?: string;
+	href?: string;
+	class?: string;
+}
+
+const {
+	height = 'h-[26px]',
+	src = '/img/logo.png',
+	darkSrc = '/img/logo-dark.png',
+	alt = SITE_TITLE,
+	href = ROUTES.home,
+	class: className,
+} = Astro.props;
+
+const imgClass = `${height} w-auto block`;
+---
+
+<a
+	href={href}
+	class:list={['inline-flex shrink-0 items-center no-underline', className]}>
+	{
+		darkSrc ? (
+			<>
+				<img
+					src={src}
+					alt={alt}
+					class:list={[imgClass, 'dark:hidden']}
+				/>
+				<img
+					src={darkSrc}
+					alt=''
+					aria-hidden='true'
+					class:list={[imgClass, 'hidden dark:block']}
+				/>
+			</>
+		) : (
+			<img
+				src={src}
+				alt={alt}
+				class={imgClass}
+			/>
+		)
+	}
+</a>

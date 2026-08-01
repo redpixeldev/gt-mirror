@@ -6,6 +6,7 @@
  * that names the layout it is showing.
  */
 import { FOOTER_COLUMNS, SITE_TAGLINE, SITE_TITLE, type FooterColumn } from '../data/navigation';
+import Logo from './Logo.astro';
 
 export type { FooterColumn, FooterLink } from '../data/navigation';
 
@@ -26,7 +27,7 @@ const {
 	siteTitle = SITE_TITLE,
 	tagline = SITE_TAGLINE,
 	columns = FOOTER_COLUMNS,
-	copyright = '© 2026 The Quarry · MIRROR theme',
+	copyright = `© 2026 ${SITE_TITLE} · MIRROR theme`,
 	variantLabel = 'Variant A — Editorial',
 	titleWeight = 'semibold',
 	class: className,
@@ -38,13 +39,7 @@ const {
 	class:list={['border-border bg-surface border-t', className]}>
 	<div class='container grid grid-cols-[repeat(auto-fit,minmax(min(190px,100%),1fr))] gap-9 py-14'>
 		<div>
-			<p
-				class:list={[
-					'font-display tracking-display text-[22px]',
-					titleWeight === 'medium' ? 'font-medium' : 'font-semibold',
-				]}>
-				{siteTitle}
-			</p>
+			<Logo height='h-4' />
 			<p class='font-ui text-muted mt-3 text-[13.5px] leading-[1.6]'>{tagline}</p>
 		</div>
 

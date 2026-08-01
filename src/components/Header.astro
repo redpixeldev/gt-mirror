@@ -14,6 +14,7 @@
 import { NAV, SITE_TITLE, SUBSCRIBE_HREF, type NavKey } from '../data/navigation';
 import NavDropdown from './NavDropdown.astro';
 import HeaderSearch from './HeaderSearch.astro';
+import Logo from './Logo.astro';
 
 export interface NavLink {
 	label: string;
@@ -64,7 +65,6 @@ const isSite = variant === 'site' || isAuth;
 const hasNote = Astro.slots.has('note');
 
 const Wrapper = isSite ? 'header' : 'nav';
-const Title = titleHref ? 'a' : 'span';
 const Subscribe = subscribeHref ? 'a' : 'button';
 
 const linkClass = 'font-ui text-[15px] no-underline';
@@ -88,18 +88,11 @@ const path = Astro.url.pathname.replace(/\.html$/, '').replace(/\/$/, '') || '/'
 					: 'gap-x-7 gap-y-4 px-5 py-5 md:px-7',
 			hasNote && 'border-border border-b',
 		]}>
-		<Title
-			href={titleHref}
-			class:list={[
-				'font-display tracking-display text-text no-underline',
-				isAuth
-					? 'mr-auto text-[22px] font-medium'
-					: isSite
-						? [compact ? 'text-2xl' : 'text-[26px]', 'font-medium']
-						: 'text-2xl font-semibold',
-			]}>
-			{siteTitle}
-		</Title>
+		<Logo
+			height={isAuth ? 'h-4' : compact ? 'h-[17px]' : 'h-[19px]'}
+			href={titleHref ?? undefined}
+			class={isAuth ? 'mr-auto' : undefined}
+		/>
 
 		{
 			isAuth ? (
