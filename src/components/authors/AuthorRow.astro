@@ -1,0 +1,59 @@
+---
+import type { Author } from '../../data/authors';
+
+/** A1 masthead row: round portrait, biography column, and the author's links. */
+interface Props {
+	author: Author;
+	href?: string;
+}
+
+const { author, href = '#authors' } = Astro.props;
+---
+
+<article class='border-border grid grid-cols-[96px_1fr_auto] items-start gap-9 border-b py-10'>
+	<img
+		src={author.portrait}
+		alt={`Portrait of ${author.name}`}
+		width='96'
+		height='96'
+		loading='lazy'
+		decoding='async'
+		class='border-border block h-24 w-24 rounded-full border object-cover object-[50%_22%]'
+	/>
+
+	<div>
+		<h2 class='font-display tracking-heading text-[32px] leading-[1.14] font-medium'>
+			<a
+				href={href}
+				class='text-text no-underline'>
+				{author.name}
+			</a>
+		</h2>
+
+		<p class='font-meta text-meta tracking-meta text-muted mt-2.5 uppercase'>{author.countLabel} · {author.location}</p>
+
+		<p class='text-body text-muted mt-3.5 max-w-[60ch] leading-[1.62] text-pretty'>{author.bio}</p>
+
+		<p class='font-meta text-meta tracking-meta text-muted mt-4 uppercase'>
+			{/* The post title keeps its underline here — the source leaves this one link underlined. */}
+			Latest — <a
+				href={href}
+				class='text-text underline'
+				>{author.latest}</a
+			>
+		</p>
+	</div>
+
+	<div class='flex flex-col items-end gap-2'>
+		<a
+			href={href}
+			class='border-border text-text font-ui rounded-sm border px-3.5 py-2 text-[13px] font-semibold whitespace-nowrap no-underline'>
+			{author.website}
+		</a>
+		<a
+			href={href}
+			class='text-muted font-mono text-xs whitespace-nowrap no-underline'>
+			{author.social}
+		</a>
+	</div>
+</article>

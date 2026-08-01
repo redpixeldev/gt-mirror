@@ -1,7 +1,8 @@
 ---
 import type { TagArchivePost } from '../../data/tagArchive';
+import PostGridCard from '../PostGridCard.astro';
 
-/** A2 tag archive card: 4:3 image above the date, headline, excerpt and byline. */
+/** A2 tag archive card: the date leads, the author signs off. */
 interface Props {
 	post: TagArchivePost;
 	href?: string;
@@ -10,31 +11,14 @@ interface Props {
 const { post, href = '#posts' } = Astro.props;
 ---
 
-<article>
-	<a
-		href={href}
-		class='text-text block no-underline'>
-		<img
-			src={post.img}
-			alt={post.alt}
-			loading='lazy'
-			decoding='async'
-			class='border-border block aspect-[4/3] w-full rounded-md border object-cover'
-		/>
-
-		<div class='mt-[18px] flex items-center gap-2.5'>
-			<span class='font-meta text-meta tracking-meta text-muted uppercase'>{post.date}</span>
-			{
-				post.locked && (
-					<span class='border-border text-muted rounded-pill border px-2 py-[3px] font-mono text-[10.5px] tracking-[0.06em] uppercase'>
-						{post.tier}
-					</span>
-				)
-			}
-		</div>
-
-		<h2 class='font-display tracking-heading mt-2.5 text-2xl leading-[1.22] font-medium text-balance'>{post.title}</h2>
-		<p class='text-small text-muted mt-3 leading-[1.58]'>{post.excerpt}</p>
-		<p class='font-meta text-meta tracking-meta text-muted mt-3.5 uppercase'>{post.author} · {post.read}</p>
-	</a>
-</article>
+<PostGridCard
+	title={post.title}
+	excerpt={post.excerpt}
+	img={post.img}
+	alt={post.alt}
+	eyebrow={post.date}
+	byline={`${post.author} · ${post.read}`}
+	locked={post.locked}
+	tier={post.tier}
+	href={href}
+/>

@@ -1,0 +1,60 @@
+---
+import type { Author } from '../../data/authors';
+
+/**
+ * A2 masthead card: portrait, name and bio in a bordered panel, with the latest
+ * post ruled off above the author's links.
+ *
+ * Not to be confused with `cards/AuthorCard.astro`, which is the Koenig author
+ * byline card from the styleguide.
+ */
+interface Props {
+	author: Author;
+	href?: string;
+}
+
+const { author, href = '#authors' } = Astro.props;
+---
+
+<article class='border-border bg-surface overflow-hidden rounded-md border'>
+	<div class='p-7'>
+		<img
+			src={author.portrait}
+			alt={`Portrait of ${author.name}`}
+			width='96'
+			height='96'
+			loading='lazy'
+			decoding='async'
+			class='border-border block h-24 w-24 rounded-full border object-cover object-[50%_22%]'
+		/>
+
+		<h2 class='font-display tracking-heading mt-5 text-[25px] leading-[1.16] font-medium'>
+			<a
+				href={href}
+				class='text-text no-underline'>
+				{author.name}
+			</a>
+		</h2>
+
+		<p class='font-meta text-meta tracking-meta text-muted mt-2 uppercase'>{author.countLabel} · {author.location}</p>
+
+		<p class='text-small text-muted mt-3 leading-[1.6] text-pretty'>{author.bio}</p>
+
+		<p class='font-meta text-meta tracking-meta text-muted border-border mt-3.5 border-t pt-3.5 uppercase'>
+			Latest — {author.latest}
+		</p>
+
+		<div class='mt-4 flex flex-wrap gap-2.5'>
+			<a
+				href={href}
+				class='border-border text-text font-ui rounded-sm border px-3.5 py-2 text-[13px] font-semibold no-underline'>
+				{author.website}
+			</a>
+			<a
+				href={href}
+				class='border-border text-muted rounded-sm border px-3 py-2 font-mono text-xs no-underline'>
+				{author.social}
+			</a>
+		</div>
+	</div>
+</article>

@@ -1,0 +1,48 @@
+---
+/** A2 author rail: a sticky column of portrait, name, meta, bio and links. */
+interface Props {
+	name: string;
+	countLabel: string;
+	location: string;
+	bio: string;
+	portrait: string;
+	website: string;
+	social: string;
+	href?: string;
+	headingId?: string;
+}
+
+const { name, countLabel, location, bio, portrait, website, social, href = '#author-top' } = Astro.props;
+---
+
+<aside
+	aria-label='About the author'
+	class='sticky top-[120px]'>
+	<img
+		src={portrait}
+		alt={`Portrait of ${name}`}
+		width='112'
+		height='112'
+		decoding='async'
+		class='border-border block h-28 w-28 rounded-full border object-cover object-[50%_22%]'
+	/>
+
+	<h1 class='font-display tracking-display mt-[22px] text-[34px] leading-[1.08] font-medium'>{name}</h1>
+
+	<p class='font-meta text-meta tracking-meta text-muted mt-3 uppercase'>{countLabel} · {location}</p>
+
+	<p class='text-small text-muted mt-4 leading-[1.68] text-pretty'>{bio}</p>
+
+	<div class='border-border mt-5 flex flex-col gap-[9px] border-t pt-[18px]'>
+		<a
+			href={href}
+			class='font-ui text-text text-[13.5px] no-underline'>
+			{website}
+		</a>
+		<a
+			href={href}
+			class='text-muted font-mono text-[12.5px] no-underline'>
+			{social}
+		</a>
+	</div>
+</aside>

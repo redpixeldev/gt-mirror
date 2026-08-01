@@ -1,0 +1,96 @@
+---
+import Footer from '@components/Footer.astro';
+import Header from '@components/Header.astro';
+import ThemeToggle from '@components/ThemeToggle.astro';
+import AuthorPostList from '@components/authors/AuthorPostList.astro';
+import AuthorProfileHeader from '@components/authors/AuthorProfileHeader.astro';
+import PaginationNav from '@components/cards/PaginationNav.astro';
+import NewsletterBanner from '@components/home/NewsletterBanner.astro';
+import Layout from '@layouts/Layout.astro';
+import { AUTHOR, AUTHOR_PAGE_ONE } from '../data/authorArchive';
+
+const navLinks = [
+	{ label: 'Home', href: '#author-top' },
+	{ label: 'Archive', href: '#author-top' },
+	{ label: 'Tags', href: '#author-top' },
+	{ label: 'Authors', href: '#author-top', current: true },
+];
+
+const footerColumns = [
+	{
+		title: 'Sections',
+		ariaLabel: 'Sections',
+		links: [
+			{ label: 'Archive', href: '#author-top' },
+			{ label: 'Tags', href: '#author-top' },
+			{ label: 'Interviews', href: '#author-top' },
+		],
+	},
+	{
+		title: 'More',
+		ariaLabel: 'More',
+		links: [
+			{ label: 'Authors', href: '#author-top' },
+			{ label: 'Membership', href: '#au-cta' },
+			{ label: 'RSS', href: '#author-top' },
+		],
+	},
+];
+---
+
+<Layout
+	title={`${AUTHOR.name} — The Quarry`}
+	description={`${AUTHOR.countLabel} by ${AUTHOR.name}, interviews editor at The Quarry.`}
+	contentWidth='1320px'>
+	<ThemeToggle />
+
+	<Header
+		variant='site'
+		compact
+		titleHref='#author-top'
+		links={navLinks}
+		subscribeHref='#au-cta'
+	/>
+
+	<main id='author-top'>
+		<AuthorProfileHeader
+			name={AUTHOR.name}
+			countLabel={AUTHOR.countLabel}
+			location={AUTHOR.location}
+			bio={AUTHOR.bio}
+			portrait={AUTHOR.portrait}
+			website={AUTHOR.website}
+			social={AUTHOR.social}
+		/>
+
+		<AuthorPostList posts={AUTHOR_PAGE_ONE} />
+
+		<section
+			aria-label='Pagination'
+			class='container pt-13'>
+			<PaginationNav
+				pages={[1, 2, 3]}
+				current={1}
+				href='#posts'
+				framed={false}
+				size='md'
+			/>
+		</section>
+
+		<NewsletterBanner
+			id='au-cta'
+			headingId='cta-head'
+			inputId='a1-email'
+			title={`Get ${AUTHOR.first}'s next piece by email`}
+			titleWidth='max-w-[26ch]'
+			padding='pt-20'
+		/>
+	</main>
+
+	<Footer
+		columns={footerColumns}
+		variantLabel='Variant A1 · centered header'
+		titleWeight='medium'
+		class='mt-24'
+	/>
+</Layout>

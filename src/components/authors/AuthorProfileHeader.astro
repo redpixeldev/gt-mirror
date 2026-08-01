@@ -1,0 +1,80 @@
+---
+/** A1 author header: a centred column of portrait, name, meta, italic bio and links. */
+interface Props {
+	name: string;
+	countLabel: string;
+	location: string;
+	bio: string;
+	portrait: string;
+	website: string;
+	social: string;
+	backHref?: string;
+	href?: string;
+	headingId?: string;
+}
+
+const {
+	name,
+	countLabel,
+	location,
+	bio,
+	portrait,
+	website,
+	social,
+	backHref = '#author-top',
+	href = '#author-top',
+	headingId = 'a1-name',
+} = Astro.props;
+
+const linkClass =
+	'border-border text-text font-ui rounded-sm border px-[18px] py-2.5 text-[13.5px] font-semibold no-underline';
+---
+
+<section
+	aria-labelledby={headingId}
+	style='--container-max:1120px'
+	class='container pt-16 pb-16 text-center'>
+	<nav
+		aria-label='Breadcrumb'
+		class='text-muted font-mono text-[11px] tracking-[0.1em] uppercase'>
+		<a
+			href={backHref}
+			class='text-muted hover:text-accent no-underline'>
+			← All authors
+		</a>
+	</nav>
+
+	<img
+		src={portrait}
+		alt={`Portrait of ${name}`}
+		width='132'
+		height='132'
+		decoding='async'
+		class='border-border mx-auto mt-9 block h-[132px] w-[132px] rounded-full border object-cover object-[50%_22%]'
+	/>
+
+	<h1
+		id={headingId}
+		class='font-display tracking-display mt-[26px] text-[clamp(34px,4.6vw,56px)] leading-[1.06] font-medium'>
+		{name}
+	</h1>
+
+	<p class='font-meta text-meta text-muted mt-3.5 tracking-[0.14em] uppercase'>{countLabel} · {location}</p>
+
+	<p class='font-body text-muted mx-auto mt-[22px] max-w-[60ch] text-[20px] leading-[1.55] text-pretty italic'>
+		{bio}
+	</p>
+
+	<div class='mt-7 flex flex-wrap justify-center gap-3'>
+		<a
+			href={href}
+			class={linkClass}>
+			{website}
+		</a>
+		<a
+			href={href}
+			class={linkClass}>
+			{social}
+		</a>
+	</div>
+</section>

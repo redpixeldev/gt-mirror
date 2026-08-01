@@ -1,0 +1,110 @@
+---
+import Footer from '@components/Footer.astro';
+import Header from '@components/Header.astro';
+import ThemeToggle from '@components/ThemeToggle.astro';
+import AuthorPostGrid from '@components/authors/AuthorPostGrid.astro';
+import AuthorRail from '@components/authors/AuthorRail.astro';
+import PaginationNav from '@components/cards/PaginationNav.astro';
+import NewsletterBanner from '@components/home/NewsletterBanner.astro';
+import Layout from '@layouts/Layout.astro';
+import { AUTHOR, AUTHOR_PAGE_ONE } from '../data/authorArchive';
+
+const navLinks = [
+	{ label: 'Home', href: '#author-top' },
+	{ label: 'Archive', href: '#author-top' },
+	{ label: 'Tags', href: '#author-top' },
+	{ label: 'Authors', href: '#author-top', current: true },
+];
+
+const footerColumns = [
+	{
+		title: 'Sections',
+		ariaLabel: 'Sections',
+		links: [
+			{ label: 'Archive', href: '#author-top' },
+			{ label: 'Tags', href: '#author-top' },
+			{ label: 'Interviews', href: '#author-top' },
+		],
+	},
+	{
+		title: 'More',
+		ariaLabel: 'More',
+		links: [
+			{ label: 'Authors', href: '#author-top' },
+			{ label: 'Membership', href: '#au-cta' },
+			{ label: 'RSS', href: '#author-top' },
+		],
+	},
+];
+---
+
+<Layout
+	title={`${AUTHOR.name} — The Quarry`}
+	description={`${AUTHOR.countLabel} by ${AUTHOR.name}, interviews editor at The Quarry.`}
+	contentWidth='1320px'>
+	<ThemeToggle />
+
+	<Header
+		variant='site'
+		compact
+		titleHref='#author-top'
+		links={navLinks}
+		subscribeHref='#au-cta'
+	/>
+
+	<main id='author-top'>
+		<div class='container pt-14'>
+			<nav
+				aria-label='Breadcrumb'
+				class='text-muted mb-8 font-mono text-[11px] tracking-[0.1em] uppercase'>
+				<a
+					href='#author-top'
+					class='text-muted hover:text-accent no-underline'>
+					← All authors
+				</a>
+			</nav>
+
+			<div class='grid grid-cols-[280px_minmax(0,1fr)] items-start gap-18'>
+				<AuthorRail
+					name={AUTHOR.name}
+					countLabel={AUTHOR.countLabel}
+					location={AUTHOR.location}
+					bio={AUTHOR.bio}
+					portrait={AUTHOR.portrait}
+					website={AUTHOR.website}
+					social={AUTHOR.social}
+				/>
+
+				<AuthorPostGrid posts={AUTHOR_PAGE_ONE} />
+			</div>
+		</div>
+
+		<section
+			aria-label='Pagination'
+			class='container pt-13'>
+			<PaginationNav
+				pages={[1, 2, 3]}
+				current={1}
+				href='#posts'
+				framed={false}
+				size='md'
+			/>
+		</section>
+
+		<NewsletterBanner
+			id='au-cta'
+			headingId='cta-head'
+			inputId='a1-email'
+			title={`Get ${AUTHOR.first}'s next piece by email`}
+			titleWidth='max-w-[26ch]'
+			padding='pt-20'
+		/>
+	</main>
+
+	<Footer
+		columns={footerColumns}
+		variantLabel='Variant A2 · sticky author rail'
+		titleWeight='medium'
+		class='mt-24'
+	/>
+</Layout>

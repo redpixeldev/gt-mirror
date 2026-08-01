@@ -1,0 +1,76 @@
+---
+import Footer from '@components/Footer.astro';
+import Header from '@components/Header.astro';
+import ThemeToggle from '@components/ThemeToggle.astro';
+import AuthorGrid from '@components/authors/AuthorGrid.astro';
+import AuthorsIntro from '@components/authors/AuthorsIntro.astro';
+import NewsletterBanner from '@components/home/NewsletterBanner.astro';
+import Layout from '@layouts/Layout.astro';
+import { AUTHOR_TOTAL, MASTHEAD } from '../data/authors';
+
+const navLinks = [
+	{ label: 'Home', href: '#authors' },
+	{ label: 'Archive', href: '#authors' },
+	{ label: 'Tags', href: '#authors' },
+	{ label: 'Authors', href: '#authors', current: true },
+];
+
+const footerColumns = [
+	{
+		title: 'Sections',
+		ariaLabel: 'Sections',
+		links: [
+			{ label: 'Archive', href: '#authors' },
+			{ label: 'Tags', href: '#authors' },
+			{ label: 'Interviews', href: '#authors' },
+		],
+	},
+	{
+		title: 'More',
+		ariaLabel: 'More',
+		links: [
+			{ label: 'Authors', href: '#authors' },
+			{ label: 'Membership', href: '#au-cta' },
+			{ label: 'RSS', href: '#authors' },
+		],
+	},
+];
+
+const intro = `${AUTHOR_TOTAL} people write here. Between them they have filed 104 pieces since 2020.`;
+---
+
+<Layout
+	title='Writers — The Quarry'
+	description={intro}
+	contentWidth='1320px'>
+	<ThemeToggle />
+
+	<Header
+		variant='site'
+		compact
+		titleHref='#authors'
+		links={navLinks}
+		subscribeHref='#au-cta'
+	/>
+
+	<main>
+		<AuthorsIntro description={intro} />
+
+		<AuthorGrid authors={MASTHEAD} />
+
+		<NewsletterBanner
+			id='au-cta'
+			headingId='cta-head'
+			inputId='au-email'
+			title={`Read all ${AUTHOR_TOTAL} writers, every Thursday`}
+			padding='pt-20'
+		/>
+	</main>
+
+	<Footer
+		columns={footerColumns}
+		variantLabel='Variant A2 · cover cards'
+		titleWeight='medium'
+		class='mt-24'
+	/>
+</Layout>

@@ -1,0 +1,38 @@
+---
+import type { AuthorPost } from '../../data/authorArchive';
+import PostGridCard from '../PostGridCard.astro';
+
+/** A2 author archive: the writer's posts as cards beside the rail. */
+interface Props {
+	posts: AuthorPost[];
+	href?: string;
+}
+
+const { posts, href = '#posts' } = Astro.props;
+---
+
+<section
+	id='posts'
+	aria-label='Posts'>
+	<div class='grid grid-cols-[repeat(auto-fill,minmax(min(280px,100%),1fr))] gap-x-8 gap-y-11'>
+		{
+			posts.map((post) => (
+				<PostGridCard
+					title={post.title}
+					excerpt={post.excerpt}
+					img={post.img}
+					alt={post.alt}
+					eyebrow={post.tag}
+					eyebrowTone='accent'
+					byline={post.meta}
+					locked={post.locked}
+					tier={post.tier}
+					eyebrowSpacing='mt-4'
+					titleClass='text-[22px]'
+					excerptSpacing='mt-2.5'
+					href={href}
+				/>
+			))
+		}
+	</div>
+</section>

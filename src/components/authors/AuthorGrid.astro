@@ -1,0 +1,28 @@
+---
+import type { Author } from '../../data/authors';
+import AuthorProfileCard from './AuthorProfileCard.astro';
+
+/** A2 masthead: a profile card per writer in a fluid grid. */
+interface Props {
+	authors: Author[];
+	href?: string;
+}
+
+const { authors, href = '#authors' } = Astro.props;
+---
+
+<section
+	id='authors'
+	aria-label='Writers'
+	class='border-border container border-t pt-16'>
+	<div class='grid grid-cols-[repeat(auto-fill,minmax(min(340px,100%),1fr))] gap-x-9 gap-y-12'>
+		{
+			authors.map((author) => (
+				<AuthorProfileCard
+					author={author}
+					href={href}
+				/>
+			))
+		}
+	</div>
+</section>

@@ -1,0 +1,84 @@
+---
+/**
+ * A 4:3 archive card: image over an eyebrow, headline, excerpt and meta line.
+ *
+ * Shared by the tag archive and the author archive, which differ only in what the
+ * eyebrow says and by a couple of pixels of type size and spacing.
+ */
+interface Props {
+	title: string;
+	excerpt: string;
+	img: string;
+	alt: string;
+	/** Leading meta word — a date on the tag archive, a tag on the author archive. */
+	eyebrow: string;
+	/** The tag archive greys its eyebrow; the author archive sets it in the accent. */
+	eyebrowTone?: 'muted' | 'accent';
+	/** Trailing meta line. */
+	byline: string;
+	locked?: boolean;
+	tier?: string;
+	/** Space above the eyebrow row — 18px on the tag archive, 16px on the author archive. */
+	eyebrowSpacing?: string;
+	/** Headline size utilities — 24px on the tag archive, 22px on the author archive. */
+	titleClass?: string;
+	/** Space above the excerpt — 12px on the tag archive, 10px on the author archive. */
+	excerptSpacing?: string;
+	href?: string;
+}
+
+const {
+	title,
+	excerpt,
+	img,
+	alt,
+	eyebrow,
+	eyebrowTone = 'muted',
+	byline,
+	locked = false,
+	tier,
+	eyebrowSpacing = 'mt-[18px]',
+	titleClass = 'text-2xl',
+	excerptSpacing = 'mt-3',
+	href = '#posts',
+} = Astro.props;
+---
+
+<article>
+	<a
+		href={href}
+		class='text-text block no-underline'>
+		<img
+			src={img}
+			alt={alt}
+			loading='lazy'
+			decoding='async'
+			class='border-border block aspect-[4/3] w-full rounded-md border object-cover'
+		/>
+
+		<div class:list={['flex items-center gap-2.5', eyebrowSpacing]}>
+			<span
+				class:list={[
+					'font-meta text-meta tracking-meta uppercase',
+					eyebrowTone === 'accent' ? 'text-accent' : 'text-muted',
+				]}>
+				{eyebrow}
+			</span>
+			{
+				locked && (
+					<span class='border-border text-muted rounded-pill border px-2 py-[3px] font-mono text-[10.5px] tracking-[0.06em] uppercase'>
+						{tier}
+					</span>
+				)
+			}
+		</div>
+
+		<h2 class:list={['font-display tracking-heading mt-2.5 leading-[1.22] font-medium text-balance', titleClass]}>
+			{title}
+		</h2>
+
+		<p class:list={['text-small text-muted leading-[1.58]', excerptSpacing]}>{excerpt}</p>
+
+		<p class='font-meta text-meta tracking-meta text-muted mt-3.5 uppercase'>{byline}</p>
+	</a>
+</article>

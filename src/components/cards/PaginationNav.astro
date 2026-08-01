@@ -33,7 +33,11 @@ const stepClass =
 		href={href}
 		aria-label='Previous page'
 		class:list={[stepClass, 'text-muted hover:bg-surface-2']}>
-		<span aria-hidden='true'>←</span>
+		<span
+			aria-hidden='true'
+			class='font-[system-ui,sans-serif]'>
+			←
+		</span>
 	</a>
 
 	{
@@ -64,6 +68,10 @@ const stepClass =
 		href={href}
 		aria-label='Next page'
 		class:list={[stepClass, 'text-text hover:bg-surface-2']}>
-		<span aria-hidden='true'>→</span>
+		<span
+			aria-hidden='true'
+			class='font-[system-ui,sans-serif]'>
+			→
+		</span>
 	</a>
 </nav>

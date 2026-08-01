@@ -1,0 +1,37 @@
+---
+import type { AuthorPost } from '../../data/authorArchive';
+import PostListRow from '../PostListRow.astro';
+
+/** A1 author archive: the writer's posts as compact rows, tag first. */
+interface Props {
+	posts: AuthorPost[];
+	href?: string;
+}
+
+const { posts, href = '#posts' } = Astro.props;
+---
+
+<section
+	id='posts'
+	aria-label='Posts'
+	style='--container-max:1120px'
+	class='border-border container border-t'>
+	{
+		posts.map((post) => (
+			<PostListRow
+				title={post.title}
+				excerpt={post.excerpt}
+				img={post.img}
+				alt={post.alt}
+				eyebrow={post.tag}
+				eyebrowTone='accent'
+				byline={post.meta}
+				locked={post.locked}
+				tier={post.tier}
+				titleClass='text-[25px] leading-[1.2]'
+				padding='py-[30px]'
+				href={href}
+			/>
+		))
+	}
+</section>

@@ -1,0 +1,83 @@
+---
+/**
+ * A compact archive row: text against a small fixed-size thumbnail.
+ *
+ * Shared by the tag archive and the author archive, which differ only in what
+ * the eyebrow and byline say and by a couple of pixels of type size and padding.
+ */
+interface Props {
+	title: string;
+	excerpt: string;
+	img: string;
+	alt: string;
+	/** Leading meta word — a date on the tag archive, a tag on the author archive. */
+	eyebrow: string;
+	/** The tag archive greys its eyebrow; the author archive sets it in the accent. */
+	eyebrowTone?: 'muted' | 'accent';
+	/** Trailing meta line: "Marisol Ade · 12 min read", "09 Mar 2026 · 12 min read". */
+	byline: string;
+	locked?: boolean;
+	tier?: string;
+	/** Headline size utilities — 26px on the tag archive, 25px on the author archive. */
+	titleClass?: string;
+	/** Row padding — 32px on the tag archive, 30px on the author archive. */
+	padding?: string;
+	href?: string;
+}
+
+const {
+	title,
+	excerpt,
+	img,
+	alt,
+	eyebrow,
+	eyebrowTone = 'muted',
+	byline,
+	locked = false,
+	tier,
+	titleClass = 'text-[26px] leading-[1.2]',
+	padding = 'py-8',
+	href = '#posts',
+} = Astro.props;
+---
+
+<article class='border-border border-b'>
+	<a
+		href={href}
+		class:list={['text-text grid grid-cols-[1fr_132px] items-start gap-8 no-underline', padding]}>
+		<div>
+			<div class='flex items-center gap-2.5'>
+				<span
+					class:list={[
+						'font-meta text-meta tracking-meta uppercase',
+						eyebrowTone === 'accent' ? 'text-accent' : 'text-muted',
+					]}>
+					{eyebrow}
+				</span>
+				{
+					locked && (
+						<span class='border-border text-muted rounded-pill border px-2 py-[3px] font-mono text-[10.5px] tracking-[0.06em] uppercase'>
+							{tier}
+						</span>
+					)
+				}
+			</div>
+
+			<h2 class:list={['font-display tracking-heading mt-2.5 font-medium', titleClass]}>{title}</h2>
+
+			<p class='text-small text-muted mt-2.5 max-w-[64ch] leading-[1.6] text-pretty'>{excerpt}</p>
+
+			<p class='font-meta text-meta tracking-meta text-muted mt-3 uppercase'>{byline}</p>
+		</div>
+
+		<img
+			src={img}
+			alt={alt}
+			width='132'
+			height='99'
+			loading='lazy'
+			decoding='async'
+			class='border-border block h-[99px] w-[132px] rounded-sm border object-cover'
+		/>
+	</a>
+</article>

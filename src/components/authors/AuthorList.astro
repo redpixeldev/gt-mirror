@@ -1,0 +1,27 @@
+---
+import type { Author } from '../../data/authors';
+import AuthorRow from './AuthorRow.astro';
+
+/** A1 masthead: one full-width editorial row per writer. */
+interface Props {
+	authors: Author[];
+	href?: string;
+}
+
+const { authors, href = '#authors' } = Astro.props;
+---
+
+<section
+	id='authors'
+	aria-label='Writers'
+	style='--container-max:1120px'
+	class='border-border container border-t pt-16'>
+	{
+		authors.map((author) => (
+			<AuthorRow
+				author={author}
+				href={href}
+			/>
+		))
+	}
+</section>
