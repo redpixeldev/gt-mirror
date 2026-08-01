@@ -1,0 +1,38 @@
+---
+import type { TagArchivePost } from '../../data/tagArchive';
+import TagLeadArticle from './TagLeadArticle.astro';
+import TagPostRow from './TagPostRow.astro';
+
+/** A1 tag archive: the newest post as a lead, the rest as compact rows. */
+interface Props {
+	posts: TagArchivePost[];
+	/** Tag name, used in the lead's eyebrow. */
+	tagName: string;
+	href?: string;
+}
+
+const { posts, tagName, href = '#posts' } = Astro.props;
+
+const [lead, ...rest] = posts;
+---
+
+<section
+	id='posts'
+	aria-label='Posts'
+	style='--container-max:1120px'
+	class='container pt-2'>
+	<TagLeadArticle
+		post={lead}
+		eyebrow={`Latest in ${tagName}`}
+		href={href}
+	/>
+
+	{
+		rest.map((post) => (
+			<TagPostRow
+				post={post}
+				href={href}
+			/>
+		))
+	}
+</section>

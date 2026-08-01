@@ -1,0 +1,58 @@
+---
+import NotFoundShell from '@components/NotFoundShell.astro';
+import Layout from '@layouts/Layout.astro';
+---
+
+<Layout
+	title='Page not found — The Quarry'
+	description="It isn't in the archive. Either it moved, or the link was mistyped."
+	contentWidth='1320px'>
+	<NotFoundShell variantLabel='Variant A2 · editorial split'>
+		{/* Only the message column narrows to 1120px; the header and footer stay page-width. */}
+		<section
+			style='--container-max:1120px'
+			aria-labelledby='a2-404'
+			class='container w-full py-28'>
+			<p class='font-meta text-meta text-accent tracking-[0.16em] uppercase'>Error 404</p>
+
+			<h1
+				id='a2-404'
+				class='font-display tracking-display mt-[26px] max-w-[20ch] text-[clamp(38px,5.6vw,68px)] leading-[1.03] font-medium text-balance'>
+				We can't find that page
+			</h1>
+
+			<div
+				class='border-border mt-10 grid grid-cols-[repeat(auto-fit,minmax(min(280px,100%),1fr))] gap-11 border-t pt-8'>
+				<p class='font-body text-muted max-w-[44ch] text-[21px] leading-[1.5] text-pretty italic'>
+					It isn't in the archive. Either it moved, or the link was mistyped — but the newsletter still arrives every
+					Thursday.
+				</p>
+
+				<form
+					id='cta'
+					class='flex flex-col gap-3 self-start'>
+					<label
+						for='e-a2'
+						class='font-ui text-[13px] font-semibold'>
+						Subscribe to The Quarry
+					</label>
+					<div class='flex flex-wrap gap-2.5'>
+						<input
+							id='e-a2'
+							type='email'
+							placeholder='you@publication.com'
+							autocomplete='email'
+							class='border-border bg-surface font-ui text-text min-w-0 flex-[1_1_200px] rounded-sm border px-[15px] py-[13px] text-[15px]'
+						/>
+						<button
+							type='submit'
+							class='btn btn-primary font-ui cursor-pointer rounded-sm px-6 py-[13px] text-[15px] font-semibold'>
+							Subscribe
+						</button>
+					</div>
+					<p class='font-ui text-muted text-[12.5px]'>Free members get the archive. Unsubscribe anytime.</p>
+				</form>
+			</div>
+		</section>
+	</NotFoundShell>
+</Layout>

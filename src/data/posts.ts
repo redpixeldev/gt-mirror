@@ -191,7 +191,7 @@ export const POSTS: Post[] = [
  * Deliberately not the design source's wording: the source ships "Members"/"Paid",
  * this theme uses "Pro"/"Basic".
  */
-const TIER: Record<Visibility, string> = { public: '', members: 'Pro', paid: 'Basic' };
+export const TIER_LABELS: Record<Visibility, string> = { public: '', members: 'Pro', paid: 'Basic' };
 
 export interface DecoratedPost extends Post {
 	/** "12 Mar 2026 · 7 min read" */
@@ -209,7 +209,7 @@ export const decorate = (p: Post, i: number): DecoratedPost => ({
 	meta: `${p.date} · ${p.read}`,
 	metaFull: `${p.author} · ${p.date} · ${p.read}`,
 	locked: p.visibility !== 'public',
-	tier: TIER[p.visibility],
+	tier: TIER_LABELS[p.visibility],
 	num: String(i + 1).padStart(2, '0'),
 });
 

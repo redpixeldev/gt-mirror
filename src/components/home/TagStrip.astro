@@ -3,30 +3,61 @@
  * "Browse by tag" — a horizontally scrollable pill strip.
  *
  * `sm` is the A1 sizing, tucked to the right of the section heading; `md` is the
- * A2 sizing, a full-width row that also shows each tag's post count.
+ * A2 sizing, a full-width row that also shows each tag's post count; `lg` is the
+ * tag archive's, where `layout='stacked'` puts the label on its own line above.
  */
 interface Props {
 	tags: { name: string; count?: number }[];
 	label?: string;
 	href?: string;
-	size?: 'sm' | 'md';
+	size?: 'sm' | 'md' | 'lg';
 	showCounts?: boolean;
+	/** `inline` sits the label beside the strip, `stacked` above it. */
+	layout?: 'inline' | 'stacked';
+	/** Renders the label as a heading with this id, so a section can be labelled by it. */
+	headingId?: string;
 }
 
-const { tags, label = 'Browse by tag', href = '#latest', size = 'sm', showCounts = false } = Astro.props;
+const {
+	tags,
+	label = 'Browse by tag',
+	href = '#latest',
+	size = 'sm',
+	showCounts = false,
+	layout = 'inline',
+	headingId,
+} = Astro.props;
 
-const isSm = size === 'sm';
-const wrapper = isSm
-	? 'ml-auto flex min-w-0 flex-[0_1_auto] items-center gap-3.5'
-	: 'flex flex-wrap items-center gap-[18px]';
-const stripGap = isSm ? 'gap-2' : 'gap-[9px]';
-const pill = isSm ? 'px-[13px] py-[7px] text-xs' : 'px-[15px] py-2 text-[12.5px]';
+const stacked = layout === 'stacked';
+const wrapper = stacked
+	? ''
+	: size === 'sm'
+		? 'ml-auto flex min-w-0 flex-[0_1_auto] items-center gap-3.5'
+		: 'flex flex-wrap items-center gap-[18px]';
+const labelClass = stacked
+	? 'font-ui text-muted mb-[18px] text-xs font-semibold tracking-[0.16em] uppercase'
+	: 'font-ui text-muted text-[11.5px] font-semibold tracking-[0.16em] whitespace-nowrap uppercase';
+const stripGap = size === 'sm' ? 'gap-2' : size === 'md' ? 'gap-[9px]' : 'gap-2.5';
+const pill =
+	size === 'sm'
+		? 'px-[13px] py-[7px] text-xs'
+		: size === 'md'
+			? 'px-[15px] py-2 text-[12.5px]'
+			: 'px-4 py-[9px] text-[12.5px]';
 ---
 
 <div class={wrapper}>
-	<span class='font-ui text-muted text-[11.5px] font-semibold tracking-[0.16em] whitespace-nowrap uppercase'>
-		{label}
-	</span>
+	{
+		headingId ? (
+			<h2
+				id={headingId}
+				class={labelClass}>
+				{label}
+			</h2>
+		) : (
+			<span class={labelClass}>{label}</span>
+		)
+	}
 	<div class:list={['strip flex overflow-x-auto p-0.5', stripGap]}>
 		{
 			tags.map((tag) => (

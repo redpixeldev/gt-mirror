@@ -1,0 +1,46 @@
+---
+import type { TagArchivePost } from '../../data/tagArchive';
+
+/** A compact tag archive row: text against a small fixed-size thumbnail. */
+interface Props {
+	post: TagArchivePost;
+	href?: string;
+}
+
+const { post, href = '#posts' } = Astro.props;
+---
+
+<article class='border-border border-b'>
+	<a
+		href={href}
+		class='text-text grid grid-cols-[1fr_132px] items-start gap-8 py-8 no-underline'>
+		<div>
+			<div class='flex items-center gap-2.5'>
+				<span class='font-meta text-meta tracking-meta text-muted uppercase'>{post.date}</span>
+				{
+					post.locked && (
+						<span class='border-border text-muted rounded-pill border px-2 py-[3px] font-mono text-[10.5px] tracking-[0.06em] uppercase'>
+							{post.tier}
+						</span>
+					)
+				}
+			</div>
+
+			<h2 class='font-display tracking-heading mt-2.5 text-[26px] leading-[1.2] font-medium'>{post.title}</h2>
+
+			<p class='text-small text-muted mt-2.5 max-w-[64ch] leading-[1.6] text-pretty'>{post.excerpt}</p>
+
+			<p class='font-meta text-meta tracking-meta text-muted mt-3 uppercase'>{post.author} · {post.read}</p>
+		</div>
+
+		<img
+			src={post.img}
+			alt={post.alt}
+			width='132'
+			height='99'
+			loading='lazy'
+			decoding='async'
+			class='border-border block h-[99px] w-[132px] rounded-sm border object-cover'
+		/>
+	</a>
+</article>

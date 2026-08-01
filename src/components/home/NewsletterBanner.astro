@@ -11,6 +11,8 @@ interface Props {
 	padding?: string;
 	/** Anchor id; the post template links to #end-newsletter. */
 	id?: string;
+	/** Headline measure — the tag archive sets its own. */
+	titleWidth?: string;
 }
 
 const {
@@ -22,6 +24,7 @@ const {
 	headingId = 'nl-head',
 	padding = 'pt-16',
 	id = 'newsletter',
+	titleWidth = 'max-w-[24ch]',
 } = Astro.props;
 ---
 
@@ -35,7 +38,10 @@ const {
 			<p class='text-accent-strong font-mono text-[11px] tracking-[0.1em] uppercase'>{eyebrow}</p>
 			<h2
 				id={headingId}
-				class='font-display text-h2 tracking-heading mt-3.5 max-w-[24ch] leading-[1.15] font-medium text-balance'>
+				class:list={[
+					'font-display text-h2 tracking-heading mt-3.5 leading-[1.15] font-medium text-balance',
+					titleWidth,
+				]}>
 				{title}
 			</h2>
 			<p class='text-small text-muted-on-soft mt-3.5 max-w-[52ch] leading-[1.6]'>{description}</p>

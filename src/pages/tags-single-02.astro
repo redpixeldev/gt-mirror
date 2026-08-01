@@ -1,0 +1,97 @@
+---
+import Footer from '@components/Footer.astro';
+import Header from '@components/Header.astro';
+import ThemeToggle from '@components/ThemeToggle.astro';
+import PaginationNav from '@components/cards/PaginationNav.astro';
+import NewsletterBanner from '@components/home/NewsletterBanner.astro';
+import OtherTagsSection from '@components/tags/OtherTagsSection.astro';
+import TagArchiveHeader from '@components/tags/TagArchiveHeader.astro';
+import TagPostGrid from '@components/tags/TagPostGrid.astro';
+import Layout from '@layouts/Layout.astro';
+import { OTHER_TAGS, TAG, TAG_COUNT_LABEL, TAG_POSTS } from '../data/tagArchive';
+
+const navLinks = [
+	{ label: 'Home', href: '#tag-top' },
+	{ label: 'Archive', href: '#tag-top' },
+	{ label: 'Tags', href: '#tag-top', current: true },
+	{ label: 'Authors', href: '#tag-top' },
+];
+
+const footerColumns = [
+	{
+		title: 'Sections',
+		ariaLabel: 'Sections',
+		links: [
+			{ label: 'Archive', href: '#tag-top' },
+			{ label: 'Tags', href: '#tag-top' },
+			{ label: 'Interviews', href: '#tag-top' },
+		],
+	},
+	{
+		title: 'More',
+		ariaLabel: 'More',
+		links: [
+			{ label: 'Authors', href: '#tag-top' },
+			{ label: 'Membership', href: '#tag-cta' },
+			{ label: 'RSS', href: '#tag-top' },
+		],
+	},
+];
+---
+
+<Layout
+	title={`${TAG.name} — The Quarry`}
+	description={TAG.description}
+	contentWidth='1320px'>
+	<ThemeToggle />
+
+	<Header
+		variant='site'
+		compact
+		titleHref='#tag-top'
+		links={navLinks}
+		subscribeHref='#tag-cta'
+	/>
+
+	<main id='tag-top'>
+		<TagArchiveHeader
+			name={TAG.name}
+			description={TAG.description}
+			countLabel={TAG_COUNT_LABEL}
+			range={TAG.range}
+		/>
+
+		<TagPostGrid posts={TAG_POSTS} />
+
+		<section
+			aria-label='Pagination'
+			class='container pt-13'>
+			<PaginationNav
+				pages={[1, 2]}
+				current={1}
+				href='#posts'
+				framed={false}
+				size='md'
+			/>
+		</section>
+
+		<OtherTagsSection tags={OTHER_TAGS} />
+
+		<NewsletterBanner
+			id='tag-cta'
+			headingId='cta-head'
+			inputId='ta-email'
+			title={`Never miss an ${TAG.singular}`}
+			description='Free members get the archive. Paid members get the full transcripts and the annual field report.'
+			titleWidth='max-w-[26ch]'
+			padding='pt-18'
+		/>
+	</main>
+
+	<Footer
+		columns={footerColumns}
+		variantLabel='Variant A2 · card grid'
+		titleWeight='medium'
+		class='mt-24'
+	/>
+</Layout>

@@ -1,0 +1,33 @@
+---
+import type { DirectoryTag } from '../../data/tags';
+
+/** A1 tag directory: one row per tag, name and description against a post count. */
+interface Props {
+	tags: DirectoryTag[];
+	href?: string;
+}
+
+const { tags, href = '#tags' } = Astro.props;
+---
+
+<section
+	id='tags'
+	aria-label='Tag directory'
+	style='--container-max:1120px'
+	class='border-border container border-t pt-16'>
+	{
+		tags.map((tag) => (
+			<article class='border-border border-b'>
+				<a
+					href={href}
+					class='text-text hover:bg-surface-2 grid grid-cols-[1fr_auto] items-baseline gap-8 px-2 py-[30px] no-underline'>
+					<div>
+						<h2 class='font-display tracking-heading text-[32px] leading-[1.16] font-medium'>{tag.name}</h2>
+						<p class='text-small text-muted mt-2.5 max-w-[64ch] leading-[1.6] text-pretty'>{tag.description}</p>
+					</div>
+					<span class='font-meta text-meta tracking-meta text-muted whitespace-nowrap uppercase'>{tag.countLabel}</span>
+				</a>
+			</article>
+		))
+	}
+</section>

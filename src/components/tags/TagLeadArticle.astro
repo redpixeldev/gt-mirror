@@ -1,0 +1,48 @@
+---
+import type { TagArchivePost } from '../../data/tagArchive';
+
+/** The tag archive's lead story: full-width image over an oversized headline. */
+interface Props {
+	post: TagArchivePost;
+	/** Eyebrow above the headline — "Latest in Interviews". */
+	eyebrow: string;
+	href?: string;
+}
+
+const { post, eyebrow, href = '#posts' } = Astro.props;
+---
+
+<article class='border-border border-b pb-12'>
+	<a
+		href={href}
+		class='text-text block no-underline'>
+		<img
+			src={post.img}
+			alt={post.alt}
+			width='1120'
+			height='630'
+			decoding='async'
+			class='border-border block aspect-video w-full rounded-md border object-cover'
+		/>
+
+		<div class='mt-[22px] flex items-center gap-3'>
+			<span class='font-meta text-meta tracking-meta text-accent uppercase'>{eyebrow}</span>
+			{
+				post.locked && (
+					<span class='rounded-pill border-border text-muted border px-2 py-[3px] font-mono text-[10.5px] tracking-[0.06em] uppercase'>
+						{post.tier}
+					</span>
+				)
+			}
+		</div>
+
+		<h2
+			class='font-display tracking-heading mt-3.5 max-w-[26ch] text-[clamp(28px,3.6vw,42px)] leading-[1.12] font-medium text-balance'>
+			{post.title}
+		</h2>
+
+		<p class='text-body text-muted mt-4 max-w-[62ch] leading-[1.62] text-pretty'>{post.excerpt}</p>
+
+		<p class='font-meta text-meta tracking-meta text-muted mt-[18px] uppercase'>{post.author} · {post.meta}</p>
+	</a>
+</article>

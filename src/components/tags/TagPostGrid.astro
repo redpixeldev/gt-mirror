@@ -1,0 +1,28 @@
+---
+import type { TagArchivePost } from '../../data/tagArchive';
+import TagPostCard from './TagPostCard.astro';
+
+/** A2 tag archive: every post as an equal card in a fluid grid. */
+interface Props {
+	posts: TagArchivePost[];
+	href?: string;
+}
+
+const { posts, href = '#posts' } = Astro.props;
+---
+
+<section
+	id='posts'
+	aria-label='Posts'
+	class='container pt-2'>
+	<div class='grid grid-cols-[repeat(auto-fill,minmax(min(330px,100%),1fr))] gap-x-10 gap-y-13'>
+		{
+			posts.map((post) => (
+				<TagPostCard
+					post={post}
+					href={href}
+				/>
+			))
+		}
+	</div>
+</section>

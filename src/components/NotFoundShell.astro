@@ -1,0 +1,41 @@
+---
+import FooterSlim from './FooterSlim.astro';
+import Header from './Header.astro';
+import ThemeToggle from './ThemeToggle.astro';
+
+/**
+ * Page shell shared by the 404 variants: a full-height column so the footer sits
+ * on the bottom edge and the message centres in whatever space is left.
+ */
+interface Props {
+	variantLabel: string;
+}
+
+const { variantLabel } = Astro.props;
+
+const navLinks = [
+	{ label: 'Home', href: '#top' },
+	{ label: 'Archive', href: '#top' },
+	{ label: 'Interviews', href: '#top' },
+];
+---
+
+<div class='flex min-h-screen flex-col'>
+	<ThemeToggle />
+
+	<Header
+		variant='site'
+		compact
+		titleHref='#top'
+		links={navLinks}
+		subscribeHref='#cta'
+	/>
+
+	<main
+		id='top'
+		class='flex flex-1 items-center'>
+		<slot />
+	</main>
+
+	<FooterSlim variantLabel={variantLabel} />
+</div>

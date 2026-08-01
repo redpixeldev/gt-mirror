@@ -1,0 +1,54 @@
+---
+/**
+ * Single-row footer for short utility pages (404, sign-in). The full-height
+ * `Footer.astro` with its link columns would outweigh the page it sits under.
+ */
+export interface FooterSlimLink {
+	label: string;
+	href: string;
+}
+
+interface Props {
+	copyright?: string;
+	links?: FooterSlimLink[];
+	/** Static prefix for the right-hand rule; the theme label is appended live. */
+	variantLabel: string;
+}
+
+const {
+	copyright = '© 2026 The Quarry · MIRROR theme',
+	links = [
+		{ label: 'Home', href: '#top' },
+		{ label: 'Archive', href: '#top' },
+		{ label: 'Membership', href: '#cta' },
+		{ label: 'RSS', href: '#top' },
+	],
+	variantLabel,
+} = Astro.props;
+---
+
+<footer class='border-border bg-surface border-t'>
+	<div
+		x-data
+		class='container flex flex-wrap items-center justify-between gap-4 py-6'>
+		<span class='text-muted font-mono text-[11.5px]'>{copyright}</span>
+
+		<nav
+			aria-label='Footer'
+			class='flex flex-wrap gap-5'>
+			{
+				links.map((link) => (
+					<a
+						href={link.href}
+						class='font-ui text-text hover:text-accent text-[13.5px] no-underline'>
+						{link.label}
+					</a>
+				))
+			}
+		</nav>
+
+		<span class='text-muted font-mono text-[11.5px]'>
+			{variantLabel} · <span x-text='$store.theme.label'>Light</span>
+		</span>
+	</div>
+</footer>

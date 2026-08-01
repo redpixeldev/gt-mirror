@@ -1,0 +1,26 @@
+---
+import TagStrip from '../home/TagStrip.astro';
+
+/** "Other tags" — the sibling-tag pill strip below a tag archive. */
+interface Props {
+	tags: { name: string; count?: number }[];
+	href?: string;
+	headingId?: string;
+}
+
+const { tags, href = '#tag-top', headingId = 'other-tags' } = Astro.props;
+---
+
+<section
+	aria-labelledby={headingId}
+	class='container pt-18'>
+	<TagStrip
+		tags={tags}
+		label='Other tags'
+		href={href}
+		size='lg'
+		layout='stacked'
+		headingId={headingId}
+		showCounts
+	/>
+</section>

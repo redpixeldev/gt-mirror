@@ -5,23 +5,32 @@ body sizes with optical sizing, Archivo for UI/meta, warm stone neutrals and a s
 
 Pages are built one at a time from the design source in `MIRROR *.dc.html`. Shipped so far:
 
-| Route                | Layout                  | Source file                 |
-| :------------------- | :---------------------- | :-------------------------- |
-| `/homepage-01`       | A1 · magazine cover     | `MIRROR Homepage.dc.html`   |
-| `/homepage-02`       | A2 · editorial masthead | `MIRROR Homepage.dc.html`   |
-| `/blog-01`           | A1 · two-column list    | `MIRROR Blog.dc.html`       |
-| `/blog-02`           | A2 · three-column grid  | `MIRROR Blog.dc.html`       |
-| `/post-01`           | A1 · centered classic   | `MIRROR Post.dc.html`       |
-| `/post-01-paywalled` | A1, members-only state  | `MIRROR Post.dc.html`       |
-| `/post-02`           | A2 · title page + rail  | `MIRROR Post.dc.html`       |
-| `/post-02-paywalled` | A2, members-only state  | `MIRROR Post.dc.html`       |
-| `/styleguide`        | —                       | `MIRROR Styleguide.dc.html` |
+| Route                | Layout                  | Source file                  |
+| :------------------- | :---------------------- | :--------------------------- |
+| `/homepage-01`       | A1 · magazine cover     | `MIRROR Homepage.dc.html`    |
+| `/homepage-02`       | A2 · editorial masthead | `MIRROR Homepage.dc.html`    |
+| `/blog-01`           | A1 · two-column list    | `MIRROR Blog.dc.html`        |
+| `/blog-02`           | A2 · three-column grid  | `MIRROR Blog.dc.html`        |
+| `/post-01`           | A1 · centered classic   | `MIRROR Post.dc.html`        |
+| `/post-01-paywalled` | A1, members-only state  | `MIRROR Post.dc.html`        |
+| `/post-02`           | A2 · title page + rail  | `MIRROR Post.dc.html`        |
+| `/post-02-paywalled` | A2, members-only state  | `MIRROR Post.dc.html`        |
+| `/tags-01`           | A1 · directory list     | `MIRROR Tags.dc.html`        |
+| `/tags-02`           | A2 · tag cards          | `MIRROR Tags.dc.html`        |
+| `/tags-single-01`    | A1 · lead + list        | `MIRROR Tag Archive.dc.html` |
+| `/tags-single-02`    | A2 · card grid          | `MIRROR Tag Archive.dc.html` |
+| `/404`               | A1 · centered           | `MIRROR 404.dc.html`         |
+| `/404-02`            | A2 · editorial split    | `MIRROR 404.dc.html`         |
+| `/styleguide`        | —                       | `MIRROR Styleguide.dc.html`  |
 
-There is deliberately no `index.astro` yet, so `/` 404s — each page is built under its own
-name while the set comes together.
+There is deliberately no `index.astro` yet, so `/` has no page of its own — Astro's special
+`404.astro` answers it, and every other unmatched path, with the themed not-found page. Astro
+reserves that filename for one page, so the second 404 variant lives at `/404-02`; swapping which
+variant is the live not-found page is a matter of moving the body between the two files.
 
 Demo content lives in `src/data/`: `posts.ts` holds the homepage's 12 posts plus the shared
-`Post` type, tags and authors; `archive.ts` holds the blog's 18. They are separate on purpose —
+`Post` type, tags and authors; `archive.ts` holds the blog's 18; `post.ts`, `tags.ts` and `tagArchive.ts` hold the single-post, tag-directory and single-tag-archive
+content. They are separate on purpose —
 the blog source ships six extra posts and tags two shared ones differently, and deriving one
 list from the other would bury that. Post photos are the source's Pexels images, downloaded to
 `public/img/` and named by their Pexels id — nothing is fetched from a third party at runtime.
@@ -74,6 +83,11 @@ Two Tailwind defaults are deliberately overridden to match the source: Preflight
 on `html` is reset to `normal`, and the built-in font-size utilities have their paired line-heights
 cleared — the design declares leading explicitly wherever it wants one.
 
+`html` deliberately does **not** carry Tailwind's `antialiased` utility. Forcing
+`-webkit-font-smoothing: antialiased` thins every stem on macOS — measurably so: it cost about 15% of
+the ink in a Newsreader headline and roughly a point of pixel-identity on every page. The source
+leaves smoothing at the browser default, so this build does too.
+
 ### Fonts
 
 Exactly two families, registered through Astro's Fonts API and **self-hosted at build time** (no runtime
@@ -110,6 +124,8 @@ at init, and the column can narrow once the webfonts land.
 src/components/
 ├── Header.astro          # site nav — variant="site" | "demo" (styleguide specimen)
 ├── Footer.astro          # site footer, prop-driven columns
+├── FooterSlim.astro      # single-row footer for short pages (404, sign-in)
+├── NotFoundShell.astro   # full-height column shell shared by the 404 variants
 ├── ThemeToggle.astro     # fixed light/dark switch
 ├── Placeholder.astro     # CSS striped placeholder (no image files)
 ├── cards/                # Ghost Koenig cards, one file each
@@ -118,6 +134,8 @@ src/components/
 │   └── ButtonCard · CalloutCard · ToggleCard · ProductCard
 ├── blog/                 # archive masthead, tag/sort bar, list row, empty state
 ├── post/                 # post hero, TOC, body, paywall gate, bio/adjacent, related
+├── tags/                 # tag directory (row list A1, card grid A2) and the
+│                         #   single-tag archive — header, lead, rows, other tags
 ├── home/                 # homepage sections and their post-card variants
 └── styleguide/           # one component per numbered styleguide section
 ```

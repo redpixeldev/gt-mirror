@@ -1,0 +1,55 @@
+---
+import NotFoundShell from '@components/NotFoundShell.astro';
+import Layout from '@layouts/Layout.astro';
+---
+
+<Layout
+	title='Page not found — The Quarry'
+	description="The page you asked for isn't in the archive."
+	contentWidth='1320px'>
+	<NotFoundShell variantLabel='Variant A1 · centered'>
+		<section
+			aria-labelledby='a1-404'
+			class='container w-full py-26 text-center'>
+			<p
+				aria-hidden='true'
+				class='font-display text-ghost-num text-[clamp(88px,16vw,208px)] leading-[0.86] font-medium tracking-[-0.04em]'>
+				404
+			</p>
+
+			<h1
+				id='a1-404'
+				class='font-display tracking-display mx-auto mt-7 max-w-[22ch] text-[clamp(30px,3.6vw,46px)] leading-[1.1] font-medium text-balance'>
+				This story was never filed
+			</h1>
+
+			<p class='text-lead text-muted mx-auto mt-5 max-w-[50ch] leading-[1.55] text-pretty'>
+				The page you asked for isn't in the archive — it may have moved, or the link may have been mistyped.
+			</p>
+
+			<form
+				id='cta'
+				class='mx-auto mt-10 flex max-w-[520px] flex-wrap justify-center gap-2.5'>
+				<label
+					for='e-a1'
+					class='sr-only'>
+					Email address
+				</label>
+				<input
+					id='e-a1'
+					type='email'
+					placeholder='you@publication.com'
+					autocomplete='email'
+					class='border-border bg-surface font-ui text-text min-w-0 flex-[1_1_240px] rounded-sm border px-4 py-[13px] text-[15px]'
+				/>
+				<button
+					type='submit'
+					class='btn btn-primary font-ui cursor-pointer rounded-sm px-6 py-[13px] text-[15px] font-semibold'>
+					Subscribe
+				</button>
+			</form>
+
+			<p class='font-ui text-muted mt-3.5 text-[13px]'>One considered essay, every Thursday. No spam.</p>
+		</section>
+	</NotFoundShell>
+</Layout>

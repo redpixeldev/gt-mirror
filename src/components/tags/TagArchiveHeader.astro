@@ -1,0 +1,41 @@
+---
+/** Tag archive masthead: breadcrumb, tag name, description and post count. */
+interface Props {
+	name: string;
+	description: string;
+	countLabel: string;
+	range: string;
+	tagsHref?: string;
+	headingId?: string;
+}
+
+const { name, description, countLabel, range, tagsHref = '#tag-top', headingId = 'tag-name' } = Astro.props;
+---
+
+<section
+	aria-labelledby={headingId}
+	class='container pt-18 pb-16'>
+	<nav
+		aria-label='Breadcrumb'
+		class='text-muted font-mono text-[11px] tracking-[0.1em] uppercase'>
+		<a
+			href={tagsHref}
+			class='text-muted hover:text-accent no-underline'>
+			Tags
+		</a>
+		<span aria-hidden='true'>/</span>
+		<span class='text-accent'>{name}</span>
+	</nav>
+
+	<h1
+		id={headingId}
+		class='font-display tracking-display mt-6 text-[clamp(40px,6vw,80px)] leading-[1.02] font-medium'>
+		{name}
+	</h1>
+
+	<div
+		class='border-border mt-8 grid grid-cols-[repeat(auto-fit,minmax(min(280px,100%),1fr))] gap-10 border-t pt-[26px]'>
+		<p class='font-body text-muted max-w-[52ch] text-[21px] leading-[1.5] text-pretty'>{description}</p>
+		<p class='font-meta text-meta tracking-meta text-muted self-start uppercase'>{countLabel} · {range}</p>
+	</div>
+</section>

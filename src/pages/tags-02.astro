@@ -1,0 +1,85 @@
+---
+import Footer from '@components/Footer.astro';
+import Header from '@components/Header.astro';
+import ThemeToggle from '@components/ThemeToggle.astro';
+import NewsletterBanner from '@components/home/NewsletterBanner.astro';
+import TagCards from '@components/tags/TagCards.astro';
+import Layout from '@layouts/Layout.astro';
+import { TAG_DIRECTORY, TAG_TOTAL } from '../data/tags';
+
+const navLinks = [
+	{ label: 'Home', href: '#tags' },
+	{ label: 'Archive', href: '#tags' },
+	{ label: 'Tags', href: '#tags', current: true },
+	{ label: 'Authors', href: '#tags' },
+];
+
+const footerColumns = [
+	{
+		title: 'Sections',
+		ariaLabel: 'Sections',
+		links: [
+			{ label: 'Archive', href: '#tags' },
+			{ label: 'Tags', href: '#tags' },
+			{ label: 'Interviews', href: '#tags' },
+		],
+	},
+	{
+		title: 'More',
+		ariaLabel: 'More',
+		links: [
+			{ label: 'Authors', href: '#tags' },
+			{ label: 'Membership', href: '#nl-tags' },
+			{ label: 'RSS', href: '#tags' },
+		],
+	},
+];
+---
+
+<Layout
+	title='Every tag — The Quarry'
+	description={`Six years of writing, filed into ${TAG_TOTAL} subjects.`}
+	contentWidth='1320px'>
+	<ThemeToggle />
+
+	<Header
+		variant='site'
+		compact
+		titleHref='#tags'
+		links={navLinks}
+		subscribeHref='#nl-tags'
+	/>
+
+	<main>
+		<section
+			aria-labelledby='tags-title'
+			class='container pt-16 pb-18'>
+			<p class='text-accent font-mono text-[11px] tracking-[0.1em] uppercase'>Browse</p>
+
+			<h1
+				id='tags-title'
+				class='font-display tracking-display mt-[18px] text-[clamp(34px,4.4vw,56px)] leading-[1.06] font-medium'>
+				Every tag
+			</h1>
+
+			<p class='text-lead text-muted mt-5 max-w-[58ch] leading-[1.55] text-pretty'>
+				Six years of writing, filed into {TAG_TOTAL} subjects. Each tag collects everything published under it.
+			</p>
+		</section>
+
+		<TagCards tags={TAG_DIRECTORY} />
+
+		<NewsletterBanner
+			id='nl-tags'
+			inputId='tg-email'
+			padding='pt-20'
+		/>
+	</main>
+
+	<Footer
+		columns={footerColumns}
+		variantLabel='Variant A2 · tag cards'
+		titleWeight='medium'
+		class='mt-24'
+	/>
+</Layout>

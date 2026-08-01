@@ -51,6 +51,8 @@
 	--mirror-dot-inset: rgb(0 0 0 / 0.18);
 	/* Same colour as --mirror-bg at zero alpha, so the paywall fade has no grey cast. */
 	--mirror-fade-from: rgb(250 249 247 / 0);
+	/* The oversized 404 numeral — a tint of the page, not part of the text scale. */
+	--mirror-ghost-num: #e7e2d9;
 
 	--mirror-shadow-sm: 0 1px 2px rgb(28 25 23 / 0.05);
 	--mirror-shadow-md: 0 6px 20px -6px rgb(28 25 23 / 0.12);
@@ -82,6 +84,7 @@
 	--mirror-ph-line: #2e2924;
 	--mirror-dot-inset: rgb(0 0 0 / 0.45);
 	--mirror-fade-from: rgb(18 16 14 / 0);
+	--mirror-ghost-num: #2b2622;
 
 	--mirror-shadow-sm: 0 1px 2px rgb(0 0 0 / 0.5);
 	--mirror-shadow-md: 0 8px 24px -8px rgb(0 0 0 / 0.6);
@@ -171,6 +174,7 @@
 	--color-code-muted: var(--mirror-code-muted);
 	--color-ph-bg: var(--mirror-ph-bg);
 	--color-ph-line: var(--mirror-ph-line);
+	--color-ghost-num: var(--mirror-ghost-num);
 
 	--shadow-sm: var(--mirror-shadow-sm);
 	--shadow-md: var(--mirror-shadow-md);
@@ -258,7 +262,11 @@
 
 @layer base {
 	html {
-		@apply bg-bg text-text antialiased;
+		/*
+		 * No `antialiased`: forcing `-webkit-font-smoothing: antialiased` thins every
+		 * stem on macOS, and the source leaves smoothing at the browser default.
+		 */
+		@apply bg-bg text-text;
 		font-family: var(--font-body);
 		font-optical-sizing: auto;
 		-webkit-text-size-adjust: 100%;

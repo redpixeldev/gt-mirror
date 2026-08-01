@@ -1,0 +1,43 @@
+---
+import type { DirectoryTag } from '../../data/tags';
+
+/** A2 tag directory: a card per tag, image over name, count and description. */
+interface Props {
+	tags: DirectoryTag[];
+	href?: string;
+}
+
+const { tags, href = '#tags' } = Astro.props;
+---
+
+<section
+	id='tags'
+	aria-label='Tag directory'
+	class='border-border container border-t pt-16'>
+	<div class='grid grid-cols-[repeat(auto-fill,minmax(min(320px,100%),1fr))] gap-x-10 gap-y-12'>
+		{
+			tags.map((tag) => (
+				<article>
+					<a
+						href={href}
+						class='text-text block no-underline'>
+						<img
+							src={tag.img}
+							alt={tag.alt}
+							loading='lazy'
+							decoding='async'
+							class='border-border block aspect-[16/10] w-full rounded-md border object-cover'
+						/>
+						<div class='mt-[18px] flex items-baseline gap-3.5'>
+							<h2 class='font-display tracking-heading text-[26px] leading-[1.18] font-medium'>{tag.name}</h2>
+							<span class='font-meta text-meta tracking-meta text-muted ml-auto whitespace-nowrap uppercase'>
+								{tag.countLabel}
+							</span>
+						</div>
+						<p class='text-small text-muted mt-2.5 leading-[1.6] text-pretty'>{tag.description}</p>
+					</a>
+				</article>
+			))
+		}
+	</div>
+</section>
