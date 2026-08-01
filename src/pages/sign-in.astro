@@ -1,10 +1,11 @@
 ---
 import ThemeToggle from '@components/ThemeToggle.astro';
-import AuthHeader from '@components/auth/AuthHeader.astro';
+import Header from '@components/Header.astro';
 import AuthShell from '@components/auth/AuthShell.astro';
 import FormStateSwitch from '@components/auth/FormStateSwitch.astro';
 import SignInForm from '@components/auth/SignInForm.astro';
 import Layout from '@layouts/Layout.astro';
+import { ROUTES } from '../data/navigation';
 ---
 
 <Layout
@@ -21,7 +22,10 @@ import Layout from '@layouts/Layout.astro';
 		class='flex min-h-screen flex-col'>
 		<FormStateSwitch />
 
-		<AuthHeader />
+		<Header
+			variant='auth'
+			titleHref={ROUTES.home}
+		/>
 
 		<AuthShell
 			title='Sign in'
@@ -31,18 +35,18 @@ import Layout from '@layouts/Layout.astro';
 			<Fragment slot='footnotes'>
 				<p class='font-ui text-muted mt-6 text-center text-sm'>
 					Not a member yet? <a
-						href='#auth'
+						href={ROUTES.signUp}
 						class='text-accent underline'
 						>Sign up free</a
 					>
 				</p>
 				<p class='text-muted mt-3.5 text-center font-mono text-[11px]'>
 					<a
-						href='#auth'
+						href='#'
 						class='text-muted underline'
 						>Privacy</a
 					> · <a
-						href='#auth'
+						href='#'
 						class='text-muted underline'
 						>Terms</a
 					>

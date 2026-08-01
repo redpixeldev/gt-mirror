@@ -1,11 +1,12 @@
 ---
 import ThemeToggle from '@components/ThemeToggle.astro';
-import AuthHeader from '@components/auth/AuthHeader.astro';
+import Header from '@components/Header.astro';
 import AuthShell from '@components/auth/AuthShell.astro';
 import FormStateSwitch from '@components/auth/FormStateSwitch.astro';
 import SignUpForm from '@components/auth/SignUpForm.astro';
 import UpgradePrompt from '@components/auth/UpgradePrompt.astro';
 import Layout from '@layouts/Layout.astro';
+import { ROUTES } from '../data/navigation';
 
 const subhead = 'Free members get the Thursday essay and the full public archive.';
 ---
@@ -24,7 +25,10 @@ const subhead = 'Free members get the Thursday essay and the full public archive
 		class='flex min-h-screen flex-col'>
 		<FormStateSwitch />
 
-		<AuthHeader />
+		<Header
+			variant='auth'
+			titleHref={ROUTES.home}
+		/>
 
 		<AuthShell
 			eyebrow='Free membership'
@@ -38,18 +42,18 @@ const subhead = 'Free members get the Thursday essay and the full public archive
 
 				<p class='font-ui text-muted mt-6 text-center text-sm'>
 					Already a member? <a
-						href='#auth'
+						href={ROUTES.signIn}
 						class='text-accent underline'
 						>Sign in</a
 					>
 				</p>
 				<p class='text-muted mt-3.5 text-center font-mono text-[11px]'>
 					<a
-						href='#auth'
+						href='#'
 						class='text-muted underline'
 						>Privacy</a
 					> · <a
-						href='#auth'
+						href='#'
 						class='text-muted underline'
 						>Terms</a
 					>

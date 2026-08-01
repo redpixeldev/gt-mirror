@@ -1,5 +1,6 @@
 ---
 import type { Tier } from '../../data/membership';
+import { ROUTES } from '../../data/navigation';
 
 /**
  * The plan cards, with the monthly/yearly switch above them.
@@ -16,7 +17,7 @@ interface Props {
 	gap?: string;
 }
 
-const { tiers, href = '#tiers', padding = '', gap = 'gap-6' } = Astro.props;
+const { tiers, href = ROUTES.signUp, padding = '', gap = 'gap-6' } = Astro.props;
 
 const pill = 'rounded-pill font-ui cursor-pointer border-0 px-5 py-[9px] text-[13px] font-semibold';
 ---

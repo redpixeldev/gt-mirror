@@ -11,7 +11,7 @@ interface Props {
 	size?: 'sm' | 'md';
 }
 
-const { pages = [1, 2, 3, '…', 9], current = 1, href = '#06', framed = true, size = 'sm' } = Astro.props;
+const { pages = [1, 2, 3, '…', 9], current = 1, href = '#posts', framed = true, size = 'sm' } = Astro.props;
 
 const pageClass =
 	size === 'sm'

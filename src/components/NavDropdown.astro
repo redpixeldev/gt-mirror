@@ -1,0 +1,91 @@
+---
+import type { NavItem } from '../data/navigation';
+
+/**
+ * One nav item and its variant menu.
+ *
+ * Opens on hover **and on keyboard focus**, so pointer and keyboard reach the same
+ * places; the label itself still navigates to the section's A1 page. Escape closes,
+ * and focus leaving the group closes it (`relatedTarget` is checked so moving
+ * between the label and its own menu does not).
+ *
+ * The panel's box starts flush under the label — the visible 8px offset is its own
+ * transparent padding — so there is no dead zone to cross on the way down. Which
+ * menu is open lives in the `nav` Alpine store (Layout.astro): one at a time, with
+ * a 200ms grace period on close.
+ *
+ * `other` has no page of its own, so its label is a button rather than a link.
+ */
+interface Props {
+	item: NavItem;
+	/** True when this is the section the page belongs to. */
+	current?: boolean;
+	/** Current pathname, used to mark the exact variant being viewed. */
+	path?: string;
+}
+
+const { item, current = false, path = '' } = Astro.props;
+
+const menuId = `nav-menu-${item.key}`;
+const key = JSON.stringify(item.key);
+const labelClass = 'font-ui text-[15px] no-underline';
+const Label = item.href ? 'a' : 'button';
+---
+
+<div
+	class='relative'
+	x-data
+	x-on:mouseenter={`$store.nav.show(${key})`}
+	x-on:mouseleave='$store.nav.hide()'
+	x-on:focusin={`$store.nav.show(${key})`}
+	x-on:focusout='if (!$el.contains($event.relatedTarget)) $store.nav.hideNow()'
+	x-on:keydown.escape='$store.nav.hideNow()'>
+	<Label
+		href={item.href}
+		type={item.href ? undefined : 'button'}
+		aria-current={current ? 'page' : undefined}
+		aria-haspopup='true'
+		aria-expanded='false'
+		aria-controls={menuId}
+		x-bind:aria-expanded={`($store.nav.open === ${key}).toString()`}
+		class:list={[
+			labelClass,
+			'flex cursor-pointer items-center gap-1 border-0 bg-transparent p-0',
+			current ? 'border-accent text-text border-b-2 pb-[3px]' : 'text-muted hover:text-text',
+		]}>
+		{item.label}
+		<span
+			aria-hidden='true'
+			class='text-[9px] leading-none opacity-70'>
+			▾
+		</span>
+	</Label>
+
+	{/* Transparent bridge: the box touches the label, the card inside sits 8px lower. */}
+	<div
+		x-show={`$store.nav.open === ${key}`}
+		x-cloak
+		class='absolute top-full left-0 z-40 pt-2'>
+		<div
+			id={menuId}
+			class='border-border bg-surface min-w-[15rem] rounded-md border py-2 shadow-md'>
+			<ul class='flex list-none flex-col'>
+				{
+					item.children.map((child) => (
+						<li>
+							<a
+								href={child.href}
+								aria-current={child.href === path ? 'page' : undefined}
+								class:list={[
+									'font-ui hover:bg-surface-2 block px-4 py-2 text-sm whitespace-nowrap no-underline',
+									child.href === path ? 'text-accent font-semibold' : 'text-text',
+								]}>
+								{child.label}
+							</a>
+						</li>
+					))
+				}
+			</ul>
+		</div>
+	</div>
+</div>

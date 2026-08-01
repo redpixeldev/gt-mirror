@@ -45,34 +45,6 @@ const archiveState = `{
 		return n + (n === 1 ? ' post' : ' posts') + (this.tag === null ? '' : ' tagged ' + this.tag) + ' · ' + this.writers + ' writers'
 	}
 }`;
-
-const navLinks = [
-	{ label: 'Home', href: '#archive' },
-	{ label: 'Archive', href: '#archive', current: true },
-	{ label: 'Interviews', href: '#archive' },
-	{ label: 'Authors', href: '#writers' },
-];
-
-const footerColumns = [
-	{
-		title: 'Sections',
-		ariaLabel: 'Sections',
-		links: [
-			{ label: 'Archive', href: '#archive' },
-			{ label: 'Essays', href: '#archive' },
-			{ label: 'Interviews', href: '#archive' },
-		],
-	},
-	{
-		title: 'More',
-		ariaLabel: 'More',
-		links: [
-			{ label: 'Authors', href: '#writers' },
-			{ label: 'Membership', href: '#newsletter' },
-			{ label: 'RSS', href: '#archive' },
-		],
-	},
-];
 ---
 
 <Layout
@@ -83,9 +55,7 @@ const footerColumns = [
 
 	<Header
 		variant='site'
-		titleHref='#top'
-		links={navLinks}
-		subscribeHref='#newsletter'
+		current='archive'
 	/>
 
 	<main
@@ -108,7 +78,6 @@ const footerColumns = [
 			class='container pt-12'
 			x-show='!isEmpty'>
 			<PaginationNav
-				href='#archive'
 				pages={[1, 2, 3, '…', 6]}
 				framed={false}
 				size='md'
@@ -122,13 +91,11 @@ const footerColumns = [
 		<WritersSection
 			authors={AUTHORS}
 			id='writers'
-			href='#writers'
 			headingId='wr-head'
 		/>
 	</main>
 
 	<Footer
-		columns={footerColumns}
 		variantLabel='Variant A1 · two-column list'
 		titleWeight='medium'
 		class='mt-24'

@@ -33,33 +33,6 @@ const { layout = 'a1', paywalled = false } = Astro.props;
 
 const rail = layout === 'a2';
 const variantLabel = rail ? 'Variant A2 · title page + rail' : 'Variant A1 · centered classic';
-
-const navLinks = [
-	{ label: 'Home', href: '#post' },
-	{ label: 'Archive', href: '#post' },
-	{ label: 'Interviews', href: '#post', current: true },
-];
-
-const footerColumns = [
-	{
-		title: 'Sections',
-		ariaLabel: 'Sections',
-		links: [
-			{ label: 'Archive', href: '#post' },
-			{ label: 'Essays', href: '#post' },
-			{ label: 'Interviews', href: '#post' },
-		],
-	},
-	{
-		title: 'More',
-		ariaLabel: 'More',
-		links: [
-			{ label: 'Authors', href: '#post' },
-			{ label: 'Membership', href: '#end-newsletter' },
-			{ label: 'RSS', href: '#post' },
-		],
-	},
-];
 ---
 
 <ThemeToggle />
@@ -67,9 +40,7 @@ const footerColumns = [
 <Header
 	variant='site'
 	compact
-	titleHref='#post'
-	links={navLinks}
-	subscribeHref='#end-newsletter'
+	current='archive'
 />
 
 <main id='post'>
@@ -140,7 +111,6 @@ const footerColumns = [
 </main>
 
 <Footer
-	columns={footerColumns}
 	variantLabel={variantLabel}
 	titleWeight='medium'
 	class='mt-24'

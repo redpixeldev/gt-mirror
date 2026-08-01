@@ -1,5 +1,6 @@
 ---
 import type { DecoratedPost } from '../../data/posts';
+import { postHref } from '../../data/navigation';
 
 /** Text-left, thumbnail-right row used in the Latest sidebar. */
 interface Props {
@@ -7,7 +8,7 @@ interface Props {
 	href?: string;
 }
 
-const { post, href = '#latest' } = Astro.props;
+const { post, href = postHref(post.locked) } = Astro.props;
 ---
 
 <article class='border-border grid grid-cols-[1fr_116px] items-start gap-5 border-b pb-7'>

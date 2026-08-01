@@ -1,5 +1,6 @@
 ---
 import type { DecoratedPost } from '../../data/posts';
+import { postHref } from '../../data/navigation';
 
 /** Ranked list row: index number, headline block, optional membership tier chip. */
 interface Props {
@@ -7,7 +8,7 @@ interface Props {
 	href?: string;
 }
 
-const { post, href = '#latest' } = Astro.props;
+const { post, href = postHref(post.locked) } = Astro.props;
 ---
 
 <article class='border-border grid grid-cols-[64px_1fr_auto] items-baseline gap-7 border-t py-[30px]'>

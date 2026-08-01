@@ -1,5 +1,6 @@
 ---
 import TagStrip from '../home/TagStrip.astro';
+import { ROUTES } from '../../data/navigation';
 
 /** "Other tags" — the sibling-tag pill strip below a tag archive. */
 interface Props {
@@ -8,7 +9,7 @@ interface Props {
 	headingId?: string;
 }
 
-const { tags, href = '#tag-top', headingId = 'other-tags' } = Astro.props;
+const { tags, href = ROUTES.tag, headingId = 'other-tags' } = Astro.props;
 ---
 
 <section

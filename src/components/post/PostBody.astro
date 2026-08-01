@@ -4,6 +4,7 @@ import CodeCard from '../cards/CodeCard.astro';
 import PullQuoteCard from '../cards/PullQuoteCard.astro';
 import PostFigure from './PostFigure.astro';
 import type { POST } from '../../data/post';
+import { ROUTES } from '../../data/navigation';
 
 /** The unlocked article body: four sections of prose, figures and Koenig cards. */
 interface Props {
@@ -139,7 +140,7 @@ const codeChipClass = 'rounded-[4px] border border-border bg-surface-2 px-1.5 py
 		{
 			tags.map((tag) => (
 				<a
-					href='#post'
+					href={ROUTES.tag}
 					class='font-meta tracking-meta border-border bg-surface text-text rounded-pill border px-3.5 py-[7px] text-[12.5px] uppercase no-underline'>
 					{tag}
 				</a>

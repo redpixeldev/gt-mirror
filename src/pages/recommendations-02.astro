@@ -8,34 +8,6 @@ import RecommendationCards from '@components/recommendations/RecommendationCards
 import Layout from '@layouts/Layout.astro';
 import { RECOMMENDATIONS, RECOMMENDATION_TOTAL } from '../data/recommendations';
 
-const navLinks = [
-	{ label: 'Home', href: '#recs' },
-	{ label: 'Archive', href: '#recs' },
-	{ label: 'Authors', href: '#recs' },
-	{ label: 'Recommendations', href: '#recs', current: true },
-];
-
-const footerColumns = [
-	{
-		title: 'Sections',
-		ariaLabel: 'Sections',
-		links: [
-			{ label: 'Archive', href: '#recs' },
-			{ label: 'Tags', href: '#recs' },
-			{ label: 'Interviews', href: '#recs' },
-		],
-	},
-	{
-		title: 'More',
-		ariaLabel: 'More',
-		links: [
-			{ label: 'Authors', href: '#recs' },
-			{ label: 'Membership', href: '#rec-cta' },
-			{ label: 'RSS', href: '#recs' },
-		],
-	},
-];
-
 const intro = `${RECOMMENDATION_TOTAL} publications we actually read. No affiliate deals, no swaps — subscribe to any of them in one click.`;
 ---
 
@@ -48,9 +20,7 @@ const intro = `${RECOMMENDATION_TOTAL} publications we actually read. No affilia
 	<Header
 		variant='site'
 		compact
-		titleHref='#recs'
-		links={navLinks}
-		subscribeHref='#rec-cta'
+		current='recommendations'
 	/>
 
 	<main>
@@ -75,7 +45,6 @@ const intro = `${RECOMMENDATION_TOTAL} publications we actually read. No affilia
 	</main>
 
 	<Footer
-		columns={footerColumns}
 		variantLabel='Variant A2 · image cards'
 		titleWeight='medium'
 		class='mt-24'

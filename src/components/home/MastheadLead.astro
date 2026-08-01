@@ -1,5 +1,6 @@
 ---
 import type { DecoratedPost } from '../../data/posts';
+import { postHref } from '../../data/navigation';
 
 /** A2 "editorial masthead" lead: centred, typographic, no cover image. */
 interface Props {
@@ -8,7 +9,7 @@ interface Props {
 	headingId?: string;
 }
 
-const { post, href = '#latest', headingId = 'a2-lead' } = Astro.props;
+const { post, href = postHref(post.locked), headingId = 'a2-lead' } = Astro.props;
 ---
 
 <section

@@ -8,34 +8,6 @@ import PaginationNav from '@components/cards/PaginationNav.astro';
 import NewsletterBanner from '@components/home/NewsletterBanner.astro';
 import Layout from '@layouts/Layout.astro';
 import { AUTHOR, AUTHOR_PAGE_ONE } from '../data/authorArchive';
-
-const navLinks = [
-	{ label: 'Home', href: '#author-top' },
-	{ label: 'Archive', href: '#author-top' },
-	{ label: 'Tags', href: '#author-top' },
-	{ label: 'Authors', href: '#author-top', current: true },
-];
-
-const footerColumns = [
-	{
-		title: 'Sections',
-		ariaLabel: 'Sections',
-		links: [
-			{ label: 'Archive', href: '#author-top' },
-			{ label: 'Tags', href: '#author-top' },
-			{ label: 'Interviews', href: '#author-top' },
-		],
-	},
-	{
-		title: 'More',
-		ariaLabel: 'More',
-		links: [
-			{ label: 'Authors', href: '#author-top' },
-			{ label: 'Membership', href: '#au-cta' },
-			{ label: 'RSS', href: '#author-top' },
-		],
-	},
-];
 ---
 
 <Layout
@@ -47,9 +19,7 @@ const footerColumns = [
 	<Header
 		variant='site'
 		compact
-		titleHref='#author-top'
-		links={navLinks}
-		subscribeHref='#au-cta'
+		current='authors'
 	/>
 
 	<main id='author-top'>
@@ -71,7 +41,6 @@ const footerColumns = [
 			<PaginationNav
 				pages={[1, 2, 3]}
 				current={1}
-				href='#posts'
 				framed={false}
 				size='md'
 			/>
@@ -88,7 +57,6 @@ const footerColumns = [
 	</main>
 
 	<Footer
-		columns={footerColumns}
 		variantLabel='Variant A1 · centered header'
 		titleWeight='medium'
 		class='mt-24'

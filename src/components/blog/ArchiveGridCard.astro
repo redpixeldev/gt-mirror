@@ -1,5 +1,6 @@
 ---
 import type { DecoratedPost } from '../../data/posts';
+import { postHref } from '../../data/navigation';
 
 /** A2 archive card: 4:3 image above tag, headline, excerpt and a full byline. */
 interface Props {
@@ -9,7 +10,7 @@ interface Props {
 	href?: string;
 }
 
-const { post, order, href = '#archive' } = Astro.props;
+const { post, order, href = postHref(post.locked) } = Astro.props;
 
 // The card's own tag is baked in — Alpine's scope holds only the active filter.
 const visible = `tag === null || tag === ${JSON.stringify(post.tag)}`;

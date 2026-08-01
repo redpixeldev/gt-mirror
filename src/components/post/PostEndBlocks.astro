@@ -1,5 +1,6 @@
 ---
 import type { ADJACENT, POST } from '../../data/post';
+import { ROUTES } from '../../data/navigation';
 
 /** Author bio and prev/next links — siblings of the article, not part of it. */
 interface Props {
@@ -45,7 +46,7 @@ const adjacentGrid = detail ? 'grid-cols-[repeat(auto-fit,minmax(min(240px,100%)
 		<p class='text-small text-muted mt-3 max-w-[52ch] leading-[1.6]'>{bio}</p>
 		<div class='mt-4 flex flex-wrap gap-2.5'>
 			<a
-				href='#post'
+				href={ROUTES.author}
 				class='btn border-border font-ui text-text hover:bg-surface-2 rounded-sm border px-4 py-[9px] text-[13px] font-semibold no-underline'>
 				All posts
 			</a>
@@ -62,7 +63,7 @@ const adjacentGrid = detail ? 'grid-cols-[repeat(auto-fit,minmax(min(240px,100%)
 	aria-label='Adjacent posts'
 	class:list={['mt-5 grid justify-between gap-4', adjacentGrid]}>
 	<a
-		href='#post'
+		href={ROUTES.post}
 		class:list={adjacentCard}>
 		<span class='text-muted font-mono text-[10.5px] tracking-[0.1em] uppercase'>← Previous</span>
 		{
@@ -75,7 +76,7 @@ const adjacentGrid = detail ? 'grid-cols-[repeat(auto-fit,minmax(min(240px,100%)
 		}
 	</a>
 	<a
-		href='#post'
+		href={ROUTES.post}
 		class:list={[adjacentCard, 'text-right']}>
 		<span class='text-muted font-mono text-[10.5px] tracking-[0.1em] uppercase'>Next →</span>
 		{

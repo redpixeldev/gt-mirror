@@ -1,4 +1,5 @@
 ---
+import { ROUTES } from '../../data/navigation';
 /** Writers: a grid of author chips with initials avatar and post count. */
 interface Props {
 	authors: { name: string; initials: string; count: number }[];
@@ -9,7 +10,7 @@ interface Props {
 	id?: string;
 }
 
-const { authors, title = 'Writers', href = '#authors', headingId = 'au-head', id = 'authors' } = Astro.props;
+const { authors, title = 'Writers', href = ROUTES.author, headingId = 'au-head', id = 'authors' } = Astro.props;
 ---
 
 <section

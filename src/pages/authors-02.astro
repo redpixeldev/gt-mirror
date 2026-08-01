@@ -8,34 +8,6 @@ import NewsletterBanner from '@components/home/NewsletterBanner.astro';
 import Layout from '@layouts/Layout.astro';
 import { AUTHOR_TOTAL, MASTHEAD } from '../data/authors';
 
-const navLinks = [
-	{ label: 'Home', href: '#authors' },
-	{ label: 'Archive', href: '#authors' },
-	{ label: 'Tags', href: '#authors' },
-	{ label: 'Authors', href: '#authors', current: true },
-];
-
-const footerColumns = [
-	{
-		title: 'Sections',
-		ariaLabel: 'Sections',
-		links: [
-			{ label: 'Archive', href: '#authors' },
-			{ label: 'Tags', href: '#authors' },
-			{ label: 'Interviews', href: '#authors' },
-		],
-	},
-	{
-		title: 'More',
-		ariaLabel: 'More',
-		links: [
-			{ label: 'Authors', href: '#authors' },
-			{ label: 'Membership', href: '#au-cta' },
-			{ label: 'RSS', href: '#authors' },
-		],
-	},
-];
-
 const intro = `${AUTHOR_TOTAL} people write here. Between them they have filed 104 pieces since 2020.`;
 ---
 
@@ -48,9 +20,7 @@ const intro = `${AUTHOR_TOTAL} people write here. Between them they have filed 1
 	<Header
 		variant='site'
 		compact
-		titleHref='#authors'
-		links={navLinks}
-		subscribeHref='#au-cta'
+		current='authors'
 	/>
 
 	<main>
@@ -73,7 +43,6 @@ const intro = `${AUTHOR_TOTAL} people write here. Between them they have filed 1
 	</main>
 
 	<Footer
-		columns={footerColumns}
 		variantLabel='Variant A2 · cover cards'
 		titleWeight='medium'
 		class='mt-24'

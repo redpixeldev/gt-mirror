@@ -1,4 +1,5 @@
 ---
+import { ROUTES } from '../../data/navigation';
 /** Three related-post cards below the article. */
 interface Props {
 	posts: { title: string; tag: string; meta: string; img: string; alt: string }[];
@@ -23,7 +24,7 @@ const { posts, title = 'Related reading', headingId = 'rel-head' } = Astro.props
 			posts.map((post) => (
 				<article class='border-border bg-surface overflow-hidden rounded-md border'>
 					<a
-						href='#post'
+						href={ROUTES.post}
 						class='text-text block no-underline'>
 						<img
 							src={post.img}

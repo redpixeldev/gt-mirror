@@ -1,4 +1,5 @@
 ---
+import { ROUTES } from '../../data/navigation';
 /**
  * The sign-up form and its four states.
  *
@@ -13,7 +14,7 @@ interface Props {
 	href?: string;
 }
 
-const { formName = 'signup', email = 'erin@thequarry.press', href = '#auth' } = Astro.props;
+const { formName = 'signup', email = 'erin@thequarry.press', href = ROUTES.signIn } = Astro.props;
 
 const field = 'font-ui bg-bg text-text w-full rounded-sm border px-[15px] py-[13px] text-[15.5px]';
 ---

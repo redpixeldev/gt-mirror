@@ -1,19 +1,18 @@
 ---
-/** Site footer. Column links and the bottom rule are prop-driven for reuse. */
-export interface FooterLink {
-	label: string;
-	href: string;
-}
+/**
+ * Site footer.
+ *
+ * Columns come from `data/navigation.ts` — a page passes only the variant label
+ * that names the layout it is showing.
+ */
+import { FOOTER_COLUMNS, SITE_TAGLINE, SITE_TITLE, type FooterColumn } from '../data/navigation';
 
-export interface FooterColumn {
-	title: string;
-	ariaLabel: string;
-	links: FooterLink[];
-}
+export type { FooterColumn, FooterLink } from '../data/navigation';
 
 interface Props {
 	siteTitle?: string;
 	tagline?: string;
+	/** Overrides the shared columns; no page needs to. */
 	columns?: FooterColumn[];
 	copyright?: string;
 	/** Static prefix for the bottom-right rule; the theme label is appended live. */
@@ -24,28 +23,9 @@ interface Props {
 }
 
 const {
-	siteTitle = 'The Quarry',
-	tagline = 'Independent writing on media, craft, and the cost of attention.',
-	columns = [
-		{
-			title: 'Sections',
-			ariaLabel: 'Sections',
-			links: [
-				{ label: 'Latest', href: '#footer' },
-				{ label: 'Essays', href: '#footer' },
-				{ label: 'Interviews', href: '#footer' },
-			],
-		},
-		{
-			title: 'More',
-			ariaLabel: 'More',
-			links: [
-				{ label: 'About', href: '#footer' },
-				{ label: 'Membership', href: '#footer' },
-				{ label: 'RSS', href: '#footer' },
-			],
-		},
-	],
+	siteTitle = SITE_TITLE,
+	tagline = SITE_TAGLINE,
+	columns = FOOTER_COLUMNS,
 	copyright = '© 2026 The Quarry · MIRROR theme',
 	variantLabel = 'Variant A — Editorial',
 	titleWeight = 'semibold',

@@ -1,5 +1,6 @@
 ---
 import type { Author } from '../../data/authors';
+import { ROUTES } from '../../data/navigation';
 
 /** A1 masthead row: round portrait, biography column, and the author's links. */
 interface Props {
@@ -7,7 +8,7 @@ interface Props {
 	href?: string;
 }
 
-const { author, href = '#authors' } = Astro.props;
+const { author, href = ROUTES.author } = Astro.props;
 ---
 
 <article class='border-border grid grid-cols-[96px_1fr_auto] items-start gap-9 border-b py-10'>

@@ -1,4 +1,5 @@
 ---
+import { postHref } from '../data/navigation';
 /**
  * A compact archive row: text against a small fixed-size thumbnail.
  *
@@ -37,7 +38,7 @@ const {
 	tier,
 	titleClass = 'text-[26px] leading-[1.2]',
 	padding = 'py-8',
-	href = '#posts',
+	href = postHref(locked),
 } = Astro.props;
 ---
 

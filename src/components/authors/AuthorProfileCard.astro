@@ -1,5 +1,6 @@
 ---
 import type { Author } from '../../data/authors';
+import { ROUTES } from '../../data/navigation';
 
 /**
  * A2 masthead card: portrait, name and bio in a bordered panel, with the latest
@@ -13,7 +14,7 @@ interface Props {
 	href?: string;
 }
 
-const { author, href = '#authors' } = Astro.props;
+const { author, href = ROUTES.author } = Astro.props;
 ---
 
 <article class='border-border bg-surface overflow-hidden rounded-md border'>

@@ -1,5 +1,6 @@
 ---
 import type { DirectoryTag } from '../../data/tags';
+import { ROUTES } from '../../data/navigation';
 
 /** A1 tag directory: one row per tag, name and description against a post count. */
 interface Props {
@@ -7,7 +8,7 @@ interface Props {
 	href?: string;
 }
 
-const { tags, href = '#tags' } = Astro.props;
+const { tags, href = ROUTES.tag } = Astro.props;
 ---
 
 <section

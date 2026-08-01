@@ -1,6 +1,7 @@
 ---
 import type { Author } from '../../data/authors';
 import AuthorRow from './AuthorRow.astro';
+import { ROUTES } from '../../data/navigation';
 
 /** A1 masthead: one full-width editorial row per writer. */
 interface Props {
@@ -8,7 +9,7 @@ interface Props {
 	href?: string;
 }
 
-const { authors, href = '#authors' } = Astro.props;
+const { authors, href = ROUTES.author } = Astro.props;
 ---
 
 <section

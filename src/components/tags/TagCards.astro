@@ -1,5 +1,6 @@
 ---
 import type { DirectoryTag } from '../../data/tags';
+import { ROUTES } from '../../data/navigation';
 
 /** A2 tag directory: a card per tag, image over name, count and description. */
 interface Props {
@@ -7,7 +8,7 @@ interface Props {
 	href?: string;
 }
 
-const { tags, href = '#tags' } = Astro.props;
+const { tags, href = ROUTES.tag } = Astro.props;
 ---
 
 <section

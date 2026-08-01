@@ -6,34 +6,6 @@ import NewsletterBanner from '@components/home/NewsletterBanner.astro';
 import TagCards from '@components/tags/TagCards.astro';
 import Layout from '@layouts/Layout.astro';
 import { TAG_DIRECTORY, TAG_TOTAL } from '../data/tags';
-
-const navLinks = [
-	{ label: 'Home', href: '#tags' },
-	{ label: 'Archive', href: '#tags' },
-	{ label: 'Tags', href: '#tags', current: true },
-	{ label: 'Authors', href: '#tags' },
-];
-
-const footerColumns = [
-	{
-		title: 'Sections',
-		ariaLabel: 'Sections',
-		links: [
-			{ label: 'Archive', href: '#tags' },
-			{ label: 'Tags', href: '#tags' },
-			{ label: 'Interviews', href: '#tags' },
-		],
-	},
-	{
-		title: 'More',
-		ariaLabel: 'More',
-		links: [
-			{ label: 'Authors', href: '#tags' },
-			{ label: 'Membership', href: '#nl-tags' },
-			{ label: 'RSS', href: '#tags' },
-		],
-	},
-];
 ---
 
 <Layout
@@ -45,9 +17,7 @@ const footerColumns = [
 	<Header
 		variant='site'
 		compact
-		titleHref='#tags'
-		links={navLinks}
-		subscribeHref='#nl-tags'
+		current='tags'
 	/>
 
 	<main>
@@ -77,7 +47,6 @@ const footerColumns = [
 	</main>
 
 	<Footer
-		columns={footerColumns}
 		variantLabel='Variant A2 · tag cards'
 		titleWeight='medium'
 		class='mt-24'

@@ -1,6 +1,7 @@
 ---
 import type { Author } from '../../data/authors';
 import AuthorProfileCard from './AuthorProfileCard.astro';
+import { ROUTES } from '../../data/navigation';
 
 /** A2 masthead: a profile card per writer in a fluid grid. */
 interface Props {
@@ -8,7 +9,7 @@ interface Props {
 	href?: string;
 }
 
-const { authors, href = '#authors' } = Astro.props;
+const { authors, href = ROUTES.author } = Astro.props;
 ---
 
 <section

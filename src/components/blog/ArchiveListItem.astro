@@ -1,5 +1,6 @@
 ---
 import type { DecoratedPost } from '../../data/posts';
+import { postHref } from '../../data/navigation';
 
 /**
  * A1 archive row: fixed-width thumbnail beside the headline block.
@@ -15,7 +16,7 @@ interface Props {
 	href?: string;
 }
 
-const { post, order, href = '#archive' } = Astro.props;
+const { post, order, href = postHref(post.locked) } = Astro.props;
 
 // The row's own tag is baked into the expression — Alpine's scope only holds the
 // active filter, not per-item data.

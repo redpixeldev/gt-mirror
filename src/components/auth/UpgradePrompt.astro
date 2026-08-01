@@ -1,4 +1,5 @@
 ---
+import { ROUTES } from '../../data/navigation';
 /** Tinted panel under the sign-up card, pointing free members at the paid plans. */
 interface Props {
 	text?: string;
@@ -9,7 +10,7 @@ interface Props {
 const {
 	text = 'Want the interviews and transcripts too? Paid plans start at $8 a month.',
 	cta = 'See plans',
-	href = '#auth',
+	href = ROUTES.membership,
 } = Astro.props;
 ---
 

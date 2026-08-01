@@ -1,4 +1,5 @@
 ---
+import { ROUTES } from '../../data/navigation';
 /** Tag archive masthead: breadcrumb, tag name, description and post count. */
 interface Props {
 	name: string;
@@ -9,7 +10,7 @@ interface Props {
 	headingId?: string;
 }
 
-const { name, description, countLabel, range, tagsHref = '#tag-top', headingId = 'tag-name' } = Astro.props;
+const { name, description, countLabel, range, tagsHref = ROUTES.tags, headingId = 'tag-name' } = Astro.props;
 ---
 
 <section

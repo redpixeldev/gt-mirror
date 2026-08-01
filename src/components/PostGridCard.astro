@@ -1,4 +1,5 @@
 ---
+import { postHref } from '../data/navigation';
 /**
  * A 4:3 archive card: image over an eyebrow, headline, excerpt and meta line.
  *
@@ -40,7 +41,7 @@ const {
 	eyebrowSpacing = 'mt-[18px]',
 	titleClass = 'text-2xl',
 	excerptSpacing = 'mt-3',
-	href = '#posts',
+	href = postHref(locked),
 } = Astro.props;
 ---
 

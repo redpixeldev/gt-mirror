@@ -5,10 +5,9 @@ import PostGridCard from '../PostGridCard.astro';
 /** A2 author archive: the writer's posts as cards beside the rail. */
 interface Props {
 	posts: AuthorPost[];
-	href?: string;
 }
 
-const { posts, href = '#posts' } = Astro.props;
+const { posts } = Astro.props;
 ---
 
 <section
@@ -30,7 +29,6 @@ const { posts, href = '#posts' } = Astro.props;
 					eyebrowSpacing='mt-4'
 					titleClass='text-[22px]'
 					excerptSpacing='mt-2.5'
-					href={href}
 				/>
 			))
 		}

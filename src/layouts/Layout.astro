@@ -77,6 +77,27 @@ const { title, description, contentWidth } = Astro.props;
 						return this.dark ? 'Dark' : 'Light';
 					},
 				});
+
+				/*
+				 * Which header menu is open — one at a time, with a short grace period
+				 * so a diagonal move from the label to a lower item does not lose it.
+				 */
+				Alpine.store('nav', {
+					open: null,
+					timer: null,
+					show(key) {
+						clearTimeout(this.timer);
+						this.open = key;
+					},
+					hide() {
+						clearTimeout(this.timer);
+						this.timer = setTimeout(() => (this.open = null), 200);
+					},
+					hideNow() {
+						clearTimeout(this.timer);
+						this.open = null;
+					},
+				});
 			});
 		</script>
 

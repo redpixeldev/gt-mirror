@@ -8,10 +8,9 @@ interface Props {
 	posts: TagArchivePost[];
 	/** Tag name, used in the lead's eyebrow. */
 	tagName: string;
-	href?: string;
 }
 
-const { posts, tagName, href = '#posts' } = Astro.props;
+const { posts, tagName } = Astro.props;
 
 const [lead, ...rest] = posts;
 ---
@@ -24,15 +23,7 @@ const [lead, ...rest] = posts;
 	<TagLeadArticle
 		post={lead}
 		eyebrow={`Latest in ${tagName}`}
-		href={href}
 	/>
 
-	{
-		rest.map((post) => (
-			<TagPostRow
-				post={post}
-				href={href}
-			/>
-		))
-	}
+	{rest.map((post) => <TagPostRow post={post} />)}
 </section>

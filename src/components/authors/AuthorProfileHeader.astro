@@ -1,4 +1,5 @@
 ---
+import { ROUTES } from '../../data/navigation';
 /** A1 author header: a centred column of portrait, name, meta, italic bio and links. */
 interface Props {
 	name: string;
@@ -21,8 +22,8 @@ const {
 	portrait,
 	website,
 	social,
-	backHref = '#author-top',
-	href = '#author-top',
+	backHref = ROUTES.authors,
+	href = ROUTES.author,
 	headingId = 'a1-name',
 } = Astro.props;
 

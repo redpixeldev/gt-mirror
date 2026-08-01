@@ -9,34 +9,6 @@ import TagArchiveHeader from '@components/tags/TagArchiveHeader.astro';
 import TagPostGrid from '@components/tags/TagPostGrid.astro';
 import Layout from '@layouts/Layout.astro';
 import { OTHER_TAGS, TAG, TAG_COUNT_LABEL, TAG_POSTS } from '../data/tagArchive';
-
-const navLinks = [
-	{ label: 'Home', href: '#tag-top' },
-	{ label: 'Archive', href: '#tag-top' },
-	{ label: 'Tags', href: '#tag-top', current: true },
-	{ label: 'Authors', href: '#tag-top' },
-];
-
-const footerColumns = [
-	{
-		title: 'Sections',
-		ariaLabel: 'Sections',
-		links: [
-			{ label: 'Archive', href: '#tag-top' },
-			{ label: 'Tags', href: '#tag-top' },
-			{ label: 'Interviews', href: '#tag-top' },
-		],
-	},
-	{
-		title: 'More',
-		ariaLabel: 'More',
-		links: [
-			{ label: 'Authors', href: '#tag-top' },
-			{ label: 'Membership', href: '#tag-cta' },
-			{ label: 'RSS', href: '#tag-top' },
-		],
-	},
-];
 ---
 
 <Layout
@@ -48,9 +20,7 @@ const footerColumns = [
 	<Header
 		variant='site'
 		compact
-		titleHref='#tag-top'
-		links={navLinks}
-		subscribeHref='#tag-cta'
+		current='tags'
 	/>
 
 	<main id='tag-top'>
@@ -69,7 +39,6 @@ const footerColumns = [
 			<PaginationNav
 				pages={[1, 2]}
 				current={1}
-				href='#posts'
 				framed={false}
 				size='md'
 			/>
@@ -89,7 +58,6 @@ const footerColumns = [
 	</main>
 
 	<Footer
-		columns={footerColumns}
 		variantLabel='Variant A2 · card grid'
 		titleWeight='medium'
 		class='mt-24'

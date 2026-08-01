@@ -12,34 +12,6 @@ import PricingTiers from '@components/membership/PricingTiers.astro';
 import Layout from '@layouts/Layout.astro';
 import { COMPARE, FAQS, LOCKED_POSTS, QUOTES, TIERS } from '../data/membership';
 
-const navLinks = [
-	{ label: 'Home', href: '#mem-top' },
-	{ label: 'Archive', href: '#mem-top' },
-	{ label: 'About', href: '#mem-top' },
-	{ label: 'Membership', href: '#mem-top', current: true },
-];
-
-const footerColumns = [
-	{
-		title: 'Sections',
-		ariaLabel: 'Sections',
-		links: [
-			{ label: 'Archive', href: '#mem-top' },
-			{ label: 'Tags', href: '#mem-top' },
-			{ label: 'Interviews', href: '#mem-top' },
-		],
-	},
-	{
-		title: 'More',
-		ariaLabel: 'More',
-		links: [
-			{ label: 'Authors', href: '#mem-top' },
-			{ label: 'Membership', href: '#tiers' },
-			{ label: 'RSS', href: '#mem-top' },
-		],
-	},
-];
-
 const description =
 	'No advertising, no sponsorship, no affiliate links. The Quarry is funded by the people who read it — and that is the whole business model.';
 ---
@@ -53,9 +25,7 @@ const description =
 	<Header
 		variant='site'
 		compact
-		titleHref='#mem-top'
-		links={navLinks}
-		subscribeHref='#tiers'
+		current='membership'
 	/>
 
 	<main id='mem-top'>
@@ -93,7 +63,6 @@ const description =
 	</main>
 
 	<Footer
-		columns={footerColumns}
 		variantLabel='Variant A1 · centered cards'
 		titleWeight='medium'
 		class='mt-24'

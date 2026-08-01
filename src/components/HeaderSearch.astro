@@ -1,0 +1,146 @@
+---
+import { SEARCH_INDEX } from '../data/search';
+
+/**
+ * Inline header search.
+ *
+ * The button swaps the nav for a field in the same row, so the header never
+ * changes height and nothing below it shifts. Results appear in a panel anchored
+ * under the field, styled like the nav menus. Escape and clicking outside close
+ * it and restore the nav; focus returns to the button.
+ *
+ * Matching runs client-side over the demo posts built into the page — no index
+ * file and no network. On a real Ghost install, Sodo Search binds to the
+ * `[data-ghost-search]` button and `openSearch()` stands aside.
+ *
+ * State lives in the `headerSearch` Alpine component on the header row, so the
+ * nav, the button and this field all read the same `open`.
+ */
+interface Props {
+	placeholder?: string;
+}
+
+const { placeholder = 'Search posts…' } = Astro.props;
+---
+
+<div
+	x-show='open'
+	x-cloak
+	class='relative mr-auto flex min-w-0 flex-[1_1_320px] flex-col'>
+	<div class='border-border bg-surface flex items-center gap-2.5 rounded-sm border px-3 py-2'>
+		<span
+			aria-hidden='true'
+			class='text-muted font-mono text-sm'>
+			⌕
+		</span>
+		<label
+			for='header-search-field'
+			class='sr-only'>
+			Search posts
+		</label>
+		<input
+			id='header-search-field'
+			type='search'
+			autocomplete='off'
+			placeholder={placeholder}
+			x-model='query'
+			x-ref='field'
+			x-on:keydown.escape='close()'
+			class='font-ui text-text placeholder:text-muted w-full min-w-0 border-0 bg-transparent text-[15px] outline-none'
+		/>
+		<button
+			type='button'
+			aria-label='Close search'
+			x-on:click='close()'
+			class='text-muted hover:text-text cursor-pointer border-0 bg-transparent font-mono text-sm'>
+			✕
+		</button>
+	</div>
+
+	<div
+		x-show='query.trim() !== ""'
+		x-cloak
+		class='border-border bg-surface absolute top-full right-0 left-0 z-40 mt-2 overflow-hidden rounded-md border shadow-md'
+		role='region'
+		aria-live='polite'>
+		<template x-if='results.length === 0'>
+			<p class='font-ui text-muted px-4 py-5 text-sm'>
+				No posts match <span
+					class='text-text font-semibold'
+					x-text='query'
+				></span>.
+			</p>
+		</template>
+
+		<ul
+			x-show='results.length > 0'
+			class='flex max-h-[60vh] list-none flex-col overflow-y-auto'>
+			<template
+				x-for='item in results'
+				x-bind:key='item.href + item.title'>
+				<li class='border-border border-b last:border-b-0'>
+					<a
+						x-bind:href='item.href'
+						class='hover:bg-surface-2 block px-4 py-3 no-underline'>
+						<span class='flex items-center gap-2.5'>
+							<span
+								class='font-meta text-meta tracking-meta text-accent uppercase'
+								x-text='item.tag'
+							></span>
+							<template x-if='item.tier'>
+								<span
+									class='border-border text-muted rounded-pill border px-2 py-[3px] font-mono text-[10.5px] tracking-[0.06em] uppercase'
+									x-text='item.tier'
+								></span>
+							</template>
+						</span>
+						<span
+							class='font-display tracking-heading text-text mt-1 block text-[17px] leading-[1.25] font-medium'
+							x-text='item.title'
+						></span>
+						<span
+							class='font-meta text-meta tracking-meta text-muted mt-1 block uppercase'
+							x-text='item.author + " · " + item.meta'
+						></span>
+					</a>
+				</li>
+			</template>
+		</ul>
+	</div>
+</div>
+
+<script is:inline define:vars={{ SEARCH_INDEX }}>
+	document.addEventListener('alpine:init', () => {
+		window.Alpine.data('headerSearch', () => ({
+			open: false,
+			query: '',
+			openSearch() {
+				/* Ghost's own search owns the interaction when it is on the page. */
+				if (document.getElementById('sodo-search')) return;
+				this.open = true;
+				this.query = '';
+				this.$nextTick(() => this.$refs.field?.focus());
+			},
+			close() {
+				if (!this.open) return;
+				this.open = false;
+				this.query = '';
+				/*
+				 * `$root`, not `$el`: `$el` is whichever element the expression is running
+				 * on (the input, or the ✕), while `$root` is the header row that owns the
+				 * state. `$nextTick` runs after Alpine has applied `x-show`, so the button
+				 * is visible — and therefore focusable — by the time we ask.
+				 */
+				const row = this.$root;
+				this.$nextTick(() => row.querySelector('[data-ghost-search]')?.focus());
+			},
+			get results() {
+				const q = this.query.trim().toLowerCase();
+				if (!q) return [];
+				return SEARCH_INDEX.filter((item) =>
+					[item.title, item.excerpt, item.tag, item.author].some((field) => field.toLowerCase().includes(q)),
+				).slice(0, 6);
+			},
+		}));
+	});
+</script>

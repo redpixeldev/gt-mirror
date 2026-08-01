@@ -12,34 +12,6 @@ import Layout from '@layouts/Layout.astro';
 import { CONTACT_EMAIL, STATS } from '../data/about';
 import { MASTHEAD } from '../data/authors';
 
-const navLinks = [
-	{ label: 'Home', href: '#about-top' },
-	{ label: 'Archive', href: '#about-top' },
-	{ label: 'Authors', href: '#team' },
-	{ label: 'About', href: '#about-top', current: true },
-];
-
-const footerColumns = [
-	{
-		title: 'Sections',
-		ariaLabel: 'Sections',
-		links: [
-			{ label: 'Archive', href: '#about-top' },
-			{ label: 'Tags', href: '#about-top' },
-			{ label: 'Interviews', href: '#about-top' },
-		],
-	},
-	{
-		title: 'More',
-		ariaLabel: 'More',
-		links: [
-			{ label: 'Authors', href: '#team' },
-			{ label: 'Membership', href: '#ab-cta' },
-			{ label: 'RSS', href: '#about-top' },
-		],
-	},
-];
-
 const title = 'A publication for people who make publications';
 const description =
 	'Independent writing on media, craft, and the cost of attention — read in 74 countries, funded entirely by its members.';
@@ -54,9 +26,7 @@ const description =
 	<Header
 		variant='site'
 		compact
-		titleHref='#about-top'
-		links={navLinks}
-		subscribeHref='#ab-cta'
+		current='about'
 	/>
 
 	<main id='about-top'>
@@ -84,7 +54,6 @@ const description =
 	</main>
 
 	<Footer
-		columns={footerColumns}
 		variantLabel='Variant A1 · centered statement'
 		titleWeight='medium'
 		class='mt-24'

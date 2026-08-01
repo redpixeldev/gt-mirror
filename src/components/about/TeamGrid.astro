@@ -1,5 +1,6 @@
 ---
 import type { Author } from '../../data/authors';
+import { ROUTES } from '../../data/navigation';
 
 /** "The masthead" — one card per writer, name over role and a count. */
 interface Props {
@@ -10,7 +11,7 @@ interface Props {
 	gap?: string;
 }
 
-const { team, href = '#team', headingId = 'team', gap = 'gap-5' } = Astro.props;
+const { team, href = ROUTES.author, headingId = 'team', gap = 'gap-5' } = Astro.props;
 ---
 
 <section

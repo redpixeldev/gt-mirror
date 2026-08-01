@@ -5,10 +5,9 @@ import PostListRow from '../PostListRow.astro';
 /** A1 author archive: the writer's posts as compact rows, tag first. */
 interface Props {
 	posts: AuthorPost[];
-	href?: string;
 }
 
-const { posts, href = '#posts' } = Astro.props;
+const { posts } = Astro.props;
 ---
 
 <section
@@ -30,7 +29,6 @@ const { posts, href = '#posts' } = Astro.props;
 				tier={post.tier}
 				titleClass='text-[25px] leading-[1.2]'
 				padding='py-[30px]'
-				href={href}
 			/>
 		))
 	}

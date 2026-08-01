@@ -40,6 +40,13 @@ There is deliberately no `index.astro` yet, so `/` has no page of its own — As
 reserves that filename for one page, so the second 404 variant lives at `/404-02`; swapping which
 variant is the live not-found page is a matter of moving the body between the two files.
 
+Site chrome lives in `src/data/navigation.ts`: one canonical `NAV`, the footer columns, the site title
+and tagline. `NAV` doubles as the **variant browser** — each item carries the layouts that hang off it,
+which `NavDropdown` renders as a hover/focus menu so all 27 routes are one gesture away while the
+variants are under review. A shipping theme drops the `NavDropdown` call and renders the same labels as
+plain links. `Header` and `Footer` read it themselves — a page passes `current='tags'` and a variant
+label, nothing more. Rebranding or re-pointing the nav is an edit to that one file.
+
 Demo content lives in `src/data/`: `posts.ts` holds the homepage's 12 posts plus the shared
 `Post` type, tags and authors; `archive.ts` holds the blog's 18; `post.ts`, `tags.ts`, `tagArchive.ts`, `authors.ts`, `authorArchive.ts` `recommendations.ts`, `about.ts` and `membership.ts` hold the
 single-post, tag-directory, single-tag-archive, masthead, single-author, recommendations and About content. They are separate on purpose —
@@ -122,6 +129,20 @@ Light is the default. A `.dark` class on `<html>` is resolved before first paint
 `Layout.astro` (stored preference wins, otherwise `prefers-color-scheme`), and the Alpine `theme` store
 owns the toggle and its `localStorage` mirror.
 
+### Search
+
+The header's search button swaps the nav for a field in the same row, so the header never changes
+height and nothing below it moves. Results appear in a panel under the field, styled like the nav
+menus; Escape or a click outside closes it, restores the nav and returns focus to the button.
+
+Matching runs client-side over `data/search.ts`, an index built at compile time from every demo post
+the site shows (homepage, blog, tag archive and author archive, deduped — 35 entries), so there is no
+index file and no network call. Results link to the post layout matching each post's membership state.
+
+The button also carries `data-ghost-search`, the hook Ghost's Sodo Search binds to. If that script is
+present, `openSearch()` detects it and stands aside so the two never both open. Following the design
+source, search appears only on the non-compact headers — the homepage and blog templates.
+
 ### Auth pages
 
 `/sign-in` and `/sign-up` render all four form states — default, loading, success, error — as real markup, shown with
@@ -142,9 +163,11 @@ at init, and the column can narrow once the webfonts land.
 
 ```
 src/components/
-├── Header.astro          # site nav — variant="site" | "demo" (styleguide specimen)
+├── Header.astro          # site nav — variant="site" | "demo" (styleguide) | "auth"
+├── NavDropdown.astro     # one nav item + its variant menu (hover and keyboard)
+├── HeaderSearch.astro    # inline header search over the demo posts
 ├── Footer.astro          # site footer, prop-driven columns
-├── FooterSlim.astro      # single-row footer for short pages (404, sign-in)
+├── FooterSlim.astro      # single-row footer for short pages (404)
 ├── NotFoundShell.astro   # full-height column shell shared by the 404 variants
 ├── ThemeToggle.astro     # fixed light/dark switch
 ├── Placeholder.astro     # CSS striped placeholder (no image files)
@@ -164,7 +187,7 @@ src/components/
 ├── recommendations/      # recommended-publication row (A1) and card (A2)
 ├── about/                # split hero, stats grid, editorial body, masthead, contact
 ├── membership/           # pricing tiers, comparison table, locked posts, quotes, FAQ
-├── auth/                 # slim header, card shell, sign-in/up forms, upsell, state switch
+├── auth/                 # card shell, sign-in/up forms, upsell, state switch
 ├── home/                 # homepage sections and their post-card variants
 └── styleguide/           # one component per numbered styleguide section
 ```

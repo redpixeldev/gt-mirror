@@ -17,34 +17,6 @@ const featured = ALL_POSTS.filter((post) => post.featured);
 const big = ALL_POSTS[1];
 const mediums = ALL_POSTS.slice(2, 5);
 const grid = ALL_POSTS.slice(5, 12);
-
-const navLinks = [
-	{ label: 'Latest', href: '#latest', current: true },
-	{ label: 'Essays', href: '#latest' },
-	{ label: 'Interviews', href: '#latest' },
-	{ label: 'Authors', href: '#authors' },
-];
-
-const footerColumns = [
-	{
-		title: 'Sections',
-		ariaLabel: 'Sections',
-		links: [
-			{ label: 'Latest', href: '#latest' },
-			{ label: 'Essays', href: '#latest' },
-			{ label: 'Interviews', href: '#latest' },
-		],
-	},
-	{
-		title: 'More',
-		ariaLabel: 'More',
-		links: [
-			{ label: 'Authors', href: '#authors' },
-			{ label: 'Membership', href: '#newsletter' },
-			{ label: 'RSS', href: '#latest' },
-		],
-	},
-];
 ---
 
 <Layout
@@ -55,9 +27,7 @@ const footerColumns = [
 
 	<Header
 		variant='site'
-		titleHref='#top'
-		links={navLinks}
-		subscribeHref='#newsletter'
+		current='home'
 	/>
 
 	<main id='top'>
@@ -76,7 +46,6 @@ const footerColumns = [
 			aria-label='Pagination'
 			class='container pt-14'>
 			<PaginationNav
-				href='#latest'
 				framed={false}
 				size='md'
 			/>
@@ -84,7 +53,6 @@ const footerColumns = [
 	</main>
 
 	<Footer
-		columns={footerColumns}
 		variantLabel='Variant A1 · magazine cover'
 		titleWeight='medium'
 		class='mt-24'

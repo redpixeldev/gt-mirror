@@ -1,5 +1,6 @@
 ---
 import type { DecoratedPost } from '../../data/posts';
+import { postHref } from '../../data/navigation';
 
 /** Featured strip — a Swiper carousel of 4:3 cards with prev/next controls. */
 interface Props {
@@ -9,7 +10,7 @@ interface Props {
 	headingId?: string;
 }
 
-const { posts, title = 'Featured', href = '#latest', headingId = 'a1-featured' } = Astro.props;
+const { posts, title = 'Featured', headingId = 'a1-featured' } = Astro.props;
 ---
 
 <section
@@ -56,7 +57,7 @@ const { posts, title = 'Featured', href = '#latest', headingId = 'a1-featured' }
 						<div class='swiper-slide'>
 							<article>
 								<a
-									href={href}
+									href={postHref(post.locked)}
 									class='text-text block no-underline'>
 									<img
 										src={post.img}

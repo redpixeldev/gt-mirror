@@ -4,8 +4,17 @@
  *
  * `variant="site"` is the real page header; `variant="demo"` is the specimen card
  * the styleguide shows in section 05 — same nav, smaller chrome, wrapped in a
- * bordered box instead of spanning the page.
+ * bordered box instead of spanning the page; `variant="auth"` is the slim bar the
+ * sign-in and sign-up pages use — wordmark and a way back, no nav or subscribe.
+ *
+ * The `site` nav is the variant browser: every item opens a menu of the layouts
+ * that hang off it (see `data/navigation.ts`). A shipping theme would render the
+ * same `NAV` as plain links — delete the `NavDropdown` call and keep the labels.
  */
+import { NAV, SITE_TITLE, SUBSCRIBE_HREF, type NavKey } from '../data/navigation';
+import NavDropdown from './NavDropdown.astro';
+import HeaderSearch from './HeaderSearch.astro';
+
 export interface NavLink {
 	label: string;
 	href: string;
@@ -13,22 +22,29 @@ export interface NavLink {
 }
 
 interface Props {
-	variant?: 'site' | 'demo';
+	variant?: 'site' | 'demo' | 'auth';
 	siteTitle?: string;
 	/** Makes the wordmark a link. Omit to render it as plain text. */
 	titleHref?: string;
+	/** Which nav item is the current page. Pages pass this and nothing else. */
+	current?: NavKey;
+	/** Overrides the shared nav — only the styleguide specimen needs its own. */
 	links?: NavLink[];
 	ariaLabel?: string;
 	/** Renders Subscribe as a link; omit for a plain button. */
 	subscribeHref?: string;
 	/** The post template's tighter bar: smaller wordmark, less padding, no search. */
 	compact?: boolean;
+	/** `auth` only: the trailing link back to the site. */
+	actionLabel?: string;
+	actionHref?: string;
 }
 
 const {
 	variant = 'demo',
-	siteTitle = 'The Quarry',
+	siteTitle = SITE_TITLE,
 	titleHref,
+	current,
 	links = [
 		{ label: 'Latest', href: '#05', current: true },
 		{ label: 'Essays', href: '#05' },
@@ -36,94 +52,124 @@ const {
 		{ label: 'About', href: '#05' },
 	],
 	ariaLabel = variant === 'site' ? 'Primary' : 'Sample site navigation',
-	subscribeHref,
+	subscribeHref = variant === 'site' ? SUBSCRIBE_HREF : undefined,
 	compact = false,
+	actionLabel = '← Back to site',
+	actionHref = '/homepage-01',
 } = Astro.props;
 
-const isSite = variant === 'site';
+const isAuth = variant === 'auth';
+/** `auth` shares the page-spanning shell with `site`; only `demo` is the boxed specimen. */
+const isSite = variant === 'site' || isAuth;
 const hasNote = Astro.slots.has('note');
 
 const Wrapper = isSite ? 'header' : 'nav';
 const Title = titleHref ? 'a' : 'span';
 const Subscribe = subscribeHref ? 'a' : 'button';
+
+const linkClass = 'font-ui text-[15px] no-underline';
+
+/** Trailing `.html` appears in the built output but not in dev. */
+const path = Astro.url.pathname.replace(/\.html$/, '').replace(/\/$/, '') || '/';
 ---
 
 <Wrapper
 	aria-label={isSite ? undefined : ariaLabel}
 	class:list={['bg-surface', isSite ? 'border-border border-b' : 'border-border overflow-hidden rounded-md border']}>
 	<div
+		x-data={!compact && variant === 'site' ? 'headerSearch' : undefined}
+		x-on:click.outside={!compact && variant === 'site' ? 'close()' : undefined}
 		class:list={[
 			'flex flex-wrap items-center',
-			isSite ? ['container gap-x-[30px] gap-y-4', compact ? 'py-5' : 'py-[22px]'] : 'gap-x-7 gap-y-4 px-5 py-5 md:px-7',
+			isAuth
+				? 'container gap-x-6 gap-y-4 py-[18px]'
+				: isSite
+					? ['container gap-x-[30px] gap-y-4', compact ? 'py-5' : 'py-[22px]']
+					: 'gap-x-7 gap-y-4 px-5 py-5 md:px-7',
 			hasNote && 'border-border border-b',
 		]}>
 		<Title
 			href={titleHref}
 			class:list={[
 				'font-display tracking-display text-text no-underline',
-				isSite ? [compact ? 'text-2xl' : 'text-[26px]', 'font-medium'] : 'text-2xl font-semibold',
+				isAuth
+					? 'mr-auto text-[22px] font-medium'
+					: isSite
+						? [compact ? 'text-2xl' : 'text-[26px]', 'font-medium']
+						: 'text-2xl font-semibold',
 			]}>
 			{siteTitle}
 		</Title>
 
-		{/* In `demo` the outer element is already the nav, so this stays a plain div. */}
 		{
-			isSite ? (
-				<nav
-					aria-label={ariaLabel}
-					class='mr-auto flex flex-wrap gap-[22px]'>
-					{links.map((link) => (
-						<a
-							href={link.href}
-							aria-current={link.current ? 'page' : undefined}
-							class:list={[
-								'font-ui text-[15px] no-underline',
-								link.current ? 'border-accent text-text border-b-2 pb-[3px]' : 'text-muted hover:text-text',
-							]}>
-							{link.label}
-						</a>
-					))}
-				</nav>
+			isAuth ? (
+				<a
+					href={actionHref}
+					class='font-ui text-muted hover:text-accent text-sm no-underline'>
+					{actionLabel}
+				</a>
 			) : (
-				<div class='mr-auto flex flex-wrap gap-[22px]'>
-					{links.map((link) => (
-						<a
-							href={link.href}
-							aria-current={link.current ? 'page' : undefined}
+				<>
+					{/* In `demo` the outer element is already the nav, so this stays a plain div. */}
+					{isSite ? (
+						<nav
+							aria-label={ariaLabel}
+							x-show={!compact && variant === 'site' ? '!open' : undefined}
+							class='mr-auto flex flex-wrap items-center gap-[22px]'>
+							{NAV.map((item) => (
+								<NavDropdown
+									item={item}
+									current={item.key === current}
+									path={path}
+								/>
+							))}
+						</nav>
+					) : (
+						<div class='mr-auto flex flex-wrap gap-[22px]'>
+							{links.map((link) => (
+								<a
+									href={link.href}
+									aria-current={link.current ? 'page' : undefined}
+									class:list={[
+										linkClass,
+										link.current ? 'border-accent text-text border-b-2 pb-[3px]' : 'text-muted hover:text-text',
+									]}>
+									{link.label}
+								</a>
+							))}
+						</div>
+					)}
+
+					{!compact && variant === 'site' && <HeaderSearch />}
+
+					{!compact && (
+						<button
+							type='button'
+							aria-label='Search'
+							aria-expanded={variant === 'site' ? 'false' : undefined}
+							data-ghost-search={variant === 'site' ? true : undefined}
+							x-show={variant === 'site' ? '!open' : undefined}
+							x-on:click={variant === 'site' ? 'openSearch()' : undefined}
 							class:list={[
-								'font-ui text-[15px] no-underline',
-								link.current ? 'border-accent text-text border-b-2 pb-[3px]' : 'text-muted hover:text-text',
+								'btn border-border text-text hover:bg-surface-2 rounded-pill grid size-9 shrink-0 cursor-pointer place-items-center border bg-transparent font-mono',
+								isSite ? 'text-sm' : 'text-[13px]',
 							]}>
-							{link.label}
-						</a>
-					))}
-				</div>
+							<span aria-hidden='true'>⌕</span>
+						</button>
+					)}
+
+					<Subscribe
+						type={subscribeHref ? undefined : 'button'}
+						href={subscribeHref}
+						class:list={[
+							'btn btn-primary font-ui rounded-sm px-[18px] py-2.5 text-sm font-semibold no-underline',
+							!subscribeHref && 'cursor-pointer',
+						]}>
+						Subscribe
+					</Subscribe>
+				</>
 			)
 		}
-
-		{
-			!compact && (
-				<button
-					type='button'
-					aria-label='Search'
-					class:list={[
-						'btn border-border text-text hover:bg-surface-2 rounded-pill grid size-9 shrink-0 cursor-pointer place-items-center border bg-transparent font-mono',
-						isSite ? 'text-sm' : 'text-[13px]',
-					]}>
-					<span aria-hidden='true'>⌕</span>
-				</button>
-			)
-		}
-
-		<Subscribe
-			type={subscribeHref ? undefined : 'button'}
-			href={subscribeHref}
-			class:list={[
-				'btn btn-primary font-ui rounded-sm px-[18px] py-2.5 text-sm font-semibold no-underline',
-				!subscribeHref && 'cursor-pointer',
-			]}>
-			Subscribe
-		</Subscribe>
 	</div>
 
 	<slot name='note' />

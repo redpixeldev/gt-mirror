@@ -1,5 +1,6 @@
 ---
 import type { DecoratedPost } from '../../data/posts';
+import { postHref } from '../../data/navigation';
 
 /** Standard post card for the archive grid, with an optional membership tier chip. */
 interface Props {
@@ -7,7 +8,7 @@ interface Props {
 	href?: string;
 }
 
-const { post, href = '#latest' } = Astro.props;
+const { post, href = postHref(post.locked) } = Astro.props;
 ---
 
 <article>
