@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 This repo builds the **MIRROR Ghost theme, Variant A ("Editorial")** as a static Astro site, one page at a time from the design sources in `~/Downloads/Mirror Ghost Theme/MIRROR *.dc.html`. Ignore every Variant B config value in those sources. See `README.md` for how the tokens, fonts, and card components fit together.
 
-`fonts.css` remains a commented-out template (the Fonts API is used instead).
+`fonts.css` holds the real `@font-face` rules — fonts are self-hosted from `public/fonts/`.
 
 ## Commands
 
@@ -31,14 +31,16 @@ src/
 ├── pages/          # File-based routing (index.astro)
 └── styles/
     ├── main.css    # Tailwind entry: @theme vars, @utility + @plugin directives
-    └── fonts.css   # @font-face template (add files to public/fonts/)
+    └── fonts.css   # @font-face for the self-hosted families in public/fonts/
 public/
+├── fonts/          # Newsreader (variable) + Archivo (static) woff2, committed
 └── img/            # Static images
 ```
 
 ### Build output (the non-obvious part)
 
 `astro.config.mjs` overrides Astro's defaults to emit flat, predictably-named assets:
+
 - `output: 'static'`, **no adapter** → a flat `dist/` with `index.html`, `assets/`, and `img/` at the root (what Cloudflare Pages serves directly).
 - `build.format: 'file'` → pages emit as `page.html` rather than `page/index.html`.
 - `entryFileNames: 'assets/main.js'` and `assetFileNames: 'assets/main[extname]'` → all JS/CSS bundle into single un-hashed files at fixed paths. **No cache-busting** — downstream references can rely on `assets/main.js` / `assets/main.css`.
@@ -49,6 +51,7 @@ Changing these affects anything that references assets by exact filename — cha
 ## Tailwind CSS v4 (CSS-first config)
 
 No `tailwind.config.js`. Everything lives in `src/styles/main.css`:
+
 - `@theme { }` — static tokens: font families (`--font-*: initial` clears Tailwind's defaults first), the MIRROR type scale, tracking, radii, `--measure`, `--wide-out`. Tailwind's built-in font-size line-height pairings are cleared here so leading is always explicit.
 - `@theme inline { }` — colour and shadow tokens mapped onto the `--mirror-*` variables defined in `:root`/`.dark`. `inline` is what lets one class on `<html>` repaint the page; those two blocks are the only place raw colour values live.
 - `@custom-variant dark` — the `dark:` variant keys off a `.dark` class, not `prefers-color-scheme`.
@@ -60,13 +63,13 @@ No `tailwind.config.js`. Everything lives in `src/styles/main.css`:
 
 ## Fonts
 
-Uses Astro's **experimental Fonts API** (gated behind `experimental.fonts` in `astro.config.mjs` on Astro 5.x — it graduates to a stable top-level `fonts` config in Astro 6; revisit on upgrade). Fonts are fetched from Google and **self-hosted at build** — no runtime third-party request.
+Fonts are **committed to the repo** as woff2 in `public/fonts/` and declared by hand in `src/styles/fonts.css`. There is no `fonts` block in `astro.config.mjs` and nothing is fetched from Google at build time. (This replaced Astro's Fonts API — see DECISIONS.md.)
 
-- **Families**: exactly two. **Newsreader** (`--font-newsreader`) — variable, weights `'300 600'`, roman + italic, with the `opsz` axis requested via `options.experimental.variableAxis`; dropping that axis makes Google serve a fixed-optical-size instance that renders ~5% wider than the design source. **Archivo** (`--font-archivo`) — weights `[400, 500, 600, 700]`, `normal` only.
-- **Wiring**: `--font-display`/`--font-body` resolve to `var(--font-newsreader)`, `--font-ui`/`--font-meta` to `var(--font-archivo)`, and `--font-mono` is a system stack. Repoint a token to change a role without touching the Astro config. Do **not** add IBM Plex Sans/Mono, even though the design source references them.
-- **Render**: a `<Font cssVariable="…" preload={[{ weight: '400' }]} />` per family in `Layout.astro`'s `<head>` emits the `@font-face` styles + a preload hint.
-- **Fallbacks**: Astro auto-generates a metric-matched `sans-serif` fallback (optimizedFallbacks on by default) to minimize layout shift.
-- `fonts.css` remains an escape hatch for manual `@font-face` (local fonts in `public/fonts/`); it is independent of the Fonts API.
+- **Families**: exactly two. **Newsreader** (`--font-newsreader`) — the **variable** font, roman + italic, both `wght` and `opsz` axes intact, split into Google's `latin` / `latin-ext` / `vietnamese` subsets with `unicode-range`. Declared `font-weight: 300 600`, which is what the design was built against; the binaries themselves carry `200 800`, so widening that range will change how `font-bold` renders. Never swap in a fixed-optical-size static instance — it renders ~5% wider than the design source and throws every line break off. **Archivo** (`--font-archivo`) — per-weight static instances, 100–900, roman + italic, full charset (not subset).
+- **Wiring**: the two family tokens are declared in `main.css`'s `@theme`; `--font-display`/`--font-body` resolve to `var(--font-newsreader)`, `--font-ui`/`--font-meta` to `var(--font-archivo)`, and `--font-mono` is a system stack. Repoint a token to change a role without touching `fonts.css`. Do **not** add IBM Plex Sans/Mono, even though the design source references them.
+- **Render**: `fonts.css` is `@import`ed into `main.css` at `layer(base)`. `Layout.astro`'s `<head>` carries two hand-written `<link rel="preload" … crossorigin>` hints for the latin faces — `crossorigin` is mandatory or the file is fetched twice.
+- **Fallbacks**: plain `Georgia, serif` / `system-ui, sans-serif`. The metric-matched fallbacks Astro used to generate are gone; `font-display: swap` means a small reflow on first paint.
+- **Adding or replacing a file**: drop the woff2 in `public/fonts/` and add its `@font-face` — filenames in `fonts.css` and files on disk are expected to match 1:1 with no orphans either way.
 
 ## Code Style
 

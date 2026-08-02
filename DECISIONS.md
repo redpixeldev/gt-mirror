@@ -176,3 +176,37 @@ twice a missing import. Assert a byte floor and a clean dev log, not just the st
 **Restart the dev server after adding a page.** Tailwind's Vite plugin does not always
 rescan a brand-new file, so arbitrary values silently fail to generate. `pnpm build`
 scans from scratch, so this is a dev-only trap.
+
+## Fonts are committed, not fetched
+
+The Fonts API was doing its job — Google-hosted files, downloaded at build, served
+from our own origin. It was swapped for woff2 committed under `public/fonts/` so the
+faces live with the repo and the build has no network dependency at all.
+
+**Newsreader had to stay variable.** The obvious version of this change — drop in the
+per-weight static files Google's download button hands you — is wrong. Those instances
+are pinned to a single optical size (`Newsreader 9pt`), and the whole reason the old
+config requested the `opsz` axis was that a pinned instance renders ~5% wider than the
+design source. The files here are the variable font pulled from the `css2` endpoint with
+`opsz` requested, roman **and** italic, carrying `wght 200–800` and `opsz 6–72`. Italic
+is not optional: eleven components set `italic` on `font-body`/`font-display`
+(standfirsts, author bios, member quotes, 404-02), and a synthesized oblique on a serif
+is visibly wrong.
+
+`font-weight: 300 600` is declared even though the binaries go to 800 — that is the
+range the Fonts API declared, so `font-bold` clamps to 600 exactly as it did before.
+Widening it is a visual change, not a cleanup.
+
+Newsreader keeps Google's `latin` / `latin-ext` / `vietnamese` split with `unicode-range`,
+so a reader who never hits those glyphs never downloads those files. Archivo is
+per-weight static — the design only uses 400/500/600/700, and there is no optical-size
+axis to lose.
+
+**What was given up:** Astro's metric-matched fallback faces. `font-display: swap` now
+falls back to plain Georgia / system-ui, so first paint reflows slightly. Worth it for a
+build with no font fetch; add `size-adjust`/`ascent-override` faces if CLS shows up.
+
+**Two things that bite here:** `<link rel="preload" as="font">` without `crossorigin`
+downloads the file twice. And a `@font-face` pointing at a missing file fails silently —
+the page just renders in the fallback. Check filenames in `fonts.css` against
+`public/fonts/` both directions; today it is 24 and 24.

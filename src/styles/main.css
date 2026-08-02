@@ -101,6 +101,15 @@
 @theme {
 	/* Exactly two families. Mono is a system stack — no IBM Plex is loaded. */
 	--font-*: initial;
+
+	/*
+	 * The two real families, self-hosted — @font-face lives in fonts.css. These
+	 * were previously injected by Astro's Fonts API; they are declared here now so
+	 * the role tokens below still have something to resolve to.
+	 */
+	--font-newsreader: 'Newsreader', Georgia, serif;
+	--font-archivo: 'Archivo', system-ui, sans-serif;
+
 	--font-display: var(--font-newsreader);
 	--font-body: var(--font-newsreader);
 	--font-ui: var(--font-archivo);

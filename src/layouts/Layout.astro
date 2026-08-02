@@ -1,6 +1,5 @@
 ---
 import '../styles/main.css';
-import { Font } from 'astro:assets';
 
 interface Props {
 	title: string;
@@ -43,13 +42,26 @@ const { title, description, contentWidth } = Astro.props;
 			})();
 		</script>
 
-		<Font
-			cssVariable='--font-newsreader'
-			preload={[{ weight: '400' }]}
+		{
+			/*
+			The @font-face rules live in styles/fonts.css; these two hints just pull the
+			latin faces off the critical path early. `crossorigin` is mandatory on font
+			preloads — without it the browser fetches the file a second time.
+		*/
+		}
+		<link
+			rel='preload'
+			href='/fonts/Newsreader-Variable-latin.woff2'
+			as='font'
+			type='font/woff2'
+			crossorigin
 		/>
-		<Font
-			cssVariable='--font-archivo'
-			preload={[{ weight: '400' }]}
+		<link
+			rel='preload'
+			href='/fonts/Archivo-Regular.woff2'
+			as='font'
+			type='font/woff2'
+			crossorigin
 		/>
 
 		<link

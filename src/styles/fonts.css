@@ -1,15 +1,254 @@
 /*
-Please create a `fonts` folder in the `public` folder then add the font files there.
+ * MIRROR fonts — self-hosted from `public/fonts/`.
+ *
+ * These faces replace Astro's Fonts API (see DECISIONS.md): the files ship with
+ * the repo instead of being fetched from Google at build time.
+ *
+ * Newsreader is the VARIABLE font, roman + italic, with both the `wght` and
+ * `opsz` axes intact — `font-optical-sizing: auto` in main.css rides the latter.
+ * A fixed-optical-size static instance renders ~5% wider and throws every line
+ * break off, so do not swap these for per-weight static files.
+ * The declared `300 600` range matches what the design was built against;
+ * the binaries themselves carry 200-800.
+ *
+ * Archivo is per-weight static instances, 100-900, roman + italic.
+ *
+ * Subsets (Newsreader) are Google's own splits, kept separate so a reader who
+ * never hits a Vietnamese or latin-ext glyph never downloads those files.
+ */
 
-Example usage:
-
+/* Newsreader — latin, normal */
 @font-face {
-  font-family: "proxima_nova";
-  src: url("/fonts/proxima_nova_regular-webfont.woff2") format("woff2"),
-    url("proxima_nova_regular-webfont.woff") format("woff");
-  font-weight: 400;
-  font-style: normal;
+	font-family: 'Newsreader';
+	font-style: normal;
+	font-weight: 300 600;
 	font-display: swap;
+	src: url('/fonts/Newsreader-Variable-latin.woff2') format('woff2');
+	unicode-range:
+		U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC,
+		U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
-*/
+/* Newsreader — latin-ext, normal */
+@font-face {
+	font-family: 'Newsreader';
+	font-style: normal;
+	font-weight: 300 600;
+	font-display: swap;
+	src: url('/fonts/Newsreader-Variable-latin-ext.woff2') format('woff2');
+	unicode-range:
+		U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F,
+		U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+/* Newsreader — vietnamese, normal */
+@font-face {
+	font-family: 'Newsreader';
+	font-style: normal;
+	font-weight: 300 600;
+	font-display: swap;
+	src: url('/fonts/Newsreader-Variable-vietnamese.woff2') format('woff2');
+	unicode-range:
+		U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309,
+		U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+
+/* Newsreader — latin, italic */
+@font-face {
+	font-family: 'Newsreader';
+	font-style: italic;
+	font-weight: 300 600;
+	font-display: swap;
+	src: url('/fonts/Newsreader-VariableItalic-latin.woff2') format('woff2');
+	unicode-range:
+		U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC,
+		U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* Newsreader — latin-ext, italic */
+@font-face {
+	font-family: 'Newsreader';
+	font-style: italic;
+	font-weight: 300 600;
+	font-display: swap;
+	src: url('/fonts/Newsreader-VariableItalic-latin-ext.woff2') format('woff2');
+	unicode-range:
+		U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F,
+		U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+/* Newsreader — vietnamese, italic */
+@font-face {
+	font-family: 'Newsreader';
+	font-style: italic;
+	font-weight: 300 600;
+	font-display: swap;
+	src: url('/fonts/Newsreader-VariableItalic-vietnamese.woff2') format('woff2');
+	unicode-range:
+		U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309,
+		U+0323, U+0329, U+1EA0-1EF9, U+20AB;
+}
+
+/* ------------------------------------------------------------------------ */
+
+/* Archivo — Thin 100 */
+@font-face {
+	font-family: 'Archivo';
+	font-style: normal;
+	font-weight: 100;
+	font-display: swap;
+	src: url('/fonts/Archivo-Thin.woff2') format('woff2');
+}
+
+/* Archivo — ExtraLight 200 */
+@font-face {
+	font-family: 'Archivo';
+	font-style: normal;
+	font-weight: 200;
+	font-display: swap;
+	src: url('/fonts/Archivo-ExtraLight.woff2') format('woff2');
+}
+
+/* Archivo — Light 300 */
+@font-face {
+	font-family: 'Archivo';
+	font-style: normal;
+	font-weight: 300;
+	font-display: swap;
+	src: url('/fonts/Archivo-Light.woff2') format('woff2');
+}
+
+/* Archivo — Regular 400 */
+@font-face {
+	font-family: 'Archivo';
+	font-style: normal;
+	font-weight: 400;
+	font-display: swap;
+	src: url('/fonts/Archivo-Regular.woff2') format('woff2');
+}
+
+/* Archivo — Medium 500 */
+@font-face {
+	font-family: 'Archivo';
+	font-style: normal;
+	font-weight: 500;
+	font-display: swap;
+	src: url('/fonts/Archivo-Medium.woff2') format('woff2');
+}
+
+/* Archivo — SemiBold 600 */
+@font-face {
+	font-family: 'Archivo';
+	font-style: normal;
+	font-weight: 600;
+	font-display: swap;
+	src: url('/fonts/Archivo-SemiBold.woff2') format('woff2');
+}
+
+/* Archivo — Bold 700 */
+@font-face {
+	font-family: 'Archivo';
+	font-style: normal;
+	font-weight: 700;
+	font-display: swap;
+	src: url('/fonts/Archivo-Bold.woff2') format('woff2');
+}
+
+/* Archivo — ExtraBold 800 */
+@font-face {
+	font-family: 'Archivo';
+	font-style: normal;
+	font-weight: 800;
+	font-display: swap;
+	src: url('/fonts/Archivo-ExtraBold.woff2') format('woff2');
+}
+
+/* Archivo — Black 900 */
+@font-face {
+	font-family: 'Archivo';
+	font-style: normal;
+	font-weight: 900;
+	font-display: swap;
+	src: url('/fonts/Archivo-Black.woff2') format('woff2');
+}
+
+/* Archivo — Thin 100, italic */
+@font-face {
+	font-family: 'Archivo';
+	font-style: italic;
+	font-weight: 100;
+	font-display: swap;
+	src: url('/fonts/Archivo-ThinItalic.woff2') format('woff2');
+}
+
+/* Archivo — ExtraLight 200, italic */
+@font-face {
+	font-family: 'Archivo';
+	font-style: italic;
+	font-weight: 200;
+	font-display: swap;
+	src: url('/fonts/Archivo-ExtraLightItalic.woff2') format('woff2');
+}
+
+/* Archivo — Light 300, italic */
+@font-face {
+	font-family: 'Archivo';
+	font-style: italic;
+	font-weight: 300;
+	font-display: swap;
+	src: url('/fonts/Archivo-LightItalic.woff2') format('woff2');
+}
+
+/* Archivo — Regular 400, italic */
+@font-face {
+	font-family: 'Archivo';
+	font-style: italic;
+	font-weight: 400;
+	font-display: swap;
+	src: url('/fonts/Archivo-Italic.woff2') format('woff2');
+}
+
+/* Archivo — Medium 500, italic */
+@font-face {
+	font-family: 'Archivo';
+	font-style: italic;
+	font-weight: 500;
+	font-display: swap;
+	src: url('/fonts/Archivo-MediumItalic.woff2') format('woff2');
+}
+
+/* Archivo — SemiBold 600, italic */
+@font-face {
+	font-family: 'Archivo';
+	font-style: italic;
+	font-weight: 600;
+	font-display: swap;
+	src: url('/fonts/Archivo-SemiBoldItalic.woff2') format('woff2');
+}
+
+/* Archivo — Bold 700, italic */
+@font-face {
+	font-family: 'Archivo';
+	font-style: italic;
+	font-weight: 700;
+	font-display: swap;
+	src: url('/fonts/Archivo-BoldItalic.woff2') format('woff2');
+}
+
+/* Archivo — ExtraBold 800, italic */
+@font-face {
+	font-family: 'Archivo';
+	font-style: italic;
+	font-weight: 800;
+	font-display: swap;
+	src: url('/fonts/Archivo-ExtraBoldItalic.woff2') format('woff2');
+}
+
+/* Archivo — Black 900, italic */
+@font-face {
+	font-family: 'Archivo';
+	font-style: italic;
+	font-weight: 900;
+	font-display: swap;
+	src: url('/fonts/Archivo-BlackItalic.woff2') format('woff2');
+}

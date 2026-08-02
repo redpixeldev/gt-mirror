@@ -1,4 +1,4 @@
-import { defineConfig, fontProviders } from 'astro/config';
+import { defineConfig } from 'astro/config';
 
 import tailwindcss from '@tailwindcss/vite';
 
@@ -9,33 +9,9 @@ export default defineConfig({
 		port: 4380,
 	},
 
-	// MIRROR ships exactly two families. Newsreader is a variable font: the weight
-	// range plus the explicit `opsz` axis are what keep optical sizing alive — without
-	// the axis request Google ships an instance pinned to its default optical size,
-	// which renders ~5% wider than the source and throws every line break off.
-	fonts: [
-		{
-			provider: fontProviders.google(),
-			name: 'Newsreader',
-			cssVariable: '--font-newsreader',
-			weights: ['300 600'],
-			styles: ['normal', 'italic'],
-			fallbacks: ['Georgia', 'serif'],
-			options: {
-				experimental: {
-					variableAxis: { opsz: [['6', '72']] },
-				},
-			},
-		},
-		{
-			provider: fontProviders.google(),
-			name: 'Archivo',
-			cssVariable: '--font-archivo',
-			weights: [400, 500, 600, 700],
-			styles: ['normal'],
-			fallbacks: ['system-ui', 'sans-serif'],
-		},
-	],
+	// No `fonts` block: MIRROR's two families ship with the repo as woff2 in
+	// `public/fonts/`, declared by hand in `src/styles/fonts.css`. Nothing is
+	// fetched from Google at build time. See DECISIONS.md for the trade-off.
 
 	build: {
 		assets: 'assets',
