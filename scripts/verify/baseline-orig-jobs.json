@@ -1,0 +1,326 @@
+[
+  {
+    "url": "http://localhost:4394/MIRROR%20Styleguide%20A1.dc.html",
+    "out": "orig-styleguide-light.png",
+    "height": 7568,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4394/MIRROR%20Styleguide%20A1%20DARK.dc.html",
+    "out": "orig-styleguide-dark.png",
+    "height": 7568,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4394/MIRROR%20Homepage%20A1.dc.html",
+    "out": "orig-homepage-01-light.png",
+    "height": 3873,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4394/MIRROR%20Homepage%20A1%20DARK.dc.html",
+    "out": "orig-homepage-01-dark.png",
+    "height": 3873,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4394/MIRROR%20Homepage%20A2.dc.html",
+    "out": "orig-homepage-02-light.png",
+    "height": 3518,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4394/MIRROR%20Homepage%20A2%20DARK.dc.html",
+    "out": "orig-homepage-02-dark.png",
+    "height": 3518,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4394/MIRROR%20Blog%20A1.dc.html",
+    "out": "orig-blog-01-light.png",
+    "height": 7061,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4394/MIRROR%20Blog%20A1%20DARK.dc.html",
+    "out": "orig-blog-01-dark.png",
+    "height": 7061,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4394/MIRROR%20Blog%20A2.dc.html",
+    "out": "orig-blog-02-light.png",
+    "height": 4530,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4394/MIRROR%20Blog%20A2%20DARK.dc.html",
+    "out": "orig-blog-02-dark.png",
+    "height": 4530,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4394/MIRROR%20Post%20A1.dc.html",
+    "out": "orig-post-01-light.png",
+    "height": 6296,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4394/MIRROR%20Post%20A1%20DARK.dc.html",
+    "out": "orig-post-01-dark.png",
+    "height": 6296,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4394/MIRROR%20Post%20A2.dc.html",
+    "out": "orig-post-02-light.png",
+    "height": 5541,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4394/MIRROR%20Post%20A2%20DARK.dc.html",
+    "out": "orig-post-02-dark.png",
+    "height": 5541,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4394/MIRROR%20Post%20A1%20PAY.dc.html",
+    "out": "orig-post-01-paywalled-light.png",
+    "height": 3486,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4394/MIRROR%20Post%20A1%20PAY%20DARK.dc.html",
+    "out": "orig-post-01-paywalled-dark.png",
+    "height": 3486,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4394/MIRROR%20Post%20A2%20PAY.dc.html",
+    "out": "orig-post-02-paywalled-light.png",
+    "height": 2925,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4394/MIRROR%20Post%20A2%20PAY%20DARK.dc.html",
+    "out": "orig-post-02-paywalled-dark.png",
+    "height": 2925,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4394/MIRROR%20404%20A1.dc.html",
+    "out": "orig-404-light.png",
+    "height": 928,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4394/MIRROR%20404%20A1%20DARK.dc.html",
+    "out": "orig-404-dark.png",
+    "height": 928,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4394/MIRROR%20404%20A2.dc.html",
+    "out": "orig-404-02-light.png",
+    "height": 928,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4394/MIRROR%20404%20A2%20DARK.dc.html",
+    "out": "orig-404-02-dark.png",
+    "height": 928,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4394/MIRROR%20Tags%20A1.dc.html",
+    "out": "orig-tags-01-light.png",
+    "height": 3022,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4394/MIRROR%20Tags%20A1%20DARK.dc.html",
+    "out": "orig-tags-01-dark.png",
+    "height": 3022,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4394/MIRROR%20Tags%20A2.dc.html",
+    "out": "orig-tags-02-light.png",
+    "height": 3097,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4394/MIRROR%20Tags%20A2%20DARK.dc.html",
+    "out": "orig-tags-02-dark.png",
+    "height": 3097,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4394/MIRROR%20Tag%20Archive%20A1.dc.html",
+    "out": "orig-tags-single-01-light.png",
+    "height": 4253,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4394/MIRROR%20Tag%20Archive%20A1%20DARK.dc.html",
+    "out": "orig-tags-single-01-dark.png",
+    "height": 4253,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4394/MIRROR%20Tag%20Archive%20A2.dc.html",
+    "out": "orig-tags-single-02-light.png",
+    "height": 3376,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4394/MIRROR%20Tag%20Archive%20A2%20DARK.dc.html",
+    "out": "orig-tags-single-02-dark.png",
+    "height": 3376,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4394/MIRROR%20Authors%20A1.dc.html",
+    "out": "orig-authors-01-light.png",
+    "height": 2230,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4394/MIRROR%20Authors%20A1%20DARK.dc.html",
+    "out": "orig-authors-01-dark.png",
+    "height": 2230,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4394/MIRROR%20Authors%20A2.dc.html",
+    "out": "orig-authors-02-light.png",
+    "height": 1940,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4394/MIRROR%20Authors%20A2%20DARK.dc.html",
+    "out": "orig-authors-02-dark.png",
+    "height": 1940,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4394/MIRROR%20Author%20A1.dc.html",
+    "out": "orig-author-single-01-light.png",
+    "height": 3693,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4394/MIRROR%20Author%20A1%20DARK.dc.html",
+    "out": "orig-author-single-01-dark.png",
+    "height": 3693,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4394/MIRROR%20Author%20A2.dc.html",
+    "out": "orig-author-single-02-light.png",
+    "height": 2658,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4394/MIRROR%20Author%20A2%20DARK.dc.html",
+    "out": "orig-author-single-02-dark.png",
+    "height": 2658,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4394/MIRROR%20Recommendations%20A1.dc.html",
+    "out": "orig-recommendations-01-light.png",
+    "height": 2701,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4394/MIRROR%20Recommendations%20A1%20DARK.dc.html",
+    "out": "orig-recommendations-01-dark.png",
+    "height": 2701,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4394/MIRROR%20Recommendations%20A2.dc.html",
+    "out": "orig-recommendations-02-light.png",
+    "height": 2515,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4394/MIRROR%20Recommendations%20A2%20DARK.dc.html",
+    "out": "orig-recommendations-02-dark.png",
+    "height": 2515,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4394/MIRROR%20About%20A1.dc.html",
+    "out": "orig-about-01-light.png",
+    "height": 3364,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4394/MIRROR%20About%20A1%20DARK.dc.html",
+    "out": "orig-about-01-dark.png",
+    "height": 3364,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4394/MIRROR%20About%20A2.dc.html",
+    "out": "orig-about-02-light.png",
+    "height": 3592,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4394/MIRROR%20About%20A2%20DARK.dc.html",
+    "out": "orig-about-02-dark.png",
+    "height": 3592,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4394/MIRROR%20Membership%20A1.dc.html",
+    "out": "orig-membership-01-light.png",
+    "height": 3671,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4394/MIRROR%20Membership%20A1%20DARK.dc.html",
+    "out": "orig-membership-01-dark.png",
+    "height": 3671,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4394/MIRROR%20Membership%20A2.dc.html",
+    "out": "orig-membership-02-light.png",
+    "height": 3779,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4394/MIRROR%20Membership%20A2%20DARK.dc.html",
+    "out": "orig-membership-02-dark.png",
+    "height": 3779,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4394/MIRROR%20Sign%20In%20A1.dc.html",
+    "out": "orig-sign-in-light.png",
+    "height": 928,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4394/MIRROR%20Sign%20In%20A1%20DARK.dc.html",
+    "out": "orig-sign-in-dark.png",
+    "height": 928,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4394/MIRROR%20Sign%20Up%20A1.dc.html",
+    "out": "orig-sign-up-light.png",
+    "height": 928,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4394/MIRROR%20Sign%20Up%20A1%20DARK.dc.html",
+    "out": "orig-sign-up-dark.png",
+    "height": 928,
+    "width": 1568
+  }
+]

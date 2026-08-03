@@ -1,7 +1,6 @@
 ---
 import Footer from '@components/Footer.astro';
 import Header from '@components/Header.astro';
-import ThemeToggle from '@components/ThemeToggle.astro';
 import PaginationNav from '@components/cards/PaginationNav.astro';
 import NewsletterBanner from '@components/home/NewsletterBanner.astro';
 import OtherTagsSection from '@components/tags/OtherTagsSection.astro';
@@ -15,8 +14,6 @@ import { OTHER_TAGS, TAG, TAG_COUNT_LABEL, TAG_POSTS } from '../data/tagArchive'
 	title={`${TAG.name} — Mirror`}
 	description={TAG.description}
 	contentWidth='1320px'>
-	<ThemeToggle />
-
 	<Header
 		variant='site'
 		compact

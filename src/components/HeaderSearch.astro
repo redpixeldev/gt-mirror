@@ -1,6 +1,4 @@
 ---
-import { SEARCH_INDEX } from '../data/search';
-
 /**
  * Inline header search.
  *
@@ -108,39 +106,3 @@ const { placeholder = 'Search posts…' } = Astro.props;
 		</ul>
 	</div>
 </div>
-
-<script is:inline define:vars={{ SEARCH_INDEX }}>
-	document.addEventListener('alpine:init', () => {
-		window.Alpine.data('headerSearch', () => ({
-			open: false,
-			query: '',
-			openSearch() {
-				/* Ghost's own search owns the interaction when it is on the page. */
-				if (document.getElementById('sodo-search')) return;
-				this.open = true;
-				this.query = '';
-				this.$nextTick(() => this.$refs.field?.focus());
-			},
-			close() {
-				if (!this.open) return;
-				this.open = false;
-				this.query = '';
-				/*
-				 * `$root`, not `$el`: `$el` is whichever element the expression is running
-				 * on (the input, or the ✕), while `$root` is the header row that owns the
-				 * state. `$nextTick` runs after Alpine has applied `x-show`, so the button
-				 * is visible — and therefore focusable — by the time we ask.
-				 */
-				const row = this.$root;
-				this.$nextTick(() => row.querySelector('[data-ghost-search]')?.focus());
-			},
-			get results() {
-				const q = this.query.trim().toLowerCase();
-				if (!q) return [];
-				return SEARCH_INDEX.filter((item) =>
-					[item.title, item.excerpt, item.tag, item.author].some((field) => field.toLowerCase().includes(q)),
-				).slice(0, 6);
-			},
-		}));
-	});
-</script>

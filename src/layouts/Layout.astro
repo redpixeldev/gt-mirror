@@ -1,5 +1,6 @@
 ---
 import '../styles/main.css';
+import { SEARCH_INDEX } from '../data/search';
 
 interface Props {
 	title: string;
@@ -33,8 +34,16 @@ const { title, description, contentWidth } = Astro.props;
 		<script is:inline>
 			(() => {
 				try {
+					// DEMO-ONLY: ?mode= lets the verification harness address a mode by
+					// URL. Delete before shipping; the stored preference and the OS
+					// default are the real mechanism.
+					const forced = new URLSearchParams(location.search).get('mode');
 					const stored = localStorage.getItem('mirror-theme');
-					const dark = stored ? stored === 'dark' : window.matchMedia('(prefers-color-scheme: dark)').matches;
+					const dark = forced
+						? forced === 'dark'
+						: stored
+							? stored === 'dark'
+							: window.matchMedia('(prefers-color-scheme: dark)').matches;
 					document.documentElement.classList.toggle('dark', dark);
 				} catch {
 					/* private mode / storage disabled — light is the default */
@@ -71,8 +80,18 @@ const { title, description, contentWidth } = Astro.props;
 			href='/favicon.png'
 		/>
 
-		{/* Inline (not deferred) so the listener exists before Alpine boots below. */}
-		<script is:inline>
+		{
+			/*
+		    Inline (not deferred) so the listener exists before Alpine boots below —
+		    a bundled module loses the race with the deferred CDN script and every
+		    `x-data` on the page fails to resolve.
+
+		    `headerSearch` lives here rather than in HeaderSearch.astro because the
+		    compact post header renders the component's state (the hamburger) without
+		    rendering the component itself.
+		*/
+		}
+		<script is:inline define:vars={{ SEARCH_INDEX }}>
 			document.addEventListener('alpine:init', () => {
 				Alpine.store('theme', {
 					dark: document.documentElement.classList.contains('dark'),
@@ -110,6 +129,69 @@ const { title, description, contentWidth } = Astro.props;
 						this.open = null;
 					},
 				});
+
+				window.Alpine.data('headerSearch', () => ({
+					open: false,
+					query: '',
+					/*
+					 * DEMO-ONLY: ?menu=open renders the mobile overlay for capture — a headless
+					 * tab cannot click the hamburger. Delete with the other query hooks.
+					 */
+					menuOpen: new URLSearchParams(location.search).get('menu') === 'open',
+					/*
+					 * The overlay starts under the bar. The bar's height depends on which
+					 * template rendered it (`compact` is shorter), so it is measured rather
+					 * than assumed — up front as well as on open, so the ?menu=open hook lands
+					 * in the right place too.
+					 */
+					barH: 0,
+					init() {
+						this.barH = this.$refs.bar?.offsetHeight ?? 0;
+					},
+					toggleMenu() {
+						this.menuOpen ? this.closeMenu() : this.openMenu();
+					},
+					openMenu() {
+						this.barH = this.$refs.bar?.offsetHeight ?? 0;
+						this.menuOpen = true;
+						/* The page behind must not scroll while a full-height menu is open. */
+						document.body.style.overflow = 'hidden';
+					},
+					closeMenu() {
+						if (!this.menuOpen) return;
+						this.menuOpen = false;
+						this.query = '';
+						document.body.style.overflow = '';
+						this.$refs.burger?.focus();
+					},
+					openSearch() {
+						/* Ghost's own search owns the interaction when it is on the page. */
+						if (document.getElementById('sodo-search')) return;
+						this.open = true;
+						this.query = '';
+						this.$nextTick(() => this.$refs.field?.focus());
+					},
+					close() {
+						if (!this.open) return;
+						this.open = false;
+						this.query = '';
+						/*
+						 * `$root`, not `$el`: `$el` is whichever element the expression is running
+						 * on (the input, or the ✕), while `$root` is the header row that owns the
+						 * state. `$nextTick` runs after Alpine has applied `x-show`, so the button
+						 * is visible — and therefore focusable — by the time we ask.
+						 */
+						const row = this.$root;
+						this.$nextTick(() => row.querySelector('[data-ghost-search]')?.focus());
+					},
+					get results() {
+						const q = this.query.trim().toLowerCase();
+						if (!q) return [];
+						return SEARCH_INDEX.filter((item) =>
+							[item.title, item.excerpt, item.tag, item.author].some((field) => field.toLowerCase().includes(q)),
+						).slice(0, 6);
+					},
+				}));
 			});
 		</script>
 

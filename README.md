@@ -132,6 +132,42 @@ Light is the default. A `.dark` class on `<html>` is resolved before first paint
 `Layout.astro` (stored preference wins, otherwise `prefers-color-scheme`), and the Alpine `theme` store
 owns the toggle and its `localStorage` mirror.
 
+`ThemeToggle` renders inside `Header.astro`, in the bar order the chrome contract fixes —
+**search · mode · subscribe** — on every header variant, `auth` included. It used to be a floating
+`fixed` button imported separately into each page; the only page that still imports it directly is
+`styleguide.astro`, which renders the boxed `demo` header specimen rather than a real site header. Its
+measured cost against the reference PNGs is in `DECISIONS.md`.
+
+### Pagination
+
+Every archive-style template renders `PaginationNav` directly below its list or grid and
+above the newsletter block — the homepages included, where it sits inside the 1120px
+article column on `/homepage-02` so it aligns with the grid. This diverges from the
+reference PNGs, which put the homepage control at the foot of the page; the measured cost
+is in `DECISIONS.md`.
+
+### Responsive
+
+Three named breakpoints on top of Tailwind's defaults, declared in `main.css`'s `@theme`:
+
+| token   |  width | what turns on                                                               |
+| :------ | -----: | :-------------------------------------------------------------------------- |
+| `xs`    |  380px | two-up rows go single-column                                                |
+| `stack` |  768px | index tables and fixed sidebars stack; the membership matrix becomes a list |
+| `nav`   | 1200px | the nav collapses into a hamburger overlay; the tag strips wrap             |
+
+No reference PNG is narrower than 1568px, so everything gated on these is **unmeasured against the
+design** — judge it by eye and by the audit below.
+
+`public/probe-mobile.html` loads every route in an iframe at 12 widths (320 → 1536) and reports page
+overflow, escaping elements, squeezed prose, content hidden inside a scroll container, and sticky
+elements stranded in a stacked column: **324 checks,
+currently 0 failures**. Run it by opening the page; it is a demo affordance, so delete it before
+shipping.
+
+Headless Chrome will not open a window under about 500px, so a "375px" screenshot is really a 500px
+layout, cropped. Narrow widths must be measured through the probe, never by capturing directly.
+
 ### Logo
 
 `Logo.astro` renders the site logo as an image linked to the homepage, sized by height so the artwork
@@ -238,6 +274,18 @@ beats Tailwind utilities on the carousel element. Put spacing on a wrapper aroun
 `cards/` maps 1:1 to Ghost's editor card set — this is the markup destined for the Ghost theme, so keep
 each card self-contained and prop-driven. Later pages reuse these components via props rather than
 copying markup.
+
+## Before shipping
+
+Delete the demo-only affordances. Each is marked in its own docstring:
+
+- `public/probe-mobile.html` — the 324-check responsive audit, and `public/probe-focus.html`,
+  which checks nothing clips the tag pills' focus ring
+- the `?tag=` hook in `blog-01.astro` / `blog-02.astro`, which opens the archive pre-filtered
+- the `?mode=` override in `Layout.astro` and the `?menu=open` hook in `HeaderSearch.astro`, both of
+  which exist so the verification harness can address a state a headless tab cannot click into
+- `FormStateSwitch` and the `?state=` parsing on `/sign-in` and `/sign-up`
+- the nav dropdowns in `Header.astro` — a shipping theme renders the same `NAV` labels as plain links
 
 ## Deployment
 

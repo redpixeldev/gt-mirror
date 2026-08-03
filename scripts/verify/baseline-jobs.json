@@ -1,0 +1,326 @@
+[
+  {
+    "url": "http://localhost:4393/styleguide?mode=light",
+    "out": ".shots/build-styleguide-light.png",
+    "height": 7568,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4393/styleguide?mode=dark",
+    "out": ".shots/build-styleguide-dark.png",
+    "height": 7568,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4393/homepage-01?mode=light",
+    "out": ".shots/build-homepage-01-light.png",
+    "height": 3873,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4393/homepage-01?mode=dark",
+    "out": ".shots/build-homepage-01-dark.png",
+    "height": 3873,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4393/homepage-02?mode=light",
+    "out": ".shots/build-homepage-02-light.png",
+    "height": 3518,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4393/homepage-02?mode=dark",
+    "out": ".shots/build-homepage-02-dark.png",
+    "height": 3518,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4393/blog-01?mode=light",
+    "out": ".shots/build-blog-01-light.png",
+    "height": 7061,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4393/blog-01?mode=dark",
+    "out": ".shots/build-blog-01-dark.png",
+    "height": 7061,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4393/blog-02?mode=light",
+    "out": ".shots/build-blog-02-light.png",
+    "height": 4530,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4393/blog-02?mode=dark",
+    "out": ".shots/build-blog-02-dark.png",
+    "height": 4530,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4393/post-01?mode=light",
+    "out": ".shots/build-post-01-light.png",
+    "height": 6296,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4393/post-01?mode=dark",
+    "out": ".shots/build-post-01-dark.png",
+    "height": 6296,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4393/post-02?mode=light",
+    "out": ".shots/build-post-02-light.png",
+    "height": 5541,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4393/post-02?mode=dark",
+    "out": ".shots/build-post-02-dark.png",
+    "height": 5541,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4393/post-01-paywalled?mode=light",
+    "out": ".shots/build-post-01-paywalled-light.png",
+    "height": 3486,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4393/post-01-paywalled?mode=dark",
+    "out": ".shots/build-post-01-paywalled-dark.png",
+    "height": 3486,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4393/post-02-paywalled?mode=light",
+    "out": ".shots/build-post-02-paywalled-light.png",
+    "height": 2925,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4393/post-02-paywalled?mode=dark",
+    "out": ".shots/build-post-02-paywalled-dark.png",
+    "height": 2925,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4393/404?mode=light",
+    "out": ".shots/build-404-light.png",
+    "height": 928,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4393/404?mode=dark",
+    "out": ".shots/build-404-dark.png",
+    "height": 928,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4393/404-02?mode=light",
+    "out": ".shots/build-404-02-light.png",
+    "height": 928,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4393/404-02?mode=dark",
+    "out": ".shots/build-404-02-dark.png",
+    "height": 928,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4393/tags-01?mode=light",
+    "out": ".shots/build-tags-01-light.png",
+    "height": 3022,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4393/tags-01?mode=dark",
+    "out": ".shots/build-tags-01-dark.png",
+    "height": 3022,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4393/tags-02?mode=light",
+    "out": ".shots/build-tags-02-light.png",
+    "height": 3097,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4393/tags-02?mode=dark",
+    "out": ".shots/build-tags-02-dark.png",
+    "height": 3097,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4393/tags-single-01?mode=light",
+    "out": ".shots/build-tags-single-01-light.png",
+    "height": 4253,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4393/tags-single-01?mode=dark",
+    "out": ".shots/build-tags-single-01-dark.png",
+    "height": 4253,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4393/tags-single-02?mode=light",
+    "out": ".shots/build-tags-single-02-light.png",
+    "height": 3376,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4393/tags-single-02?mode=dark",
+    "out": ".shots/build-tags-single-02-dark.png",
+    "height": 3376,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4393/authors-01?mode=light",
+    "out": ".shots/build-authors-01-light.png",
+    "height": 2230,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4393/authors-01?mode=dark",
+    "out": ".shots/build-authors-01-dark.png",
+    "height": 2230,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4393/authors-02?mode=light",
+    "out": ".shots/build-authors-02-light.png",
+    "height": 1940,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4393/authors-02?mode=dark",
+    "out": ".shots/build-authors-02-dark.png",
+    "height": 1940,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4393/author-single-01?mode=light",
+    "out": ".shots/build-author-single-01-light.png",
+    "height": 3693,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4393/author-single-01?mode=dark",
+    "out": ".shots/build-author-single-01-dark.png",
+    "height": 3693,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4393/author-single-02?mode=light",
+    "out": ".shots/build-author-single-02-light.png",
+    "height": 2658,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4393/author-single-02?mode=dark",
+    "out": ".shots/build-author-single-02-dark.png",
+    "height": 2658,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4393/recommendations-01?mode=light",
+    "out": ".shots/build-recommendations-01-light.png",
+    "height": 2701,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4393/recommendations-01?mode=dark",
+    "out": ".shots/build-recommendations-01-dark.png",
+    "height": 2701,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4393/recommendations-02?mode=light",
+    "out": ".shots/build-recommendations-02-light.png",
+    "height": 2515,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4393/recommendations-02?mode=dark",
+    "out": ".shots/build-recommendations-02-dark.png",
+    "height": 2515,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4393/about-01?mode=light",
+    "out": ".shots/build-about-01-light.png",
+    "height": 3364,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4393/about-01?mode=dark",
+    "out": ".shots/build-about-01-dark.png",
+    "height": 3364,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4393/about-02?mode=light",
+    "out": ".shots/build-about-02-light.png",
+    "height": 3592,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4393/about-02?mode=dark",
+    "out": ".shots/build-about-02-dark.png",
+    "height": 3592,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4393/membership-01?mode=light",
+    "out": ".shots/build-membership-01-light.png",
+    "height": 3671,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4393/membership-01?mode=dark",
+    "out": ".shots/build-membership-01-dark.png",
+    "height": 3671,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4393/membership-02?mode=light",
+    "out": ".shots/build-membership-02-light.png",
+    "height": 3779,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4393/membership-02?mode=dark",
+    "out": ".shots/build-membership-02-dark.png",
+    "height": 3779,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4393/sign-in?mode=light",
+    "out": ".shots/build-sign-in-light.png",
+    "height": 928,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4393/sign-in?mode=dark",
+    "out": ".shots/build-sign-in-dark.png",
+    "height": 928,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4393/sign-up?mode=light",
+    "out": ".shots/build-sign-up-light.png",
+    "height": 928,
+    "width": 1568
+  },
+  {
+    "url": "http://localhost:4393/sign-up?mode=dark",
+    "out": ".shots/build-sign-up-dark.png",
+    "height": 928,
+    "width": 1568
+  }
+]

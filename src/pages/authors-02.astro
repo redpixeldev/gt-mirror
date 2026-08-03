@@ -1,7 +1,6 @@
 ---
 import Footer from '@components/Footer.astro';
 import Header from '@components/Header.astro';
-import ThemeToggle from '@components/ThemeToggle.astro';
 import AuthorGrid from '@components/authors/AuthorGrid.astro';
 import PageIntro from '@components/PageIntro.astro';
 import NewsletterBanner from '@components/home/NewsletterBanner.astro';
@@ -15,8 +14,6 @@ const intro = `${AUTHOR_TOTAL} people write here. Between them they have filed 1
 	title='Writers — Mirror'
 	description={intro}
 	contentWidth='1320px'>
-	<ThemeToggle />
-
 	<Header
 		variant='site'
 		compact

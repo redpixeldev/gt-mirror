@@ -11,7 +11,8 @@ interface Props {
 const { post, href = postHref(post.locked) } = Astro.props;
 ---
 
-<article class='border-border grid grid-cols-[1fr_116px] items-start gap-5 border-b pb-7'>
+<article
+	class='border-border max-stack:grid-cols-[minmax(0,1fr)] grid grid-cols-[minmax(0,1fr)_116px] items-start gap-5 border-b pb-7'>
 	<div>
 		<p class='font-meta text-meta tracking-meta text-accent uppercase'>{post.tag}</p>
 		<h3 class='font-display tracking-heading mt-2 text-[21px] leading-[1.26] font-medium'>

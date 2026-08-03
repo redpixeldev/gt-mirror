@@ -1,7 +1,6 @@
 ---
 import Footer from '@components/Footer.astro';
 import Header from '@components/Header.astro';
-import ThemeToggle from '@components/ThemeToggle.astro';
 import PaginationNav from '@components/cards/PaginationNav.astro';
 import FeaturedCarousel from '@components/home/FeaturedCarousel.astro';
 import HeroLead from '@components/home/HeroLead.astro';
@@ -23,8 +22,6 @@ const grid = ALL_POSTS.slice(5, 12);
 	title='Mirror — Independent writing on media, craft, and the cost of attention'
 	description='A magazine-cover homepage for the MIRROR Ghost theme: featured essays, interviews and field notes from The Quarry.'
 	contentWidth='1320px'>
-	<ThemeToggle />
-
 	<Header
 		variant='site'
 		current='home'
@@ -39,8 +36,6 @@ const grid = ALL_POSTS.slice(5, 12);
 			grid={grid}
 			tags={TAGS}
 		/>
-		<NewsletterBanner />
-		<WritersSection authors={AUTHORS} />
 
 		<section
 			aria-label='Pagination'
@@ -50,6 +45,8 @@ const grid = ALL_POSTS.slice(5, 12);
 				size='md'
 			/>
 		</section>
+		<NewsletterBanner />
+		<WritersSection authors={AUTHORS} />
 	</main>
 
 	<Footer

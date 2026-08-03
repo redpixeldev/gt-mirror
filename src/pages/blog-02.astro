@@ -1,7 +1,6 @@
 ---
 import Footer from '@components/Footer.astro';
 import Header from '@components/Header.astro';
-import ThemeToggle from '@components/ThemeToggle.astro';
 import ArchiveEmptyState from '@components/blog/ArchiveEmptyState.astro';
 import ArchiveFilterBar from '@components/blog/ArchiveFilterBar.astro';
 import ArchiveGrid from '@components/blog/ArchiveGrid.astro';
@@ -23,7 +22,9 @@ const countLine = `${total} posts · ${writers} writers`;
 
 /** Same filter/sort scope as blog-01 — only the posts section differs between A1 and A2. */
 const archiveState = `{
-	tag: null,
+	// DEMO-ONLY: ?tag= opens the archive already filtered, so a headless tab can
+	// capture the active-pill state. Delete with the other query hooks.
+	tag: new URLSearchParams(location.search).get('tag'),
 	oldest: false,
 	counts: ${JSON.stringify(counts)},
 	total: ${total},
@@ -48,8 +49,6 @@ const archiveState = `{
 	title='The Archive — Mirror'
 	description='Six years of essays, interviews, and field notes on independent publishing from The Quarry.'
 	contentWidth='1320px'>
-	<ThemeToggle />
-
 	<Header
 		variant='site'
 		current='archive'

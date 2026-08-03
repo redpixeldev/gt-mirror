@@ -11,7 +11,8 @@ interface Props {
 const { post, href = postHref(post.locked) } = Astro.props;
 ---
 
-<article class='border-border grid grid-cols-[64px_1fr_auto] items-baseline gap-7 border-t py-[30px]'>
+<article
+	class='border-border max-stack:grid-cols-[40px_minmax(0,1fr)] max-stack:gap-4 grid grid-cols-[64px_minmax(0,1fr)_auto] items-baseline gap-7 border-t py-[30px]'>
 	<span class='text-muted font-mono text-xs'>{post.num}</span>
 
 	<div>

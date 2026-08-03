@@ -13,7 +13,8 @@ const actionClass =
 	'font-ui rounded-sm border px-[18px] py-2.5 text-[13.5px] font-semibold whitespace-nowrap no-underline';
 ---
 
-<article class='border-border grid grid-cols-[44px_minmax(0,1fr)_auto] items-start gap-7 border-b py-[34px]'>
+<article
+	class='border-border max-stack:grid-cols-[minmax(0,1fr)] max-stack:gap-5 grid grid-cols-[44px_minmax(0,1fr)_auto] items-start gap-7 border-b py-[34px]'>
 	<img
 		src={rec.favicon}
 		alt=''
@@ -38,7 +39,7 @@ const actionClass =
 		<p class='text-body text-muted mt-3 max-w-[60ch] leading-[1.62] text-pretty'>{rec.description}</p>
 	</div>
 
-	<div class='flex flex-col items-end gap-2'>
+	<div class='max-stack:items-start max-stack:flex-row max-stack:flex-wrap flex flex-col items-end gap-2'>
 		{
 			rec.oneClick && (
 				<a

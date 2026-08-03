@@ -1,0 +1,127 @@
+<!doctype html><meta charset="utf-8">
+<style>
+  body { margin:0; font:11px/1.45 monospace; background:#fff }
+  iframe { height:800px; border:0; position:absolute; left:-9999px }
+  pre { padding:10px }
+  .bad { color:#b00; font-weight:700 }
+</style>
+<pre id="out">auditing…</pre>
+<div id="frames"></div>
+<script>
+const ROUTES = ["/homepage-01", "/homepage-02", "/blog-01", "/blog-02", "/post-01", "/post-02", "/post-01-paywalled", "/post-02-paywalled", "/404", "/404-02", "/tags-01", "/tags-02", "/tags-single-01", "/tags-single-02", "/authors-01", "/authors-02", "/author-single-01", "/author-single-02", "/recommendations-01", "/recommendations-02", "/about-01", "/about-02", "/membership-01", "/membership-02", "/sign-in", "/sign-up", "/styleguide"];
+const WIDTHS = [320, 380, 767, 768, 1023, 1024, 1199, 1200, 1279, 1280, 1535, 1536];
+const NAV = 1200;
+const host = document.getElementById('frames');
+const out = document.getElementById('out');
+const grid = {};
+
+// an element clipped by an ancestor cannot push the page, so it is not overflow
+function clipped(el, doc) {
+  for (let p = el.parentElement; p && p !== doc.body; p = p.parentElement) {
+    const o = getComputedStyle(p);
+    if (/hidden|auto|scroll|clip/.test(o.overflowX) || /hidden|auto|scroll|clip/.test(o.overflow)) return true;
+  }
+  return false;
+}
+// text that is deliberately cut to one line is not "cramped"
+function truncated(cs) {
+  return cs.textOverflow === 'ellipsis' || cs.whiteSpace === 'nowrap';
+}
+// How many lines a block of text wrapped to.
+//
+// NOT getClientRects().length — that returns one rect per *line box* only for inline
+// elements. For a block-level <p> or <h2> it returns exactly one, always, so any rule
+// gated on `getClientRects().length >= N` silently never fires. Two rules below were
+// dead for that reason.
+function lineCount(el, cs) {
+  let lh = parseFloat(cs.lineHeight);
+  if (!isFinite(lh) || lh <= 0) lh = parseFloat(cs.fontSize) * 1.2; // 'normal'
+  if (!isFinite(lh) || lh <= 0) return 1;
+  return Math.max(1, Math.round(el.getBoundingClientRect().height / lh));
+}
+
+function audit(doc, W) {
+  const docW = doc.documentElement.clientWidth;
+  const bad = [];
+  const seen = new Set();
+  const note = (s) => { if (!seen.has(s)) { seen.add(s); bad.push(s); } };
+  // 250px is the comfortable floor for a wrapped column, but a 320px screen cannot
+  // give one that much, so scale down on the narrowest widths. `min`, not a branch:
+  // the old `W >= 768 ? 250 : 0.6 * (docW - 64)` demanded 422px at 767px — a stricter
+  // bar than the 250px it asked one pixel later, which flagged every legitimate
+  // two-column tablet layout as cramped.
+  const minProse = Math.min(250, 0.6 * (docW - 64));
+
+  if (doc.documentElement.scrollWidth > W + 1) {
+    note('OVERFLOW page +' + (doc.documentElement.scrollWidth - W));
+  }
+
+  doc.querySelectorAll('body *').forEach((el) => {
+    const r = el.getBoundingClientRect();
+    if (r.width === 0 || r.height === 0) return;
+    const cs = getComputedStyle(el);
+    if (cs.position === 'fixed') return;
+    const tag = el.tagName.toLowerCase();
+    const txt = (el.textContent || '').trim();
+
+    if (r.right > docW + 1 && !clipped(el, doc)) note('ESCAPES ' + tag + '.' + (el.className||'').toString().split(' ').slice(0,3).join('.') + '@' + Math.round(r.right));
+
+    // squeezed prose: real wrapped copy, not a footer column or a clipped excerpt
+    if (['p','dd','li'].includes(tag) && txt.length > 60 && el.children.length === 0 &&
+        !truncated(cs) && lineCount(el, cs) >= 3 &&
+        !el.closest('footer, nav') && r.width < minProse) {
+      note('NARROW ' + tag + ' in ' + (el.parentElement ? el.parentElement.tagName.toLowerCase() + '.' + (el.parentElement.className||'').toString().split(' ').slice(0,3).join('.') : '?') + ' ' + Math.round(r.width) + 'px "' + txt.slice(0, 16) + '…"');
+    }
+
+    if (/^h[1-4]$/.test(tag) && !truncated(cs)) {
+      const lines = lineCount(el, cs);
+      const limit = W <= 380 ? 4 : 3;
+      if (lines > limit) note('WRAP ' + tag + ' ' + lines + ' lines "' + txt.slice(0, 20) + '…"');
+    }
+
+    // a sticky element inside a stacked (single-column) parent pins itself while the
+    // rest of the column scrolls underneath it — the content overlaps the rail. This
+    // is invisible to every overflow rule above: nothing is wider than anything.
+    if (cs.position === 'sticky') {
+      const parent = el.parentElement;
+      const pcs = parent ? getComputedStyle(parent) : null;
+      const tracks = pcs && pcs.display.includes('grid') ? pcs.gridTemplateColumns.split(' ').length : null;
+      if (tracks === 1) note('STUCK ' + tag + '.' + (el.className||'').toString().split(' ').slice(0,2).join('.'));
+    }
+
+    // <pre> is the recognised exception: code must not be re-wrapped
+    if (W < NAV && tag !== 'pre' && /auto|scroll/.test(cs.overflowX) && el.scrollWidth > el.clientWidth + 2) {
+      note('SCROLLHIDE ' + tag + '.' + (el.className||'').toString().split(' ').slice(0,3).join('.') + ' +' + (el.scrollWidth - el.clientWidth));
+    }
+  });
+  return bad;
+}
+
+const jobs = [];
+WIDTHS.forEach((w) => ROUTES.forEach((r) => jobs.push([w, r])));
+let i = 0;
+function next() {
+  if (i >= jobs.length) return render();
+  const [w, route] = jobs[i++];
+  const f = document.createElement('iframe');
+  f.width = w; f.src = route;
+  f.onload = () => {
+    let cell = [];
+    try { cell = audit(f.contentDocument, w); } catch (e) { cell = ['ERR ' + e.message]; }
+    (grid[route] = grid[route] || {})[w] = cell;
+    f.remove();
+    if (i % 25 === 0) out.textContent = 'auditing… ' + i + '/' + jobs.length;
+    next();
+  };
+  host.appendChild(f);
+}
+function render() {
+  const fails = [];
+  ROUTES.forEach((r) => WIDTHS.forEach((w) => {
+    if (grid[r][w].length) fails.push(r + ' @' + w + 'px  ' + grid[r][w].slice(0, 3).join(' | '));
+  }));
+  out.innerHTML = 'checks: ' + jobs.length + '   failures: ' + fails.length + '\n\n' +
+    (fails.length ? '<span class="bad">' + fails.join('\n') + '</span>' : 'none');
+}
+next();
+</script>

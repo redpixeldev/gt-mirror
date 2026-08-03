@@ -1,0 +1,488 @@
+[
+  {
+    "route": "styleguide",
+    "mode": "light",
+    "ref": "/Users/danielaguillen/Downloads/MIRROR VARIATION A/01-styleguide-variantA-light.png",
+    "h": 7568,
+    "w": 1568,
+    "build": ".shots/build-styleguide-light.png",
+    "orig": ".shots/orig-styleguide-light.png"
+  },
+  {
+    "route": "styleguide",
+    "mode": "dark",
+    "ref": "/Users/danielaguillen/Downloads/MIRROR VARIATION A/01-styleguide-variantA-dark.png",
+    "h": 7568,
+    "w": 1568,
+    "build": ".shots/build-styleguide-dark.png",
+    "orig": ".shots/orig-styleguide-dark.png"
+  },
+  {
+    "route": "homepage-01",
+    "mode": "light",
+    "ref": "/Users/danielaguillen/Downloads/MIRROR VARIATION A/02-homepage-A1-light.png",
+    "h": 3873,
+    "w": 1568,
+    "build": ".shots/build-homepage-01-light.png",
+    "orig": ".shots/orig-homepage-01-light.png"
+  },
+  {
+    "route": "homepage-01",
+    "mode": "dark",
+    "ref": "/Users/danielaguillen/Downloads/MIRROR VARIATION A/02-homepage-A1-dark.png",
+    "h": 3873,
+    "w": 1568,
+    "build": ".shots/build-homepage-01-dark.png",
+    "orig": ".shots/orig-homepage-01-dark.png"
+  },
+  {
+    "route": "homepage-02",
+    "mode": "light",
+    "ref": "/Users/danielaguillen/Downloads/MIRROR VARIATION A/02-homepage-A2-light.png",
+    "h": 3518,
+    "w": 1568,
+    "build": ".shots/build-homepage-02-light.png",
+    "orig": ".shots/orig-homepage-02-light.png"
+  },
+  {
+    "route": "homepage-02",
+    "mode": "dark",
+    "ref": "/Users/danielaguillen/Downloads/MIRROR VARIATION A/02-homepage-A2-dark.png",
+    "h": 3518,
+    "w": 1568,
+    "build": ".shots/build-homepage-02-dark.png",
+    "orig": ".shots/orig-homepage-02-dark.png"
+  },
+  {
+    "route": "blog-01",
+    "mode": "light",
+    "ref": "/Users/danielaguillen/Downloads/MIRROR VARIATION A/03-blog-A1-light.png",
+    "h": 7061,
+    "w": 1568,
+    "build": ".shots/build-blog-01-light.png",
+    "orig": ".shots/orig-blog-01-light.png"
+  },
+  {
+    "route": "blog-01",
+    "mode": "dark",
+    "ref": "/Users/danielaguillen/Downloads/MIRROR VARIATION A/03-blog-A1-dark.png",
+    "h": 7061,
+    "w": 1568,
+    "build": ".shots/build-blog-01-dark.png",
+    "orig": ".shots/orig-blog-01-dark.png"
+  },
+  {
+    "route": "blog-02",
+    "mode": "light",
+    "ref": "/Users/danielaguillen/Downloads/MIRROR VARIATION A/03-blog-A2-light.png",
+    "h": 4530,
+    "w": 1568,
+    "build": ".shots/build-blog-02-light.png",
+    "orig": ".shots/orig-blog-02-light.png"
+  },
+  {
+    "route": "blog-02",
+    "mode": "dark",
+    "ref": "/Users/danielaguillen/Downloads/MIRROR VARIATION A/03-blog-A2-dark.png",
+    "h": 4530,
+    "w": 1568,
+    "build": ".shots/build-blog-02-dark.png",
+    "orig": ".shots/orig-blog-02-dark.png"
+  },
+  {
+    "route": "post-01",
+    "mode": "light",
+    "ref": "/Users/danielaguillen/Downloads/MIRROR VARIATION A/04-post-A1-light.png",
+    "h": 6296,
+    "w": 1568,
+    "build": ".shots/build-post-01-light.png",
+    "orig": ".shots/orig-post-01-light.png"
+  },
+  {
+    "route": "post-01",
+    "mode": "dark",
+    "ref": "/Users/danielaguillen/Downloads/MIRROR VARIATION A/04-post-A1-dark.png",
+    "h": 6296,
+    "w": 1568,
+    "build": ".shots/build-post-01-dark.png",
+    "orig": ".shots/orig-post-01-dark.png"
+  },
+  {
+    "route": "post-02",
+    "mode": "light",
+    "ref": "/Users/danielaguillen/Downloads/MIRROR VARIATION A/04-post-A2-light.png",
+    "h": 5541,
+    "w": 1568,
+    "build": ".shots/build-post-02-light.png",
+    "orig": ".shots/orig-post-02-light.png"
+  },
+  {
+    "route": "post-02",
+    "mode": "dark",
+    "ref": "/Users/danielaguillen/Downloads/MIRROR VARIATION A/04-post-A2-dark.png",
+    "h": 5541,
+    "w": 1568,
+    "build": ".shots/build-post-02-dark.png",
+    "orig": ".shots/orig-post-02-dark.png"
+  },
+  {
+    "route": "post-01-paywalled",
+    "mode": "light",
+    "ref": "/Users/danielaguillen/Downloads/MIRROR VARIATION A/04-post-A1-paywalled-light.png",
+    "h": 3486,
+    "w": 1568,
+    "build": ".shots/build-post-01-paywalled-light.png",
+    "orig": ".shots/orig-post-01-paywalled-light.png"
+  },
+  {
+    "route": "post-01-paywalled",
+    "mode": "dark",
+    "ref": "/Users/danielaguillen/Downloads/MIRROR VARIATION A/04-post-A1-paywalled-dark.png",
+    "h": 3486,
+    "w": 1568,
+    "build": ".shots/build-post-01-paywalled-dark.png",
+    "orig": ".shots/orig-post-01-paywalled-dark.png"
+  },
+  {
+    "route": "post-02-paywalled",
+    "mode": "light",
+    "ref": "/Users/danielaguillen/Downloads/MIRROR VARIATION A/04-post-A2-paywalled-light.png",
+    "h": 2925,
+    "w": 1568,
+    "build": ".shots/build-post-02-paywalled-light.png",
+    "orig": ".shots/orig-post-02-paywalled-light.png"
+  },
+  {
+    "route": "post-02-paywalled",
+    "mode": "dark",
+    "ref": "/Users/danielaguillen/Downloads/MIRROR VARIATION A/04-post-A2-paywalled-dark.png",
+    "h": 2925,
+    "w": 1568,
+    "build": ".shots/build-post-02-paywalled-dark.png",
+    "orig": ".shots/orig-post-02-paywalled-dark.png"
+  },
+  {
+    "route": "404",
+    "mode": "light",
+    "ref": "/Users/danielaguillen/Downloads/MIRROR VARIATION A/05-404-A1-light.png",
+    "h": 928,
+    "w": 1568,
+    "build": ".shots/build-404-light.png",
+    "orig": ".shots/orig-404-light.png"
+  },
+  {
+    "route": "404",
+    "mode": "dark",
+    "ref": "/Users/danielaguillen/Downloads/MIRROR VARIATION A/05-404-A1-dark.png",
+    "h": 928,
+    "w": 1568,
+    "build": ".shots/build-404-dark.png",
+    "orig": ".shots/orig-404-dark.png"
+  },
+  {
+    "route": "404-02",
+    "mode": "light",
+    "ref": "/Users/danielaguillen/Downloads/MIRROR VARIATION A/05-404-A2-light.png",
+    "h": 928,
+    "w": 1568,
+    "build": ".shots/build-404-02-light.png",
+    "orig": ".shots/orig-404-02-light.png"
+  },
+  {
+    "route": "404-02",
+    "mode": "dark",
+    "ref": "/Users/danielaguillen/Downloads/MIRROR VARIATION A/05-404-A2-dark.png",
+    "h": 928,
+    "w": 1568,
+    "build": ".shots/build-404-02-dark.png",
+    "orig": ".shots/orig-404-02-dark.png"
+  },
+  {
+    "route": "tags-01",
+    "mode": "light",
+    "ref": "/Users/danielaguillen/Downloads/MIRROR VARIATION A/06-tags-A1-light.png",
+    "h": 3022,
+    "w": 1568,
+    "build": ".shots/build-tags-01-light.png",
+    "orig": ".shots/orig-tags-01-light.png"
+  },
+  {
+    "route": "tags-01",
+    "mode": "dark",
+    "ref": "/Users/danielaguillen/Downloads/MIRROR VARIATION A/06-tags-A1-dark.png",
+    "h": 3022,
+    "w": 1568,
+    "build": ".shots/build-tags-01-dark.png",
+    "orig": ".shots/orig-tags-01-dark.png"
+  },
+  {
+    "route": "tags-02",
+    "mode": "light",
+    "ref": "/Users/danielaguillen/Downloads/MIRROR VARIATION A/06-tags-A2-light.png",
+    "h": 3097,
+    "w": 1568,
+    "build": ".shots/build-tags-02-light.png",
+    "orig": ".shots/orig-tags-02-light.png"
+  },
+  {
+    "route": "tags-02",
+    "mode": "dark",
+    "ref": "/Users/danielaguillen/Downloads/MIRROR VARIATION A/06-tags-A2-dark.png",
+    "h": 3097,
+    "w": 1568,
+    "build": ".shots/build-tags-02-dark.png",
+    "orig": ".shots/orig-tags-02-dark.png"
+  },
+  {
+    "route": "tags-single-01",
+    "mode": "light",
+    "ref": "/Users/danielaguillen/Downloads/MIRROR VARIATION A/07-tag-archive-A1-light.png",
+    "h": 4253,
+    "w": 1568,
+    "build": ".shots/build-tags-single-01-light.png",
+    "orig": ".shots/orig-tags-single-01-light.png"
+  },
+  {
+    "route": "tags-single-01",
+    "mode": "dark",
+    "ref": "/Users/danielaguillen/Downloads/MIRROR VARIATION A/07-tag-archive-A1-dark.png",
+    "h": 4253,
+    "w": 1568,
+    "build": ".shots/build-tags-single-01-dark.png",
+    "orig": ".shots/orig-tags-single-01-dark.png"
+  },
+  {
+    "route": "tags-single-02",
+    "mode": "light",
+    "ref": "/Users/danielaguillen/Downloads/MIRROR VARIATION A/07-tag-archive-A2-light.png",
+    "h": 3376,
+    "w": 1568,
+    "build": ".shots/build-tags-single-02-light.png",
+    "orig": ".shots/orig-tags-single-02-light.png"
+  },
+  {
+    "route": "tags-single-02",
+    "mode": "dark",
+    "ref": "/Users/danielaguillen/Downloads/MIRROR VARIATION A/07-tag-archive-A2-dark.png",
+    "h": 3376,
+    "w": 1568,
+    "build": ".shots/build-tags-single-02-dark.png",
+    "orig": ".shots/orig-tags-single-02-dark.png"
+  },
+  {
+    "route": "authors-01",
+    "mode": "light",
+    "ref": "/Users/danielaguillen/Downloads/MIRROR VARIATION A/08-authors-A1-light.png",
+    "h": 2230,
+    "w": 1568,
+    "build": ".shots/build-authors-01-light.png",
+    "orig": ".shots/orig-authors-01-light.png"
+  },
+  {
+    "route": "authors-01",
+    "mode": "dark",
+    "ref": "/Users/danielaguillen/Downloads/MIRROR VARIATION A/08-authors-A1-dark.png",
+    "h": 2230,
+    "w": 1568,
+    "build": ".shots/build-authors-01-dark.png",
+    "orig": ".shots/orig-authors-01-dark.png"
+  },
+  {
+    "route": "authors-02",
+    "mode": "light",
+    "ref": "/Users/danielaguillen/Downloads/MIRROR VARIATION A/08-authors-A2-light.png",
+    "h": 1940,
+    "w": 1568,
+    "build": ".shots/build-authors-02-light.png",
+    "orig": ".shots/orig-authors-02-light.png"
+  },
+  {
+    "route": "authors-02",
+    "mode": "dark",
+    "ref": "/Users/danielaguillen/Downloads/MIRROR VARIATION A/08-authors-A2-dark.png",
+    "h": 1940,
+    "w": 1568,
+    "build": ".shots/build-authors-02-dark.png",
+    "orig": ".shots/orig-authors-02-dark.png"
+  },
+  {
+    "route": "author-single-01",
+    "mode": "light",
+    "ref": "/Users/danielaguillen/Downloads/MIRROR VARIATION A/09-author-A1-light.png",
+    "h": 3693,
+    "w": 1568,
+    "build": ".shots/build-author-single-01-light.png",
+    "orig": ".shots/orig-author-single-01-light.png"
+  },
+  {
+    "route": "author-single-01",
+    "mode": "dark",
+    "ref": "/Users/danielaguillen/Downloads/MIRROR VARIATION A/09-author-A1-dark.png",
+    "h": 3693,
+    "w": 1568,
+    "build": ".shots/build-author-single-01-dark.png",
+    "orig": ".shots/orig-author-single-01-dark.png"
+  },
+  {
+    "route": "author-single-02",
+    "mode": "light",
+    "ref": "/Users/danielaguillen/Downloads/MIRROR VARIATION A/09-author-A2-light.png",
+    "h": 2658,
+    "w": 1568,
+    "build": ".shots/build-author-single-02-light.png",
+    "orig": ".shots/orig-author-single-02-light.png"
+  },
+  {
+    "route": "author-single-02",
+    "mode": "dark",
+    "ref": "/Users/danielaguillen/Downloads/MIRROR VARIATION A/09-author-A2-dark.png",
+    "h": 2658,
+    "w": 1568,
+    "build": ".shots/build-author-single-02-dark.png",
+    "orig": ".shots/orig-author-single-02-dark.png"
+  },
+  {
+    "route": "recommendations-01",
+    "mode": "light",
+    "ref": "/Users/danielaguillen/Downloads/MIRROR VARIATION A/10-recommendations-A1-light.png",
+    "h": 2701,
+    "w": 1568,
+    "build": ".shots/build-recommendations-01-light.png",
+    "orig": ".shots/orig-recommendations-01-light.png"
+  },
+  {
+    "route": "recommendations-01",
+    "mode": "dark",
+    "ref": "/Users/danielaguillen/Downloads/MIRROR VARIATION A/10-recommendations-A1-dark.png",
+    "h": 2701,
+    "w": 1568,
+    "build": ".shots/build-recommendations-01-dark.png",
+    "orig": ".shots/orig-recommendations-01-dark.png"
+  },
+  {
+    "route": "recommendations-02",
+    "mode": "light",
+    "ref": "/Users/danielaguillen/Downloads/MIRROR VARIATION A/10-recommendations-A2-light.png",
+    "h": 2515,
+    "w": 1568,
+    "build": ".shots/build-recommendations-02-light.png",
+    "orig": ".shots/orig-recommendations-02-light.png"
+  },
+  {
+    "route": "recommendations-02",
+    "mode": "dark",
+    "ref": "/Users/danielaguillen/Downloads/MIRROR VARIATION A/10-recommendations-A2-dark.png",
+    "h": 2515,
+    "w": 1568,
+    "build": ".shots/build-recommendations-02-dark.png",
+    "orig": ".shots/orig-recommendations-02-dark.png"
+  },
+  {
+    "route": "about-01",
+    "mode": "light",
+    "ref": "/Users/danielaguillen/Downloads/MIRROR VARIATION A/11-about-A1-light.png",
+    "h": 3364,
+    "w": 1568,
+    "build": ".shots/build-about-01-light.png",
+    "orig": ".shots/orig-about-01-light.png"
+  },
+  {
+    "route": "about-01",
+    "mode": "dark",
+    "ref": "/Users/danielaguillen/Downloads/MIRROR VARIATION A/11-about-A1-dark.png",
+    "h": 3364,
+    "w": 1568,
+    "build": ".shots/build-about-01-dark.png",
+    "orig": ".shots/orig-about-01-dark.png"
+  },
+  {
+    "route": "about-02",
+    "mode": "light",
+    "ref": "/Users/danielaguillen/Downloads/MIRROR VARIATION A/11-about-A2-light.png",
+    "h": 3592,
+    "w": 1568,
+    "build": ".shots/build-about-02-light.png",
+    "orig": ".shots/orig-about-02-light.png"
+  },
+  {
+    "route": "about-02",
+    "mode": "dark",
+    "ref": "/Users/danielaguillen/Downloads/MIRROR VARIATION A/11-about-A2-dark.png",
+    "h": 3592,
+    "w": 1568,
+    "build": ".shots/build-about-02-dark.png",
+    "orig": ".shots/orig-about-02-dark.png"
+  },
+  {
+    "route": "membership-01",
+    "mode": "light",
+    "ref": "/Users/danielaguillen/Downloads/MIRROR VARIATION A/12-membership-A1-light.png",
+    "h": 3671,
+    "w": 1568,
+    "build": ".shots/build-membership-01-light.png",
+    "orig": ".shots/orig-membership-01-light.png"
+  },
+  {
+    "route": "membership-01",
+    "mode": "dark",
+    "ref": "/Users/danielaguillen/Downloads/MIRROR VARIATION A/12-membership-A1-dark.png",
+    "h": 3671,
+    "w": 1568,
+    "build": ".shots/build-membership-01-dark.png",
+    "orig": ".shots/orig-membership-01-dark.png"
+  },
+  {
+    "route": "membership-02",
+    "mode": "light",
+    "ref": "/Users/danielaguillen/Downloads/MIRROR VARIATION A/12-membership-A2-light.png",
+    "h": 3779,
+    "w": 1568,
+    "build": ".shots/build-membership-02-light.png",
+    "orig": ".shots/orig-membership-02-light.png"
+  },
+  {
+    "route": "membership-02",
+    "mode": "dark",
+    "ref": "/Users/danielaguillen/Downloads/MIRROR VARIATION A/12-membership-A2-dark.png",
+    "h": 3779,
+    "w": 1568,
+    "build": ".shots/build-membership-02-dark.png",
+    "orig": ".shots/orig-membership-02-dark.png"
+  },
+  {
+    "route": "sign-in",
+    "mode": "light",
+    "ref": "/Users/danielaguillen/Downloads/MIRROR VARIATION A/13-signin-A-light-default.png",
+    "h": 928,
+    "w": 1568,
+    "build": ".shots/build-sign-in-light.png",
+    "orig": ".shots/orig-sign-in-light.png"
+  },
+  {
+    "route": "sign-in",
+    "mode": "dark",
+    "ref": "/Users/danielaguillen/Downloads/MIRROR VARIATION A/13-signin-A-dark-default.png",
+    "h": 928,
+    "w": 1568,
+    "build": ".shots/build-sign-in-dark.png",
+    "orig": ".shots/orig-sign-in-dark.png"
+  },
+  {
+    "route": "sign-up",
+    "mode": "light",
+    "ref": "/Users/danielaguillen/Downloads/MIRROR VARIATION A/14-signup-A-light-default.png",
+    "h": 928,
+    "w": 1568,
+    "build": ".shots/build-sign-up-light.png",
+    "orig": ".shots/orig-sign-up-light.png"
+  },
+  {
+    "route": "sign-up",
+    "mode": "dark",
+    "ref": "/Users/danielaguillen/Downloads/MIRROR VARIATION A/14-signup-A-dark-default.png",
+    "h": 928,
+    "w": 1568,
+    "build": ".shots/build-sign-up-dark.png",
+    "orig": ".shots/orig-sign-up-dark.png"
+  }
+]

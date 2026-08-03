@@ -1,5 +1,4 @@
 ---
-import ThemeToggle from '@components/ThemeToggle.astro';
 import Header from '@components/Header.astro';
 import AuthShell from '@components/auth/AuthShell.astro';
 import FormStateSwitch from '@components/auth/FormStateSwitch.astro';
@@ -12,8 +11,6 @@ import { ROUTES } from '../data/navigation';
 	title='Sign in — Mirror'
 	description='Members read the interviews, the transcripts and the archive.'
 	contentWidth='1320px'>
-	<ThemeToggle />
-
 	{/* `?state=loading|success|error` opens the page in that state — handy for demos and screenshots. */}
 	<div
 		x-data="{ state: ['loading', 'success', 'error'].includes(new URLSearchParams(location.search).get('state'))

@@ -23,8 +23,15 @@ const { post, order, href = postHref(post.locked) } = Astro.props;
 const visible = `tag === null || tag === ${JSON.stringify(post.tag)}`;
 ---
 
+{
+	/*
+  `minmax(0,1fr)`, not `1fr` — bare `1fr` is `minmax(auto,1fr)`, whose floor is the
+  column's min-content width, so a long headline pushes the row wider than the page
+  instead of wrapping. Below `stack` the thumbnail stacks above the text.
+*/
+}
 <article
-	class='border-border grid grid-cols-[300px_1fr] items-start gap-9 border-b py-11'
+	class='border-border max-stack:grid-cols-[minmax(0,1fr)] max-stack:gap-5 grid grid-cols-[300px_minmax(0,1fr)] items-start gap-9 border-b py-11'
 	data-order={order}
 	x-show={visible}>
 	<a

@@ -1,7 +1,6 @@
 ---
 import Footer from '@components/Footer.astro';
 import Header from '@components/Header.astro';
-import ThemeToggle from '@components/ThemeToggle.astro';
 import PaginationNav from '@components/cards/PaginationNav.astro';
 import MastheadLead from '@components/home/MastheadLead.astro';
 import NewsletterBanner from '@components/home/NewsletterBanner.astro';
@@ -20,8 +19,6 @@ const eight = ALL_POSTS.slice(4, 12);
 	title='Mirror — Independent writing on media, craft, and the cost of attention'
 	description='An editorial-masthead homepage for the MIRROR Ghost theme: a lead essay, the week’s shortlist, and the archive from The Quarry.'
 	contentWidth='1320px'>
-	<ThemeToggle />
-
 	<Header
 		variant='site'
 		current='home'
@@ -36,19 +33,19 @@ const eight = ALL_POSTS.slice(4, 12);
 				grid={eight}
 				tags={TAGS}
 			/>
+
+			<section
+				aria-label='Pagination'
+				class='container pt-14'>
+				<PaginationNav
+					framed={false}
+					size='md'
+				/>
+			</section>
 		</div>
 
 		<NewsletterBanner />
 		<WritersSection authors={AUTHORS} />
-
-		<section
-			aria-label='Pagination'
-			class='container pt-14'>
-			<PaginationNav
-				framed={false}
-				size='md'
-			/>
-		</section>
 	</main>
 
 	<Footer

@@ -1,7 +1,6 @@
 ---
 import Footer from '../Footer.astro';
 import Header from '../Header.astro';
-import ThemeToggle from '../ThemeToggle.astro';
 import NewsletterBanner from '../home/NewsletterBanner.astro';
 import PostBody from './PostBody.astro';
 import PostEndBlocks from './PostEndBlocks.astro';
@@ -35,8 +34,6 @@ const rail = layout === 'a2';
 const variantLabel = rail ? 'Variant A2 · title page + rail' : 'Variant A1 · centered classic';
 ---
 
-<ThemeToggle />
-
 <Header
 	variant='site'
 	compact
@@ -50,7 +47,9 @@ const variantLabel = rail ? 'Variant A2 · title page + rail' : 'Variant A1 · c
 		<div
 			class:list={[
 				'grid items-start',
-				rail ? 'grid-cols-[232px_minmax(0,1fr)] gap-[72px]' : 'grid-cols-[minmax(0,1fr)]',
+				rail
+					? 'max-stack:grid-cols-[minmax(0,1fr)] max-stack:gap-10 grid-cols-[232px_minmax(0,1fr)] gap-[72px]'
+					: 'grid-cols-[minmax(0,1fr)]',
 			]}>
 			{
 				rail && (

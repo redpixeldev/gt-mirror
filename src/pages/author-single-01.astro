@@ -1,7 +1,6 @@
 ---
 import Footer from '@components/Footer.astro';
 import Header from '@components/Header.astro';
-import ThemeToggle from '@components/ThemeToggle.astro';
 import AuthorPostList from '@components/authors/AuthorPostList.astro';
 import AuthorProfileHeader from '@components/authors/AuthorProfileHeader.astro';
 import PaginationNav from '@components/cards/PaginationNav.astro';
@@ -14,8 +13,6 @@ import { AUTHOR, AUTHOR_PAGE_ONE } from '../data/authorArchive';
 	title={`${AUTHOR.name} — Mirror`}
 	description={`${AUTHOR.countLabel} by ${AUTHOR.name}, interviews editor at The Quarry.`}
 	contentWidth='1320px'>
-	<ThemeToggle />
-
 	<Header
 		variant='site'
 		compact

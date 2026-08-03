@@ -17,7 +17,13 @@ const railButton =
 
 <aside
 	aria-label='Post details'
-	class='sticky top-[120px]'>
+	{/*
+	  Sticky only while there is a second column to sit beside. Below `stack` the
+	  grid collapses to one column, and a sticky child there pins itself while the
+	  rest of the column scrolls underneath — the article runs straight through the
+	  table of contents and share links. Static in the stacked layout, where it is just the block above.
+	*/}
+	class='max-stack:static sticky top-[120px]'>
 	{
 		showToc && (
 			<nav

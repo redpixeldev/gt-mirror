@@ -1,0 +1,434 @@
+[
+  {
+    "route": "styleguide",
+    "mode": "light",
+    "gate": 98.36,
+    "floor": 98.54,
+    "diag": 99.42,
+    "delta": -0.18
+  },
+  {
+    "route": "styleguide",
+    "mode": "dark",
+    "gate": 98.44,
+    "floor": 98.61,
+    "diag": 99.45,
+    "delta": -0.17
+  },
+  {
+    "route": "homepage-01",
+    "mode": "light",
+    "gate": 97.09,
+    "floor": 96.59,
+    "diag": 98.57,
+    "delta": 0.5
+  },
+  {
+    "route": "homepage-01",
+    "mode": "dark",
+    "gate": 97.1,
+    "floor": 96.61,
+    "diag": 98.58,
+    "delta": 0.49
+  },
+  {
+    "route": "homepage-02",
+    "mode": "light",
+    "gate": 98.16,
+    "floor": 98.31,
+    "diag": 99.32,
+    "delta": -0.15
+  },
+  {
+    "route": "homepage-02",
+    "mode": "dark",
+    "gate": 98.21,
+    "floor": 98.36,
+    "diag": 99.32,
+    "delta": -0.15
+  },
+  {
+    "route": "blog-01",
+    "mode": "light",
+    "gate": 98.09,
+    "floor": 97.98,
+    "diag": 99.11,
+    "delta": 0.11
+  },
+  {
+    "route": "blog-01",
+    "mode": "dark",
+    "gate": 98.13,
+    "floor": 98.02,
+    "diag": 99.12,
+    "delta": 0.11
+  },
+  {
+    "route": "blog-02",
+    "mode": "light",
+    "gate": 97.02,
+    "floor": 96.62,
+    "diag": 98.46,
+    "delta": 0.4
+  },
+  {
+    "route": "blog-02",
+    "mode": "dark",
+    "gate": 97.1,
+    "floor": 96.7,
+    "diag": 98.47,
+    "delta": 0.4
+  },
+  {
+    "route": "post-01",
+    "mode": "light",
+    "gate": 90.61,
+    "floor": 90.67,
+    "diag": 99.67,
+    "delta": -0.06
+  },
+  {
+    "route": "post-01",
+    "mode": "dark",
+    "gate": 90.16,
+    "floor": 90.22,
+    "diag": 99.67,
+    "delta": -0.06
+  },
+  {
+    "route": "post-02",
+    "mode": "light",
+    "gate": 97.54,
+    "floor": 97.69,
+    "diag": 99.48,
+    "delta": -0.15
+  },
+  {
+    "route": "post-02",
+    "mode": "dark",
+    "gate": 97.62,
+    "floor": 97.78,
+    "diag": 99.48,
+    "delta": -0.16
+  },
+  {
+    "route": "post-01-paywalled",
+    "mode": "light",
+    "gate": 96.05,
+    "floor": 96.14,
+    "diag": 99.42,
+    "delta": -0.09
+  },
+  {
+    "route": "post-01-paywalled",
+    "mode": "dark",
+    "gate": 96.01,
+    "floor": 96.1,
+    "diag": 99.43,
+    "delta": -0.09
+  },
+  {
+    "route": "post-02-paywalled",
+    "mode": "light",
+    "gate": 97.34,
+    "floor": 97.46,
+    "diag": 99.5,
+    "delta": -0.12
+  },
+  {
+    "route": "post-02-paywalled",
+    "mode": "dark",
+    "gate": 97.4,
+    "floor": 97.53,
+    "diag": 99.5,
+    "delta": -0.13
+  },
+  {
+    "route": "404",
+    "mode": "light",
+    "gate": 98.72,
+    "floor": 98.96,
+    "diag": 99.49,
+    "delta": -0.24
+  },
+  {
+    "route": "404",
+    "mode": "dark",
+    "gate": 98.74,
+    "floor": 98.97,
+    "diag": 99.5,
+    "delta": -0.23
+  },
+  {
+    "route": "404-02",
+    "mode": "light",
+    "gate": 98.51,
+    "floor": 98.73,
+    "diag": 99.15,
+    "delta": -0.22
+  },
+  {
+    "route": "404-02",
+    "mode": "dark",
+    "gate": 98.53,
+    "floor": 98.77,
+    "diag": 99.16,
+    "delta": -0.24
+  },
+  {
+    "route": "tags-01",
+    "mode": "light",
+    "gate": 98.6,
+    "floor": 98.76,
+    "diag": 99.35,
+    "delta": -0.16
+  },
+  {
+    "route": "tags-01",
+    "mode": "dark",
+    "gate": 98.65,
+    "floor": 98.81,
+    "diag": 99.36,
+    "delta": -0.16
+  },
+  {
+    "route": "tags-02",
+    "mode": "light",
+    "gate": 98.14,
+    "floor": 97.83,
+    "diag": 98.6,
+    "delta": 0.31
+  },
+  {
+    "route": "tags-02",
+    "mode": "dark",
+    "gate": 98.19,
+    "floor": 97.89,
+    "diag": 98.61,
+    "delta": 0.3
+  },
+  {
+    "route": "tags-single-01",
+    "mode": "light",
+    "gate": 98.25,
+    "floor": 98.37,
+    "diag": 99.32,
+    "delta": -0.12
+  },
+  {
+    "route": "tags-single-01",
+    "mode": "dark",
+    "gate": 98.31,
+    "floor": 98.42,
+    "diag": 99.34,
+    "delta": -0.11
+  },
+  {
+    "route": "tags-single-02",
+    "mode": "light",
+    "gate": 97.22,
+    "floor": 97.18,
+    "diag": 98.53,
+    "delta": 0.04
+  },
+  {
+    "route": "tags-single-02",
+    "mode": "dark",
+    "gate": 97.28,
+    "floor": 97.25,
+    "diag": 98.55,
+    "delta": 0.03
+  },
+  {
+    "route": "authors-01",
+    "mode": "light",
+    "gate": 98.16,
+    "floor": 98.3,
+    "diag": 99.33,
+    "delta": -0.14
+  },
+  {
+    "route": "authors-01",
+    "mode": "dark",
+    "gate": 98.21,
+    "floor": 98.36,
+    "diag": 99.33,
+    "delta": -0.15
+  },
+  {
+    "route": "authors-02",
+    "mode": "light",
+    "gate": 97.69,
+    "floor": 97.96,
+    "diag": 99.31,
+    "delta": -0.27
+  },
+  {
+    "route": "authors-02",
+    "mode": "dark",
+    "gate": 97.77,
+    "floor": 98.06,
+    "diag": 99.32,
+    "delta": -0.29
+  },
+  {
+    "route": "author-single-01",
+    "mode": "light",
+    "gate": 98.06,
+    "floor": 98.16,
+    "diag": 99.33,
+    "delta": -0.1
+  },
+  {
+    "route": "author-single-01",
+    "mode": "dark",
+    "gate": 98.11,
+    "floor": 98.22,
+    "diag": 99.33,
+    "delta": -0.11
+  },
+  {
+    "route": "author-single-02",
+    "mode": "light",
+    "gate": 97.15,
+    "floor": 97.27,
+    "diag": 98.69,
+    "delta": -0.12
+  },
+  {
+    "route": "author-single-02",
+    "mode": "dark",
+    "gate": 97.24,
+    "floor": 97.36,
+    "diag": 98.7,
+    "delta": -0.12
+  },
+  {
+    "route": "recommendations-01",
+    "mode": "light",
+    "gate": 98.15,
+    "floor": 98.38,
+    "diag": 99.2,
+    "delta": -0.23
+  },
+  {
+    "route": "recommendations-01",
+    "mode": "dark",
+    "gate": 98.25,
+    "floor": 98.42,
+    "diag": 99.27,
+    "delta": -0.17
+  },
+  {
+    "route": "recommendations-02",
+    "mode": "light",
+    "gate": 96.3,
+    "floor": 96.39,
+    "diag": 98.44,
+    "delta": -0.09
+  },
+  {
+    "route": "recommendations-02",
+    "mode": "dark",
+    "gate": 96.39,
+    "floor": 96.48,
+    "diag": 98.46,
+    "delta": -0.09
+  },
+  {
+    "route": "about-01",
+    "mode": "light",
+    "gate": 97.89,
+    "floor": 98.02,
+    "diag": 99.36,
+    "delta": -0.13
+  },
+  {
+    "route": "about-01",
+    "mode": "dark",
+    "gate": 97.99,
+    "floor": 98.12,
+    "diag": 99.36,
+    "delta": -0.13
+  },
+  {
+    "route": "about-02",
+    "mode": "light",
+    "gate": 97.73,
+    "floor": 93.84,
+    "diag": 94.32,
+    "delta": 3.89
+  },
+  {
+    "route": "about-02",
+    "mode": "dark",
+    "gate": 97.82,
+    "floor": 94.06,
+    "diag": 94.51,
+    "delta": 3.76
+  },
+  {
+    "route": "membership-01",
+    "mode": "light",
+    "gate": 97.67,
+    "floor": 97.95,
+    "diag": 99.31,
+    "delta": -0.28
+  },
+  {
+    "route": "membership-01",
+    "mode": "dark",
+    "gate": 97.76,
+    "floor": 98.05,
+    "diag": 99.32,
+    "delta": -0.29
+  },
+  {
+    "route": "membership-02",
+    "mode": "light",
+    "gate": 97.68,
+    "floor": 97.94,
+    "diag": 99.3,
+    "delta": -0.26
+  },
+  {
+    "route": "membership-02",
+    "mode": "dark",
+    "gate": 97.78,
+    "floor": 98.05,
+    "diag": 99.31,
+    "delta": -0.27
+  },
+  {
+    "route": "sign-in",
+    "mode": "light",
+    "gate": 99.04,
+    "floor": 99.07,
+    "diag": 99.55,
+    "delta": -0.03
+  },
+  {
+    "route": "sign-in",
+    "mode": "dark",
+    "gate": 98.67,
+    "floor": 99.09,
+    "diag": 99.16,
+    "delta": -0.42
+  },
+  {
+    "route": "sign-up",
+    "mode": "light",
+    "gate": 98.94,
+    "floor": 98.99,
+    "diag": 99.43,
+    "delta": -0.05
+  },
+  {
+    "route": "sign-up",
+    "mode": "dark",
+    "gate": 98.58,
+    "floor": 99.01,
+    "diag": 99.05,
+    "delta": -0.43
+  }
+]

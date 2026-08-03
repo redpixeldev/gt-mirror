@@ -1,0 +1,434 @@
+[
+  {
+    "route": "styleguide",
+    "mode": "light",
+    "before": 98.36,
+    "after": 98.36,
+    "floor": 98.54,
+    "d": 0.0
+  },
+  {
+    "route": "styleguide",
+    "mode": "dark",
+    "before": 98.44,
+    "after": 98.44,
+    "floor": 98.61,
+    "d": 0.0
+  },
+  {
+    "route": "homepage-01",
+    "mode": "light",
+    "before": 97.09,
+    "after": 97.09,
+    "floor": 96.59,
+    "d": 0.0
+  },
+  {
+    "route": "homepage-01",
+    "mode": "dark",
+    "before": 97.1,
+    "after": 97.1,
+    "floor": 96.61,
+    "d": 0.0
+  },
+  {
+    "route": "homepage-02",
+    "mode": "light",
+    "before": 98.16,
+    "after": 98.16,
+    "floor": 98.31,
+    "d": 0.0
+  },
+  {
+    "route": "homepage-02",
+    "mode": "dark",
+    "before": 98.21,
+    "after": 98.21,
+    "floor": 98.36,
+    "d": 0.0
+  },
+  {
+    "route": "blog-01",
+    "mode": "light",
+    "before": 98.09,
+    "after": 98.09,
+    "floor": 97.98,
+    "d": 0.0
+  },
+  {
+    "route": "blog-01",
+    "mode": "dark",
+    "before": 98.13,
+    "after": 98.13,
+    "floor": 98.02,
+    "d": 0.0
+  },
+  {
+    "route": "blog-02",
+    "mode": "light",
+    "before": 97.02,
+    "after": 97.02,
+    "floor": 96.62,
+    "d": 0.0
+  },
+  {
+    "route": "blog-02",
+    "mode": "dark",
+    "before": 97.1,
+    "after": 97.1,
+    "floor": 96.7,
+    "d": 0.0
+  },
+  {
+    "route": "post-01",
+    "mode": "light",
+    "before": 90.61,
+    "after": 90.61,
+    "floor": 90.67,
+    "d": 0.0
+  },
+  {
+    "route": "post-01",
+    "mode": "dark",
+    "before": 90.16,
+    "after": 90.16,
+    "floor": 90.22,
+    "d": 0.0
+  },
+  {
+    "route": "post-02",
+    "mode": "light",
+    "before": 97.54,
+    "after": 97.54,
+    "floor": 97.69,
+    "d": 0.0
+  },
+  {
+    "route": "post-02",
+    "mode": "dark",
+    "before": 97.62,
+    "after": 97.62,
+    "floor": 97.78,
+    "d": 0.0
+  },
+  {
+    "route": "post-01-paywalled",
+    "mode": "light",
+    "before": 96.05,
+    "after": 96.05,
+    "floor": 96.14,
+    "d": 0.0
+  },
+  {
+    "route": "post-01-paywalled",
+    "mode": "dark",
+    "before": 96.01,
+    "after": 96.01,
+    "floor": 96.1,
+    "d": 0.0
+  },
+  {
+    "route": "post-02-paywalled",
+    "mode": "light",
+    "before": 97.34,
+    "after": 97.34,
+    "floor": 97.46,
+    "d": 0.0
+  },
+  {
+    "route": "post-02-paywalled",
+    "mode": "dark",
+    "before": 97.4,
+    "after": 97.4,
+    "floor": 97.53,
+    "d": 0.0
+  },
+  {
+    "route": "404",
+    "mode": "light",
+    "before": 98.72,
+    "after": 98.72,
+    "floor": 98.96,
+    "d": 0.0
+  },
+  {
+    "route": "404",
+    "mode": "dark",
+    "before": 98.74,
+    "after": 98.74,
+    "floor": 98.97,
+    "d": 0.0
+  },
+  {
+    "route": "404-02",
+    "mode": "light",
+    "before": 98.51,
+    "after": 98.51,
+    "floor": 98.73,
+    "d": 0.0
+  },
+  {
+    "route": "404-02",
+    "mode": "dark",
+    "before": 98.53,
+    "after": 98.53,
+    "floor": 98.77,
+    "d": 0.0
+  },
+  {
+    "route": "tags-01",
+    "mode": "light",
+    "before": 98.6,
+    "after": 98.6,
+    "floor": 98.76,
+    "d": 0.0
+  },
+  {
+    "route": "tags-01",
+    "mode": "dark",
+    "before": 98.65,
+    "after": 98.65,
+    "floor": 98.81,
+    "d": 0.0
+  },
+  {
+    "route": "tags-02",
+    "mode": "light",
+    "before": 98.14,
+    "after": 98.14,
+    "floor": 97.83,
+    "d": 0.0
+  },
+  {
+    "route": "tags-02",
+    "mode": "dark",
+    "before": 98.19,
+    "after": 98.19,
+    "floor": 97.89,
+    "d": 0.0
+  },
+  {
+    "route": "tags-single-01",
+    "mode": "light",
+    "before": 98.25,
+    "after": 98.25,
+    "floor": 98.37,
+    "d": 0.0
+  },
+  {
+    "route": "tags-single-01",
+    "mode": "dark",
+    "before": 98.31,
+    "after": 98.31,
+    "floor": 98.42,
+    "d": 0.0
+  },
+  {
+    "route": "tags-single-02",
+    "mode": "light",
+    "before": 97.22,
+    "after": 97.22,
+    "floor": 97.18,
+    "d": 0.0
+  },
+  {
+    "route": "tags-single-02",
+    "mode": "dark",
+    "before": 97.28,
+    "after": 97.28,
+    "floor": 97.25,
+    "d": 0.0
+  },
+  {
+    "route": "authors-01",
+    "mode": "light",
+    "before": 98.16,
+    "after": 98.16,
+    "floor": 98.3,
+    "d": 0.0
+  },
+  {
+    "route": "authors-01",
+    "mode": "dark",
+    "before": 98.21,
+    "after": 98.21,
+    "floor": 98.36,
+    "d": 0.0
+  },
+  {
+    "route": "authors-02",
+    "mode": "light",
+    "before": 97.69,
+    "after": 97.69,
+    "floor": 97.96,
+    "d": 0.0
+  },
+  {
+    "route": "authors-02",
+    "mode": "dark",
+    "before": 97.77,
+    "after": 97.77,
+    "floor": 98.06,
+    "d": 0.0
+  },
+  {
+    "route": "author-single-01",
+    "mode": "light",
+    "before": 98.06,
+    "after": 98.06,
+    "floor": 98.16,
+    "d": 0.0
+  },
+  {
+    "route": "author-single-01",
+    "mode": "dark",
+    "before": 98.11,
+    "after": 98.11,
+    "floor": 98.22,
+    "d": 0.0
+  },
+  {
+    "route": "author-single-02",
+    "mode": "light",
+    "before": 97.15,
+    "after": 97.15,
+    "floor": 97.27,
+    "d": 0.0
+  },
+  {
+    "route": "author-single-02",
+    "mode": "dark",
+    "before": 97.24,
+    "after": 97.24,
+    "floor": 97.36,
+    "d": 0.0
+  },
+  {
+    "route": "recommendations-01",
+    "mode": "light",
+    "before": 98.15,
+    "after": 98.15,
+    "floor": 98.38,
+    "d": 0.0
+  },
+  {
+    "route": "recommendations-01",
+    "mode": "dark",
+    "before": 98.25,
+    "after": 98.25,
+    "floor": 98.42,
+    "d": 0.0
+  },
+  {
+    "route": "recommendations-02",
+    "mode": "light",
+    "before": 96.3,
+    "after": 96.3,
+    "floor": 96.39,
+    "d": 0.0
+  },
+  {
+    "route": "recommendations-02",
+    "mode": "dark",
+    "before": 96.39,
+    "after": 96.39,
+    "floor": 96.48,
+    "d": 0.0
+  },
+  {
+    "route": "about-01",
+    "mode": "light",
+    "before": 97.89,
+    "after": 97.9,
+    "floor": 98.02,
+    "d": 0.01
+  },
+  {
+    "route": "about-01",
+    "mode": "dark",
+    "before": 97.99,
+    "after": 97.99,
+    "floor": 98.12,
+    "d": 0.0
+  },
+  {
+    "route": "about-02",
+    "mode": "light",
+    "before": 97.73,
+    "after": 97.73,
+    "floor": 93.84,
+    "d": 0.0
+  },
+  {
+    "route": "about-02",
+    "mode": "dark",
+    "before": 97.82,
+    "after": 97.82,
+    "floor": 94.06,
+    "d": 0.0
+  },
+  {
+    "route": "membership-01",
+    "mode": "light",
+    "before": 97.67,
+    "after": 97.67,
+    "floor": 97.95,
+    "d": 0.0
+  },
+  {
+    "route": "membership-01",
+    "mode": "dark",
+    "before": 97.76,
+    "after": 97.76,
+    "floor": 98.05,
+    "d": 0.0
+  },
+  {
+    "route": "membership-02",
+    "mode": "light",
+    "before": 97.68,
+    "after": 97.68,
+    "floor": 97.94,
+    "d": 0.0
+  },
+  {
+    "route": "membership-02",
+    "mode": "dark",
+    "before": 97.78,
+    "after": 97.78,
+    "floor": 98.05,
+    "d": 0.0
+  },
+  {
+    "route": "sign-in",
+    "mode": "light",
+    "before": 99.04,
+    "after": 97.68,
+    "floor": 99.07,
+    "d": -1.36
+  },
+  {
+    "route": "sign-in",
+    "mode": "dark",
+    "before": 98.67,
+    "after": 97.31,
+    "floor": 99.09,
+    "d": -1.36
+  },
+  {
+    "route": "sign-up",
+    "mode": "light",
+    "before": 98.94,
+    "after": 97.56,
+    "floor": 98.99,
+    "d": -1.38
+  },
+  {
+    "route": "sign-up",
+    "mode": "dark",
+    "before": 98.58,
+    "after": 97.2,
+    "floor": 99.01,
+    "d": -1.38
+  }
+]

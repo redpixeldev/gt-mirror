@@ -11,7 +11,8 @@ interface Props {
 const { author, href = ROUTES.author } = Astro.props;
 ---
 
-<article class='border-border grid grid-cols-[96px_1fr_auto] items-start gap-9 border-b py-10'>
+<article
+	class='border-border max-stack:grid-cols-[minmax(0,1fr)] max-stack:gap-5 grid grid-cols-[96px_minmax(0,1fr)_auto] items-start gap-9 border-b py-10'>
 	<img
 		src={author.portrait}
 		alt={`Portrait of ${author.name}`}
@@ -45,7 +46,7 @@ const { author, href = ROUTES.author } = Astro.props;
 		</p>
 	</div>
 
-	<div class='flex flex-col items-end gap-2'>
+	<div class='max-stack:items-start max-stack:flex-row max-stack:flex-wrap flex flex-col items-end gap-2'>
 		<a
 			href={href}
 			class='border-border text-text font-ui rounded-sm border px-3.5 py-2 text-[13px] font-semibold whitespace-nowrap no-underline'>

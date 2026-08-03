@@ -1,0 +1,31 @@
+<meta charset=utf-8><title>focus-ring clipping probe</title>
+<body style="font:12px ui-monospace,monospace;padding:16px">
+<div id=out>running…</div>
+<script>
+// DEMO-ONLY: walks each tag pill's ancestors looking for a clipping container,
+// and checks the pill's focus ring (2px outline at 2px offset) fits inside its
+// nearest padded parent. Delete with the other probes.
+const ROUTES = ['/blog-01','/blog-02','/homepage-01','/tags-single-01','/tags-single-02'];
+const out = document.getElementById('out'); const bad = []; let done = 0;
+ROUTES.forEach(r => {
+  const f = document.createElement('iframe');
+  f.style.cssText = 'width:1400px;height:900px;border:0;position:absolute;left:-9999px';
+  f.src = r; document.body.appendChild(f);
+  f.onload = () => {
+    const d = f.contentDocument;
+    d.querySelectorAll('.strip > *').forEach(pill => {
+      for (let p = pill.parentElement; p && p !== d.body; p = p.parentElement) {
+        const cs = getComputedStyle(p);
+        if (/hidden|auto|scroll|clip/.test(cs.overflowX + cs.overflowY + cs.overflow)) {
+          bad.push(r + '  CLIPPED BY ' + p.tagName.toLowerCase() + '.' + (p.className||'').split(' ').slice(0,2).join('.'));
+          break;
+        }
+      }
+    });
+    if (++done === ROUTES.length) {
+      out.textContent = 'pill ancestors checked. clipping containers: ' + bad.length;
+      out.innerHTML += '<br><br>' + (bad.length ? [...new Set(bad)].join('<br>') : 'none');
+    }
+  };
+});
+</script>

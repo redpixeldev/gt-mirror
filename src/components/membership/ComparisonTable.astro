@@ -23,7 +23,15 @@ const td = 'border-border border-b px-[18px] py-3.5 text-center font-mono text-s
 		What's included
 	</h2>
 
-	<table class='border-border w-full table-auto border-collapse overflow-hidden rounded-md border'>
+	{
+		/*
+	  Below `stack` the four columns cannot fit: the table stops shrinking at its
+	  min-content width, pushes the page wider than the viewport, and the rightmost
+	  tier — Pro, the one being sold — is what falls off the edge. The list below
+	  carries the same rows with each tier labelled, so nothing is cropped.
+	*/
+	}
+	<table class='border-border max-stack:hidden w-full table-auto border-collapse overflow-hidden rounded-md border'>
 		<thead>
 			<tr class='bg-surface-2'>
 				<th
@@ -65,4 +73,38 @@ const td = 'border-border border-b px-[18px] py-3.5 text-center font-mono text-s
 			}
 		</tbody>
 	</table>
+
+	<ul class='border-border stack:hidden m-0 grid list-none gap-0 overflow-hidden rounded-md border p-0'>
+		{
+			rows.map((row) => (
+				<li class='border-border border-b p-[18px] last:border-b-0'>
+					<p class='font-ui text-text text-[14.5px]'>{row.label}</p>
+					<dl class='mt-3 grid grid-cols-3 gap-3'>
+						{[
+							{ tier: 'Free', value: row.free, accent: false },
+							{ tier: 'Basic', value: row.basic, accent: false },
+							{ tier: 'Pro', value: row.pro, accent: true },
+						].map((cell) => (
+							<div class='bg-surface-2 rounded-sm px-2 py-2 text-center'>
+								<dt
+									class:list={[
+										'font-mono text-[10.5px] tracking-[0.08em] uppercase',
+										cell.accent ? 'text-accent-strong' : 'text-muted',
+									]}>
+									{cell.tier}
+								</dt>
+								<dd
+									class:list={[
+										'mt-1 ml-0 font-mono text-sm',
+										cell.accent ? 'text-accent' : cell.value === '✓' ? 'text-text' : 'text-muted',
+									]}>
+									{cell.value}
+								</dd>
+							</div>
+						))}
+					</dl>
+				</li>
+			))
+		}
+	</ul>
 </section>

@@ -1,0 +1,25 @@
+{
+  "source": "/Users/danielaguillen/Downloads/Mirror Ghost Theme",
+  "glob": "MIRROR *.dc.html",
+  "out": ".originals",
+  "copy": ["support.js"],
+  "assets": [{ "from": "public/img", "glob": "pexels-*.jpg", "to": "img" }],
+  "replace": [
+    { "find": "\"https://images.pexels.com/photos/\" + id + \"/pexels-photo-\" + id + \".jpeg?auto=compress&cs=tinysrgb&w=1200\"", "with": "\"/img/pexels-\" + id + \".jpg\"", "required": false },
+    { "find": "\"https://images.pexels.com/photos/\" + id + \"/pexels-photo-\" + id + \".jpeg?auto=compress&cs=tinysrgb&w=\" + (w || 1200)", "with": "\"/img/pexels-\" + id + \".jpg\"", "required": false },
+    { "find": "https://images.pexels.com/photos/38048095/pexels-photo-38048095.jpeg?auto=compress&cs=tinysrgb&w=1600", "with": "/img/pexels-38048095-1600.jpg", "required": false }
+  ],
+  "inject_css": "[data-screen-label] > div > div:first-child, [data-screen-label] > div > header:first-child { display: none !important }",
+  "variants": [
+    { "suffix": " A1", "replace": [] },
+    { "suffix": " A2", "replace": [
+      { "find": "&quot;options&quot;:[&quot;a1&quot;,&quot;a2&quot;,&quot;b1&quot;,&quot;b2&quot;],&quot;default&quot;:&quot;a1&quot;", "with": "&quot;options&quot;:[&quot;a1&quot;,&quot;a2&quot;,&quot;b1&quot;,&quot;b2&quot;],&quot;default&quot;:&quot;a2&quot;", "required": false }
+    ]}
+  ],
+  "themes": [
+    { "suffix": "", "replace": [] },
+    { "suffix": " DARK", "replace": [
+      { "find": "&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;light&quot;", "with": "&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;dark&quot;" }
+    ]}
+  ]
+}

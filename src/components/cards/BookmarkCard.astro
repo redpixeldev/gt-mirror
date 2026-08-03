@@ -17,7 +17,7 @@ const {
 
 <a
 	href={href}
-	class='border-border bg-surface text-text mt-14 flex overflow-hidden rounded-md border no-underline shadow-sm'>
+	class='border-border bg-surface text-text max-stack:flex-col mt-14 flex overflow-hidden rounded-md border no-underline shadow-sm'>
 	<div class='flex-auto p-[22px]'>
 		<p class='font-ui text-base font-semibold'>{title}</p>
 		<p class='font-ui text-muted mt-2 text-[13.5px] leading-[1.55]'>{description}</p>
@@ -25,6 +25,6 @@ const {
 	</div>
 	<div
 		aria-hidden='true'
-		class='ph border-border flex-[0_0_140px] border-l'>
+		class='ph border-border max-stack:border-t max-stack:border-l-0 flex-[0_0_140px] border-l'>
 	</div>
 </a>

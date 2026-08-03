@@ -1,11 +1,17 @@
 ---
 import { ROUTES } from '../../data/navigation';
 /**
- * "Browse by tag" — a horizontally scrollable pill strip.
+ * "Browse by tag" — a pill strip that wraps rather than scrolling (see the
+ * `strip` utility in main.css).
  *
  * `sm` is the A1 sizing, tucked to the right of the section heading; `md` is the
  * A2 sizing, a full-width row that also shows each tag's post count; `lg` is the
  * tag archive's, where `layout='stacked'` puts the label on its own line above.
+ *
+ * Below `--breakpoint-stack` both inline layouts adopt the stacked one. Keeping the
+ * label on the same line as the pills leaves them a column barely wider than one
+ * pill, so a strip that fits two rows on a desktop turns into six or seven — the
+ * label is short, and the space it costs is worth more to the pills than to itself.
  */
 interface Props {
 	tags: { name: string; count?: number }[];
@@ -33,11 +39,11 @@ const stacked = layout === 'stacked';
 const wrapper = stacked
 	? ''
 	: size === 'sm'
-		? 'ml-auto flex min-w-0 flex-[0_1_auto] items-center gap-3.5'
-		: 'flex flex-wrap items-center gap-[18px]';
+		? 'max-stack:ml-0 max-stack:block max-stack:w-full ml-auto flex min-w-0 flex-[0_1_auto] items-center gap-3.5'
+		: 'max-stack:block flex flex-wrap items-center gap-[18px]';
 const labelClass = stacked
 	? 'font-ui text-muted mb-[18px] text-xs font-semibold tracking-[0.16em] uppercase'
-	: 'font-ui text-muted text-[11.5px] font-semibold tracking-[0.16em] whitespace-nowrap uppercase';
+	: 'font-ui text-muted max-stack:mb-3.5 max-stack:block text-[11.5px] font-semibold tracking-[0.16em] whitespace-nowrap uppercase';
 const stripGap = size === 'sm' ? 'gap-2' : size === 'md' ? 'gap-[9px]' : 'gap-2.5';
 const pill =
 	size === 'sm'
@@ -59,7 +65,7 @@ const pill =
 			<span class={labelClass}>{label}</span>
 		)
 	}
-	<div class:list={['strip flex overflow-x-auto p-0.5', stripGap]}>
+	<div class:list={['strip flex p-0.5', stripGap]}>
 		{
 			tags.map((tag) => (
 				<a

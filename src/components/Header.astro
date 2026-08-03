@@ -15,6 +15,7 @@ import { NAV, SITE_TITLE, SUBSCRIBE_HREF, type NavKey } from '../data/navigation
 import NavDropdown from './NavDropdown.astro';
 import HeaderSearch from './HeaderSearch.astro';
 import Logo from './Logo.astro';
+import ThemeToggle from './ThemeToggle.astro';
 
 export interface NavLink {
 	label: string;
@@ -75,10 +76,11 @@ const path = Astro.url.pathname.replace(/\.html$/, '').replace(/\/$/, '') || '/'
 
 <Wrapper
 	aria-label={isSite ? undefined : ariaLabel}
+	x-data={variant === 'site' ? 'headerSearch' : undefined}
+	x-on:click.outside={!compact && variant === 'site' ? 'close()' : undefined}
 	class:list={['bg-surface', isSite ? 'border-border border-b' : 'border-border overflow-hidden rounded-md border']}>
 	<div
-		x-data={!compact && variant === 'site' ? 'headerSearch' : undefined}
-		x-on:click.outside={!compact && variant === 'site' ? 'close()' : undefined}
+		x-ref={variant === 'site' ? 'bar' : undefined}
 		class:list={[
 			'flex flex-wrap items-center',
 			isAuth
@@ -88,19 +90,29 @@ const path = Astro.url.pathname.replace(/\.html$/, '').replace(/\/$/, '') || '/'
 					: 'gap-x-7 gap-y-4 px-5 py-5 md:px-7',
 			hasNote && 'border-border border-b',
 		]}>
+		{
+			/* Below `nav` the nav itself is gone, so the wordmark takes over pushing the
+		    remaining controls to the right edge. */
+		}
 		<Logo
 			height={isAuth ? 'h-4' : compact ? 'h-[17px]' : 'h-[19px]'}
 			href={titleHref ?? undefined}
-			class={isAuth ? 'mr-auto' : undefined}
+			class={isAuth ? 'mr-auto' : variant === 'site' ? 'max-nav:mr-auto' : undefined}
 		/>
 
 		{
 			isAuth ? (
-				<a
-					href={actionHref}
-					class='font-ui text-muted hover:text-accent text-sm no-underline'>
-					{actionLabel}
-				</a>
+				<>
+					<a
+						href={actionHref}
+						class='font-ui text-muted hover:text-accent text-sm no-underline'>
+						{actionLabel}
+					</a>
+					{/* The bar is `search · mode · subscribe`; auth carries none of the
+					    other two, so the toggle stands alone. It ships on every variant —
+					    a page a visitor can land on with no way to change mode is a gap. */}
+					<ThemeToggle position='static' />
+				</>
 			) : (
 				<>
 					{/* In `demo` the outer element is already the nav, so this stays a plain div. */}
@@ -108,7 +120,7 @@ const path = Astro.url.pathname.replace(/\.html$/, '').replace(/\/$/, '') || '/'
 						<nav
 							aria-label={ariaLabel}
 							x-show={!compact && variant === 'site' ? '!open' : undefined}
-							class='mr-auto flex flex-wrap items-center gap-[22px]'>
+							class='nav:flex mr-auto hidden flex-wrap items-center gap-[22px]'>
 							{NAV.map((item) => (
 								<NavDropdown
 									item={item}
@@ -135,6 +147,7 @@ const path = Astro.url.pathname.replace(/\.html$/, '').replace(/\/$/, '') || '/'
 
 					{!compact && variant === 'site' && <HeaderSearch />}
 
+					{/* Bar order is fixed by the chrome contract: search · mode · subscribe. */}
 					{!compact && (
 						<button
 							type='button'
@@ -146,10 +159,14 @@ const path = Astro.url.pathname.replace(/\.html$/, '').replace(/\/$/, '') || '/'
 							class:list={[
 								'btn border-border text-text hover:bg-surface-2 rounded-pill grid size-9 shrink-0 cursor-pointer place-items-center border bg-transparent font-mono',
 								isSite ? 'text-sm' : 'text-[13px]',
+								/* The overlay carries its own field below the nav breakpoint. */
+								variant === 'site' && 'max-nav:hidden',
 							]}>
 							<span aria-hidden='true'>⌕</span>
 						</button>
 					)}
+
+					<ThemeToggle position='static' />
 
 					<Subscribe
 						type={subscribeHref ? undefined : 'button'}
@@ -157,13 +174,126 @@ const path = Astro.url.pathname.replace(/\.html$/, '').replace(/\/$/, '') || '/'
 						class:list={[
 							'btn btn-primary font-ui rounded-sm px-[18px] py-2.5 text-sm font-semibold no-underline',
 							!subscribeHref && 'cursor-pointer',
+							/* Repeated at the foot of the overlay, so the bar can drop it. */
+							variant === 'site' && 'max-nav:hidden',
 						]}>
 						Subscribe
 					</Subscribe>
+
+					{variant === 'site' && (
+						<button
+							type='button'
+							aria-label='Menu'
+							x-ref='burger'
+							x-on:click='toggleMenu()'
+							x-bind:aria-expanded='String(menuOpen)'
+							aria-controls='site-menu'
+							class='btn border-border text-text hover:bg-surface-2 rounded-pill nav:hidden grid size-9 flex-none cursor-pointer place-items-center border bg-transparent'>
+							<span
+								aria-hidden='true'
+								class='flex size-9 flex-col items-center justify-center gap-[5px]'>
+								<span
+									class='bg-text block h-[1.5px] w-4 transition-transform'
+									x-bind:class="menuOpen ? 'translate-y-[3.25px] rotate-45' : ''"
+								/>
+								<span
+									class='bg-text block h-[1.5px] w-4 transition-transform'
+									x-bind:class="menuOpen ? '-translate-y-[3.25px] -rotate-45' : ''"
+								/>
+							</span>
+						</button>
+					)}
 				</>
 			)
 		}
 	</div>
+
+	{
+		/* Full-width, full-height menu below the nav breakpoint. It starts under the
+		   bar — whose height is measured, not assumed, because `compact` templates
+		   pass a shorter one — and carries everything the bar drops: search, the whole
+		   nav flat, and Subscribe. */
+		variant === 'site' && (
+			<div
+				id='site-menu'
+				x-show='menuOpen'
+				x-cloak
+				class='bg-bg nav:hidden fixed inset-x-0 bottom-0 z-40 overflow-y-auto'
+				x-bind:style="'top:' + barH + 'px'"
+				x-on:keydown.escape.window='closeMenu()'>
+				<div class='container py-8'>
+					<label
+						for='menu-search'
+						class='sr-only'>
+						Search posts
+					</label>
+					<input
+						id='menu-search'
+						type='search'
+						placeholder='Search posts…'
+						autocomplete='off'
+						x-model='query'
+						class='border-border bg-surface font-ui text-text w-full rounded-sm border px-3.5 py-3 text-base'
+					/>
+
+					<div
+						x-show='query.trim() !== ""'
+						x-cloak
+						class='mt-3'>
+						<template
+							x-for='item in results'
+							x-bind:key='item.href + item.title'>
+							<a
+								x-bind:href='item.href'
+								x-on:click='closeMenu()'
+								class='font-ui text-text hover:bg-surface-2 block rounded-sm px-3 py-2.5 text-[15px] no-underline'>
+								<span
+									class='font-medium'
+									x-text='item.title'
+								/>
+								<span
+									class='text-muted ml-2 font-mono text-[11.5px]'
+									x-text='item.tag + " · " + item.author'
+								/>
+							</a>
+						</template>
+						<p
+							x-show='results.length === 0'
+							class='font-ui text-muted px-3 py-2.5 text-[15px]'>
+							No posts match that search.
+						</p>
+					</div>
+
+					<nav
+						aria-label='Primary'
+						class='mt-8 flex flex-col gap-7'>
+						{NAV.map((item) => (
+							<div>
+								<p class='font-meta text-meta tracking-meta text-muted uppercase'>{item.label}</p>
+								<div class='mt-3 flex flex-col gap-2.5'>
+									{item.children.map((child) => (
+										<a
+											href={child.href}
+											x-on:click='closeMenu()'
+											class='font-ui text-text hover:text-accent text-[17px] no-underline'>
+											{child.label}
+										</a>
+									))}
+								</div>
+							</div>
+						))}
+					</nav>
+
+					<a
+						href={SUBSCRIBE_HREF}
+						x-on:click='closeMenu()'
+						class='btn btn-primary font-ui mt-9 block rounded-sm px-[18px] py-3.5 text-center text-base font-semibold no-underline'>
+						Subscribe
+					</a>
+				</div>
+			</div>
+		)
+	}
 
 	<slot name='note' />
 </Wrapper>

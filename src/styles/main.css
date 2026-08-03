@@ -163,6 +163,23 @@
 	/* Prose column, and how far a "wide" card breaks out of it on each side. */
 	--measure: 68ch;
 	--wide-out: 88px;
+
+	/*
+	 * Six breakpoints, named for what they do rather than for a device. Tailwind's
+	 * defaults are kept (sm/md/lg/xl/2xl); these add the two the layout actually
+	 * turns on, plus the small-phone floor.
+	 *
+	 *   xs    380px — below this, two-up rows go single-column and chrome sheds labels
+	 *   stack 768px — index tables become stacked rows
+	 *   nav  1200px — the nav collapses into the hamburger overlay
+	 *
+	 * No reference PNG is narrower than 1568px, so everything gated on these is
+	 * unmeasured against the design — it is judged by eye and by the overflow audit
+	 * in public/probe-mobile.html.
+	 */
+	--breakpoint-xs: 380px;
+	--breakpoint-stack: 768px;
+	--breakpoint-nav: 1200px;
 }
 
 /*
@@ -242,11 +259,51 @@
 }
 
 /* Horizontal tag strip: scrollable, no visible scrollbar (source `.mr-strip`). */
+/*
+ * A run of tag pills. It wraps; it does not scroll.
+ *
+ * Scrolling was the wrong answer twice over. The strip hides its own scrollbar,
+ * so anything past the right edge read as absent rather than as reachable — the
+ * probe's SCROLLHIDE rule flagged it on six templates at every width below
+ * 1200px. And an `overflow-x` container clips what its children paint outside
+ * their box, which cropped the focus ring on the active pill (2px outline at a
+ * 2px offset, against 2px of padding).
+ *
+ * Wrapping costs a line of height at narrow widths, hides nothing, and clips
+ * nothing. At 1568px — the width every reference PNG was rendered at — the pills
+ * fit on one line either way, so the measured layout is unchanged.
+ */
 @utility strip {
+	flex-wrap: wrap;
 	scrollbar-width: none;
 
 	&::-webkit-scrollbar {
 		display: none;
+	}
+}
+
+/*
+ * A tag pill's colours, keyed off `aria-pressed` rather than swapped classes.
+ *
+ * These used to be toggled with `x-bind:class`, which cannot work here: Alpine
+ * adds the classes its expression names but never removes the ones already in
+ * the `class` attribute, so `bg-transparent` and `bg-text` both landed on the
+ * active pill and CSS source order — not the binding — decided the winner. The
+ * active pill lost its fill and the All pill kept `text-muted`.
+ *
+ * Driving it from the attribute the button already carries removes the conflict
+ * by construction, and renders correctly with JavaScript off: the server marks
+ * All as pressed, which is the state every reference PNG shows.
+ */
+@utility tag-pill {
+	border-color: var(--mirror-border);
+	background: transparent;
+	color: var(--mirror-text);
+
+	&[aria-pressed='true'] {
+		border-color: var(--mirror-text);
+		background: var(--mirror-text);
+		color: var(--mirror-surface);
 	}
 }
 

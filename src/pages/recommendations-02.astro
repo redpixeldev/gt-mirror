@@ -2,7 +2,6 @@
 import Footer from '@components/Footer.astro';
 import Header from '@components/Header.astro';
 import PageIntro from '@components/PageIntro.astro';
-import ThemeToggle from '@components/ThemeToggle.astro';
 import NewsletterBanner from '@components/home/NewsletterBanner.astro';
 import RecommendationCards from '@components/recommendations/RecommendationCards.astro';
 import Layout from '@layouts/Layout.astro';
@@ -15,8 +14,6 @@ const intro = `${RECOMMENDATION_TOTAL} publications we actually read. No affilia
 	title='Recommendations — Mirror'
 	description={intro}
 	contentWidth='1320px'>
-	<ThemeToggle />
-
 	<Header
 		variant='site'
 		compact

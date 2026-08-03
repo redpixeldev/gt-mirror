@@ -18,7 +18,13 @@ const { name, countLabel, location, bio, portrait, website, social, href = ROUTE
 
 <aside
 	aria-label='About the author'
-	class='sticky top-[120px]'>
+	{/*
+	  Sticky only while there is a second column to sit beside. Below `stack` the
+	  grid collapses to one column, and a sticky child there pins itself while the
+	  rest of the column scrolls underneath — the article runs straight through the
+	  portrait, bio and links. Static in the stacked layout, where it is just the block above.
+	*/}
+	class='max-stack:static sticky top-[120px]'>
 	<img
 		src={portrait}
 		alt={`Portrait of ${name}`}

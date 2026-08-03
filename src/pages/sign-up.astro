@@ -1,5 +1,4 @@
 ---
-import ThemeToggle from '@components/ThemeToggle.astro';
 import Header from '@components/Header.astro';
 import AuthShell from '@components/auth/AuthShell.astro';
 import FormStateSwitch from '@components/auth/FormStateSwitch.astro';
@@ -15,8 +14,6 @@ const subhead = 'Free members get the Thursday essay and the full public archive
 	title='Sign up — Mirror'
 	description={subhead}
 	contentWidth='1320px'>
-	<ThemeToggle />
-
 	{/* `?state=loading|success|error` opens the page in that state — handy for demos and screenshots. */}
 	<div
 		x-data="{ state: ['loading', 'success', 'error'].includes(new URLSearchParams(location.search).get('state'))

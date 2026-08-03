@@ -1,7 +1,12 @@
 ---
 /**
- * Tag filter + sort control. Buttons drive the `archive` Alpine scope; the active
- * pill inverts to the text colour, matching the source's `--all-*` variables.
+ * Tag filter + sort control. Buttons drive the `archive` Alpine scope.
+ *
+ * The active pill inverts to the text colour, matching the source's `--all-*`
+ * variables. That inversion is styled from `aria-pressed` by the `tag-pill`
+ * utility rather than swapped with `x-bind:class` — see the note on the utility
+ * in `main.css` for why the class swap could not work. Alpine only flips the
+ * attribute; it owns no colour here.
  */
 interface Props {
 	tags: { name: string; count: number }[];
@@ -10,10 +15,7 @@ interface Props {
 const { tags } = Astro.props;
 
 const pill =
-	'font-meta tracking-meta rounded-pill flex-none cursor-pointer border px-[15px] py-2 text-[12.5px] whitespace-nowrap uppercase';
-/** Active pills invert; inactive keep the hairline border. */
-const pillState = (expr: string) =>
-	`${expr} ? 'bg-text text-surface border-text' : 'bg-transparent border-border text-text'`;
+	'tag-pill font-meta tracking-meta rounded-pill flex-none cursor-pointer border px-[15px] py-2 text-[12.5px] whitespace-nowrap uppercase';
 ---
 
 <section
@@ -21,11 +23,10 @@ const pillState = (expr: string) =>
 	aria-label='Filter and sort'
 	class='container pt-9'>
 	<div class='border-border flex flex-wrap items-center gap-5 border-b pb-4'>
-		<div class='strip flex min-w-0 flex-[1_1_420px] gap-[9px] overflow-x-auto p-0.5'>
+		<div class='strip flex min-w-0 flex-[1_1_420px] gap-[9px] p-0.5'>
 			<button
 				type='button'
-				class:list={[pill, 'text-muted']}
-				x-bind:class={pillState('tag === null')}
+				class={pill}
 				x-bind:aria-pressed='tag === null'
 				aria-pressed='true'
 				@click='tag = null'>
@@ -36,8 +37,7 @@ const pillState = (expr: string) =>
 				tags.map((t) => (
 					<button
 						type='button'
-						class:list={[pill, 'border-border text-text bg-transparent']}
-						x-bind:class={pillState(`tag === ${JSON.stringify(t.name)}`)}
+						class={pill}
 						x-bind:aria-pressed={`tag === ${JSON.stringify(t.name)}`}
 						aria-pressed='false'
 						{...{ '@click': `tag = tag === ${JSON.stringify(t.name)} ? null : ${JSON.stringify(t.name)}` }}>

@@ -1,7 +1,6 @@
 ---
 import Footer from '@components/Footer.astro';
 import Header from '@components/Header.astro';
-import ThemeToggle from '@components/ThemeToggle.astro';
 import NewsletterBanner from '@components/home/NewsletterBanner.astro';
 import TagCards from '@components/tags/TagCards.astro';
 import Layout from '@layouts/Layout.astro';
@@ -12,8 +11,6 @@ import { TAG_DIRECTORY, TAG_TOTAL } from '../data/tags';
 	title='Every tag — Mirror'
 	description={`Six years of writing, filed into ${TAG_TOTAL} subjects.`}
 	contentWidth='1320px'>
-	<ThemeToggle />
-
 	<Header
 		variant='site'
 		compact

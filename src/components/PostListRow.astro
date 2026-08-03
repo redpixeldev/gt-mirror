@@ -45,7 +45,10 @@ const {
 <article class='border-border border-b'>
 	<a
 		href={href}
-		class:list={['text-text grid grid-cols-[1fr_132px] items-start gap-8 no-underline', padding]}>
+		class:list={[
+			'text-text max-stack:grid-cols-[minmax(0,1fr)] max-stack:gap-4 grid grid-cols-[minmax(0,1fr)_132px] items-start gap-8 no-underline',
+			padding,
+		]}>
 		<div>
 			<div class='flex items-center gap-2.5'>
 				<span

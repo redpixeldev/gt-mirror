@@ -1,0 +1,106 @@
+[
+  {
+    "path": "/homepage-01",
+    "expect": "Featured"
+  },
+  {
+    "path": "/homepage-02",
+    "expect": "Mirror"
+  },
+  {
+    "path": "/blog-01",
+    "expect": "The Archive"
+  },
+  {
+    "path": "/blog-02",
+    "expect": "The Archive"
+  },
+  {
+    "path": "/post-01",
+    "expect": "What editors owe their readers now"
+  },
+  {
+    "path": "/post-02",
+    "expect": "What editors owe their readers now"
+  },
+  {
+    "path": "/post-01-paywalled",
+    "expect": "Subscribe"
+  },
+  {
+    "path": "/post-02-paywalled",
+    "expect": "Subscribe"
+  },
+  {
+    "path": "/404-02",
+    "expect": "404"
+  },
+  {
+    "path": "/tags-01",
+    "expect": "Tags"
+  },
+  {
+    "path": "/tags-02",
+    "expect": "Tags"
+  },
+  {
+    "path": "/tags-single-01",
+    "expect": "Interviews"
+  },
+  {
+    "path": "/tags-single-02",
+    "expect": "Interviews"
+  },
+  {
+    "path": "/authors-01",
+    "expect": "Latest"
+  },
+  {
+    "path": "/authors-02",
+    "expect": "Mirror"
+  },
+  {
+    "path": "/author-single-01",
+    "expect": "Mirror"
+  },
+  {
+    "path": "/author-single-02",
+    "expect": "Mirror"
+  },
+  {
+    "path": "/recommendations-01",
+    "expect": "Mirror"
+  },
+  {
+    "path": "/recommendations-02",
+    "expect": "Mirror"
+  },
+  {
+    "path": "/about-01",
+    "expect": "Mirror"
+  },
+  {
+    "path": "/about-02",
+    "expect": "Mirror"
+  },
+  {
+    "path": "/membership-01",
+    "expect": "What's included"
+  },
+  {
+    "path": "/membership-02",
+    "expect": "What's included"
+  },
+  {
+    "path": "/sign-in",
+    "expect": "Sign in"
+  },
+  {
+    "path": "/sign-up",
+    "expect": "Sign up"
+  },
+  {
+    "path": "/styleguide",
+    "expect": "Mirror"
+  }
+]
