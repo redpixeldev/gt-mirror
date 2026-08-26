@@ -1,0 +1,16 @@
+{{!-- What goes inside one menu link: the item's icon, if the publication has that turned on, and
+its label.
+
+Ghost's `navigationIcons` lab (a public beta, so any buyer can switch it on today) lets a menu item
+carry an icon with **no label at all** — the helper only drops items that have neither. A theme that
+renders `{{label}}` and nothing else therefore turns such an item into an empty, nameless link. This
+is the shape Ghost's own default navigation template uses, applied to all four of MIRROR's
+renderings, so the bar, the panel, the footer columns and the slim row cannot disagree.
+
+`{{@navigationIcons}}` is set by the navigation helper on the frame it renders this partial with, so
+it is only ever true when the lab is on.
+
+One line, and trimmed at both ends: the bar's current item is marked with a bottom border, and a
+stray whitespace text node inside that link would widen it. Params: `iconSize` (height utility for
+the artwork). --}}
+{{~#if @navigationIcons~}}{{~#if icon~}}<img src="{{icon}}" alt="{{iconAlt}}" class="{{iconSize}} inline-block w-auto align-[-0.125em]">{{~/if~}}{{~label~}}{{~else~}}{{~label~}}{{~/if~}}

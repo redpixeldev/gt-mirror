@@ -4,4 +4,11 @@
 page settings menu, then page.hbs — so page-recommendations.hbs keeps the demo slug working while
 custom-recommendations.hbs lets a buyer apply the same layout to a page named anything at all. One
 partial, no duplicated markup. --}}
-{{> "pages/recommendations"}}
+
+{{> "chrome/header" compact=true}}
+
+<main id="main" class="grow">
+	{{> "pages/recommendations"}}
+</main>
+
+{{> "chrome/footer"}}

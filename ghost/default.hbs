@@ -54,15 +54,18 @@
 
 </head>
 
-<body class="{{body_class}} bg-bg font-body text-text min-h-screen">
+{{!-- The shell holds the document; the chrome belongs to the Surface.
 
-	{{> "header"}}
+Each template opens with the bar its Surface wears and closes with the foot, because the
+shape of both is a property of the Surface — the listing bar and the reading bar are
+different heights, the members Surfaces carry a slim bar and no foot at all — and the
+Surface is the template. A layout can only pick one shape, and every way of guessing which
+from here is unsound: the render context of a Surface depends on the buyer's routes.yaml
+(this install's Feed reports `archive`, a bare install's reports `index`) and an error page
+reports no context at all. See partials/chrome/header.hbs. --}}
+<body class="{{body_class}} bg-bg font-body text-text flex min-h-screen flex-col">
 
-	<main id="main">
-		{{{body}}}
-	</main>
-
-	{{> "footer"}}
+	{{{body}}}
 
 	<script src="{{asset "built/main.js"}}"></script>
 

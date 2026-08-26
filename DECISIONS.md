@@ -1197,3 +1197,209 @@ The comparison is Ghost-vs-PNG against a noise floor of source-vs-PNG, the same 
 build's table above — not the Ghost-vs-staged-original number the toolchain section recorded as proof
 the pipeline ran. That one was 97.38 for About A1 light; this run puts the same Surface at 97.80
 against a noise floor of 98.02, so About is **0.22** off a ceiling the design source itself sets.
+
+## Chrome: the parts of a Surface that belong to the publication (2026-08)
+
+Header and Mode switch on every Surface; menu, collapsed panel and footer on every Surface the design
+draws them on — the members bar carries none of the three, as the table below records. Everything
+here is wired to the publication's own data — its menus, its logo, its accent, its members — because
+the whole point of porting a design to a platform is that the buyer's own site drives it.
+
+### The template names its chrome; the context cannot
+
+`default.hbs` is a shell now: head, `<body>`, `{{{body}}}`, scripts. Each template opens with the bar
+its Surface wears, wraps its own `<main>`, and closes with the foot:
+
+| call                                 | Surfaces                                  | the design it ports       |
+| :----------------------------------- | :---------------------------------------- | :------------------------ |
+| `{{> "chrome/header"}}`              | home, Feed                                | the listing bar, 22px pad |
+| `{{> "chrome/header" compact=true}}` | post, page, tag, author, custom-\*, error | the reading bar, 20px pad |
+| `{{> "chrome/header" auth=true}}`    | sign-in, sign-up                          | the members bar, 18px pad |
+| `{{> "chrome/footer"}}`              | everything except the two above and error | the four-column foot      |
+| `{{> "chrome/footer" slim=true}}`    | error-404, error                          | the one-row foot          |
+| _(no footer)_                        | sign-in, sign-up                          | the design draws none     |
+
+A single layout with the chrome in it would have to guess the shape, and the render context — the
+obvious place to guess from — cannot carry it. Measured on this install, with `{{#foreach @root.context}}`
+in the layout:
+
+| URL                | context            |
+| :----------------- | :----------------- |
+| `/`                | `home`, `index`    |
+| `/archive/`        | **`archive`**      |
+| `/archive/page/2/` | `paged`, `archive` |
+| `/about/`          | `page`             |
+| `/tag/essays/`     | `tag`              |
+| `/author/erin-…/`  | `author`           |
+| a post             | `post`             |
+| a missing URL      | **empty**          |
+
+The Feed's context is the _name of the collection in the buyer's routes.yaml_ — `archive` here,
+`index` on a bare install — and an error page has no context at all. So `{{#is "index"}}` is false on
+the Feed of this very install, and no `{{#is}}` can match the error Surface. The shape is a property
+of the Surface, the Surface is the template (per the route map above), and that is where it is named.
+The cost is two partial calls and a `<main>` per template; the same shape the reference build has,
+where every page composes `Header` / `main` / `Footer` itself.
+
+`<body>` is a flex column, so a Surface with no foot fills the viewport instead of leaving a strip of
+the wrong colour under it — the sign-in field runs to the bottom edge as the design draws it, and the
+slim foot sits on the bottom edge of a 404.
+
+### The menu is the publication's, in four renderings, from one partial
+
+`{{navigation}}` executes `partials/navigation.hbs` when a theme ships one, and — the load-bearing
+part — **forwards every hash attribute** to it (`_.merge(this, options.hash)`). So one partial serves
+the bar, the collapsed panel, a footer column and the slim foot's row: `{{navigation variant="bar"}}`,
+`variant="overlay"`, `variant="column" heading=…`, `variant="row"`. The helper also hands over
+`current`, computed by comparing each item's path with the page's, which is what draws the accent
+underline without the theme knowing any URLs.
+
+Two hazards in that merge, both avoided rather than discovered later:
+
+- it writes onto the **calling context**, so a variant set by one call is still set for the next.
+  Every call names its variant, and no branch is a fall-through default.
+- the key must be one no Ghost context uses. The column heading is `heading`, not `title`, because
+  `title` would overwrite the rendered post's title for the rest of the page.
+
+The design fills two footer columns with link lists it wrote by hand. A publication has exactly two
+menus it can edit, so those are the two columns: **Primary** under "Sections", **Secondary** under
+"More". Nothing in the chrome is a hardcoded link. An RSS link is a menu item like any other — the
+design's is inside a column, and `/rss/` in the secondary menu puts it there. Proven by editing the
+setting rather than by reading the template: adding a "Field Notes" item through the Admin API put it
+in the bar and the footer, and removing it took it out again.
+
+### Search is the platform's, and the trigger is what turns it on
+
+The reference build searches a compile-time index; Ghost ships an index, a popup and a shortcut, and
+the reference build already carries the handoff hook. So the theme has **no search code at all**: the
+design's ⌕ button carries `data-ghost-search` and sodo-search binds it.
+
+Read out of sodo-search 1.8 rather than assumed, because the second fact decides the markup:
+
+- `getCustomTriggerButtons()` collects `[data-ghost-search]`, so any element can be the trigger;
+- `addKeyboardShortcuts()` registers **⌘K only if that collection is non-empty**.
+
+The design draws no ⌕ on the reading bar, so a Surface rendered with `compact=true` has no visible
+search control — and would have had no shortcut either. The collapsed panel's search control is what
+fixes that: it is a button dressed as a field (there is nothing for a field to submit to when the
+platform's popup has an input of its own), it carries the attribute, and it is in the DOM at every
+width because `nav:hidden` only hides it. Verified on `/about/`: one trigger on the page, none of it
+visible, and ⌘K opens the popup. Verified end to end on `/`: the popup returns real results from the
+publication — "editors" finds _Two editors, one masthead_ and _What editors owe their readers now_.
+
+**The members bar is the exception, and it is the design's exception.** It carries no ⌕ and no
+collapsed panel — the design's sign-in bar is a wordmark and a way back — so it carries no trigger,
+and ⌘K is off on those two Surfaces. `ghost/README.md` says so rather than promising a shortcut that
+is not there.
+
+**Closing the popup had to be finished by the theme.** sodo-search moves focus onto its iframe on the
+way in and, on the way out, empties `#sodo-search-root` and leaves focus on `<body>` — measured, with
+every close path a bare `dispatch('update', {showPopup: false})` and no stored `activeElement`
+anywhere in the bundle. A visitor who searched from the bar and dismissed the popup would land at the
+top of the document on the next Tab, which is a dead end the theme's own control created. So
+`main.js` remembers the trigger in the capture phase (and, for ⌘K, whatever had focus), watches that
+root for the popup going away, and puts focus back if the trigger is still visible. Verified both
+ways: after Escape, focus is on the ⌕ button, and searching from the collapsed panel returns focus
+into the panel — which is also why the panel is the one control in itself that does not close on the
+way out.
+
+### The rest of the wiring, and what each thing refuses to invent
+
+- **The Mode switch renders once, in the bar, on all three shapes.** The design keeps it in the
+  preview tool's own toolbar, which a shipped page does not have; the reference build put it in the
+  bar for the same reason and paid the same price.
+- **The wordmark is type, then artwork, then type again.** The design sets the publication name in
+  the display face, which takes its colour from the text token and flips with the Mode for free. A
+  buyer may have uploaded a logo, and a theme that ignores it makes a control in admin do nothing, so
+  the image wins when there is one. An image does not flip and Ghost has one logo setting, so
+  `@custom.dark_mode_logo` is the way out; with it empty the dark Mode sets the publication name in
+  the display face — the same word in the same face as the artwork it stands in for.
+- **The bar's call to action is `chrome/cta.hbs`,** which resolves the publication's four member
+  states: Account for `@member`, Sign in while `@site.members_invite_only`, Subscribe on
+  `@site.signup_url` otherwise, and **nothing at all** when members are off — Ghost turns `signup_url`
+  into a feed-reader URL in that state, and a Subscribe that means RSS is bait. The design draws only
+  the third of those, because the design has one visitor. Proven by flipping the setting:
+  `members_signup_access` of `all`, `invite` and `none` renders Subscribe, Sign in and no control.
+- **The footer's email field is Ghost's own signup form.** `data-members-form` on the form and
+  `data-members-email` on the input are the whole contract; Portal binds the submit and reports back
+  on the form element. Read out of portal 2.71, not from docs, and the class set is narrower than it
+  looks: the handler clears `success`, `invalid` and `error`, adds `loading` for the round trip, and
+  ends by adding exactly one of `success` or `error`. It never adds `invalid`. The `loading` rule is
+  the one with teeth — Portal detaches its own submit listener for the duration, so a second click on
+  a slow connection reaches the browser, and a form with no action turns that into a GET navigation
+  that throws the pending signup away. The form renders only while `@site.members_enabled`: a form
+  that cannot sign anyone up is worse than no form.
+- **The menu renders whatever a menu item can be.** Ghost's `navigationIcons` lab lets an item carry
+  an icon and no label, and the helper only drops items with neither — so a theme that renders
+  `{{label}}` alone turns such an item into an empty, nameless link. `chrome/nav-label.hbs` is the
+  shape Ghost's own default navigation template uses, shared by all four renderings, and it is
+  trimmed at both ends because the bar's current item is marked with a border that a stray whitespace
+  node would widen. Proven by turning the lab on: an icon-only item rendered as an `<img>` with
+  Ghost's own `iconAlt`, and turning it off left the markup byte-identical.
+- **The collapsed panel measures the bar.** The reading bar is 76px and the listing bar 80px on this
+  install, and the panel opened at exactly `top: 76` and `top: 80` — on boot, on every open, and on a
+  resize while open. That last one is not theoretical: at 280px the listing bar wraps to 128px, and
+  the open panel's offset followed it to 128.
+- **The scroll lock is a class, not a style.** `siteMenu` puts `.menu-open` on `<body>`; a media query
+  keyed to `--breakpoint-nav` decides what it means, so the width at which a full-height panel exists
+  stays in one place. Widening the window past the breakpoint with the panel open lifts the lock —
+  checked, because a page a visitor cannot scroll is the failure that mechanism exists to prevent.
+- **`<main>` is inert while the panel is open, and there is a skip link.** The panel covers the page
+  completely, so without `inert` a Tab past its last control walks into content nobody can see. The
+  skip link is the design's one omission the theme adds back: `sr-only` until focused, so it costs
+  the pixel reference nothing, and it gives `#main` — written into all 21 templates — a consumer.
+
+### A bug the geometry probe found: every Surface was 80px too narrow
+
+Comparing the rendered chrome with the design source in a browser — not comparing pixels, comparing
+boxes — turned up something no score had isolated. The `container` utility reads
+`var(--container-max, 1240px)`, and all 26 of the reference build's Surface pages pass `1320px`
+explicitly; the port passed nothing, so every Ghost Surface rendered 1240px wide against a design
+drawn at 1320px. `screen.css` now states the page width once. With it, every box in the chrome
+matches the design source exactly:
+
+| measured on `/about/`   |        Ghost | design source |
+| :---------------------- | -----------: | ------------: |
+| bar width               |         1320 |          1320 |
+| header height           |           79 |            79 |
+| bar padding / gap       |      20 / 30 |       20 / 30 |
+| footer grid             |      4 × 287 |       4 × 287 |
+| footer pad / gap / rule | 56 / 36 / 20 |  56 / 36 / 20 |
+
+The one design source drawn at 1240px is the styleguide, and it reaches Ghost through `page.hbs`
+alongside every other generic page, where 1320px is right. Branching a shipped template on a demo
+page's slug is not a trade worth making; the styleguide rows carry the 80px instead.
+
+### What the identity axis says about chrome, and why it is not the judge here
+
+Full run after the chrome landed: **32 scored, mean −0.53 against the skeleton, 26 of 32 within 0.5**.
+Nothing regressed sharply except the two members rows (−2.4) and Recommendations (−2.0).
+
+That the numbers go _down_ while the chrome goes from a stacked-`<ul>` skeleton to the design's bar is
+worth understanding rather than explaining away. An empty band scores better against a populated
+design than a populated band whose words differ: the bar now carries this publication's menu
+(Archive · Subjects · Writers · About · Membership, against the design's Home · Archive · Authors ·
+About), its name — Mirror, not The Quarry, recorded above as content-derived and not to be "fixed" —
+and one control the design never drew.
+
+So chrome was measured where it can be measured: by cropping the regions and scoring them against
+their own noise floor, with no realignment. Each crop starts at the region's own top edge, so a
+Surface body that is still a skeleton cannot drag the number.
+
+| region of `/about/` light      | Ghost | noise floor |   gap |
+| :----------------------------- | ----: | ----------: | ----: |
+| header, its 78px               | 95.96 |       97.09 | −1.13 |
+| footer columns, first 200px    | 94.70 |       94.96 | −0.26 |
+| footer's bottom rule, its 54px | 98.24 |       99.31 | −1.07 |
+
+The footer sits at its floor — the design's footer, ported, with the publication's own two menus in
+it. Its bottom rule lands at y=3309 of the capture against y=3310 in the reference PNG: one pixel,
+on a Surface whose body is not built, because `<main>` grows into the page the way the design's does.
+
+The header's 1.13 is the Mode switch and the different labels, and there is a second measurement that
+shows what that costs once a Surface's body matches: the reference build's members bar is the same bar
+with the same switch, and it scores **97.68 against a 99.07 floor**. `score.py` realigns each band by
+up to ±40px, so a uniformly taller bar is absorbed almost entirely when the content below it matches.
+It is not absorbed today because every Surface body is still a skeleton — which is what the remaining
+Surface tickets are for, and why the chrome's own numbers had to be taken region by region rather
+than read off the page total.

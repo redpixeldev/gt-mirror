@@ -1,0 +1,58 @@
+{{!-- The publication's own menu, in the four shapes MIRROR's chrome needs.
+
+This file is not called by name: `{{navigation}}` renders it, because Ghost's navigation
+helper executes a partial called `navigation` if the theme ships one. What the helper hands
+over is `navigation` — one entry per menu item with `label`, `url`, an optional `icon` and a
+`current` flag it computes by comparing the item's path with the page's — plus, and this is
+the load-bearing part, every extra attribute passed to the call (`_.merge(this, options.hash)`
+in core/frontend/helpers/navigation.js). So `{{navigation variant="overlay"}}` arrives here as
+`{{variant}}`, and one partial can serve the bar, the collapsed panel, a footer column and the
+slim foot's row without the theme ever hardcoding a link.
+
+Two consequences of that merge are worth knowing before adding a call:
+
+1. It writes onto the calling context, so a `variant` set by one call would still be set
+   for the next one. Every call therefore names its variant explicitly — there is no
+   default branch to fall through to by accident.
+2. The name has to be one no Ghost context uses. `title` would silently overwrite a post's
+   title for the rest of the render, which is why the column heading is `heading`. --}}
+
+{{#match variant "bar"}}
+	{{#foreach navigation}}
+		<a
+			href="{{url}}"
+			{{#if current}}aria-current="page"{{/if}}
+			class="font-ui text-[15px] no-underline {{#if current}}border-accent text-text border-b-2 pb-[3px]{{else}}text-muted hover:text-text{{/if}}">{{> "chrome/nav-label" iconSize="h-[15px]"}}</a>
+	{{/foreach}}
+{{/match}}
+
+{{#match variant "overlay"}}
+	{{#foreach navigation}}
+		<a
+			href="{{url}}"
+			{{#if current}}aria-current="page"{{/if}}
+			x-on:click="close()"
+			class="font-ui text-[17px] no-underline {{#if current}}text-accent{{else}}text-text hover:text-accent{{/if}}">{{> "chrome/nav-label" iconSize="h-[17px]"}}</a>
+	{{/foreach}}
+{{/match}}
+
+{{#match variant "column"}}
+	<nav aria-label="{{heading}}">
+		<p class="text-muted mb-3.5 font-mono text-[11px] tracking-[0.1em] uppercase">{{heading}}</p>
+		<div class="flex flex-col gap-[9px]">
+			{{#foreach navigation}}
+				<a
+					href="{{url}}"
+					class="font-ui text-text hover:text-accent text-sm no-underline">{{> "chrome/nav-label" iconSize="h-[14px]"}}</a>
+			{{/foreach}}
+		</div>
+	</nav>
+{{/match}}
+
+{{#match variant "row"}}
+	{{#foreach navigation}}
+		<a
+			href="{{url}}"
+			class="font-ui text-text hover:text-accent text-[13.5px] no-underline">{{> "chrome/nav-label" iconSize="h-[13px]"}}</a>
+	{{/foreach}}
+{{/match}}

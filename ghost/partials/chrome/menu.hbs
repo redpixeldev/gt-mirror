@@ -1,0 +1,46 @@
+{{!-- The overlay the bar collapses into below the nav breakpoint (1200px).
+
+It carries exactly what the bar sheds: search, the whole menu, and the call to action. It starts
+underneath the bar rather than at the top of the viewport, and the bar's height is measured rather
+than assumed — the reading bar is shorter than the listing bar, and a hardcoded offset would leave a
+strip of the wrong Surface showing on one of them. `siteMenu` measures on boot, on every open, and on
+a resize while it is open, so a rotation cannot leave the offset stale either.
+
+The search control is a button dressed as a field, not a field. There is nothing for a field to
+submit to: Ghost owns search, and its popup has an input of its own, so a real input here would ask a
+visitor to type their query twice. It carries `data-ghost-search`, so it is also the trigger that
+keeps the platform's ⌘K shortcut alive on Surfaces whose bar has no visible search control — see the
+note in chrome/header.hbs.
+
+It is the one control here that does **not** close the panel. A visitor who reached search from the
+panel should land back on the panel when they dismiss it, which is also what makes the focus restore
+in main.js land on something visible; closing underneath the popup would return them to a page they
+did not ask for and drop the scroll lock while a full-screen popup is still up.
+
+This whole element is in the DOM at every viewport width; `nav:hidden` is what keeps it out of a wide
+layout. `x-cloak` covers the moment before Alpine boots. --}}
+<div
+	id="site-menu"
+	x-show="menuOpen"
+	x-cloak
+	x-bind:style="'top:' + barH + 'px'"
+	x-on:keydown.escape.window="close()"
+	class="bg-bg nav:hidden fixed inset-x-0 bottom-0 z-40 overflow-y-auto">
+	<div class="container py-8">
+		<button
+			type="button"
+			data-ghost-search
+			class="border-border bg-surface font-ui text-muted flex w-full cursor-pointer items-center gap-2.5 rounded-sm border px-3.5 py-3 text-left text-base">
+			<span
+				aria-hidden="true"
+				class="font-mono">⌕</span>
+			{{t "Search posts"}}
+		</button>
+
+		<nav
+			aria-label="{{t "Main navigation"}}"
+			class="mt-8 flex flex-col gap-2.5">{{navigation variant="overlay"}}</nav>
+
+		{{> "chrome/cta" class="btn btn-primary font-ui mt-9 block rounded-sm px-[18px] py-3.5 text-center text-base font-semibold no-underline"}}
+	</div>
+</div>

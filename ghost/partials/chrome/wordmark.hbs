@@ -1,0 +1,40 @@
+{{!-- The publication's mark, at whatever size the caller's bar is.
+
+The design draws the wordmark as type — the publication name in the display face, which
+means it takes its colour from the text token and flips with the Mode for free. A Ghost
+publication may have uploaded a logo instead, and a theme that ignores it makes a control in
+admin do nothing, so the image wins when there is one.
+
+An image does not flip. Ghost has exactly one logo setting, so a light-ink mark on MIRROR's
+dark surface would be a mark nobody can see. `dark_mode_logo` is the way out for a buyer who
+has one; a buyer who does not gets the publication name set in the display face for the dark
+Mode only, which is the same word in the same face as the artwork it stands in for.
+
+Params: `wrapper` (classes for the link), `logoHeight` (cap-height utility for the artwork,
+not a font size), `titleSize` (type size for the text mark). --}}
+<a
+	href="{{@site.url}}"
+	class="inline-flex shrink-0 items-center no-underline {{wrapper}}">
+	{{#if @site.logo}}
+		<img
+			src="{{img_url @site.logo size="s"}}"
+			alt="{{@site.title}}"
+			class="{{logoHeight}} block w-auto dark:hidden">
+		{{!-- Neither dark branch is hidden from assistive tech: `dark:hidden` above and `hidden`
+		here are display:none, so exactly one of the two is ever in the tree, and whichever one it
+		is has to be what names this link. Marking them decorative left the link with no
+		accessible name at all in the dark Mode. --}}
+		{{#if @custom.dark_mode_logo}}
+			<img
+				src="{{img_url @custom.dark_mode_logo size="s"}}"
+				alt="{{@site.title}}"
+				class="{{logoHeight}} hidden w-auto dark:block">
+		{{else}}
+			<span
+				class="font-display tracking-display text-text hidden font-medium dark:block {{titleSize}}">{{@site.title}}</span>
+		{{/if}}
+	{{else}}
+		<span
+			class="font-display tracking-display text-text font-medium {{titleSize}}">{{@site.title}}</span>
+	{{/if}}
+</a>

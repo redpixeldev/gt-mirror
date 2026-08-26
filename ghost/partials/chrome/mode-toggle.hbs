@@ -1,0 +1,24 @@
+{{!-- The Mode switch — light or dark. The `mode` Alpine store (assets/js/main.js) owns the `.dark`
+class on <html> and its localStorage mirror; the pre-paint script in default.hbs has already resolved
+which of the two it is before anything paints.
+
+The label is therefore two spans and no JavaScript. It used to be one span server-rendered from
+`default_appearance` and corrected by `x-text` once Alpine booted, which got the word wrong for every
+visitor whose resolved Mode differed from the setting — always, with the setting on System and a dark
+OS: the page painted dark under a button reading "Light". Letting the same class that decided the Mode
+decide the word removes the disagreement, and keeps the label inside the theme's {{t}} contract
+instead of handing it to a hardcoded English string in a store getter. --}}
+<button
+	type="button"
+	x-data
+	x-bind:aria-pressed="$store.mode.dark"
+	aria-pressed="false"
+	aria-label="{{t "Toggle dark mode"}}"
+	class="btn rounded-pill border-border bg-surface font-ui text-text flex cursor-pointer items-center gap-[9px] border px-4 py-2 text-[13px] font-medium shadow-sm hover:bg-surface-2"
+	@click="$store.mode.toggle()">
+	<span
+		aria-hidden="true"
+		class="bg-accent size-3 rounded-full"
+		style="box-shadow: inset -4px 0 0 0 var(--mirror-dot-inset)"></span>
+	<span class="dark:hidden">{{t "Light"}}</span><span class="hidden dark:inline">{{t "Dark"}}</span>
+</button>

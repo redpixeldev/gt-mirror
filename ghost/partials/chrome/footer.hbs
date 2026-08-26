@@ -1,0 +1,103 @@
+{{!-- The foot of every Surface, in the two shapes the design draws.
+
+	{{> "chrome/footer"}}              the full foot: mark, two menus, the newsletter
+	{{> "chrome/footer" slim=true}}    one row, for Surfaces the full foot would outweigh
+
+The design draws four columns and fills two of them with link lists it wrote by hand. A
+publication has exactly two menus it can edit, so those are the two columns: the primary menu
+under "Sections" and the secondary one under "More". Nothing here is a hardcoded link — a
+buyer who empties a menu loses its column, and the grid re-flows, which is the honest
+outcome. An RSS link is a menu item like any other; add /rss/ to the secondary menu and it
+appears in the footer.
+
+The newsletter column is Ghost's own signup form: `data-members-form` on the form and
+`data-members-email` on the input are the whole contract, and Portal — already on the page out of
+{{ghost_head}} — binds the submit, posts the magic link and reports back on the form element. Read
+out of portal 2.71 rather than from docs, which matters because the class set is narrower than it
+looks: the handler clears `success`, `invalid` and `error`, then adds `loading` for the round trip
+and exactly one of `success` or `error` at the end. It never adds `invalid`. Failures also land as
+text inside `[data-members-error]`, so that node is a live region, and the sent line is real markup
+that CSS reveals rather than a string JavaScript writes. Three rules in assets/css/screen.css are
+the whole of the theme's side. It renders only where members exist: a form that cannot sign anyone
+up is worse than no form.
+
+The design's bottom-right slot holds the preview tool's own metadata — which layout, which
+mode — and neither belongs on a shipped page. The platform attribution takes the slot. --}}
+{{#if slim}}
+	<footer class="border-border bg-surface border-t">
+		<div class="container flex flex-wrap items-center justify-between gap-4 py-6">
+			<span class="text-muted font-mono text-[11.5px]">&copy; {{date format="YYYY"}} {{@site.title}}</span>
+
+			<nav
+				aria-label="{{t "Secondary navigation"}}"
+				class="flex flex-wrap gap-5">{{navigation type="secondary" variant="row"}}</nav>
+
+			<span class="text-muted font-mono text-[11.5px]">
+				<a
+					href="https://ghost.org/"
+					class="text-muted no-underline">{{t "Powered by Ghost"}}</a>
+			</span>
+		</div>
+	</footer>
+{{else}}
+	<footer class="border-border bg-surface mt-24 border-t">
+		<div class="container grid grid-cols-[repeat(auto-fit,minmax(min(190px,100%),1fr))] gap-9 py-14">
+			<div>
+				{{> "chrome/wordmark" logoHeight="h-4" titleSize="text-[22px]"}}
+
+				{{#if @site.description}}
+					<p class="font-ui text-muted mt-3 text-[13.5px] leading-[1.6]">{{@site.description}}</p>
+				{{/if}}
+			</div>
+
+			{{navigation variant="column" heading=(t "Sections")}}
+
+			{{navigation type="secondary" variant="column" heading=(t "More")}}
+
+			{{#if @site.members_enabled}}
+				<div>
+					<p class="text-muted mb-3.5 font-mono text-[11px] tracking-[0.1em] uppercase">{{t "Newsletter"}}</p>
+
+					<form
+						data-members-form="signup"
+						class="flex flex-wrap gap-2">
+						<label
+							for="footer-email"
+							class="sr-only">{{t "Email address"}}</label>
+						<input
+							id="footer-email"
+							type="email"
+							data-members-email
+							required
+							autocomplete="email"
+							placeholder="{{t "Email"}}"
+							class="border-border bg-bg font-ui text-text min-w-0 flex-[1_1_130px] rounded-sm border px-3 py-2.5 text-sm">
+						<button
+							type="submit"
+							class="btn btn-primary font-ui cursor-pointer rounded-sm px-4 py-2.5 text-sm font-semibold">{{t "Join"}}</button>
+
+						<p
+							data-members-error
+							role="alert"
+							class="font-ui text-accent w-full text-[12.5px]"></p>
+						<p
+							role="status"
+							class="font-ui text-muted members-sent w-full text-[12.5px]">{{t "Check your inbox for the link."}}</p>
+					</form>
+				</div>
+			{{/if}}
+		</div>
+
+		<div class="border-border border-t">
+			<div class="container flex flex-wrap justify-between gap-4 py-5">
+				<span class="text-muted font-mono text-[11.5px]">&copy; {{date format="YYYY"}} {{@site.title}}</span>
+
+				<span class="text-muted font-mono text-[11.5px]">
+					<a
+						href="https://ghost.org/"
+						class="text-muted no-underline">{{t "Powered by Ghost"}}</a>
+				</span>
+			</div>
+		</div>
+	</footer>
+{{/if}}

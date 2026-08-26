@@ -58,6 +58,10 @@
 				],
 				"default": "Light"
 			},
+			"dark_mode_logo": {
+				"type": "image",
+				"description": "Your logo redrawn for dark backgrounds. Leave it empty and the dark Mode sets your publication name in the theme's display face instead."
+			},
 			"homepage_layout": {
 				"type": "select",
 				"options": [

@@ -1,0 +1,103 @@
+{{!-- The bar every Surface wears, in the three shapes the design draws.
+
+Which shape a Surface gets is named at the call site, in the template, because the shape is a
+property of the Surface and the Surface is the template — see the route map in DECISIONS.md.
+It is not sniffed from the render context: a Surface's context depends on the buyer's
+routes.yaml (this install's Feed reports `archive`, a bare install's reports `index`) and an
+error page reports no context at all, so context is the one thing that cannot name a Surface.
+
+	{{> "chrome/header"}}                 the listing bar: nav, search, Mode, Subscribe
+	{{> "chrome/header" compact=true}}    the reading bar: shorter, no search control
+	{{> "chrome/header" auth=true}}       the members bar: mark, a way back, Mode
+
+Order inside the bar is fixed by the design: mark · nav · search · Mode · Subscribe · menu.
+
+Search hands off to Ghost. The platform ships its own search — index, popup, keyboard — and
+sodo-search binds to any element carrying `data-ghost-search`, so the design's ⌕ button is
+that element and this theme writes no search code at all. Two measured details decide where
+the attribute goes (sodo-search 1.8, `getCustomTriggerButtons`/`addKeyboardShortcuts`):
+
+- the ⌘K shortcut is registered *only* if the page carries at least one trigger, so a
+  Surface with no visible search control still needs one in its markup;
+- the overlay below the nav breakpoint carries a trigger of its own, and it is in the DOM on
+  every Surface even when the viewport is wide enough to hide it. That is what keeps ⌘K live
+  on the reading bar, where the design draws no ⌕ at all.
+
+The Mode switch renders once, here, on every shape. The reference build learned that the
+hard way: a floating toggle placed per page turned into 22 copies. --}}
+<header
+	class="bg-surface border-border border-b"
+	{{#unless auth}}x-data="siteMenu" x-on:resize.window="resized()"{{/unless}}>
+	{{!-- The one control the design does not draw and every keyboard visitor needs. It has no
+	pixels until it has focus, so it costs the reference nothing. --}}
+	<a
+		href="#main"
+		class="btn btn-primary font-ui sr-only rounded-sm px-4 py-2 text-sm font-semibold no-underline focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50">{{t "Skip to content"}}</a>
+
+	<div
+		{{#unless auth}}x-ref="bar"{{/unless}}
+		class="container flex flex-wrap items-center gap-y-4 {{#if auth}}gap-x-6 py-[18px]{{else}}gap-x-[30px] {{#if compact}}py-5{{else}}py-[22px]{{/if}}{{/if}}">
+
+		{{#if auth}}
+			{{> "chrome/wordmark" wrapper="mr-auto" logoHeight="h-4" titleSize="text-[22px]"}}
+
+			<a
+				href="{{@site.url}}"
+				class="font-ui text-muted hover:text-accent text-sm no-underline"><span aria-hidden="true">←</span> {{t "Back to site"}}</a>
+
+			{{> "chrome/mode-toggle"}}
+		{{else}}
+			{{!-- Below the nav breakpoint the nav is gone, so the mark takes over pushing the
+			remaining controls to the right edge. Both branches spell their classes out: a class
+			assembled at render time is a class Tailwind's scanner never sees in the source. --}}
+			{{#if compact}}
+				{{> "chrome/wordmark" wrapper="max-nav:mr-auto" logoHeight="h-[17px]" titleSize="text-[24px]"}}
+			{{else}}
+				{{> "chrome/wordmark" wrapper="max-nav:mr-auto" logoHeight="h-[19px]" titleSize="text-[26px]"}}
+			{{/if}}
+
+			<nav
+				aria-label="{{t "Main navigation"}}"
+				class="nav:flex mr-auto hidden flex-wrap items-center gap-[22px]">{{navigation variant="bar"}}</nav>
+
+			{{#unless compact}}
+				<button
+					type="button"
+					aria-label="{{t "Search"}}"
+					data-ghost-search
+					class="btn border-border text-text hover:bg-surface-2 rounded-pill max-nav:hidden grid size-9 shrink-0 cursor-pointer place-items-center border bg-transparent font-mono text-sm">
+					<span aria-hidden="true">⌕</span>
+				</button>
+			{{/unless}}
+
+			{{> "chrome/mode-toggle"}}
+
+			{{> "chrome/cta" class="btn btn-primary font-ui max-nav:hidden rounded-sm px-[18px] py-2.5 text-sm font-semibold no-underline"}}
+
+			<button
+				type="button"
+				aria-label="{{t "Menu"}}"
+				x-ref="burger"
+				x-on:click="toggle()"
+				x-bind:aria-expanded="menuOpen"
+				aria-expanded="false"
+				aria-controls="site-menu"
+				class="btn border-border text-text hover:bg-surface-2 rounded-pill nav:hidden grid size-9 flex-none cursor-pointer place-items-center border bg-transparent">
+				<span
+					aria-hidden="true"
+					class="flex size-9 flex-col items-center justify-center gap-[5px]">
+					<span
+						class="bg-text block h-[1.5px] w-4 transition-transform"
+						x-bind:class="menuOpen ? 'translate-y-[3.25px] rotate-45' : ''"></span>
+					<span
+						class="bg-text block h-[1.5px] w-4 transition-transform"
+						x-bind:class="menuOpen ? '-translate-y-[3.25px] -rotate-45' : ''"></span>
+				</span>
+			</button>
+		{{/if}}
+	</div>
+
+	{{#unless auth}}
+		{{> "chrome/menu"}}
+	{{/unless}}
+</header>

@@ -3,20 +3,27 @@
 {{!-- The generic Ghost page. The five designed page layouts arrive as page-{slug}.hbs and
 custom-{name}.hbs in the Standing Pages ticket; this is the fallback every other page of a
 buyer's publication resolves to. --}}
-{{#post}}
-	<article class="{{post_class}} container py-16" data-surface="page">
 
-		{{!-- The editor's per-page toggle hides the title and feature image; a page
-		template that ignores it makes a control in Ghost admin do nothing. --}}
-		{{#if @page.show_title_and_feature_image}}
-			<header class="measure mx-auto mb-10">
-				<h1 class="font-display text-h1 text-text tracking-tight">{{title}}</h1>
-			</header>
-		{{/if}}
+{{> "chrome/header" compact=true}}
 
-		<div class="mirror-content measure prose mx-auto">
-			{{content}}
-		</div>
+<main id="main" class="grow">
+	{{#post}}
+		<article class="{{post_class}} container py-16" data-surface="page">
 
-	</article>
-{{/post}}
+			{{!-- The editor's per-page toggle hides the title and feature image; a page
+			template that ignores it makes a control in Ghost admin do nothing. --}}
+			{{#if @page.show_title_and_feature_image}}
+				<header class="measure mx-auto mb-10">
+					<h1 class="font-display text-h1 text-text tracking-tight">{{title}}</h1>
+				</header>
+			{{/if}}
+
+			<div class="mirror-content measure prose mx-auto">
+				{{content}}
+			</div>
+
+		</article>
+	{{/post}}
+</main>
+
+{{> "chrome/footer"}}

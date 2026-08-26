@@ -47,6 +47,16 @@
 	--font-body: var(--gh-font-body, var(--font-newsreader));
 	--font-ui: var(--gh-font-body, var(--font-archivo));
 	--font-meta: var(--gh-font-body, var(--font-archivo));
+
+	/*
+	 * The page's width. The `container` utility reads --container-max and falls back to
+	 * 1240px, which is the width the reference build's styleguide happens to use; all 26 of
+	 * its Surface pages pass 1320px explicitly, and every design source but the styleguide
+	 * draws 1320px. A theme has no per-page prop to pass, so the design's page width is
+	 * stated once, here. A Surface that needs a narrower column overrides it locally, the way
+	 * the A2 homepage sets its article column.
+	 */
+	--container-max: 1320px;
 }
 
 /*
@@ -61,4 +71,48 @@
  */
 .mirror-content :is(.kg-width-wide, .kg-width-full) {
 	@apply bleed-wide;
+}
+
+/*
+ * The collapsed menu's scroll lock. `siteMenu` only puts the class on <body>; the width at
+ * which a full-height overlay exists is a theme token, so the token decides what the class
+ * means. Above the nav breakpoint the overlay is display:none and the lock has to lift with
+ * it — otherwise a visitor who opens the menu and widens the window keeps a page they
+ * cannot scroll.
+ */
+body.menu-open {
+	overflow: hidden;
+}
+
+@media (width >= theme(--breakpoint-nav)) {
+	body.menu-open {
+		overflow: visible;
+	}
+}
+
+/*
+ * Ghost's members form, in the footer. Portal owns the submit; the theme owns what its report
+ * looks like. Read out of portal 2.71: the handler clears `success`, `invalid` and `error`, adds
+ * `loading` for the whole round trip, and finishes by adding exactly one of `success` or `error`.
+ * It never adds `invalid`, so there is no rule for it here.
+ *
+ * The sent line is hidden rather than absent, so the message it carries is real markup like every
+ * other state in this theme.
+ *
+ * The `loading` rule is not decoration. Portal detaches its own submit listener for the duration of
+ * the request, so a second click on a slow connection reaches the browser instead — and a form with
+ * no action performs a GET navigation to the current URL, throwing the pending signup away. Taking
+ * the button out of the pointer's reach while the request is in flight is what stops that.
+ */
+.members-sent {
+	display: none;
+}
+
+form.success .members-sent {
+	display: block;
+}
+
+form.loading button[type='submit'] {
+	pointer-events: none;
+	opacity: 0.6;
 }
