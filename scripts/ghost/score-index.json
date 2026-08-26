@@ -144,9 +144,11 @@
 		"mode": "light",
 		"layout": "A1",
 		"surface": "post",
-		"path": "/the-quiet-economics-of-a-one-person-publication/",
+		"path": "/against-the-infinite-feed/",
 		"status": 200,
-		"settings": {},
+		"settings": {
+			"post_layout": "Centered classic"
+		},
 		"build": ".shots/ghost/ghost-post-01-light.png",
 		"ref": "04-post-A1-light.png",
 		"h": 6296,
@@ -157,9 +159,11 @@
 		"mode": "dark",
 		"layout": "A1",
 		"surface": "post",
-		"path": "/the-quiet-economics-of-a-one-person-publication/",
+		"path": "/against-the-infinite-feed/",
 		"status": 200,
-		"settings": {},
+		"settings": {
+			"post_layout": "Centered classic"
+		},
 		"build": ".shots/ghost/ghost-post-01-dark.png",
 		"ref": "04-post-A1-dark.png",
 		"h": 6296,
@@ -170,28 +174,30 @@
 		"mode": "light",
 		"layout": "A2",
 		"surface": "post",
-		"path": "/the-quiet-economics-of-a-one-person-publication/",
+		"path": "/against-the-infinite-feed/",
 		"status": 200,
-		"settings": {},
+		"settings": {
+			"post_layout": "Title page"
+		},
 		"build": ".shots/ghost/ghost-post-02-light.png",
 		"ref": "04-post-A2-light.png",
 		"h": 5541,
-		"w": 1568,
-		"skip": "no layout picker on the Post Surface yet — the Post Surface ticket adds one"
+		"w": 1568
 	},
 	{
 		"route": "post-02",
 		"mode": "dark",
 		"layout": "A2",
 		"surface": "post",
-		"path": "/the-quiet-economics-of-a-one-person-publication/",
+		"path": "/against-the-infinite-feed/",
 		"status": 200,
-		"settings": {},
+		"settings": {
+			"post_layout": "Title page"
+		},
 		"build": ".shots/ghost/ghost-post-02-dark.png",
 		"ref": "04-post-A2-dark.png",
 		"h": 5541,
-		"w": 1568,
-		"skip": "no layout picker on the Post Surface yet — the Post Surface ticket adds one"
+		"w": 1568
 	},
 	{
 		"route": "post-01-paywalled",
@@ -200,7 +206,9 @@
 		"surface": "post",
 		"path": "/what-editors-owe-their-readers-now/",
 		"status": 200,
-		"settings": {},
+		"settings": {
+			"post_layout": "Centered classic"
+		},
 		"build": ".shots/ghost/ghost-post-01-paywalled-light.png",
 		"ref": "04-post-A1-paywalled-light.png",
 		"h": 3486,
@@ -213,7 +221,9 @@
 		"surface": "post",
 		"path": "/what-editors-owe-their-readers-now/",
 		"status": 200,
-		"settings": {},
+		"settings": {
+			"post_layout": "Centered classic"
+		},
 		"build": ".shots/ghost/ghost-post-01-paywalled-dark.png",
 		"ref": "04-post-A1-paywalled-dark.png",
 		"h": 3486,
@@ -224,28 +234,30 @@
 		"mode": "light",
 		"layout": "A2",
 		"surface": "post",
-		"path": "/the-quiet-economics-of-a-one-person-publication/",
+		"path": "/what-editors-owe-their-readers-now/",
 		"status": 200,
-		"settings": {},
+		"settings": {
+			"post_layout": "Title page"
+		},
 		"build": ".shots/ghost/ghost-post-02-paywalled-light.png",
 		"ref": "04-post-A2-paywalled-light.png",
 		"h": 2925,
-		"w": 1568,
-		"skip": "no layout picker on the Post Surface yet — the Gate state ticket needs it before A2 can be gated"
+		"w": 1568
 	},
 	{
 		"route": "post-02-paywalled",
 		"mode": "dark",
 		"layout": "A2",
 		"surface": "post",
-		"path": "/the-quiet-economics-of-a-one-person-publication/",
+		"path": "/what-editors-owe-their-readers-now/",
 		"status": 200,
-		"settings": {},
+		"settings": {
+			"post_layout": "Title page"
+		},
 		"build": ".shots/ghost/ghost-post-02-paywalled-dark.png",
 		"ref": "04-post-A2-paywalled-dark.png",
 		"h": 2925,
-		"w": 1568,
-		"skip": "no layout picker on the Post Surface yet — the Gate state ticket needs it before A2 can be gated"
+		"w": 1568
 	},
 	{
 		"route": "404",

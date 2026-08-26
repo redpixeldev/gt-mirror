@@ -44,6 +44,44 @@ export async function ownerSession() {
 	return sessionAuth;
 }
 
+/*
+ * One request, retried past a dead keep-alive socket.
+ *
+ * Node's fetch pools connections and Ghost closes an idle one, so a call made after a pause —
+ * which is exactly what the scoring run does, between one settings group's screenshots and the
+ * next group's write — lands on a socket the server has already dropped and throws
+ * `TypeError: fetch failed` with `cause.code === 'ECONNRESET'`. Nothing about the request was
+ * wrong, so the run must not end there: it failed a twenty-minute capture run at the handover
+ * between groups.
+ *
+ * TWO conditions, and the second one is the load-bearing one. A transport failure is not proof
+ * that Ghost never saw the request: ECONNREFUSED is, but a reset or a timeout can land on a
+ * request the server already processed. So only a method that can be repeated without creating
+ * anything is retried — GET, HEAD and the settings PUTs the scoring run makes. A POST that
+ * creates a post, a tag or a tier is never retried (a duplicate is worse than a failed run) and
+ * neither is a DELETE (a second one answers 404, which reads as a failure that did not happen).
+ *
+ * A response — any response, including a 500 — is returned untouched, because retrying a request
+ * Ghost answered would hide a real result.
+ */
+const TRANSPORT = new Set(['ECONNRESET', 'ECONNREFUSED', 'EPIPE', 'ETIMEDOUT', 'UND_ERR_SOCKET']);
+const REPEATABLE = new Set(['GET', 'HEAD', 'PUT']);
+
+export async function request(url, init, attempts = 3) {
+	const repeatable = REPEATABLE.has((init?.method ?? 'GET').toUpperCase());
+	for (let attempt = 1; ; attempt += 1) {
+		try {
+			return await fetch(url, init);
+		} catch (error) {
+			const code = error.cause?.code;
+			if (!repeatable || attempt >= attempts || !TRANSPORT.has(code)) {
+				throw error;
+			}
+			await new Promise((resolve) => setTimeout(resolve, 200 * attempt));
+		}
+	}
+}
+
 /**
  * One Admin API call, with Ghost's own error message rather than a slice of raw JSON.
  *
@@ -52,7 +90,7 @@ export async function ownerSession() {
  */
 export async function api(method, path, body) {
 	const auth = await ownerSession();
-	const response = await fetch(`${base}/ghost/api/admin${path}`, {
+	const response = await request(`${base}/ghost/api/admin${path}`, {
 		method,
 		headers: { ...auth, 'Content-Type': 'application/json', 'Accept-Version': 'v6.0' },
 		body: body === undefined ? undefined : JSON.stringify(body),

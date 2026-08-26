@@ -13,7 +13,7 @@ that trips the cap loses its emptiest tags rather than an arbitrary slice. --}}
 		{{/if}}
 
 		{{#if content}}
-			<div class="mirror-content measure prose mb-12">{{content}}</div>
+			<div class="mirror-content measure mb-12">{{content}}</div>
 		{{/if}}
 
 		{{#get "tags" include="count.posts" limit="100" order="count.posts desc" as |tags|}}

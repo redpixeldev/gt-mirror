@@ -1,0 +1,67 @@
+{{!-- Three more posts on the same subject.
+
+"Related" has to mean something a publication controls, and the only relation Ghost stores is
+the tag. So this is the primary tag's three most recent other posts — not a random draw, not
+"latest", both of which would put the same three cards under every post on the site.
+
+Two details in the filter carry weight:
+
+  - `id:-{{id}}` excludes the post being read. One `id:-` term is also the exact shape
+	core/frontend/helpers/get.js optimises, so this stays a cacheable query.
+  - `tags:[…]` on the PRIMARY tag, not on all of them. Filtering on the full tag list widens
+	the match until "related" means "shares any word", and it is what makes the result depend
+	on tag ORDER, which is invisible to the person who set it.
+
+An untagged post has no relation to draw on and renders nothing — the same honest outcome as
+an empty menu losing its footer column. --}}
+{{#if primary_tag}}
+	{{!-- Both paths are read from the post's own context. The {{#get}} helper resolves the
+	mustaches in its filter through a resolver of its own, and that resolver understands a plain
+	path and a dotted one and nothing else: written inside {{#primary_tag}}, where the tag's slug
+	is `{{slug}}` and the post's id is one frame up, `{{../id}}` fails the render outright with
+	`unsupported path segment ""` — a 200 with a hole in it. --}}
+	{{#get "posts" filter="tags:[{{primary_tag.slug}}]+id:-{{id}}" limit="3" include="tags" as |related|}}
+		{{#if related}}
+			<section
+				aria-labelledby="rel-head"
+				class="container pt-20">
+				<h2
+					id="rel-head"
+					class="font-ui text-muted mb-6 text-xs font-semibold tracking-[0.16em] uppercase">{{t "Related reading"}}</h2>
+
+				<div class="grid grid-cols-[repeat(auto-fit,minmax(min(280px,100%),1fr))] gap-6">
+					{{#foreach related}}
+						<article class="{{post_class}} border-border bg-surface overflow-hidden rounded-md border">
+							<a
+								href="{{url}}"
+								class="text-text block no-underline">
+								{{#if feature_image}}
+									<img
+										src="{{img_url feature_image size="l"}}"
+										{{#if feature_image_alt}}alt="{{feature_image_alt}}"{{else}}alt=""{{/if}}
+										loading="lazy"
+										decoding="async"
+										class="border-border block aspect-video w-full border-b object-cover">
+								{{/if}}
+
+								<div class="p-5">
+									{{#primary_tag}}
+										<span class="font-meta text-meta tracking-meta text-accent uppercase">{{name}}</span>
+									{{/primary_tag}}
+
+									<h3 class="font-display tracking-heading mt-2.5 text-xl leading-[1.26] font-medium">{{title}}</h3>
+
+									<p class="font-meta text-meta tracking-meta text-muted mt-3 uppercase">
+										{{date format="D MMM YYYY"}}
+										<span aria-hidden="true"> · </span>
+										{{reading_time seconds=(t "< 1 min read") minute=(t "1 min read") minutes=(t "% min read")}}
+									</p>
+								</div>
+							</a>
+						</article>
+					{{/foreach}}
+				</div>
+			</section>
+		{{/if}}
+	{{/get}}
+{{/if}}

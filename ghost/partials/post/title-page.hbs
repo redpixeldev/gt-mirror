@@ -1,0 +1,45 @@
+{{!-- A2's head: no cover photo, the titling carries the page.
+
+The rule under it is the head's own bottom border, so this block owns its whole vertical
+extent and the grid below starts clean. The two-column strip is the standfirst beside a
+description list of the two marginals the design shows — who wrote it and how long it runs —
+and it re-flows to one column on its own, from `auto-fit`, without a breakpoint.
+
+`{{reading_time}}` is computed by Ghost from word count and image count on every render and
+is stored nowhere, so "12 min read" is whatever the body implies, never a field. --}}
+<div class="border-border border-b">
+	<div class="container pt-20 pb-14">
+		<p class="font-meta text-meta text-accent tracking-[0.16em] uppercase">
+			{{#primary_tag}}<a
+					href="{{url}}"
+					class="text-accent no-underline">{{name}}</a><span aria-hidden="true"> · </span>{{/primary_tag}}{{date format="D MMM YYYY"}}
+		</p>
+
+		<h1
+			class="font-display tracking-display mt-[26px] max-w-[24ch] text-[clamp(38px,6vw,76px)] leading-[1.02] font-medium text-balance">{{title}}</h1>
+
+		<div class="border-border mt-9 grid grid-cols-[repeat(auto-fit,minmax(min(260px,100%),1fr))] gap-8 border-t pt-7">
+			{{#if custom_excerpt}}
+				<p class="font-body text-muted max-w-[46ch] text-[21px] leading-[1.5] text-pretty">{{custom_excerpt}}</p>
+			{{/if}}
+
+			<dl class="flex flex-wrap gap-10 self-start">
+				{{#primary_author}}
+					<div>
+						<dt class="text-muted font-mono text-[10.5px] tracking-[0.1em] uppercase">{{t "Written by"}}</dt>
+						<dd class="font-ui mt-2 ml-0 text-[15px] font-semibold">
+							<a
+								href="{{url}}"
+								class="text-text no-underline">{{name}}</a>
+						</dd>
+					</div>
+				{{/primary_author}}
+
+				<div>
+					<dt class="text-muted font-mono text-[10.5px] tracking-[0.1em] uppercase">{{t "Length"}}</dt>
+					<dd class="font-ui mt-2 ml-0 text-[15px] font-semibold">{{reading_time seconds=(t "< 1 min read") minute=(t "1 min read") minutes=(t "% min read")}}</dd>
+				</div>
+			</dl>
+		</div>
+	</div>
+</div>

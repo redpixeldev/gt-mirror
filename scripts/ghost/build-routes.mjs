@@ -29,7 +29,18 @@ const base = (process.env.GHOST_URL ?? 'http://localhost:2368').replace(/\/$/, '
 const fixture = JSON.parse(readFileSync('scripts/ghost/fixture.json', 'utf8'));
 
 /* Deterministic picks: the fixture is a pure function of src/data, so these slugs are stable. */
-const post = fixture.posts.find((p) => p.designed);
+
+/*
+ * The Post Surface is captured on a designed post with a post on each side of it. The design
+ * draws both adjacent cards, and the newest post in the fixture has no next — capturing that
+ * one would score a page the design has no drawing for and hide the "Next →" card from every
+ * run. Public, because the gated rows capture the members-only slug on purpose.
+ */
+const byDate = [...fixture.posts].sort((a, b) => b.published_at.localeCompare(a.published_at));
+const post = byDate.find((p, i) => p.designed && p.visibility === 'public' && i > 0 && i < byDate.length - 1);
+if (!post) {
+	throw new Error('no designed public post with a post on each side — the Post Surface has nothing to capture');
+}
 const tag = fixture.tags.reduce((a, b) => (a.count >= b.count ? a : b));
 const author = fixture.authors.reduce((a, b) => (a.count >= b.count ? a : b));
 const slug = (s) =>

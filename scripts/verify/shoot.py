@@ -52,6 +52,16 @@ def find_chrome(explicit: str | None) -> str:
     raise SystemExit('Chrome not found — pass --chrome /path/to/chrome')
 
 
+def complete_png(path: str) -> bool:
+    """True once `path` is a PNG that has been written all the way to its IEND chunk."""
+    try:
+        with open(path, 'rb') as f:
+            f.seek(-12, os.SEEK_END)
+            return f.read()[4:8] == b'IEND'
+    except OSError:
+        return False
+
+
 def launch(chrome: str, url: str, out: str, width: int, height: int, profile: str, budget: int):
     os.makedirs(os.path.dirname(out) or '.', exist_ok=True)
     if os.path.exists(out):
@@ -123,7 +133,11 @@ def main() -> int:
         time.sleep(1)
         for entry in list(running):
             proc, job = entry
-            if proc.poll() is not None or os.path.exists(job['out']):
+            # Chrome with --screenshot writes the file and then does NOT exit, so the file is the
+            # completion signal — but the file APPEARS while it is still being written, and
+            # terminating on the strength of its existence truncates it. `complete_png` waits for
+            # the IEND chunk, which is the end of a PNG by definition.
+            if proc.poll() is not None or complete_png(job['out']):
                 if proc.poll() is None:
                     proc.terminate()
                 running.remove(entry)

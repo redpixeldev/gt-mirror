@@ -1,0 +1,64 @@
+{{!-- The full-width subscribe band the design puts at the end of a reading Surface.
+
+	{{> "newsletter" anchor="end-newsletter"}}   the Post Surface's, which "Follow" links to
+
+	anchor    the id, so a link on the same page can reach it
+
+Ghost's own signup, not a form the theme invents: `data-members-form` and `data-members-email`
+are the whole contract, Portal binds the submit out of {{ghost_head}}, and the report comes
+back as classes on the form element. The identical contract, and the same three CSS rules,
+serve the footer's column — see partials/chrome/footer.hbs for what portal 2.71 actually adds.
+
+The copy is the publication's, from two theme settings rather than from this file, because a
+buyer changing the promise on their subscribe block should not have to edit a template. It
+renders only where members exist. --}}
+{{#if @site.members_enabled}}
+	<section
+		{{#if anchor}}id="{{anchor}}"{{/if}}
+		aria-labelledby="newsletter-head"
+		class="container pt-18">
+		<div
+			class="border-accent-border bg-accent-soft grid grid-cols-[repeat(auto-fit,minmax(min(300px,100%),1fr))] items-center gap-9 rounded-md border px-10 py-12">
+			<div>
+				<p class="text-accent-strong font-mono text-[11px] tracking-[0.1em] uppercase">{{t "Newsletter"}}</p>
+
+				<h2
+					id="newsletter-head"
+					class="font-display text-h2 tracking-heading mt-3.5 max-w-[24ch] leading-[1.15] font-medium text-balance">{{@custom.newsletter_heading}}</h2>
+
+				<p class="text-small text-muted-on-soft mt-3.5 max-w-[52ch] leading-[1.6]">{{@custom.newsletter_text}}</p>
+			</div>
+
+			<form
+				data-members-form="signup"
+				class="flex flex-col gap-3">
+				<label
+					for="newsletter-email"
+					class="font-ui text-[13px] font-semibold">{{t "Email address"}}</label>
+
+				<div class="flex flex-wrap gap-2.5">
+					<input
+						id="newsletter-email"
+						type="email"
+						data-members-email
+						required
+						autocomplete="email"
+						placeholder="{{t "you@publication.com"}}"
+						class="border-accent-border bg-surface font-ui text-text min-w-0 flex-[1_1_220px] rounded-sm border px-[15px] py-[13px] text-[15px]">
+					<button
+						type="submit"
+						class="btn btn-primary font-ui cursor-pointer rounded-sm px-6 py-[13px] text-[15px] font-semibold">{{t "Subscribe"}}</button>
+				</div>
+
+				<p
+					data-members-error
+					role="alert"
+					class="font-ui text-danger text-xs"></p>
+				<p
+					role="status"
+					class="font-ui text-muted-on-soft members-sent text-xs">{{t "Check your inbox for the link."}}</p>
+				<p class="font-ui text-muted-on-soft text-xs">{{t "No spam. Unsubscribe anytime."}}</p>
+			</form>
+		</div>
+	</section>
+{{/if}}

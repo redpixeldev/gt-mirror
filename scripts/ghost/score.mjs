@@ -40,7 +40,7 @@ import { createHash } from 'node:crypto';
 import { join } from 'node:path';
 import { homedir } from 'node:os';
 
-import { api, base } from './admin.mjs';
+import { api, base, request } from './admin.mjs';
 
 const PYTHON = '.venv/bin/python3';
 const INDEX = 'scripts/ghost/score-index.json';
@@ -321,7 +321,7 @@ async function capture(index, jobs) {
 		const rows = index.filter((row) => !row.skip && JSON.stringify(row.settings) === group);
 		for (const path of new Set(rows.map((row) => row.path))) {
 			const expected = rows.find((entry) => entry.path === path).status;
-			const response = await fetch(`${base}${path}`);
+			const response = await request(`${base}${path}`);
 			if (response.status !== expected) {
 				throw new Error(`${path} answered ${response.status}, expected ${expected}, under ${group}`);
 			}

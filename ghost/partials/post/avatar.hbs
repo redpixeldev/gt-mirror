@@ -1,0 +1,25 @@
+{{!-- One author's face, in the author's own context: {{#primary_author}}{{> "post/avatar"}}{{/primary_author}}.
+
+	size / textSize    the two sizes the design draws it at (34px in a byline, 56px in the bio card)
+
+The design has one drawing here — a tinted badge holding the writer's initials — and Ghost has
+two cases. A publication whose writers uploaded a photo has a photo, and dropping it to draw a
+monogram instead would be a theme overruling its own data, so the photo wins when it exists and
+the badge is the fallback.
+
+The badge carries ONE letter where the design draws two. Handlebars cannot take a substring and
+Ghost ships no helper that can, so a second initial would have to come from a lookup the template
+does not have; `{{name.[0]}}` is index access on the name string, which is the whole of what is
+available. Recorded as a concession in DECISIONS.md. --}}
+{{#if profile_image}}
+	<img
+		src="{{img_url profile_image size="xs"}}"
+		alt=""
+		loading="lazy"
+		decoding="async"
+		class="{{size}} flex-none rounded-full object-cover">
+{{else}}
+	<span
+		aria-hidden="true"
+		class="{{size}} {{textSize}} bg-accent-soft font-ui text-accent-strong grid flex-none place-items-center rounded-full font-semibold">{{name.[0]}}</span>
+{{/if}}

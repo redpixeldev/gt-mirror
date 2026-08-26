@@ -1,0 +1,78 @@
+{{!-- The table of contents, in the two shapes the design draws it.
+
+	{{> "post/toc" variant="inline"}}   A1's open disclosure above the article
+	{{> "post/toc" variant="rail"}}     A2's list at the top of the sticky rail
+
+THE LIST IS BUILT FROM THE ARTICLE, NOT FROM A FIXTURE. Ghost has no table-of-contents helper
+and a template cannot read inside {{content}}, so `postToc` (assets/js/main.js) walks the
+rendered headings on boot and this markup is the shape it fills. That is not a workaround for
+a missing helper — it is the only construction that stays true when an author adds a section:
+there is no second list to update, and a post whose body has no headings renders no block at
+all rather than an empty box.
+
+Which headings count is a design decision: h2 only. The design's own contents lists the four
+chapter headings and skips the h3 under one of them, and a contents list that mirrors every
+level of a long essay stops being navigation.
+
+The numbers are the position in the list, not part of the heading, so they are generated
+here. The ids are Ghost's: its renderer slugifies every heading and de-duplicates collisions
+with a numeric suffix, so the anchors are the platform's own and survive an export. --}}
+
+{{#match variant "inline"}}
+	<details
+		open
+		x-data="postToc"
+		x-show="items.length"
+		x-cloak
+		class="border-border bg-surface mb-11 rounded-sm border">
+		<summary
+			class="font-ui text-muted cursor-pointer px-[18px] py-3.5 text-[13px] font-semibold tracking-[0.06em] uppercase">{{t "On this page"}}</summary>
+
+		<ol class="m-0 flex list-none flex-col gap-2.5 px-[18px] pb-[18px]">
+			<template
+				x-for="item in items"
+				x-bind:key="item.id">
+				<li class="flex gap-3">
+					<span
+						class="text-muted font-mono text-[11px]"
+						x-text="item.num"></span>
+					<a
+						x-bind:href="'#' + item.id"
+						x-bind:aria-current="item.id === active ? 'true' : null"
+						x-bind:class="item.id === active ? 'text-accent font-semibold' : 'text-muted'"
+						class="font-ui text-sm no-underline"
+						x-text="item.label"></a>
+				</li>
+			</template>
+		</ol>
+	</details>
+{{/match}}
+
+{{#match variant "rail"}}
+	<nav
+		x-data="postToc"
+		x-show="items.length"
+		x-cloak
+		aria-label="{{t "On this page"}}"
+		class="border-border border-b pb-5">
+		<p class="text-muted mb-3.5 font-mono text-[10.5px] tracking-[0.1em] uppercase">{{t "On this page"}}</p>
+
+		<ol class="m-0 flex list-none flex-col gap-[11px] p-0">
+			<template
+				x-for="item in items"
+				x-bind:key="item.id">
+				<li class="flex gap-2.5">
+					<span
+						class="text-muted font-mono text-[11px]"
+						x-text="item.num"></span>
+					<a
+						x-bind:href="'#' + item.id"
+						x-bind:aria-current="item.id === active ? 'true' : null"
+						x-bind:class="item.id === active ? 'text-accent font-semibold' : 'text-muted'"
+						class="font-ui text-[13.5px] leading-[1.4] no-underline"
+						x-text="item.label"></a>
+				</li>
+			</template>
+		</ol>
+	</nav>
+{{/match}}

@@ -1403,3 +1403,209 @@ up to ±40px, so a uniformly taller bar is absorbed almost entirely when the con
 It is not absorbed today because every Surface body is still a skeleton — which is what the remaining
 Surface tickets are for, and why the chrome's own numbers had to be taken region by region rather
 than read off the page total.
+
+## The Post Surface, and the one thing a theme must not do to a photograph (2026-08)
+
+A Post reads end to end in both Layouts: the cover or the title page, the standfirst, the byline,
+the primary Tag, the article, the contents list, the share actions, the writer, the neighbouring
+posts, three related posts, the subscribe band. `post.hbs` is a dispatch and nothing else — the
+layout-picker shape `home.hbs` documents, with the non-default option matched explicitly so a
+stored value nobody recognises falls through to a Layout rather than to a blank page.
+
+| the design's element  | where it comes from on Ghost                                         |
+| :-------------------- | :------------------------------------------------------------------- |
+| cover photo + caption | `feature_image`, `feature_image_alt`, `feature_image_caption`        |
+| standfirst            | `custom_excerpt` — the excerpt the author wrote, never a truncation  |
+| byline avatar         | the author's `profile_image`, or a one-letter badge                  |
+| "12 min read"         | `{{reading_time}}`, computed per render from words and images        |
+| contents list         | the rendered article's own `h2[id]`, read in the browser             |
+| tag chips             | `{{#foreach tags visibility="public"}}`, each linking to its archive |
+| "27 posts" in the bio | one `{{#get "authors" include="count.posts"}}`                       |
+| prev / next           | `{{#prev_post}}` / `{{#next_post}}`                                  |
+| related reading       | `{{#get "posts" filter="tags:[…]+id:-{{id}}" limit="3"}}`            |
+| the subscribe band    | Ghost's own signup form, `partials/newsletter.hbs`                   |
+
+### The contents list is read off the page, because there is nowhere else to read it
+
+Ghost has no table-of-contents helper and a template cannot see inside `{{content}}`. So `postToc`
+walks `.mirror-content h2[id]` on boot and Alpine fills the list. This is not a workaround for a
+missing helper — it is the only construction that stays true when an author adds a section, because
+there is no second list to update. A post with no `h2` renders no block at all: `x-show` plus
+`x-cloak` means the shell is hidden before Alpine runs and stays hidden if it never does, so nobody
+gets an empty box. The ids are Ghost's own — its renderer slugifies every heading and suffixes
+collisions (`…-1`, `…-2`) — so the anchors survive an export. **Measured on
+`/against-the-infinite-feed/`: six `h2`, six entries, labels and hrefs equal to the headings,
+`aria-current` on the section the reader has reached.**
+
+`h2` only, matching the design's own list, which skips the `h3` under one of its chapters.
+
+### The rail is sticky only while there is a second column
+
+Below `stack` the grid collapses to one column, and a sticky child of a one-column grid pins itself
+while the rest of the column scrolls past underneath — the article runs straight through the
+contents list. `max-stack:static` on the aside and `max-stack:grid-cols-…` on the grid are the same
+decision at the same token, so they cannot disagree. `items-start` is what makes it sticky at all:
+a stretched grid item is as tall as the article and has nothing to scroll within.
+
+**Measured: at 1568px the rail sits at `top: 120px` after scrolling 2,500px; at 700px it computes
+`position: static`, and its bottom (775px) is above the article column's top (815px).**
+
+### The share row does what its labels say
+
+The design draws three buttons and gives them nothing to do. Copy link asks the clipboard and swaps
+its own label only after the write resolves, so a refused permission or an insecure origin cannot
+produce a false "Copied"; it carries `x-cloak`, so with scripting off it is absent rather than dead.
+Email and Bluesky are links, because they are navigations. All three address the post with
+`{{url absolute="true"}}` — including the clipboard, which is handed the canonical address from the
+template rather than reading `location.href`: `?mode=dark` is a hook this theme honours before
+first paint, and copying the current URL would hand the recipient a link that overrides their own
+appearance.
+
+### What Ghost styles, and what the theme had to
+
+`cards.min.css` — out of `{{ghost_head}}`, below this theme's stylesheet — styles the INSIDE of
+cards and nothing else. Outside a card it sets no heading, no paragraph, no list, no figure and no
+caption, so the article's typography is the theme's, restated as element rules under
+`.mirror-content` with `@apply` against the same class lists the reference components carry. Every
+rule starts at that class because at equal specificity the later stylesheet wins, and cards.min.css
+is the later stylesheet.
+
+It does set some card MARGINS, and two of them outrank anything `.mirror-content .kg-card` can say:
+`.kg-image-card:not(.kg-card-hascaption) + .kg-image-card` is 0,3,0 and `.kg-callout-card +
+.kg-callout-card` is 0,2,0 in the later stylesheet. So two adjacent uncaptioned photographs sit
+19.2px apart and two adjacent callouts 1em apart, where a single card gets the design's 44px. Both
+are cases the design never draws — every figure it draws has a caption — so the platform keeps
+them rather than the theme spending a fourth class on a guess.
+
+Two cards are overridden because the design draws them itself: the callout gets an accent rail
+instead of a filled block, and the pull quote is set centred in the display face. Even those two
+are overridden only as far as the design actually specifies. The callout's BACKGROUND stays
+Ghost's, because the colour is the author's choice in the editor and `.kg-callout-card-accent`
+carries `color: #fff` in the same declaration that sets its background — claiming one and not the
+other put white text on a near-white panel. Only the grey and white variants, the editor's default
+and the design's own tint, are repainted. The callout's badge also stays Ghost's: it holds
+whatever emoji the author picked, at 1.15em with 0.8em of padding, where the design draws a 22px
+accent circle — measured at the 617px measure that narrows the callout's text column from 531px to
+458px.
+
+The rest keep Ghost's geometry with the publication's accent — reimplementing bookmark, product,
+gallery, toggle, header and signup at four levels of specificity would be a second theme's worth of
+CSS for cards the design only ever drew as specimens. Recorded as a Concession.
+
+Two traps in that layer are worth knowing before adding a rule to it. `:is()` takes the weight of
+its most specific branch, so `:is(figure > img, .kg-image)` is 0,2,0 for BOTH branches — which is
+what lets the element branch beat cards.min.css, and why it is a direct child: at that weight
+`figure img` also captures the images inside a bookmark card and a gallery card, which are figures
+too, and centred a bookmark's favicon in the middle of its metadata row. And a reset written as
+`blockquote p { margin-top: 0 }` is 0,1,2, which defeats the `> * + *` rule beneath it and runs
+every paragraph of a two-paragraph quote together; it is written as `> :first-child` instead.
+
+**A leftover `prose` class was doing real damage.** Seven templates carried
+`class="mirror-content measure prose"` from the skeleton, and `@tailwindcss/typography` sets
+`--tw-prose-headings: gray-900` on it. In the light Mode that reads as ordinary dark ink; in the
+dark Mode it is near-black text on a near-black page. Measured before the fix: `h2` computed
+`oklch(0.21 0.034 264.665)`, body `oklch(0.373 …)`. After removing the class, every element inherits
+`rgb(245, 242, 236)`. The identity axis never saw it — those pages moved by less than 0.1 — which is
+the case for reading computed styles and not only scores.
+
+### The Concession: the platform's article output against the design source
+
+The reference build transcribed the design's article by hand and crops each inline figure to a
+ratio it chose per figure (`aspect-[3/2]`, `aspect-[21/9]`). Ghost's image card renders the
+photograph the editor uploaded, whole, at its own ratio. Both of the design's inline photographs are
+portraits — 1200×2133 and 1200×1800 — so at the 617px measure they stand **1094px and 924px** tall
+where the design shows 411px and 264px: **1,343px of extra page**.
+
+A theme could crop them (`aspect-ratio` + `object-fit: cover`) and match the design. It must not:
+the editor uploaded that photograph and Ghost's editor has no way to say "not there". Casper and
+Source do the same thing this theme does — `max-width` and nothing else.
+
+To measure what that costs rather than assert it, one Ghost post was created through the Admin API
+carrying the design's own title, standfirst, tag, author, date, cover and article text, scored
+against the same PNG the reference build is scored against, and deleted. Both columns are
+`score.py` at `--height 6200` (A1) and `--height 5450` (A2) — a little under each capture height,
+so neither side is scored against blank canvas, which is why they differ slightly from the Floors
+in `scripts/verify/baseline-scores.json` (taken at the full 6296 and 5541):
+
+| light                             | reference build | Ghost, same article |  gap |
+| :-------------------------------- | --------------: | ------------------: | ---: |
+| whole page, A1                    |           90.52 |               81.19 | 9.33 |
+| **above the first inline figure** |       **95.89** |           **95.81** | 0.08 |
+| whole page, A2                    |           97.52 |               82.63 | 14.9 |
+| **above the first inline figure** |       **96.89** |           **96.77** | 0.12 |
+
+(The two bolded rows are `--height 2200` and `--height 1600`: the region above each Layout's first
+inline figure.)
+
+Above the first figure — the cover, the titling, the standfirst, the byline, the contents list, two
+sections and a blockquote — the port is **0.08 (A1) and 0.12 (A2)** off the reference build. Below
+it the two documents are offset by the image height and `score.py`'s ±40px realignment cannot
+recover, so every band reads as a miss. That is the whole of the Post Surface's residual, it is a
+decision about somebody else's photograph rather than a defect in the template, and it is not being
+chased.
+
+### What the run reports, and why the demo numbers are lower still
+
+| route             | mode  | Layout | vs PNG | floor |    gap |
+| :---------------- | :---- | :----- | -----: | ----: | -----: |
+| post-01           | light | A1     |  81.37 | 90.67 |  −9.30 |
+| post-01           | dark  | A1     |  81.29 | 90.22 |  −8.93 |
+| post-02           | light | A2     |  88.10 | 97.69 |  −9.59 |
+| post-02           | dark  | A2     |  87.67 | 97.78 | −10.11 |
+| post-01-paywalled | light | A1     |  86.55 | 96.14 |  −9.59 |
+| post-01-paywalled | dark  | A1     |  87.53 | 96.10 |  −8.57 |
+| post-02-paywalled | light | A2     |  85.09 | 97.46 | −12.37 |
+| post-02-paywalled | dark  | A2     |  85.66 | 97.53 | −11.87 |
+
+The scored rows are the demo publication's own posts, whose bodies are generated prose with no
+figures and no cards, so on top of the residual above they carry a different photograph in the cover
+band and different words in every text band. Four rows scored where four were pending, and the
+gated A1 rows rose 6.30 (light) and 4.97 (dark) as the designed head, contents list, share row and
+end blocks replaced the skeleton. The gated rows still carry Ghost core's own `gh-post-upgrade-cta`,
+which the Gate state ticket replaces.
+
+**Of the 32 rows that scored before this ticket, 26 did not move at all** — measured by stashing
+the change set, restoring the harness's two files from the stash, and running `score.mjs` on the
+pre-ticket templates. That before-state is not reproducible from the repository, because
+`.shots/ghost/scores.json` is rewritten in place on every run and is not committed; the two `post-01`
+rows are not comparable either way, since this ticket also moved the Post capture to a different
+post.
+
+Three harness changes came with this Surface, all of them found by this Surface's numbers refusing
+to hold still:
+
+- **The Post Surface is captured on a post with a post on each side of it.** `build-routes.mjs`
+  picked the first designed post, which is the newest in the fixture and therefore has no next — so
+  every run scored a page the design has no drawing for, and the "Next →" card was never captured.
+- **`fetch` is retried past a dead keep-alive socket.** Node pools connections and Ghost drops an
+  idle one, so the first call after a settings group's screenshots — a pause of several seconds —
+  threw `TypeError: fetch failed` / `ECONNRESET` and ended a full run at the handover between
+  groups, reproducibly. Only a transport failure is retried, and only for a method that can be
+  repeated without creating anything: GET, HEAD and the settings PUT. A POST that creates a post or
+  a tag is not, because a reset can arrive after Ghost processed the request and a duplicate is
+  worse than a failed run.
+- **A screenshot is accepted only once the PNG reaches its IEND chunk.** `shoot.py` treated the
+  file's EXISTENCE as completion and terminated Chrome on it — but Chrome creates the file before
+  it has finished writing it, and with `--concurrency 4` that truncated one shot per run at random.
+  It presented as a Surface losing six points between two runs of unchanged code: the gated A1 row
+  read 86.55, then 80.56, while the same URL captured on its own read 86.24 three times in a row.
+  Waiting for the end of the PNG cannot hang the run — Chrome with `--screenshot` never exits, so
+  the file has to stay the signal, and the existing deadline still covers a Chrome that stalls.
+  Two consecutive full runs after the fix differ on two rows by 0.17 and 0.07, where before they
+  differed by 5.99.
+
+Three smaller Concessions, all recorded rather than worked around:
+
+- **One initial, not two.** The design's byline badge holds `MA`; Handlebars cannot take a substring
+  and Ghost ships no helper that can, so the fallback badge holds `{{name.[0]}}`. Publications whose
+  writers uploaded a photograph never see it.
+- **A code block has no language strip.** The design draws a header naming the language above the
+  code; Ghost emits `<pre><code class="language-json">` with nothing to hang a strip on, so the
+  surface, the scrollbar and the type are ported and the strip is not.
+- **A pull quote cannot be imported.** `kg-blockquote-alt` is a variant the editor sets on a
+  blockquote node; HTML carrying that class round-trips to a plain blockquote. The theme styles the
+  card for posts written in the editor, which is where it can exist.
+
+One trap worth writing down: **prettier must never be pointed at a `.hbs` file here.** There is no
+Handlebars plugin configured, so its HTML printer rewrote `default.hbs` — single-quoted attributes,
+`{{!-- --}}` comments collapsed to `{{! }}`, and the doctype deleted.

@@ -1,0 +1,58 @@
+{{!-- A1's head: the cover photo, then centred titling.
+
+The photo is the publication's own feature image and everything about it is conditional —
+Ghost lets an author publish without one, and the design has no drawing for that case, so
+the figure simply does not render and the titling starts the page. Same for the caption:
+{{feature_image_caption}} is HTML from the editor, so it is emitted with three braces, and
+an empty one must not leave a 40px band of padding behind.
+
+`h-[min(58vh,520px)]` is the design's own height. It is viewport-relative on purpose, which
+is worth knowing when reading a capture: the screenshot's window is as tall as the page, so
+58vh always resolves past the 520px cap there. --}}
+{{#if feature_image}}
+	<figure class="border-border m-0 border-b">
+		<img
+			src="{{img_url feature_image size="xxl"}}"
+			{{#if feature_image_alt}}alt="{{feature_image_alt}}"{{else}}alt=""{{/if}}
+			fetchpriority="high"
+			decoding="async"
+			class="block h-[min(58vh,520px)] w-full object-cover">
+
+		{{#if feature_image_caption}}
+			<figcaption class="font-ui text-muted container py-3 text-[13px]">{{{feature_image_caption}}}</figcaption>
+		{{/if}}
+	</figure>
+{{/if}}
+
+<div class="mx-auto max-w-[820px] px-5 pt-16 text-center md:px-8">
+	{{#primary_tag}}
+		<p class="font-meta text-meta text-accent tracking-[0.16em] uppercase">
+			<a
+				href="{{url}}"
+				class="text-accent no-underline">{{name}}</a>
+		</p>
+	{{/primary_tag}}
+
+	<h1
+		class="font-display tracking-display mt-[22px] text-[clamp(36px,5vw,64px)] leading-[1.04] font-medium text-balance">{{title}}</h1>
+
+	{{#if custom_excerpt}}
+		<p class="font-body text-muted mx-auto mt-[22px] max-w-[52ch] text-[21px] leading-[1.5] text-pretty italic">{{custom_excerpt}}</p>
+	{{/if}}
+
+	<div class="mt-7 flex items-center justify-center gap-3">
+		{{#primary_author}}
+			{{> "post/avatar" size="size-[34px]" textSize="text-[13px]"}}
+
+			<a
+				href="{{url}}"
+				class="font-ui text-text text-sm font-semibold no-underline">{{name}}</a>
+		{{/primary_author}}
+
+		<span class="font-meta text-meta tracking-meta text-muted uppercase">
+			{{date format="D MMM YYYY"}}
+			<span aria-hidden="true"> · </span>
+			{{reading_time seconds=(t "< 1 min read") minute=(t "1 min read") minutes=(t "% min read")}}
+		</span>
+	</div>
+</div>

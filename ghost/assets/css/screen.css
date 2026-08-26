@@ -74,6 +74,205 @@
 }
 
 /*
+ * THE RENDERED ARTICLE.
+ *
+ * Everything above this line is a decision about the theme. This block is a decision about
+ * somebody else's HTML: {{content}} is whatever the editor emitted, so the design's article
+ * typography — which the Astro build expresses as a utility class on every element it wrote by
+ * hand — has to be re-stated here as element rules. Each one is the same class list the
+ * reference component carries, via @apply, so there is one source for the values and this file
+ * cannot drift from the design without src/ changing first.
+ *
+ * What Ghost does and does not style is the line this block is drawn along. cards.min.css (out
+ * of {{ghost_head}}, BELOW this stylesheet) styles the INSIDE of cards and nothing else: outside
+ * a card it sets no heading, no paragraph, no list, no figure, no caption and no margin. So the
+ * prose and the figure are the theme's, and a card keeps the platform's geometry unless the
+ * design draws a specific treatment for it. The two that it does draw are here; the rest are
+ * recorded as a Concession in DECISIONS.md rather than reimplemented at four levels of
+ * specificity.
+ *
+ * Specificity is why every rule starts at `.mirror-content`: at equal weight the later
+ * stylesheet wins, and cards.min.css is the later stylesheet. Two consequences worth knowing
+ * before adding a rule here:
+ *
+ *   - Ghost's own adjacency rules (`.kg-image-card:not(.kg-card-hascaption) + .kg-image-card`
+ *     and four more) reach 0,3,0, so they outrank a plain `.mirror-content .kg-card`. Beating
+ *     one takes a fourth class, which is worth doing only where the design draws that case.
+ *   - `:is()` takes the weight of its most specific branch, so `:is(figure > img, .kg-image)`
+ *     is 0,2,0 for BOTH branches. That is what makes the element branch beat cards.min.css —
+ *     and why it is a direct child: `figure img` at that weight also captures the images inside
+ *     a bookmark and a gallery card, which are figures too.
+ */
+
+.mirror-content > :first-child {
+	margin-top: 0;
+}
+
+.mirror-content p {
+	@apply text-body leading-body mt-5 text-pretty;
+}
+
+.mirror-content h2 {
+	@apply font-display text-h2 tracking-heading mt-14 leading-[1.2] font-medium;
+}
+
+.mirror-content h3 {
+	@apply font-display text-h3 mt-11 leading-[1.28] font-medium;
+}
+
+/* The design breaks the display face here on purpose: at this size the grotesque reads as a
+ * label rather than a title. */
+.mirror-content h4 {
+	@apply font-ui text-h4 mt-8 leading-[1.35] font-semibold;
+}
+
+.mirror-content :is(h5, h6) {
+	@apply font-ui mt-7 text-base leading-[1.4] font-semibold;
+}
+
+/* `mt-5`, the paragraph's own step: the design's article sets a list at 20px and only its
+ * styleguide specimen sheet uses 22px, and a reading column has one rhythm. */
+.mirror-content :is(ul, ol) {
+	@apply text-body leading-body mt-5 flex flex-col gap-2 pl-6;
+}
+
+.mirror-content ul {
+	@apply list-disc;
+}
+
+.mirror-content ol {
+	@apply list-decimal;
+}
+
+.mirror-content li::marker {
+	color: var(--color-muted);
+}
+
+.mirror-content li :is(ul, ol) {
+	@apply mt-2;
+}
+
+.mirror-content a {
+	@apply text-accent underline decoration-1 underline-offset-[3px];
+}
+
+/*
+ * Ghost emits a quote as `<blockquote>text</blockquote>` — no inner paragraph — so the type is
+ * set on the element and the paragraph rule is overridden for the case where an author wrote
+ * one anyway.
+ */
+.mirror-content blockquote {
+	@apply border-accent font-body text-text mt-10 border-l-[3px] py-1 pl-[26px] text-[calc(var(--text-body)*1.06)] leading-[1.55] italic;
+}
+
+.mirror-content blockquote p {
+	@apply text-[length:inherit] leading-[inherit];
+}
+
+/*
+ * Written as first-child + sibling rather than as `blockquote p { margin-top: 0 }`: a paragraph
+ * reset is 0,1,2 and beats the sibling rule below at 0,1,0, which would run every paragraph of a
+ * two-paragraph quote together.
+ */
+.mirror-content blockquote > :first-child {
+	@apply mt-0;
+}
+
+.mirror-content blockquote > * + * {
+	@apply mt-3.5;
+}
+
+.mirror-content cite {
+	@apply font-meta text-meta tracking-meta text-muted mt-3.5 block uppercase not-italic;
+}
+
+.mirror-content hr {
+	@apply border-border mt-14 border-0 border-t;
+}
+
+.mirror-content code {
+	@apply border-border bg-surface-2 rounded-[4px] border px-1.5 py-0.5 font-mono text-[0.88em];
+}
+
+/*
+ * The design's code specimen carries a header strip naming the language. Ghost emits
+ * `<pre><code class="language-json">` and nothing to hang a strip on, so the surface, the
+ * scrollbar and the type are ported and the strip is not. Concession, recorded.
+ */
+.mirror-content pre {
+	@apply border-code-border bg-code-bg text-code-fg sg-scroll mt-11 overflow-x-auto rounded-md border px-4 py-[18px] font-mono text-[13.5px] leading-[1.7];
+}
+
+.mirror-content pre code {
+	@apply border-0 bg-transparent p-0 text-[length:inherit];
+}
+
+/*
+ * One exception is deliberate: Ghost closes two ADJACENT UNCAPTIONED images up to its own
+ * --gap of 1.2rem (`.kg-image-card:not(.kg-card-hascaption) + .kg-image-card`, 0,3,0, which
+ * outranks this rule) so that a pair reads as one series. Every figure the design draws carries
+ * a caption, so the design says nothing about that case and the platform keeps it — measured:
+ * 44px above the first of a pair, 19.2px above the second.
+ */
+.mirror-content :is(figure, .kg-card) {
+	@apply mt-11;
+}
+
+/*
+ * `max-w-full` rather than the design's `w-full`: an editor can upload an image narrower than
+ * the measure, and stretching it to the column is the one thing a theme must not do to
+ * somebody's photograph.
+ *
+ * `figure > img` and not `figure img`: a bookmark card and a gallery card are figures too, and
+ * their images are nested deeper — at this weight the descendant form centres a bookmark's
+ * favicon in the middle of its metadata row.
+ */
+.mirror-content :is(figure > img, .kg-image) {
+	@apply border-border mx-auto block max-w-full rounded-md border;
+}
+
+.mirror-content figcaption {
+	@apply font-ui text-small text-muted mt-3;
+}
+
+/*
+ * The design's callout: an accent rail in place of Ghost's filled block.
+ *
+ * The rail, the padding and the radius only — the BACKGROUND stays Ghost's, because the colour
+ * is the author's choice in the editor and `.kg-callout-card-accent` carries `color: #fff` in
+ * the same declaration that sets its background. Overriding one and not the other put white
+ * text on a near-white panel. The editor's default is grey, which is the design's own tint.
+ */
+.mirror-content .kg-callout-card {
+	@apply border-border border-l-accent gap-4 rounded-sm border border-l-[3px] px-[22px] py-5 shadow-none;
+}
+
+.mirror-content :is(.kg-callout-card-grey, .kg-callout-card-white) {
+	@apply bg-surface-2;
+}
+
+.mirror-content .kg-callout-card div.kg-callout-text {
+	@apply text-small leading-[1.6];
+}
+
+/* The design's pull quote: display face, centred, no rail. */
+.mirror-content blockquote.kg-blockquote-alt {
+	@apply font-display text-pull tracking-display text-text mt-14 border-0 p-0 text-center leading-[1.22] font-medium text-balance not-italic;
+}
+
+.mirror-content table {
+	@apply font-ui text-small mt-11 w-full border-collapse text-left;
+}
+
+.mirror-content :is(th, td) {
+	@apply border-border border-b px-3 py-2.5;
+}
+
+.mirror-content th {
+	@apply font-meta text-meta tracking-meta text-muted uppercase;
+}
+
+/*
  * The collapsed menu's scroll lock. `siteMenu` only puts the class on <body>; the width at
  * which a full-height overlay exists is a theme token, so the token decides what the class
  * means. Above the nav breakpoint the overlay is display:none and the lock has to lift with

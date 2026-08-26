@@ -4,7 +4,7 @@
 		"expect": "data-surface=\"home\""
 	},
 	{
-		"path": "/the-quiet-economics-of-a-one-person-publication/",
+		"path": "/against-the-infinite-feed/",
 		"expect": "data-surface=\"post\""
 	},
 	{

@@ -1,43 +1,35 @@
 {{!< default}}
 
-{{!-- Both designed post layouts, the rail, the TOC and the members gate land in the Post
-and Gate tickets. `.mirror-content` is already the scoping hook the Koenig card layer needs:
-Ghost emits cards.min.css out of {{ghost_head}}, below this theme's stylesheet, so every
-.kg-* rule has to be written under this container to win on specificity. --}}
+{{!-- The Post Surface, in whichever layout the publication picked.
+
+The layout picker is the pattern home.hbs documents: one {{#match}} at the top, the
+non-default option matched explicitly so an unrecognised stored value falls through to a
+layout rather than to nothing, and no partial below reading @custom.
+
+What is on this page below the article — the writer, the neighbours, three more posts, the
+subscribe band — is the same in both layouts and belongs to neither, so it is called here
+once. Only the reading column differs, which is the whole of what A1 and A2 are.
+
+`.mirror-content` (in both layout partials) is the scoping hook the Koenig card layer needs:
+Ghost emits cards.min.css out of {{ghost_head}}, BELOW this theme's stylesheet, so every rule
+that has to beat a platform default is written under that class. assets/css/screen.css owns
+that layer. --}}
 
 {{> "chrome/header" compact=true}}
 
 <main id="main" class="grow">
 	{{#post}}
-		<article class="{{post_class}} container py-16" data-surface="post">
-
-			<header class="measure mx-auto mb-10">
-				{{#primary_tag}}
-					<a
-						href="{{url}}"
-						class="font-meta text-accent text-[12px] uppercase">{{name}}</a>
-				{{/primary_tag}}
-
-				<h1 class="font-display text-h1 text-text mt-3 tracking-tight">{{title}}</h1>
-
-				{{#if custom_excerpt}}
-					<p class="font-body text-muted text-lead mt-4">{{custom_excerpt}}</p>
-				{{/if}}
-
-				<p class="font-meta text-muted mt-5 text-[12px] uppercase">
-					{{#primary_author}}<a
-							href="{{url}}"
-							class="text-muted">{{name}}</a>{{/primary_author}}
-					<span aria-hidden="true"> · </span>{{date format="D MMM YYYY"}}
-					<span aria-hidden="true"> · </span>{{reading_time seconds=(t "< 1 min read") minute=(t "1 min read") minutes=(t "% min read")}}
-				</p>
-			</header>
-
-			<div class="mirror-content measure prose mx-auto">
-				{{content}}
-			</div>
-
+		<article class="{{post_class}}" data-surface="post">
+			{{#match @custom.post_layout "Title page"}}
+				{{> "post/a2"}}
+			{{else}}
+				{{> "post/a1"}}
+			{{/match}}
 		</article>
+
+		{{> "post/related"}}
+
+		{{> "newsletter" anchor="end-newsletter"}}
 	{{/post}}
 </main>
 

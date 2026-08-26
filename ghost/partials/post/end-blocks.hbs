@@ -1,0 +1,100 @@
+{{!-- What closes a post: who wrote it, and where to go next.
+
+	{{> "post/end-blocks" detail=true}}   A1: the adjacent cards carry title and date
+	{{> "post/end-blocks"}}               A2: label chips at the row's ends
+
+Both blocks are INSIDE the post's <article>, which is a choice worth stating because the design
+source's own build closes its <article> before them. Here `<article class="{{post_class}}">` opens
+in post.hbs around the whole Surface, the way Ghost's own themes place it, so the head and the
+body carry the post's tag classes together; closing it before this partial would mean re-opening
+the container and the measure column outside it for the sake of two blocks that are about this
+post anyway. Related reading and the subscribe band, which are not, sit outside it.
+
+THE POST COUNT COSTS A QUERY. `{{count.posts}}` is empty on an author reached through a post
+— Ghost only attaches counts when the author is the fetched resource — so the one marginal
+the design shows next to the writer's name has to be asked for. One {{#get}} scoped to this
+author is the cheapest form of that question, and the block renders without the line if it
+comes back empty rather than dropping the card.
+
+"Follow" points at the subscribe block this template renders below, so it only appears where
+that block does: a publication with members turned off would otherwise show a button that
+scrolls to nothing. --}}
+{{#primary_author}}
+	<section
+		aria-labelledby="bio-head"
+		class="border-border bg-surface mt-14 flex flex-wrap gap-5 rounded-md border p-7">
+		{{> "post/avatar" size="size-14" textSize="text-lg"}}
+
+		<div class="min-w-0 flex-[1_1_260px]">
+			<h2
+				id="bio-head"
+				class="font-display tracking-heading text-[21px] font-medium">
+				<a
+					href="{{url}}"
+					class="text-text no-underline">{{name}}</a>
+			</h2>
+
+			{{#get "authors" filter="slug:{{slug}}" include="count.posts" limit="1" as |writers|}}
+				{{#foreach writers}}
+					<p class="font-meta text-meta tracking-meta text-muted mt-2 uppercase">{{plural count.posts empty=(t "No posts") singular=(t "% post") plural=(t "% posts")}}</p>
+				{{/foreach}}
+			{{/get}}
+
+			{{#if bio}}
+				<p class="text-small text-muted mt-3 max-w-[52ch] leading-[1.6]">{{bio}}</p>
+			{{/if}}
+
+			<div class="mt-4 flex flex-wrap gap-2.5">
+				<a
+					href="{{url}}"
+					class="btn border-border font-ui text-text hover:bg-surface-2 rounded-sm border px-4 py-[9px] text-[13px] font-semibold no-underline">{{t "All posts"}}</a>
+
+				{{#if @site.members_enabled}}
+					<a
+						href="#end-newsletter"
+						class="btn btn-primary font-ui rounded-sm px-4 py-[9px] text-[13px] font-semibold no-underline">{{t "Follow"}}</a>
+				{{/if}}
+			</div>
+		</div>
+	</section>
+{{/primary_author}}
+
+{{!-- `not-has-[a]:hidden` because {{#prev_post}} and {{#next_post}} each render nothing when
+there is no neighbour: the oldest post has no previous, the newest has no next, and a publication
+with one post has neither. Without it that last case leaves an empty navigation landmark, which a
+screen reader still announces by name, plus the row's margin. There is no {{#if prev_post}} to
+guard with — they are block helpers, not booleans — so the condition is read off the rendered
+children. --}}
+<nav
+	aria-label="{{t "Adjacent posts"}}"
+	class="not-has-[a]:hidden mt-5 grid justify-between gap-4 {{#if detail}}grid-cols-[repeat(auto-fit,minmax(min(240px,100%),1fr))]{{else}}grid-cols-[auto_auto]{{/if}}">
+	{{#prev_post}}
+		<a
+			href="{{url}}"
+			class="btn border-border bg-surface text-text hover:border-accent rounded-md border no-underline {{#if ../detail}}p-[22px]{{else}}px-[18px] py-[11px]{{/if}}">
+			<span class="text-muted font-mono text-[10.5px] tracking-[0.1em] uppercase">{{t "← Previous"}}</span>
+
+			{{#if ../detail}}
+				<div>
+					<p class="font-display tracking-heading mt-3 text-lg leading-[1.3] font-medium">{{title}}</p>
+					<p class="font-meta text-meta tracking-meta text-muted mt-2.5 uppercase">{{date format="D MMM YYYY"}}</p>
+				</div>
+			{{/if}}
+		</a>
+	{{/prev_post}}
+
+	{{#next_post}}
+		<a
+			href="{{url}}"
+			class="btn border-border bg-surface text-text hover:border-accent rounded-md border text-right no-underline {{#if ../detail}}p-[22px]{{else}}px-[18px] py-[11px]{{/if}}">
+			<span class="text-muted font-mono text-[10.5px] tracking-[0.1em] uppercase">{{t "Next →"}}</span>
+
+			{{#if ../detail}}
+				<div>
+					<p class="font-display tracking-heading mt-3 text-lg leading-[1.3] font-medium">{{title}}</p>
+					<p class="font-meta text-meta tracking-meta text-muted mt-2.5 uppercase">{{date format="D MMM YYYY"}}</p>
+				</div>
+			{{/if}}
+		</a>
+	{{/next_post}}
+</nav>

@@ -86,6 +86,87 @@ document.addEventListener('alpine:init', () => {
 			this.$refs.burger?.focus();
 		},
 	}));
+
+	/*
+	 * The Post Surface's table of contents.
+	 *
+	 * Built from the rendered article, because there is nothing else to build it from: Ghost has
+	 * no contents helper and a template cannot see inside {{content}}. Both shapes of the list
+	 * (the A1 disclosure, the A2 rail) mount this same component, and only one of them exists on
+	 * any page.
+	 *
+	 * h2 only, matching the design's own contents list. The ids are Ghost's — its renderer
+	 * slugifies every heading and suffixes collisions — and a heading without one is skipped
+	 * rather than given a generated anchor: an id this script invents would not survive the
+	 * reader sharing the link with anyone whose page rendered a different body.
+	 *
+	 * `active` is which section the reader has reached, by the same rule the design source used:
+	 * the last heading whose top has passed 160px. The scroll handler coalesces into one frame,
+	 * but the first pass runs directly — a headless renderer taking a screenshot never fires
+	 * requestAnimationFrame, and the list would ship with nothing marked.
+	 */
+	Alpine.data('postToc', () => ({
+		items: [],
+		active: '',
+
+		init() {
+			const headings = document.querySelectorAll('.mirror-content h2[id]');
+			this.items = [...headings].map((heading, i) => ({
+				id: heading.id,
+				label: heading.textContent.trim(),
+				num: String(i + 1).padStart(2, '0'),
+			}));
+
+			if (!this.items.length) return;
+
+			let frame = 0;
+			const sync = () => {
+				frame = 0;
+				let reached = '';
+				for (const item of this.items) {
+					const heading = document.getElementById(item.id);
+					if (heading && heading.getBoundingClientRect().top <= 160) reached = item.id;
+				}
+				this.active = reached;
+			};
+
+			const onScroll = () => {
+				if (!frame) frame = requestAnimationFrame(sync);
+			};
+
+			addEventListener('scroll', onScroll, { passive: true });
+			addEventListener('resize', onScroll);
+			sync();
+		},
+	}));
+
+	/*
+	 * Copy link. The clipboard is the one share action that needs script, and it can fail for a
+	 * reason the visitor cannot fix: navigator.clipboard is undefined on an insecure origin, and
+	 * the permission can be refused. Either way the label must not claim a copy that did not
+	 * happen, so `copied` is only set after the write resolves.
+	 *
+	 * The address comes from the template, not from `location.href`. A reader can be on the post
+	 * at a URL that is not the post's: `?mode=dark` is a hook this theme honours before first
+	 * paint, so copying the current URL would hand the recipient a link that overrides their own
+	 * appearance — and any tracking query string would travel with it. This is the same
+	 * {{url absolute="true"}} the Email and Bluesky links carry.
+	 */
+	Alpine.data('postShare', (url) => ({
+		copied: false,
+		timer: 0,
+
+		async copy() {
+			try {
+				await navigator.clipboard.writeText(url);
+			} catch {
+				return;
+			}
+			this.copied = true;
+			clearTimeout(this.timer);
+			this.timer = setTimeout(() => (this.copied = false), 2000);
+		},
+	}));
 });
 
 /*

@@ -18,12 +18,36 @@ The theme requires **Ghost 6.0 or newer**.
 
 Everything below lives in **Settings → Design & branding**, under the theme's own section.
 
-| Setting                | Options               | What it does                                                      |
-| :--------------------- | :-------------------- | :---------------------------------------------------------------- |
-| **Default appearance** | Light · Dark · System | The mode a first-time visitor sees. Their own choice always wins. |
-| **Dark mode logo**     | An image              | Your logo, redrawn in light ink, for the dark Mode.               |
+| Setting                | Options                       | What it does                                                               |
+| :--------------------- | :---------------------------- | :------------------------------------------------------------------------- |
+| **Default appearance** | Light · Dark · System         | The mode a first-time visitor sees. Their own choice always wins.          |
+| **Dark mode logo**     | An image                      | Your logo, redrawn in light ink, for the dark Mode.                        |
+| **Post layout**        | Centered classic · Title page | Cover photo over centred titling, or a title page with a sticky side rail. |
+| **Newsletter heading** | Text                          | The heading on every subscribe block.                                      |
 
 More settings arrive with the layouts they control; each one is documented here as it lands.
+
+### Posts
+
+- **Post layout** picks between the two designed reading columns. _Centered classic_ leads with
+  the feature image and puts the contents list above the article; _Title page_ drops the photo,
+  sets the title large, and moves the contents list and the share actions into a rail beside
+  the article. Both carry the writer, the neighbouring posts, three related posts and the
+  subscribe band.
+- **The contents list is built from your headings.** Every `Heading 2` in the post becomes an
+  entry, numbered in order, and the entry you are reading is highlighted as you scroll. A post
+  with no `Heading 2` shows no contents list. Nothing to configure, and nothing to keep in step
+  by hand.
+- A post with **no feature image** starts at the title in either layout — there is no empty
+  band. Add a **caption** to the feature image and it prints under it in _Centered classic_.
+- **Related posts** are the three most recent other posts sharing the post's first tag. An
+  untagged post shows none.
+- **Copy link** copies the post's address; **Email** and **Bluesky** open a pre-filled message.
+  The chips under the article link to each tag's archive, and every byline links to the writer.
+- The article body is set in the design's own type scale, and Ghost's editor cards keep the
+  platform's layout with MIRROR's colours. Two exceptions the design draws itself: a callout
+  gets an accent rail rather than a filled block, and a pull quote is set centred in the
+  display face.
 
 ### Header, menu and footer
 

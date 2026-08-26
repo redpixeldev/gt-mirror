@@ -1,0 +1,28 @@
+{{!-- What the post is filed under, closing the article.
+
+Every tag, not just the primary one, because this is the row a reader uses to find the rest of
+the subject — and each chip is a link to that tag's own archive, which is the Surface the
+design's chips only imply.
+
+`visibility="public"` is the whole reason this is {{#foreach}} and not a hand-rolled loop over
+`tags`: a Ghost publication uses internal tags (`#featured`, `#newsletter-only`) as private
+editorial routing, and printing them on the page leaks the newsroom's own filing system to
+every reader.
+
+The guard is `primary_tag` for the same reason — it IS the post's first public tag, so it is
+exactly the condition "there is at least one chip to draw". `{{#if tags}}` is satisfied by a post
+filed only under internal tags, and would render the rule and the label with nothing after
+them. --}}
+{{#if primary_tag}}
+	<hr class="border-border mt-14 border-0 border-t">
+
+	<div class="mt-8 flex flex-wrap items-center gap-2.5">
+		<span class="text-muted mr-1.5 font-mono text-[10.5px] tracking-[0.1em] uppercase">{{t "Filed under"}}</span>
+
+		{{#foreach tags visibility="public"}}
+			<a
+				href="{{url}}"
+				class="font-meta tracking-meta border-border bg-surface text-text rounded-pill border px-3.5 py-[7px] text-[12.5px] uppercase no-underline">{{name}}</a>
+		{{/foreach}}
+	</div>
+{{/if}}

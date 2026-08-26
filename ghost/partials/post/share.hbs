@@ -1,0 +1,73 @@
+{{!-- Share actions, in the two shapes the design draws them.
+
+	{{> "post/share"}}              the row that closes the article: copy, email, Bluesky
+	{{> "post/share" rail=true}}    the rail's pair: copy, email
+
+The design draws three buttons and gives them nothing to do. Here they do the thing they are
+labelled with, because a button that looks live and is dead is worse than no button:
+
+  - Copy link asks the clipboard, and swaps its own label for a moment. It needs script, so it
+	is the only one that is a <button> — and it carries `x-cloak`, so with scripting off it is
+	not there at all rather than styled and dead, which is the same rule stated the other way
+	round. `navigator.clipboard` is also unavailable over plain http on a non-localhost origin,
+	and the catch in `postShare` is what keeps the label honest there. `aria-live` on the button
+	is what carries the label change to a reader who cannot see it.
+  - Email and Bluesky are links, because they are navigations. {{encode}} is Ghost's own URL
+	encoder and {{url absolute="true"}} the canonical address of this post — a relative one
+	would arrive in someone's inbox pointing at nothing.
+
+Both shapes carry their own button sizing rather than sharing a variable: the sizes are
+literal in the source because the class scanner only ever sees what is written here. --}}
+{{#if rail}}
+	<div
+		x-data="postShare('{{url absolute="true"}}')"
+		class="pt-5">
+		<p class="text-muted mb-3 font-mono text-[10.5px] tracking-[0.1em] uppercase">{{t "Share"}}</p>
+
+		<div class="flex flex-wrap gap-2">
+			<button
+				type="button"
+				x-cloak
+				aria-live="polite"
+				x-on:click="copy()"
+				class="btn border-border bg-surface font-ui text-text hover:bg-surface-2 cursor-pointer rounded-sm border px-3 py-2 text-[12.5px] font-semibold">
+				<span x-show="!copied">{{t "Copy link"}}</span>
+				<span
+					x-show="copied"
+					x-cloak>{{t "Copied"}}</span>
+			</button>
+
+			<a
+				href="mailto:?subject={{encode title}}&amp;body={{url absolute="true"}}"
+				class="btn border-border bg-surface font-ui text-text hover:bg-surface-2 rounded-sm border px-3 py-2 text-[12.5px] font-semibold no-underline">{{t "Email"}}</a>
+		</div>
+	</div>
+{{else}}
+	<div
+		x-data="postShare('{{url absolute="true"}}')"
+		class="border-border mt-8 flex flex-wrap items-center gap-3 border-t pt-7">
+		<span class="text-muted mr-1.5 font-mono text-[10.5px] tracking-[0.1em] uppercase">{{t "Share"}}</span>
+
+		<button
+			type="button"
+			x-cloak
+			aria-live="polite"
+			x-on:click="copy()"
+			class="btn border-border bg-surface font-ui text-text hover:bg-surface-2 cursor-pointer rounded-sm border px-[15px] py-[9px] text-[13px] font-semibold">
+			<span x-show="!copied">{{t "Copy link"}}</span>
+			<span
+				x-show="copied"
+				x-cloak>{{t "Copied"}}</span>
+		</button>
+
+		<a
+			href="mailto:?subject={{encode title}}&amp;body={{url absolute="true"}}"
+			class="btn border-border bg-surface font-ui text-text hover:bg-surface-2 rounded-sm border px-[15px] py-[9px] text-[13px] font-semibold no-underline">{{t "Email"}}</a>
+
+		<a
+			href="https://bsky.app/intent/compose?text={{encode title}}%20{{url absolute="true"}}"
+			target="_blank"
+			rel="noopener"
+			class="btn border-border bg-surface font-ui text-text hover:bg-surface-2 rounded-sm border px-[15px] py-[9px] text-[13px] font-semibold no-underline">{{t "Bluesky"}}</a>
+	</div>
+{{/if}}

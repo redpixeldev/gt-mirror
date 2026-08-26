@@ -1,0 +1,25 @@
+{{!-- A2, "title page + rail": no cover photo, the titling carries the page, and the contents
+list and share actions ride along in a sticky rail.
+
+`items-start` is what makes the rail sticky at all. Grid items stretch by default, so the aside
+would be as tall as the article and `position: sticky` on a full-height box has nothing to
+scroll within. The rail's own `max-stack:static` and this grid's `max-stack:grid-cols-…` are the
+same decision at the same token: below `stack` there is one column, so nothing may stick. --}}
+{{> "post/title-page"}}
+
+<div class="container pt-14">
+	<div
+		class="max-stack:grid-cols-[minmax(0,1fr)] max-stack:gap-10 grid grid-cols-[232px_minmax(0,1fr)] items-start gap-[72px]">
+		{{> "post/rail"}}
+
+		<div class="measure min-w-0">
+			<div class="mirror-content">{{content}}</div>
+
+			{{> "post/tags"}}
+
+			{{> "post/share"}}
+
+			{{> "post/end-blocks"}}
+		</div>
+	</div>
+</div>
