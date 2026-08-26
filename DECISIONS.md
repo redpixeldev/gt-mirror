@@ -568,14 +568,22 @@ Ghost 6's floor, and neither installed Node 22 (22.14.0, 22.17.0) satisfied `^22
 `ghost` under Node 24. Measured against **Ghost 6.60.0** and **gscan 6.4.2** — the plan was
 written against 6.61.0, and the installed release is what the numbers below describe.
 
-**Ports, reconciled.** This file previously recorded "4393 dev, 4394 staged originals", which was
-never true of this repo. The real values:
+**Ports, reconciled — and the first attempt at this got it wrong.** An earlier version of this
+entry said the previously-recorded "4393 dev, 4394 staged originals" was "never true of this repo",
+on the strength of `astro.config.mjs` alone. It was true: `scripts/verify/baseline-jobs.json` and
+`baseline-orig-jobs.json` are 54 committed capture jobs each, pointing at **4393** and **4394**. The
+capture harness was evidently driven against a static/preview server on 4393, not the dev server.
+Three ports, three different jobs:
 
-| what                    | port | source of truth                                          |
-| :---------------------- | ---: | :------------------------------------------------------- |
-| Astro dev server        | 4380 | `server.port`, `astro.config.mjs`                        |
-| staged design originals | 4381 | `scripts/verify/README.md` example, free on this machine |
-| local Ghost             | 2368 | Ghost default, `~/ghost-mirror`                          |
+| what                      | port | source of truth                                    |
+| :------------------------ | ---: | :------------------------------------------------- |
+| Astro dev server          | 4380 | `server.port`, `astro.config.mjs`                  |
+| Astro origin for captures | 4393 | `scripts/verify/baseline-jobs.json` (54 jobs)      |
+| staged design originals   | 4394 | `scripts/verify/baseline-orig-jobs.json` (54 jobs) |
+| local Ghost               | 2368 | Ghost default, `~/ghost-mirror`                    |
+
+`pnpm verify:serve` serves the originals on 4394 so the committed jobs work unmodified. Repointing
+108 job entries to a port I had picked would have been the wrong way round.
 
 **`{{reading_time}}` constants**, read out of the installed `@tryghost/helpers@1.1.106`
 (`lib/utils/reading-minutes.js`), not from memory: **275 words per minute**, and image time added
@@ -631,16 +639,57 @@ friends — the idiom Source uses. With no font chosen the variables are undefin
 resolves to the family the design was built against, so the pixel reference does not move; a buyer
 who picks a font gets the control gscan says they should have.
 
-### The identity axis cannot be scored on this machine
+### The identity axis, unblocked
 
-`scripts/verify/prep.json` points `source` at `/Users/danielaguillen/Downloads/Mirror Ghost Theme`
-— another machine's home directory. The design source HTML is not on this machine, there is no
-`.originals/` and no `.shots/`, and `python3` here has neither `pillow` nor `numpy`. So the
-recorded floors in `baseline-scores.json` / `after-scores.json` were produced elsewhere and cannot
-currently be reproduced or extended: **parity** (Ghost vs Astro) is runnable once the harness gets
-a Ghost origin, but **identity** (Ghost vs the design originals) is blocked until the design
-sources are back on disk and `prep.json`'s `source` is repointed. Every later ticket that promises
-"within a documented gap of its recorded Floor" depends on unblocking this first.
+`scripts/verify/prep.json` shipped pointing `source` at `/Users/danielaguillen/Downloads/Mirror
+Ghost Theme` — another machine's home directory — so for a while the identity axis could not run
+here at all and this section recorded it as a blocker. The sources are on this machine, at
+`~/Downloads/GHOST THEME MARKUP/`, which holds three things the port needs:
+
+| path                  | what                                                                              |
+| :-------------------- | :-------------------------------------------------------------------------------- |
+| `Mirror Ghost Theme/` | the **14** `MIRROR *.dc.html` design sources, plus `support.js` and `uploads/`    |
+| `MIRROR VARIATION A/` | **64** reference PNGs, named template × layout × mode (`02-homepage-A1-dark.png`) |
+| `QUARRY VARIATION B/` | Variant B — ignored, per `CLAUDE.md`                                              |
+
+`prep.json` now points at the first of those with a `~`, which `prep_originals.py` expands, so the
+config stays portable rather than encoding one machine's home again. `pnpm verify:prep` stages **56
+files** — 14 templates × 2 layouts × 2 modes — and `pnpm verify:serve` serves them on 4381.
+Spot-checked in a real browser: the A1 light homepage renders at 7522 px with 16 images and **zero**
+broken ones, so the Pexels-to-local rewrite rules still match the sources; A2 dark renders at
+7125 px.
+
+**The harness needs a venv.** This machine's `python3` is Homebrew's, which refuses a system-wide
+install under PEP 668, so `pillow` and `numpy` live in a gitignored `.venv` created by
+`pnpm verify:venv`, and every harness script invokes `.venv/bin/python3` rather than `python3`.
+Using `--break-system-packages` on someone's interpreter to run a repo's test tooling is not a
+trade this repo should make.
+
+**Two things the plan got wrong about the harness, corrected here.** `score.py` **does** have
+`--skip-header` (optional px, default 100) and also a `--crop-original` the plan never mentions —
+the plan states it has neither and Phase 3's gate was written around their absence, so that gate can
+be simpler than it says. The full flag set is `--height --skip-header --band --tol --align --worst
+--panel --out-dir --label --crop-original`.
+
+**The reference build renamed the publication.** The design sources say **"The Quarry"**; the Astro
+build's `src/data/navigation.ts` says `SITE_TITLE = 'Mirror'`, and the fixture follows the reference
+build because `src/data` is the source of truth for Demo content. So the wordmark differs from the
+design on every Surface, in the Astro rows as much as the Ghost ones. That is exactly the difference
+the two-axis split exists to absorb: it costs identity a constant header-band diff, costs parity
+nothing, and an identity row that fails while its parity row passes is content-derived by
+construction. Do not "fix" the fixture to say The Quarry — that would move it away from `src/data`.
+
+**The pipeline is proven, with one real number.** Captured `MIRROR About A1.dc.html` off 4394 and
+Ghost's `/about/` off 2368 at the same 1568 px width and scored them: **97.38 %** identity over 24
+bands. For context, `after-scores.json` records the Astro row for `about-01 light` at **97.90**
+against a floor of **98.02** and a diagnostic noise floor of **99.36** — so the Ghost skeleton sits
+**0.52 behind the reference build** on a Surface whose designed layout (split hero, stats grid,
+masthead, contact block) has not been built yet. The worst band is `y=200` at 9.33 %, which is the
+header — where the wordmark difference lives, exactly as predicted above.
+
+That number is evidence the harness runs, not a quality claim: one Surface, one Mode, a skeleton
+template. What it settles is that the identity axis is measurable here now, which is what every
+later Surface ticket's floor comparison was waiting on.
 
 ## The Ghost route map: one Surface, one template, one URL
 

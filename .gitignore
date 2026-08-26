@@ -11,6 +11,9 @@ scripts/ghost/uploaded-images.json
 # generated types
 .astro/
 
+# harness python deps — homebrew python refuses a system install (PEP 668)
+.venv/
+
 # dependencies
 node_modules/
 
