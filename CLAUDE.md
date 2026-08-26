@@ -80,3 +80,22 @@ Fonts are **committed to the repo** as woff2 in `public/fonts/` and declared by 
 - ESLint flat config (`eslint.config.js`) recognizes `clsx`, `twMerge`, `tv`, `classNames` as class-name callees
 
 **Commit prefixes**: `fix:` · `feat:` · `style:` · `docs:` · `refactor:`
+
+## Agent skills
+
+### Issue tracker
+
+Issues live in **tally** (`tally` CLI / `tally tui`), scoped to the `gt-mirror` project — todos are
+tickets, scratchpads hold anything longer, comments hold the reasoning. Not GitHub Issues; a per-todo
+GitHub mirror exists but is off by default. See `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+The five canonical triage roles map 1:1 onto tally **tags** of the same name (`needs-triage`,
+`needs-info`, `ready-for-agent`, `ready-for-human`, `wontfix`); urgency is the separate `p0`–`p3`
+priority axis. See `docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Single-context: one `CONTEXT.md` at the root (a strict glossary — read it before naming anything) and
+`docs/adr/` for decisions, created lazily. See `docs/agents/domain.md`.
