@@ -714,3 +714,63 @@ one is a marker only its own template emits — that is what makes the run prove
 resolution rather than prove a 200. An assertion nobody checked against a real response is a
 silently inert check. The 404 Surface is deliberately absent from both files: `smoke.py` requires
 status 200, so asserting the error Surface there would fail the run for being right.
+
+## The layout picker: one shape, repeated per Surface
+
+Both layouts of Variant A ship and the publication owner picks per Surface, so the mechanism is
+decided once here and every later Surface repeats it without re-deciding anything. Proven
+end-to-end on the homepage.
+
+```handlebars
+{{#get "posts" limit="7" include="authors,tags" as |feed|}}
+  {{#match @custom.homepage_layout "Editorial masthead"}}
+    {{> "home/a2" feed=feed}}
+  {{else}}
+    {{> "home/a1" feed=feed}}
+  {{/match}}
+{{else}}
+  …empty state…
+{{/get}}
+```
+
+Four rules, each load-bearing:
+
+1. **One `{{#match}}`, at the top of the template.** Nothing below reads `@custom`, so a partial
+   can be shared or moved without dragging a settings dependency behind it.
+2. **Match the non-default option; the default lives in the `{{else}}`.** A value that does not
+   match cannot render nothing — it falls through to a layout.
+3. **Fetch once, above the dispatch; both layouts consume the same block param.** Two layouts must
+   never mean two queries.
+4. **A child partial that varies takes it as an argument** — `{{> "post-meta" byline=true}}` — and
+   never reaches back up to `@custom`. This is Source's `navigationLayout=` pattern.
+
+### What Ghost guarantees about the value, measured
+
+- Writing an undeclared value through `PUT /ghost/api/admin/custom_theme_settings/` is **rejected
+  with 422** (`Unallowed value for 'homepage_layout'`), and the previous value stands.
+- A value orphaned by the theme renaming its options is **silently coerced to the default** on
+  theme reload. So the stale-database case that rule 2 looks like it is defending against is
+  actually handled by Ghost, and the earlier version of this note claiming otherwise was wrong.
+- The case rule 2 really defends is a setting that is **absent entirely**. Removing
+  `homepage_layout` from `package.json` while `home.hbs` still read it rendered the default layout
+  at 200 with no Handlebars error. That is the guarantee worth having: a typo in a `@custom` key,
+  or a settings sync that did not happen, degrades to a layout rather than a blank page.
+
+### Flipping it needs no rebuild — but a new file needs a restart
+
+Changing the setting through Ghost admin changes the rendered layout immediately: no code edit, no
+asset rebuild, no restart. Verified by markers unique to each layout — A1's `md:grid-cols-3` grid
+against A2's numbered `<ol>` — in both modes, with the tokens correct in each (`#faf9f7`/`#1c1917`
+light, `#12100e`/`#f5f2ec` dark).
+
+Adding a _new_ partial is the opposite: Ghost caches the theme's file list, so `home/a1.hbs` and
+`home/a2.hbs` were invisible until `ghost restart`. New file, restart Ghost; changed setting,
+nothing.
+
+### A setting ships with the template that reads it
+
+gscan enforces this in both directions and both are errors: a setting declared in `config.custom`
+that no template references, and a `{{@custom.x}}` in a template with no matching declaration.
+`homepage_layout` therefore arrives with `home.hbs`, `newsletter_text` arrived with the sign-up
+form, and the remaining seven settings in the plan's config block arrive with their own Surfaces.
+The cap is 20 (measured), so there is room.

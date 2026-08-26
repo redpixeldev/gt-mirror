@@ -1,0 +1,15 @@
+{{!-- One post's byline. Shared by both home layouts, the feed, the tag archive and the author
+archive, so the date format and the separator are decided once.
+
+`byline` opts the author name in — the argument is not called `author`, because that is a
+deprecated Ghost global and gscan rejects `{{#if author.*}}` outright. The author archive and the
+tag archive pass nothing: on an author's own page their name on every row is noise.
+
+`reading_time` is computed by Ghost from word count and image count and is stored nowhere, so the
+label is whatever the body length implies — never a field a fixture can set directly. --}}
+<p class="font-meta text-muted mt-2 text-[12px] uppercase">
+    {{#if byline}}{{#primary_author}}<a
+                href="{{url}}"
+                class="text-muted">{{name}}</a>{{/primary_author}}<span aria-hidden="true"> · </span>{{/if}}{{date format="D MMM YYYY"}}
+    <span aria-hidden="true"> · </span>{{reading_time seconds=(t "< 1 min read") minute=(t "1 min read") minutes=(t "% min read")}}
+</p>

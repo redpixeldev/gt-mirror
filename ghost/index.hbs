@@ -16,13 +16,7 @@ the Feed ticket; this renders the publication's real posts, in the theme's own t
 
             <p class="font-body text-muted measure mb-3">{{excerpt words="28"}}</p>
 
-            <p class="font-meta text-muted text-[12px] uppercase">
-                {{#primary_author}}<a
-                        href="{{url}}"
-                        class="text-muted">{{name}}</a>{{/primary_author}}
-                <span aria-hidden="true"> · </span>{{date format="D MMM YYYY"}}
-                <span aria-hidden="true"> · </span>{{reading_time seconds=(t "< 1 min read") minute=(t "1 min read") minutes=(t "% min read")}}
-            </p>
+            {{> "post-meta" byline=true}}
         </article>
     {{else}}
         <p class="font-body text-muted">{{t "No posts yet."}}</p>

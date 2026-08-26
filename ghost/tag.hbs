@@ -20,10 +20,7 @@ them is exactly the ambiguity CONTEXT.md was written to settle. --}}
             <h2 class="font-display text-h3 tracking-tight">
                 <a href="{{url}}" class="text-text no-underline">{{title}}</a>
             </h2>
-            <p class="font-meta text-muted mt-2 text-[12px] uppercase">
-                {{date format="D MMM YYYY"}}
-                <span aria-hidden="true"> · </span>{{reading_time seconds=(t "< 1 min read") minute=(t "1 min read") minutes=(t "% min read")}}
-            </p>
+            {{> "post-meta"}}
         </article>
     {{else}}
         <p class="font-body text-muted">{{t "Nothing filed under this tag yet."}}</p>

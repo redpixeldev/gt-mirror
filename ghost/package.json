@@ -58,6 +58,16 @@
 				],
 				"default": "Light"
 			},
+			"homepage_layout": {
+				"type": "select",
+				"options": [
+					"Magazine cover",
+					"Editorial masthead"
+				],
+				"default": "Magazine cover",
+				"group": "homepage",
+				"description": "A single lead story over a grid, or the publication masthead over a numbered list"
+			},
 			"newsletter_text": {
 				"type": "text",
 				"default": "Free members get the archive. Paid members get the interviews.",

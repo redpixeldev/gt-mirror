@@ -1,47 +1,43 @@
 {{!< default}}
 
-{{!-- The homepage Surface. Both designed layouts arrive with the Feed ticket; the shape
-that matters now is that every editorial slot comes from a {{#get}} rather than from the
-posts context.
+{{!-- The homepage Surface, in whichever layout the publication picked.
 
-That is not a stylistic choice. Bare, with no routes.yaml, `/` is the posts collection and
-this template is its page 1, so a posts context exists. With docs/routes.example.yaml
-uploaded, `/` becomes a route: — a route has no collection, no posts and no pagination at
-all. Only a template that asks for its own posts renders correctly in both, and Ghost
-resolves home.hbs for `/` in both cases. --}}
+THE LAYOUT PICKER PATTERN — every later Surface repeats this shape, so it is worth reading
+once rather than re-deciding:
+
+  1. One {{#match}} on the setting, at the top of the template, dispatching to one partial
+     per layout. Nothing below reads @custom, so a partial can be moved or shared without
+     dragging a settings dependency with it.
+  2. The NON-DEFAULT option is the one matched explicitly, and the default lives in the
+     {{else}}. That is what makes an absent or unrecognised value safe: it cannot match, so
+     it falls through and renders a layout rather than nothing. Ghost validates a stored
+     value against the declared options, but a value stored before an option was renamed
+     survives in the database — this is the case that would otherwise render a blank page.
+  3. Data is fetched once, above the dispatch, and both layouts consume the same block
+     param. Two layouts must never mean two queries.
+  4. A child partial that varies by layout takes it as an argument
+     ({{> "post-meta" author=true}}), the way Source threads navigationLayout — it never
+     reaches back up to @custom.
+
+Both branches also have to work with no posts context at all: bare, `/` is the posts
+collection and this is its page 1, but with docs/routes.example.yaml `/` is a route: and has
+no collection, no posts and no pagination. The {{#get}} is what makes the template
+indifferent to which. --}}
 <div class="container py-16">
 
     {{#get "posts" limit="7" include="authors,tags" as |feed|}}
 
-        {{#foreach feed limit="1"}}
-            <article class="{{post_class}} border-border mb-12 border-b pb-12">
-                {{#primary_tag}}<a href="{{url}}" class="font-meta text-accent text-[12px] uppercase">{{name}}</a>{{/primary_tag}}
-                <h2 class="font-display text-display mt-3 leading-none tracking-tight">
-                    <a href="{{url}}" class="text-text no-underline">{{title}}</a>
-                </h2>
-                <p class="font-body text-muted text-lead measure mt-4">{{excerpt words="40"}}</p>
-                <p class="font-meta text-muted mt-5 text-[12px] uppercase">
-                    {{#primary_author}}{{name}}{{/primary_author}}
-                    <span aria-hidden="true"> · </span>{{date format="D MMM YYYY"}}
-                    <span aria-hidden="true"> · </span>{{reading_time seconds=(t "< 1 min read") minute=(t "1 min read") minutes=(t "% min read")}}
-                </p>
-            </article>
-        {{/foreach}}
-
-        <h2 class="font-meta text-muted mb-6 text-[12px] uppercase">{{t "Latest"}}</h2>
-
-        <div class="grid gap-8 md:grid-cols-3">
-            {{#foreach feed from="2" to="7" columns="3"}}
-                <article class="{{post_class}}">
-                    <h3 class="font-display text-h4 tracking-tight">
-                        <a href="{{url}}" class="text-text no-underline">{{title}}</a>
-                    </h3>
-                    <p class="font-meta text-muted mt-2 text-[12px] uppercase">{{date format="D MMM YYYY"}}</p>
-                </article>
-            {{/foreach}}
-        </div>
+        {{#match @custom.homepage_layout "Editorial masthead"}}
+            {{> "home/a2" feed=feed}}
+        {{else}}
+            {{> "home/a1" feed=feed}}
+        {{/match}}
 
     {{else}}
+        {{!-- Also the branch a get-helper timeout lands in: where
+        optimization:getHelper:timeout:threshold is configured, a slow query returns empty and
+        Ghost prepends its own <span data-aborted-get-helper>. Without this, a slow homepage
+        renders as a hole. --}}
         <p class="font-body text-muted">{{t "No posts yet."}}</p>
     {{/get}}
 
