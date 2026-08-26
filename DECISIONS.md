@@ -774,3 +774,128 @@ that no template references, and a `{{@custom.x}}` in a template with no matchin
 `homepage_layout` therefore arrives with `home.hbs`, `newsletter_text` arrived with the sign-up
 form, and the remaining seven settings in the plan's config block arrive with their own Surfaces.
 The cap is 20 (measured), so there is room.
+
+## The demo publication: one reconciled content set
+
+`scripts/ghost/build-fixture.mjs` reads `src/data/*.ts` and emits `fixture.json`;
+`scripts/ghost/import.mjs` applies it. The fixture is the artifact and the API only applies it, so
+reproducing the demo content never depends on a network path or a key. Output is a pure function of
+`src/data` plus a fixed seed, so two runs are byte-identical.
+
+`src/data` is imported, never re-transcribed. Node can strip types but cannot resolve the
+extensionless sibling imports TypeScript uses (`archive.ts` imports `'./posts'`), so
+`scripts/ghost/load-data.mjs` bundles the modules in memory with esbuild — already a dependency —
+and imports the result from a `data:` URL. No temp file, no loader hook, no second copy of the data.
+
+**Measured, end to end through the rendered site** (`pnpm ghost:verify`): 104 posts across 6 pages
+of 18; all 14 subject counts and all 5 writer counts exactly as designed; **all 35 designed
+reading-time labels byte-identical**; 12 posts non-public so the gate has something to gate.
+`pnpm ghost:idempotence` re-imports and diffs a full snapshot: identical.
+
+### The two things the generator solves rather than approximates
+
+**The counts are a joint assignment.** 104 posts must satisfy five author marginals
+(34/27/19/14/10) and fourteen tag marginals (summing 173) at once, with each designed post's own
+author and tag already fixed. Filler is assigned from the largest remaining marginal first, then
+every marginal is asserted exactly before anything is written. A near miss would otherwise surface
+at gate time as "the directory shows 33, not 34" with no traceable cause.
+
+**Reading time runs backwards from the label.** Ghost computes it as
+`readingMinutes(html, feature_image ? 1 : 0)` — the same `@tryghost/helpers` function the theme
+helper uses, confirmed in `core/server/api/endpoints/utils/serializers/output/utils/extra-attrs.js`
+— so with one image the label is `round(words/275 + 0.2)` minutes and the exact word count for M
+minutes is `275 × (M − 0.2)`. A "7 min read" post gets 1870 words, a "12 min read" post 3245.
+Exact, not ±1, and it survives Ghost's HTML → Lexical → HTML round trip.
+
+The prose generator is built on single alphanumeric tokens on purpose: Ghost counts words by
+matching letter/digit runs _after_ stripping tags, so one apostrophe or hyphen would split a
+visible word into two counted ones and put every label off by a minute.
+
+### Reconciliation concessions
+
+The Astro build gives each template its own dataset deliberately, because the design sources
+genuinely differ. Ghost renders one publication, so those divergences die here. Precedence is by
+breadth — `posts.ts` (the set the blog, tag and author templates share) wins, then `archive.ts`,
+then the two per-template archives, then the membership strip, then the post detail page. Two pools
+leave a field implicit because their template supplies it, and it is filled from the pool's own
+context: every row on the author archive is by that author, every row on the tag archive carries
+that tag.
+
+Ten values were dropped. Each costs the Surface named beside it, and none is a defect to chase:
+
+| post                               | field      | kept                  | dropped                           |
+| :--------------------------------- | :--------- | :-------------------- | :-------------------------------- |
+| What editors owe their readers now | `excerpt`  | the shared set's      | the post page's longer standfirst |
+| The archive is the product         | `featured` | `true`                | archive's `false`                 |
+| Type is the interface              | `tag`      | `Craft`               | archive's `Typography`            |
+| On refusing the interview          | `tag`      | `Craft`               | tag archive's `Interviews`        |
+| Two editors, one masthead          | `author`   | Marisol Ade           | tag archive's Erin Laurier        |
+| Two editors, one masthead          | `date`     | 24 Sep 2025           | tag archive's 18 Dec 2025         |
+| Twenty years, four publications    | `author`   | Marisol Ade           | tag archive's Erin Laurier        |
+| Twenty years, four publications    | `date`     | 02 Jul 2025           | tag archive's 25 Sep 2025         |
+| Twenty years, four publications    | `img`      | pexels-2705436        | tag archive's pexels-4641190      |
+| Twenty years, four publications    | `alt`      | its matching alt text | the dropped image's alt text      |
+
+The cost lands on the tag archive: three posts there now show the author, date and photograph the
+author archive gave them. The fixture reports this list on every build, so the table cannot drift
+away from the data.
+
+Two further concessions are structural rather than per-post. **Ghost has no author-role field**, so
+the masthead carries location and post count and the designed role line ("Founding editor") becomes
+page content. **Ghost tiers have no "most popular" flag**, so the design's `featured` tier becomes
+the `@custom.featured_tier` setting.
+
+### The design's own nav is not ported
+
+`navigation.ts` is a variant browser: eight menus of preview routes like `/homepage-01`. That is a
+review affordance, not a publication's menu. The fixture seeds the menu the Surfaces actually imply
+— Archive, Subjects, Writers, About, Membership — because the theme renders
+`{{navigation}}` from the publication's own settings and a buyer edits it in admin.
+
+### What the Ghost API would not do, and what it did instead
+
+Four findings, each of which changed the design of the importer:
+
+- **There is no way to create a staff user through the Admin API.** No `POST /users/` exists, only
+  an invite flow that needs a mailbox. The five writers therefore go in through Ghost's own JSON
+  importer (`POST /db/`), which matches users on email and does not duplicate them. Imported users
+  land with status `locked` — they cannot sign in until they reset a password, which is correct for
+  demo authors and affects neither authorship nor their archive Surface.
+- **That importer is the wrong tool for everything else.** A repeat import left `probe-post-2`
+  beside `probe-post` and added a bookkeeping `hash-import-<timestamp>` tag to the publication,
+  which would have shown up in the Tags Directory and broken the fourteen-subject count. Posts,
+  pages, tags, settings, tiers and recommendations all go through the Admin API, keyed on slug.
+- **An Admin API key is not enough, so there is no key.** Integrations are refused by every
+  endpoint beyond content: importing db content answers `You do not have permission to
+importContent db`, and editing a user, writing settings, tiers or recommendations answers `API
+tokens do not have permission to access this endpoint`. Since the owner credentials are needed
+  regardless, a key would be a second credential covering only the easy half. Auth is one owner
+  session, from `.env`.
+- **`limit=all` really is capped at 100.** The idempotence check first compared 100 posts of 104
+  and called them identical. It pages now. This is the documented `applyLimitCap` behaviour, met in
+  practice rather than read about.
+
+Also: `openAsBlob` produces an untyped Blob and Ghost answers `415 Please select a valid image`, so
+every upload sets its content type explicitly.
+
+### A fresh Ghost is not empty, so `--prune` exists
+
+A fresh install ships a "Coming soon" post, a `news` tag and an auto-created paid tier named after
+the site. The design's publication is exactly 104 posts, 14 subjects and 3 tiers, so on a fresh
+install the two collide and the feed reads 105. `pnpm ghost:import:fresh` passes `--prune`, which
+deletes posts, pages and tags the fixture does not own and deactivates paid tiers it does not own
+(tiers are financial records; Ghost has no DELETE for them). It is **off by default and
+irreversible when on** — the same script pointed at a real publication would delete that
+publication. It never touches users.
+
+### The masthead lists people who have written
+
+Every staff account is an "author" to Ghost, so the owner rendered as a sixth writer reading "No
+posts" beside the design's five. The guard is in the loop, not the query, because **`count.posts` is
+not filterable on authors** in Ghost 6: `filter="count.posts:>0"`, `":>=1"` and `":-0"` each return
+an empty set rather than a filtered one. Ordering by `count.posts desc` means the first row carries
+the highest count, so testing that one row is enough to know whether anyone has published — without
+it, a publication with no posts renders an empty bordered list.
+
+The gate asserts the row _count_, not just the five known names: asserting only the names passed
+while the sixth row was still there.

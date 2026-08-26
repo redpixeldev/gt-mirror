@@ -1,50 +1,50 @@
 [
-  {
-    "path": "/",
-    "expect": "Latest"
-  },
-  {
-    "path": "/coming-soon/",
-    "expect": "mirror-content"
-  },
-  {
-    "path": "/tag/news/",
-    "expect": ">Tag<"
-  },
-  {
-    "path": "/author/mirror/",
-    "expect": ">Writer<"
-  },
-  {
-    "path": "/tags/",
-    "expect": "Subjects"
-  },
-  {
-    "path": "/authors/",
-    "expect": "Writers"
-  },
-  {
-    "path": "/about/",
-    "expect": "About"
-  },
-  {
-    "path": "/membership/",
-    "expect": "Membership"
-  },
-  {
-    "path": "/recommendations/",
-    "expect": "Recommendations"
-  },
-  {
-    "path": "/sign-in/",
-    "expect": "data-members-form=\"signin\""
-  },
-  {
-    "path": "/sign-up/",
-    "expect": "data-members-form=\"signup\""
-  },
-  {
-    "path": "/archive/",
-    "expect": "pagination"
-  }
+	{
+		"path": "/",
+		"expect": "Latest"
+	},
+	{
+		"path": "/the-quiet-economics-of-a-one-person-publication/",
+		"expect": "mirror-content"
+	},
+	{
+		"path": "/tag/essays/",
+		"expect": ">Tag<"
+	},
+	{
+		"path": "/author/erin-laurier/",
+		"expect": ">Writer<"
+	},
+	{
+		"path": "/tags/",
+		"expect": "Subjects"
+	},
+	{
+		"path": "/authors/",
+		"expect": "Writers"
+	},
+	{
+		"path": "/about/",
+		"expect": "About"
+	},
+	{
+		"path": "/membership/",
+		"expect": "Membership"
+	},
+	{
+		"path": "/recommendations/",
+		"expect": "Recommendations"
+	},
+	{
+		"path": "/sign-in/",
+		"expect": "data-members-form=\"signin\""
+	},
+	{
+		"path": "/sign-up/",
+		"expect": "data-members-form=\"signup\""
+	},
+	{
+		"path": "/archive/",
+		"expect": "pagination"
+	}
 ]

@@ -5,6 +5,9 @@ dist/
 # generated theme assets — the zip is a release artifact, not a commit
 ghost/assets/built/
 
+# install-specific: maps the design's /img/ paths to one Ghost's uploaded URLs
+scripts/ghost/uploaded-images.json
+
 # generated types
 .astro/
 

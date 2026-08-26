@@ -24,6 +24,12 @@
 		"verify:shots": "python3 scripts/verify/shoot.py --jobs scripts/verify/baseline-jobs.json --out-dir .shots",
 		"ghost:smoke": "python3 scripts/verify/smoke.py --base http://localhost:2368 --routes scripts/ghost/routes.json",
 		"ghost:smoke:bare": "python3 scripts/verify/smoke.py --base http://localhost:2368 --routes scripts/ghost/routes-bare.json",
+		"ghost:routes": "node --env-file=.env scripts/ghost/build-routes.mjs",
+		"ghost:fixture": "node scripts/ghost/build-fixture.mjs",
+		"ghost:import": "node --env-file=.env scripts/ghost/import.mjs",
+		"ghost:import:fresh": "node --env-file=.env scripts/ghost/import.mjs --prune",
+		"ghost:verify": "node --env-file=.env scripts/ghost/verify-fixture.mjs",
+		"ghost:idempotence": "node --env-file=.env scripts/ghost/check-idempotence.mjs",
 		"ghost:shots": "python3 scripts/verify/shoot.py --jobs scripts/ghost/jobs.json --out-dir .shots/ghost"
 	},
 	"dependencies": {
