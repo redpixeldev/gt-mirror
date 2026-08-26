@@ -16,46 +16,17 @@
  * `hash-import-<timestamp>` tag to the publication, which would have shown up in the Tags
  * Directory and broken the fourteen-subject count.
  *
- * AUTH IS AN OWNER SESSION, NOT AN API KEY. An Admin API key looks like the right answer and is
- * not: integrations are refused by every endpoint this script needs beyond content — importing db
- * content, editing a staff user, writing settings, tiers and recommendations all answer 403
- * (`API tokens do not have permission to access this endpoint`). Since the owner credentials are
- * required regardless, a key would be a second credential that only covers the easy half.
- * GHOST_ADMIN_EMAIL and GHOST_ADMIN_PASSWORD live in .env, which is gitignored.
+ * AUTH IS AN OWNER SESSION, NOT AN API KEY — see `scripts/ghost/admin.mjs`, which this script and
+ * the two check scripts share.
  */
 import { readFileSync, writeFileSync, existsSync, statSync, openAsBlob } from 'node:fs';
 import { basename, extname } from 'node:path';
 
+import { api, base, ownerSession } from './admin.mjs';
+
 const FIXTURE = 'scripts/ghost/fixture.json';
 const IMAGE_MAP = 'scripts/ghost/uploaded-images.json';
 const SUPPORTED_VERSION = 2;
-
-const base = (process.env.GHOST_URL ?? 'http://localhost:2368').replace(/\/$/, '');
-/**
- * Every call carries the owner session; see the note at the top of this file for why an Admin API
- * key is not enough.
- */
-async function api(method, path, body) {
-	const auth = await ownerSession();
-	const response = await fetch(`${base}/ghost/api/admin${path}`, {
-		method,
-		headers: {
-			...auth,
-			'Content-Type': 'application/json',
-			'Accept-Version': 'v6.0',
-		},
-		body: body ? JSON.stringify(body) : undefined,
-	});
-	const text = await response.text();
-	const payload = text ? JSON.parse(text) : {};
-	if (!response.ok) {
-		const detail = payload.errors?.[0];
-		throw new Error(
-			`${method} ${path} → ${response.status} ${detail?.context ?? detail?.message ?? text.slice(0, 200)}`,
-		);
-	}
-	return payload;
-}
 
 /** A GET that treats 404 as "not there yet" rather than as a failure. */
 async function find(path) {
@@ -121,37 +92,6 @@ async function upload(endpoint, field, file, extra = {}) {
 		throw new Error(`POST ${endpoint} → ${response.status} ${text.slice(0, 200)}`);
 	}
 	return text ? JSON.parse(text) : {};
-}
-
-/**
- * The owner session, memoised. One login per run.
- */
-let sessionAuth;
-async function ownerSession() {
-	if (sessionAuth) {
-		return sessionAuth;
-	}
-	const email = process.env.GHOST_ADMIN_EMAIL;
-	const password = process.env.GHOST_ADMIN_PASSWORD;
-	if (!email || !password) {
-		throw new Error('GHOST_ADMIN_EMAIL and GHOST_ADMIN_PASSWORD are needed to create and edit staff users.');
-	}
-	const response = await fetch(`${base}/ghost/api/admin/session/`, {
-		method: 'POST',
-		headers: { 'Content-Type': 'application/json', 'Accept-Version': 'v6.0', Origin: base },
-		body: JSON.stringify({ username: email, password }),
-	});
-	if (!response.ok) {
-		throw new Error(`session → ${response.status} ${(await response.text()).slice(0, 200)}`);
-	}
-	sessionAuth = {
-		Cookie: response.headers
-			.getSetCookie()
-			.map((c) => c.split(';')[0])
-			.join('; '),
-		Origin: base,
-	};
-	return sessionAuth;
 }
 
 /* ── fixture ──────────────────────────────────────────────────────────────────────────── */

@@ -1029,3 +1029,171 @@ Members auth ticket still owns Portal, the entry points and the member-state mat
 **The directories list real records.** Same reasoning: `page-tags.hbs` and `page-authors.hbs` query
 the publication rather than rendering an empty shell, because a directory that lists nothing cannot
 demonstrate that its Surface resolves. Their designed layouts remain with the Standing Pages ticket.
+
+## The identity gate: the Ghost render, scored against the design PNGs
+
+`pnpm ghost:score` captures every Surface off the running Ghost in both Modes, scores each capture
+against the reference PNG the design was drawn as, and reports the gap to the noise floor that PNG's
+own design source scores. One command, and until it existed no Surface ticket could prove it had not
+regressed: the reference build's numbers were recorded and nothing at all was pointed at Ghost.
+
+**A word on "floor".** `CONTEXT.md` defines **Floor** as the identity a Surface has already achieved
+and may not fall below. This section, `baseline-scores.json`'s `floor` key and `report.py`'s `floor`
+column all mean the other thing — the **noise floor**, what the design source itself scores against
+its own PNG, a ceiling no markup can pass. The harness reports the distance to that ceiling; it does
+not yet ratchet anything, and the Ship ticket owns the first recorded Ghost Floor in the CONTEXT.md
+sense.
+
+**The identity gap is reported, not gated.** Every Surface is currently below the reference build's
+noise floor by design, so an armed `--max-drop` would fail every run; it exists for a Surface ticket
+to arm deliberately once its Surface has landed. What fails the run today is the four refusals below.
+
+```bash
+pnpm ghost:jobs    # regenerate the capture set from surfaces.json (ghost:score does this itself)
+pnpm ghost:score   # smoke, capture, score — the gate
+pnpm verify:floors # the harness's self-check: score the design sources, reproduce every Floor
+```
+
+**Nothing about the reference is re-derived.** `scripts/verify/baseline-index.json` already holds the
+reference PNG and the height it was rendered at, and `baseline-scores.json` holds the noise floor, so
+`scripts/ghost/build-jobs.mjs` replaces exactly one column — the URL. A second copy of a floor is a
+floor that can drift, and the two ports have to be comparable to be worth measuring.
+
+**`scripts/ghost/surfaces.json` is the reviewable half.** 27 Astro preview routes (Surface × Layout)
+collapse onto the 14 `data-surface` values this theme emits, whose Layout is a setting rather than a
+URL, and the map says which is which. Paths are not written there twice: they are looked up in
+`routes.json` by `data-surface` marker, so the harness captures the same URL `build-routes.mjs` has
+already proved unique. Three rows are the exceptions and each says why in the file — the styleguide
+page has no `page-*` template of its own, the Gate needs a members-only slug no route config carries,
+and the error Surface needs a genuinely missing URL.
+
+**A row that cannot be captured yet is pending, not scored.** Only the homepage has a layout picker
+today, so the 11 A2 rows of the other Surfaces have nothing to select: 32 captures score, 22 report
+their reason and wait for the ticket named in it. Capturing A1 and scoring it against the A2 PNG would
+produce a number, and the number would be a lie. Pending is not a quiet exit, either: a selection with
+nothing capturable in it fails, and `report.py` fails a report that scored zero captures — otherwise
+one `skip` line could take a Surface out of smoke, capture and scoring in a single edit and the run
+would still come back green.
+
+### The four refusals
+
+1. **Smoke first.** Every URL the run is about to capture, through `smoke.py`: status, byte floor, and
+   the Surface's own `data-surface` marker read out of the live page. Two things had to change there.
+   `smoke.py` grew a per-route `status`, because the error Surface is a real capture and asserting it
+   as a 200 would fail the run for being right. And it grew `min_body_bytes`, because a whole-document
+   floor is worthless on this platform: `{{ghost_head}}` alone is 6.1 KB of Portal script and members
+   CSS, so a Surface rendering an empty body would still clear the 5,000-byte default on 14 of 15
+   routes. The floor now measures the bytes between `<body` and `</body>` — 2,000, just under the
+   smallest body any Surface renders (the error Surface at 2,601, About at 2,631).
+2. **The publication must not be wearing platform chrome.** `portal_button` and `announcement_content`
+   are forced off for the run and restored after — Portal's floating button sits over the footer of
+   every Surface, and an announcement bar mounts from `announcement-bar.min.js`, which `{{ghost_head}}`
+   emits only while the setting is set. Settings, not markup: the theme is not allowed to know it is
+   being photographed. The write is read back, because Ghost's settings endpoint filters a payload to
+   the keys it recognises rather than rejecting it — an unrecognised key is accepted with a 200 and
+   dropped, which would leave the chrome in all 32 captures behind a clean report.
+3. **A Layout that does not render is not a Layout.** Captures are grouped by the settings they need;
+   after each flip the rendered body is hashed, and two Layouts of one URL that produce byte-identical
+   HTML fail the run. The guard is on the Layout rather than on the setting on purpose — it catches
+   both a flip the front end ignored and two rows accidentally declaring the same setting value.
+4. **Ghost's own log, positionally.** Byte offsets are taken before the run and only the appended
+   region is read: anything in `*.error.log`, and bunyan levels 50/60 in the main log. A front-end 404
+   does **not** reach the error log — measured, and load-bearing, because the error Surface's capture
+   would otherwise dirty every run. The directory is listed again at the end rather than walked from
+   the cursor, so a log file that appeared during the run is read, and a rotated one — smaller than
+   its own recorded offset — is read from zero instead of being called clean.
+
+All four were tested by breaking them, which is the only way to know a gate is not inert:
+
+| broken                                                 | what the run did                                      |
+| :----------------------------------------------------- | :---------------------------------------------------- |
+| a marker changed to one the page does not carry        | `FAIL /about/ missing 'data-surface="page-tags"'`, 1  |
+| `portal_button` misspelled, so Ghost dropped the write | `came back as undefined, not false`, 1                |
+| both homepage rows pointed at the same layout setting  | byte-identical HTML, 1, settings still restored       |
+| an unauthorised admin request fired mid-run            | 2 error lines named, 1                                |
+| `--max-drop=0.5` instead of `--max-drop 0.5`           | `unknown argument`, 1 — a disarmed gate is not a pass |
+
+The chrome refusal was also exercised the other way, on a real setting rather than a misspelled one:
+with an announcement bar set, `{{ghost_head}}` emits `announcement-bar.min.js`, the run reported
+`settings announcement_content=""`, captured, printed `restored announcement_content`, and the script
+tag was back in the page afterwards. The restore is deliberately unable to throw — it runs in a
+`finally`, where a throw would replace the failure that brought the run there, and each write is
+independent so a failed theme-settings restore cannot strand `portal_button`. A restore that fails
+says `NOT RESTORED <key>` and names what to put back by hand.
+
+**Mode comes from `?mode=`,** the support hook `default.hbs` already ships and `ghost/README.md`
+already documents. It resolves before first paint and writes nothing to storage, which is exactly what
+a capture needs; the alternative was a second appearance mechanism that existed only for the harness.
+
+### The self-check found two things the recorded numbers could not have
+
+`report.py --capture-field orig` scores the **staged design source** against its own PNG, which _is_
+the definition of the noise floor — so every gap must come back `0.00`. It does, on all 54 rows, which
+is what makes the heights, the reference paths and the scoring flags trustworthy before anything is
+read into a port's gap. Getting there cost two fixes:
+
+- **`prep-paywalled.json` still pointed at another machine's home directory.** `prep.json` was fixed
+  when the identity axis was unblocked; its sibling was missed, so the four paywalled noise floors
+  could not be reproduced at all — the run scored whatever `.originals` happened to hold and came back
+  at 5.41 and 2.65. It is `~`-relative now, and `pnpm verify:prep:gate` stages the four files
+  **without** `--clean`, after `verify:prep`, because the paywalled pass writes into the same directory.
+- **`verify:shots` could not be run at all.** `baseline-jobs.json` carries `.shots/` in every `out`
+  and `shoot.py` joins `out` onto `--out-dir`, so the committed script wrote `.shots/.shots/build-*.png`
+  — and its 54 URLs point at port 4393, a static origin of the reference build that no longer runs
+  here. `shoot.py` gained `--base`, which replaces the origin of every job URL: a committed jobs file
+  records which pages to shoot at which height, and the caller says where that origin is today.
+  `verify:shots` now points at the dev server on 4380 with `--out-dir .`.
+
+### The reference build reproduces through the same harness
+
+With `--base` in place, `pnpm verify:shots` and `pnpm verify:score` were run for the first time: 54
+captures off 4380, scored against the same PNGs and noise floors. **50 of the 54 land within 0.05 of
+the numbers `after-scores.json` records.** The four that do not are exactly the homepage rows, and
+they land on the numbers recorded _after_ the pagination divergence rather than before it —
+`homepage-01` light **96.64** against the recorded 96.64, dark **96.62** against 96.62. So the dev
+origin reproduces the reference build's identity numbers, the recorded 4393 captures were equivalent,
+and the two ports are now measured by one command each with nothing between them but the URL column.
+
+### The first scored run: 32 captures, and what the numbers are not
+
+| route                | layout | mode  | vs PNG | floor |    gap |
+| :------------------- | :----- | :---- | -----: | ----: | -----: |
+| `about-01`           | A1     | light |  97.80 | 98.02 |  -0.22 |
+| `about-01`           | A1     | dark  |  97.50 | 98.12 |  -0.62 |
+| `authors-01`         | A1     | light |  97.42 | 98.30 |  -0.88 |
+| `tags-01`            | A1     | light |  97.75 | 98.76 |  -1.01 |
+| `404`                | A1     | light |  97.61 | 98.96 |  -1.35 |
+| `membership-01`      | A1     | light |  96.57 | 97.95 |  -1.38 |
+| `author-single-01`   | A1     | light |  95.26 | 98.16 |  -2.90 |
+| `blog-01`            | A1     | light |  90.60 | 97.98 |  -7.38 |
+| `sign-up`            | —      | light |  91.07 | 98.99 |  -7.92 |
+| `styleguide`         | —      | light |  90.12 | 98.54 |  -8.42 |
+| `post-01`            | A1     | light |  82.18 | 90.67 |  -8.49 |
+| `homepage-02`        | A2     | light |  89.15 | 98.31 |  -9.16 |
+| `sign-in`            | —      | light |  89.76 | 99.07 |  -9.31 |
+| `tags-single-01`     | A1     | light |  88.54 | 98.37 |  -9.83 |
+| `post-01-paywalled`  | A1     | light |  80.06 | 96.14 | -16.08 |
+| `homepage-01`        | A1     | light |  71.32 | 96.59 | -25.27 |
+| `recommendations-01` | A1     | light |  33.50 | 98.38 | -64.88 |
+
+Seventeen of the 32 rows are shown, every route's light Mode plus About's dark row; the full set,
+including the dark row of every other route, lands in `.shots/ghost/scores.json` on every run.
+
+Every capture is below its noise floor and that is the expected state of a skeleton: none of these
+Surfaces has had its designed layout built yet, which is what the Surface tickets are for.
+
+Three rows are worth naming so nobody reads them as harness faults. `recommendations-01` at **33.50**
+is Ghost's `{{recommendations}}` helper rendering each entry's cover image full-bleed where the design
+draws a compact list — three-quarters of every band differs, and the capture is 2.6 MB of photograph.
+`homepage-01` at **71.32** is the magazine cover against a template that has a grid and no cover.
+`post-01-paywalled` at **80.06** carries platform chrome the harness cannot exclude with a setting:
+Ghost core emits its own `gh-post-upgrade-cta` panel inside the body of a gated Post — accent-coloured,
+"This post is for paying subscribers only", styled by `{{ghost_head}}`'s `gh-members-styles` block —
+and no reference PNG has it. It is named on that row in `surfaces.json`; suppressing it belongs to the
+Gate state ticket, which owns the designed Gate that replaces it. All three belong to their Surface
+ticket.
+
+The comparison is Ghost-vs-PNG against a noise floor of source-vs-PNG, the same axis as the reference
+build's table above — not the Ghost-vs-staged-original number the toolchain section recorded as proof
+the pipeline ran. That one was 97.38 for About A1 light; this run puts the same Surface at 97.80
+against a noise floor of 98.02, so About is **0.22** off a ceiling the design source itself sets.

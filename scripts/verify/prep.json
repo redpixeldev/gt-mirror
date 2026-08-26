@@ -1,5 +1,6 @@
 {
 	"source": "~/Downloads/GHOST THEME MARKUP/Mirror Ghost Theme",
+	"references": "~/Downloads/GHOST THEME MARKUP/MIRROR VARIATION A",
 	"glob": "MIRROR *.dc.html",
 	"out": ".originals",
 	"copy": ["support.js"],

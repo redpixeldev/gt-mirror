@@ -22,6 +22,7 @@ Everything specific to a given export lives in the config file, not here:
 
     {
       "source": "~/Downloads/Mirror Ghost Theme",
+      "references": "~/Downloads/MIRROR VARIATION A",
       "glob": "MIRROR *.dc.html",
       "out": "origsrv",
       "copy": ["support.js"],
@@ -40,6 +41,11 @@ Everything specific to a given export lives in the config file, not here:
         {"suffix": " DARK",  "replace": [{"find": "…default…light", "with": "…default…dark"}]}
       ]
     }
+
+`references` is not read here: it records where the reference PNGs live on this machine,
+for `report.py` to resolve an index's `ref` filenames against. It sits in this config
+because the PNGs ship beside the design sources and a machine should record that location
+once.
 
 `required` (default true) makes a missing `find` a hard error — a silently-skipped
 replacement produces a capture that looks plausible and scores wrong.

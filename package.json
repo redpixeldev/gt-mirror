@@ -22,8 +22,12 @@
 		"verify:venv": "python3 -m venv .venv && .venv/bin/python3 -m pip install -q pillow numpy",
 		"verify:smoke": ".venv/bin/python3 scripts/verify/smoke.py --base http://localhost:4380 --routes scripts/verify/routes.json",
 		"verify:prep": ".venv/bin/python3 scripts/verify/prep_originals.py --config scripts/verify/prep.json --clean",
+		"verify:prep:gate": ".venv/bin/python3 scripts/verify/prep_originals.py --config scripts/verify/prep-paywalled.json",
 		"verify:serve": "cd .originals && ../.venv/bin/python3 -m http.server 4394 --bind 127.0.0.1",
-		"verify:shots": ".venv/bin/python3 scripts/verify/shoot.py --jobs scripts/verify/baseline-jobs.json --out-dir .shots",
+		"verify:shots": ".venv/bin/python3 scripts/verify/shoot.py --jobs scripts/verify/baseline-jobs.json --out-dir . --base http://localhost:4380",
+		"verify:shots:orig": ".venv/bin/python3 scripts/verify/shoot.py --jobs scripts/verify/baseline-orig-jobs.json --out-dir .shots",
+		"verify:score": ".venv/bin/python3 scripts/verify/report.py --index scripts/verify/baseline-index.json --floors scripts/verify/baseline-scores.json",
+		"verify:floors": ".venv/bin/python3 scripts/verify/report.py --index scripts/verify/baseline-index.json --floors scripts/verify/baseline-scores.json --capture-field orig",
 		"ghost:smoke": ".venv/bin/python3 scripts/verify/smoke.py --base http://localhost:2368 --routes scripts/ghost/routes.json",
 		"ghost:smoke:bare": ".venv/bin/python3 scripts/verify/smoke.py --base http://localhost:2368 --routes scripts/ghost/routes-bare.json",
 		"ghost:routes": "node --env-file=.env scripts/ghost/build-routes.mjs",
@@ -32,7 +36,9 @@
 		"ghost:import:fresh": "node --env-file=.env scripts/ghost/import.mjs --prune",
 		"ghost:verify": "node --env-file=.env scripts/ghost/verify-fixture.mjs",
 		"ghost:idempotence": "node --env-file=.env scripts/ghost/check-idempotence.mjs",
-		"ghost:shots": ".venv/bin/python3 scripts/verify/shoot.py --jobs scripts/ghost/jobs.json --out-dir .shots/ghost"
+		"ghost:jobs": "node scripts/ghost/build-jobs.mjs",
+		"ghost:shots": ".venv/bin/python3 scripts/verify/shoot.py --jobs scripts/ghost/jobs.json --out-dir .shots/ghost",
+		"ghost:score": "node --env-file=.env scripts/ghost/score.mjs"
 	},
 	"dependencies": {
 		"@tailwindcss/forms": "^0.5.11",

@@ -1,8 +1,8 @@
 # Verification harness
 
-Four scripts. Copy this folder into the repo (`scripts/verify/`) and drive them from a
+Five scripts. Copy this folder into the repo (`scripts/verify/`) and drive them from a
 package script; do not rewrite them per theme — everything theme-specific lives in the
-two JSON configs.
+JSON configs. `report.py` imports `score.py`, so those two travel together.
 
 Requires Python 3, `pillow`, `numpy`, and a Chrome or Chromium binary. Set `CHROME_BIN`
 if it is somewhere unusual.
@@ -111,9 +111,33 @@ blank canvas at the bottom.
 python3 smoke.py --base http://localhost:4380 --routes verify/routes.json
 ```
 
-Exits non-zero on any route that 404s, falls under the byte floor, or is missing an
-expected string. Run it after every batch — a component that throws during render still
-answers 200.
+Exits non-zero on any route that answers the wrong status, falls under the byte floor, or
+is missing an expected string. Run it after every batch — a component that throws during
+render still answers 200. Per route: `min_bytes`, `min_body_bytes` (the bytes between
+`<body` and `</body>`, which is the floor to use on a platform that injects its own head),
+`expect`, and `status` for an error Surface that should not answer 200.
+
+## 5. Report a whole index
+
+```bash
+python3 report.py --index index.json --floors scores.json --refs "$HOME/…/MIRROR VARIATION A"
+python3 report.py --index index.json --floors scores.json --capture-field orig
+python3 report.py --index index.json --floors scores.json --max-drop 0.5 --out scores.json
+```
+
+`score.py` answers "how close is this one capture". This answers "did anything move", over
+every capture in one run, and it is origin-agnostic — the same command scores two ports so
+their numbers are comparable.
+
+An index is a JSON list of `{route, mode, build, ref, h}`, plus optional `floor`, `layout`
+and `skip` (a reason a row cannot be captured yet; it is reported as pending, never scored).
+`ref` is resolved by basename against `--refs`, which defaults to the `references` directory
+recorded in `prep.json`. A missing capture, a missing PNG, a missing floor, or an index that
+scores nothing at all fails the run.
+
+`--capture-field orig` is the harness's self-check: the staged design source scored against
+its own PNG *is* the noise floor, so every gap must come back `0.00`. Run it before reading
+anything into a build's gap.
 
 ## Wiring it up
 
@@ -121,7 +145,8 @@ answers 200.
 "scripts": {
   "verify:smoke": "python3 scripts/verify/smoke.py --base http://localhost:4380 --routes scripts/verify/routes.json",
   "verify:prep":  "python3 scripts/verify/prep_originals.py --config scripts/verify/prep.json --clean",
-  "verify:shots": "python3 scripts/verify/shoot.py --jobs scripts/verify/jobs.json --out-dir .shots"
+  "verify:shots": "python3 scripts/verify/shoot.py --jobs scripts/verify/jobs.json --out-dir .shots --base http://localhost:4380",
+  "verify:score": "python3 scripts/verify/report.py --index scripts/verify/index.json --floors scripts/verify/scores.json"
 }
 ```
 

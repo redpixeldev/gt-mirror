@@ -5,7 +5,10 @@
     python3 shoot.py --url http://localhost:4380/homepage-01 --out shots/hp.png --height 4000
 
 jobs.json is a list of `{"url", "out", "height", "width"?}`. `width` defaults to
---width (1568, the design source's canvas).
+--width (1568, the design source's canvas). `--base` replaces the origin of every
+job URL, so a committed jobs file records which pages to shoot at which height and
+the caller says where that origin is today — a jobs file naming a port nobody serves
+any more is a jobs file nobody can run.
 
 Every job gets its own `--user-data-dir`; Chrome refuses to run concurrent instances
 against a shared profile and will silently drop all but the first.
@@ -30,12 +33,12 @@ import os
 import subprocess
 import sys
 import time
+import urllib.parse
 
 CHROME_CANDIDATES = [
     '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
     '/Applications/Chromium.app/Contents/MacOS/Chromium',
     '/usr/bin/google-chrome',
-    '/usr/bin/chromium',
     '/usr/bin/chromium-browser',
 ]
 
@@ -81,6 +84,7 @@ def main() -> int:
     p.add_argument('--concurrency', type=int, default=4)
     p.add_argument('--budget', type=int, default=28000, help='virtual-time budget in ms')
     p.add_argument('--timeout', type=int, default=180, help='seconds to wait for all shots')
+    p.add_argument('--base', help='replace the origin of every job URL, e.g. http://localhost:4380')
     args = p.parse_args()
 
     if args.jobs:
@@ -90,6 +94,11 @@ def main() -> int:
         jobs = [{'url': args.url, 'out': args.out, 'height': args.height}]
     else:
         raise SystemExit('pass --jobs, or both --url and --out')
+
+    if args.base:
+        origin = args.base.rstrip('/')
+        for job in jobs:
+            job['url'] = origin + urllib.parse.urlsplit(job['url'])._replace(scheme='', netloc='').geturl()
 
     chrome = find_chrome(os.environ.get('CHROME_BIN'))
     profiles = args.profiles or os.path.join(args.out_dir, '.profiles')

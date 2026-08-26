@@ -12,30 +12,9 @@
  */
 import { execSync } from 'node:child_process';
 
-const base = (process.env.GHOST_URL ?? 'http://localhost:2368').replace(/\/$/, '');
+import { api } from './admin.mjs';
 
-const login = await fetch(`${base}/ghost/api/admin/session/`, {
-	method: 'POST',
-	headers: { 'Content-Type': 'application/json', 'Accept-Version': 'v6.0', Origin: base },
-	body: JSON.stringify({ username: process.env.GHOST_ADMIN_EMAIL, password: process.env.GHOST_ADMIN_PASSWORD }),
-});
-if (!login.ok) {
-	throw new Error(`session → ${login.status}`);
-}
-const cookie = login.headers
-	.getSetCookie()
-	.map((c) => c.split(';')[0])
-	.join('; ');
-
-const get = async (path) => {
-	const response = await fetch(`${base}/ghost/api/admin${path}`, {
-		headers: { Cookie: cookie, 'Accept-Version': 'v6.0' },
-	});
-	if (!response.ok) {
-		throw new Error(`GET ${path} → ${response.status}`);
-	}
-	return await response.json();
-};
+const get = (path) => api('GET', path);
 
 /**
  * Page through a browse endpoint.

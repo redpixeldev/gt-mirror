@@ -1,0 +1,118 @@
+[
+	{
+		"route": "styleguide",
+		"surface": "page",
+		"layout": "",
+		"path": "/styleguide/",
+		"why": "A fixture page with no page-styleguide.hbs, so it renders through the page.hbs fallback"
+	},
+	{
+		"route": "homepage-01",
+		"surface": "home",
+		"layout": "A1",
+		"settings": { "homepage_layout": "Magazine cover" }
+	},
+	{
+		"route": "homepage-02",
+		"surface": "home",
+		"layout": "A2",
+		"settings": { "homepage_layout": "Editorial masthead" }
+	},
+	{ "route": "blog-01", "surface": "feed", "layout": "A1" },
+	{
+		"route": "blog-02",
+		"surface": "feed",
+		"layout": "A2",
+		"skip": "no layout picker on the Feed yet — the Feed and homepage Surfaces ticket adds one"
+	},
+	{ "route": "post-01", "surface": "post", "layout": "A1" },
+	{
+		"route": "post-02",
+		"surface": "post",
+		"layout": "A2",
+		"skip": "no layout picker on the Post Surface yet — the Post Surface ticket adds one"
+	},
+	{
+		"route": "post-01-paywalled",
+		"surface": "post",
+		"layout": "A1",
+		"path": "{gated_post}",
+		"why": "The Gate is a state of one Post, so this row is the same Surface at a members-only slug, captured signed out. Ghost core emits its own gh-post-upgrade-cta panel inside the body for a gated Post and no reference PNG has it; suppressing it belongs to the Gate state ticket, which owns the designed Gate that replaces it"
+	},
+	{
+		"route": "post-02-paywalled",
+		"surface": "post",
+		"layout": "A2",
+		"skip": "no layout picker on the Post Surface yet — the Gate state ticket needs it before A2 can be gated"
+	},
+	{
+		"route": "404",
+		"surface": "error-404",
+		"layout": "A1",
+		"path": "/no-such-url-mirror-harness/",
+		"status": 404,
+		"why": "A genuinely missing URL, not a preview route — Ghost serves errors through its own path"
+	},
+	{
+		"route": "404-02",
+		"surface": "error-404",
+		"layout": "A2",
+		"skip": "no layout picker on the error Surface yet — the Error Surfaces ticket adds one"
+	},
+	{ "route": "tags-01", "surface": "page-tags", "layout": "A1" },
+	{
+		"route": "tags-02",
+		"surface": "page-tags",
+		"layout": "A2",
+		"skip": "no layout picker on the Tags Directory yet — the Tag archive and Tags Directory ticket adds one"
+	},
+	{ "route": "tags-single-01", "surface": "tag", "layout": "A1" },
+	{
+		"route": "tags-single-02",
+		"surface": "tag",
+		"layout": "A2",
+		"skip": "no layout picker on the Tag archive yet — the Tag archive and Tags Directory ticket adds one"
+	},
+	{ "route": "authors-01", "surface": "page-authors", "layout": "A1" },
+	{
+		"route": "authors-02",
+		"surface": "page-authors",
+		"layout": "A2",
+		"skip": "no layout picker on the Authors Directory yet — the Author Surface and Authors Directory ticket adds one"
+	},
+	{ "route": "author-single-01", "surface": "author", "layout": "A1" },
+	{
+		"route": "author-single-02",
+		"surface": "author",
+		"layout": "A2",
+		"skip": "no layout picker on the Author Surface yet — the Author Surface and Authors Directory ticket adds one"
+	},
+	{ "route": "recommendations-01", "surface": "page-recommendations", "layout": "A1" },
+	{
+		"route": "recommendations-02",
+		"surface": "page-recommendations",
+		"layout": "A2",
+		"skip": "no layout picker on Recommendations yet — the Standing Pages ticket adds one"
+	},
+	{ "route": "about-01", "surface": "page-about", "layout": "A1" },
+	{
+		"route": "about-02",
+		"surface": "page-about",
+		"layout": "A2",
+		"skip": "no layout picker on About yet — the Standing Pages ticket adds one"
+	},
+	{ "route": "membership-01", "surface": "page-membership", "layout": "A1" },
+	{
+		"route": "membership-02",
+		"surface": "page-membership",
+		"layout": "A2",
+		"skip": "no layout picker on Membership yet — the Standing Pages ticket adds one"
+	},
+	{
+		"route": "sign-in",
+		"surface": "sign-in",
+		"layout": "",
+		"why": "The design draws one auth layout per Mode; Portal owns the exchange itself"
+	},
+	{ "route": "sign-up", "surface": "sign-up", "layout": "" }
+]

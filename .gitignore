@@ -35,3 +35,4 @@ pnpm-debug.log*
 .originals/
 .profiles/
 panel-*.png
+__pycache__/
