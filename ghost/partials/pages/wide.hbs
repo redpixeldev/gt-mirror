@@ -1,0 +1,16 @@
+{{!-- The wide page layout. No page-{slug}.hbs counterpart on purpose: it exists so a buyer
+can pick it from the page settings menu for content that needs the full shell rather than
+the 68ch measure — a table, a gallery, a directory of their own. --}}
+{{#post}}
+    <article class="{{post_class}} container py-16">
+        {{#if @page.show_title_and_feature_image}}
+            <header class="mb-10">
+                <h1 class="font-display text-h1 text-text tracking-tight">{{title}}</h1>
+            </header>
+        {{/if}}
+
+        <div class="mirror-content prose max-w-none">
+            {{content}}
+        </div>
+    </article>
+{{/post}}

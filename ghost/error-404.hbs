@@ -1,0 +1,16 @@
+{{!< default}}
+
+{{!-- The designed 404. Ghost resolves error-404.hbs ahead of error.hbs for a missing URL,
+so this is the Surface a visitor actually reaches; error.hbs still covers every other
+status code. Both designed layouts arrive with the Error Surfaces ticket. --}}
+<div class="container py-24 text-center">
+
+    <p class="font-display text-display text-ghost-num leading-none">{{statusCode}}</p>
+
+    <h1 class="font-display text-h2 text-text mt-4 tracking-tight">{{t "That page has moved on"}}</h1>
+
+    <p class="font-body text-muted measure mx-auto mt-4">{{message}}</p>
+
+    <a href="{{@site.url}}" class="font-ui mt-8 inline-block text-[14px]">{{t "Back to the front page"}} &rarr;</a>
+
+</div>

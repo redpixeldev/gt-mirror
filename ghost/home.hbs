@@ -1,0 +1,48 @@
+{{!< default}}
+
+{{!-- The homepage Surface. Both designed layouts arrive with the Feed ticket; the shape
+that matters now is that every editorial slot comes from a {{#get}} rather than from the
+posts context.
+
+That is not a stylistic choice. Bare, with no routes.yaml, `/` is the posts collection and
+this template is its page 1, so a posts context exists. With docs/routes.example.yaml
+uploaded, `/` becomes a route: — a route has no collection, no posts and no pagination at
+all. Only a template that asks for its own posts renders correctly in both, and Ghost
+resolves home.hbs for `/` in both cases. --}}
+<div class="container py-16">
+
+    {{#get "posts" limit="7" include="authors,tags" as |feed|}}
+
+        {{#foreach feed limit="1"}}
+            <article class="{{post_class}} border-border mb-12 border-b pb-12">
+                {{#primary_tag}}<a href="{{url}}" class="font-meta text-accent text-[12px] uppercase">{{name}}</a>{{/primary_tag}}
+                <h2 class="font-display text-display mt-3 leading-none tracking-tight">
+                    <a href="{{url}}" class="text-text no-underline">{{title}}</a>
+                </h2>
+                <p class="font-body text-muted text-lead measure mt-4">{{excerpt words="40"}}</p>
+                <p class="font-meta text-muted mt-5 text-[12px] uppercase">
+                    {{#primary_author}}{{name}}{{/primary_author}}
+                    <span aria-hidden="true"> · </span>{{date format="D MMM YYYY"}}
+                    <span aria-hidden="true"> · </span>{{reading_time seconds=(t "< 1 min read") minute=(t "1 min read") minutes=(t "% min read")}}
+                </p>
+            </article>
+        {{/foreach}}
+
+        <h2 class="font-meta text-muted mb-6 text-[12px] uppercase">{{t "Latest"}}</h2>
+
+        <div class="grid gap-8 md:grid-cols-3">
+            {{#foreach feed from="2" to="7" columns="3"}}
+                <article class="{{post_class}}">
+                    <h3 class="font-display text-h4 tracking-tight">
+                        <a href="{{url}}" class="text-text no-underline">{{title}}</a>
+                    </h3>
+                    <p class="font-meta text-muted mt-2 text-[12px] uppercase">{{date format="D MMM YYYY"}}</p>
+                </article>
+            {{/foreach}}
+        </div>
+
+    {{else}}
+        <p class="font-body text-muted">{{t "No posts yet."}}</p>
+    {{/get}}
+
+</div>

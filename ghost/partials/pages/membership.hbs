@@ -1,0 +1,21 @@
+{{!-- Membership. Shared by page-membership.hbs and custom-membership.hbs.
+
+Tiers, prices and the comparison table arrive with the Standing Pages ticket, where the
+prices must come from the publication's live tiers: stale prices are the worst failure mode
+in the theme, and {{monthly_price}} renders an integer in the currency's smallest unit, so
+every price goes through the {{price}} helper. Nothing here renders a price yet, precisely
+so that no fixture copy can be mistaken for one. --}}
+{{#post}}
+    <article class="{{post_class}} container py-16">
+        {{#if @page.show_title_and_feature_image}}
+            <header class="mx-auto mb-10 max-w-[720px] text-center">
+                <p class="font-meta text-muted text-[12px] uppercase">{{t "Membership"}}</p>
+                <h1 class="font-display text-h1 text-text mt-3 tracking-tight">{{title}}</h1>
+            </header>
+        {{/if}}
+
+        <div class="mirror-content measure prose mx-auto">
+            {{content}}
+        </div>
+    </article>
+{{/post}}

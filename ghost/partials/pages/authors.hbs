@@ -1,0 +1,34 @@
+{{!-- The Authors Directory: the masthead. Its sibling Surface, the author archive at
+/author/{slug}/, lists one writer's posts — see author.hbs.
+
+Ghost has no author-role field, so the row carries location and post count instead; the
+designed role line becomes page content. Recorded as a concession in DECISIONS.md. --}}
+{{#post}}
+    <div class="container py-16">
+        {{#if @page.show_title_and_feature_image}}
+            <header class="mb-12">
+                <h1 class="font-display text-h1 text-text tracking-tight">{{title}}</h1>
+            </header>
+        {{/if}}
+
+        {{#if content}}
+            <div class="mirror-content measure prose mb-12">{{content}}</div>
+        {{/if}}
+
+        {{#get "authors" include="count.posts" limit="100" order="count.posts desc" as |authors|}}
+            <ul class="border-border border-t">
+                {{#foreach authors}}
+                    <li class="border-border flex items-baseline justify-between gap-6 border-b py-5">
+                        <div>
+                            <a href="{{url}}" class="font-display text-h3 text-text tracking-tight no-underline">{{name}}</a>
+                            {{#if location}}<p class="font-meta text-muted mt-1 text-[12px] uppercase">{{location}}</p>{{/if}}
+                        </div>
+                        <span class="font-meta text-muted text-[12px] uppercase">{{plural count.posts empty=(t "No posts") singular=(t "% post") plural=(t "% posts")}}</span>
+                    </li>
+                {{/foreach}}
+            </ul>
+        {{else}}
+            <p class="font-body text-muted">{{t "No writers yet."}}</p>
+        {{/get}}
+    </div>
+{{/post}}

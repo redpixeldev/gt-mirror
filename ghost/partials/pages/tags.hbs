@@ -1,0 +1,32 @@
+{{!-- The Tags Directory: a list of tags, not of posts. Its sibling Surface, the tag
+archive at /tag/{slug}/, lists one tag's posts — see tag.hbs.
+
+limit is declared as 100 rather than "all" because Ghost 6 caps every {{#get}} at 100
+silently (core/shared/max-limit-cap.js), and ordering by post count means a publication
+that trips the cap loses its emptiest tags rather than an arbitrary slice. --}}
+{{#post}}
+    <div class="container py-16">
+        {{#if @page.show_title_and_feature_image}}
+            <header class="mb-12">
+                <h1 class="font-display text-h1 text-text tracking-tight">{{title}}</h1>
+            </header>
+        {{/if}}
+
+        {{#if content}}
+            <div class="mirror-content measure prose mb-12">{{content}}</div>
+        {{/if}}
+
+        {{#get "tags" include="count.posts" limit="100" order="count.posts desc" as |tags|}}
+            <ul class="border-border border-t">
+                {{#foreach tags}}
+                    <li class="border-border flex items-baseline justify-between gap-6 border-b py-5">
+                        <a href="{{url}}" class="font-display text-h3 text-text tracking-tight no-underline">{{name}}</a>
+                        <span class="font-meta text-muted text-[12px] uppercase">{{plural count.posts empty=(t "No posts") singular=(t "% post") plural=(t "% posts")}}</span>
+                    </li>
+                {{/foreach}}
+            </ul>
+        {{else}}
+            <p class="font-body text-muted">{{t "No tags yet."}}</p>
+        {{/get}}
+    </div>
+{{/post}}

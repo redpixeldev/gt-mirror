@@ -13,7 +13,8 @@
 		"astro": "astro",
 		"ghost:css": "cd ghost && tailwindcss -i assets/css/screen.css -o assets/built/screen.css --minify && cd .. && node scripts/ghost/rewrite-font-urls.mjs",
 		"ghost:js": "esbuild ghost/assets/js/main.js --bundle --minify --outfile=ghost/assets/built/main.js",
-		"ghost:build": "pnpm ghost:css && pnpm ghost:js",
+		"ghost:i18n": "node scripts/ghost/check-locales.mjs",
+		"ghost:build": "pnpm ghost:css && pnpm ghost:js && pnpm ghost:i18n",
 		"ghost:dev": "concurrently --names css,js \"node scripts/ghost/watch-css.mjs\" \"esbuild ghost/assets/js/main.js --bundle --outfile=ghost/assets/built/main.js --watch\"",
 		"ghost:scan": "gscan --fatal --verbose ghost/",
 		"ghost:stage": "rm -rf dist/mirror && mkdir -p dist/mirror && rsync -a --exclude '.DS_Store' --exclude 'assets/css/' --exclude 'assets/js/' ghost/ dist/mirror/",
@@ -22,6 +23,7 @@
 		"verify:prep": "python3 scripts/verify/prep_originals.py --config scripts/verify/prep.json --clean",
 		"verify:shots": "python3 scripts/verify/shoot.py --jobs scripts/verify/baseline-jobs.json --out-dir .shots",
 		"ghost:smoke": "python3 scripts/verify/smoke.py --base http://localhost:2368 --routes scripts/ghost/routes.json",
+		"ghost:smoke:bare": "python3 scripts/verify/smoke.py --base http://localhost:2368 --routes scripts/ghost/routes-bare.json",
 		"ghost:shots": "python3 scripts/verify/shoot.py --jobs scripts/ghost/jobs.json --out-dir .shots/ghost"
 	},
 	"dependencies": {

@@ -57,6 +57,11 @@
 					"System"
 				],
 				"default": "Light"
+			},
+			"newsletter_text": {
+				"type": "text",
+				"default": "Free members get the archive. Paid members get the interviews.",
+				"description": "The line under every subscribe heading"
 			}
 		}
 	}

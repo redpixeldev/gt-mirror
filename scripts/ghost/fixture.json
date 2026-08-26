@@ -1,0 +1,47 @@
+{
+	"version": 1,
+	"pages": [
+		{
+			"slug": "about",
+			"title": "About",
+			"template": "page-about.hbs",
+			"body": "<p>MIRROR is a publication about the things that outlast their news cycle.</p>"
+		},
+		{
+			"slug": "membership",
+			"title": "Membership",
+			"template": "page-membership.hbs",
+			"body": "<p>Free members get the archive. Paid members get the interviews.</p>"
+		},
+		{
+			"slug": "tags",
+			"title": "Subjects",
+			"template": "page-tags.hbs",
+			"body": "<p>Everything we publish, filed by subject.</p>"
+		},
+		{
+			"slug": "authors",
+			"title": "Writers",
+			"template": "page-authors.hbs",
+			"body": "<p>The people behind the publication.</p>"
+		},
+		{
+			"slug": "recommendations",
+			"title": "Recommendations",
+			"template": "page-recommendations.hbs",
+			"body": "<p>Publications we read every week.</p>"
+		},
+		{
+			"slug": "sign-in",
+			"title": "Sign in",
+			"template": "page-sign-in.hbs",
+			"body": ""
+		},
+		{
+			"slug": "sign-up",
+			"title": "Subscribe",
+			"template": "page-sign-up.hbs",
+			"body": ""
+		}
+	]
+}

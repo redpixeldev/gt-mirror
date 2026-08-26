@@ -1,0 +1,36 @@
+# MIRROR — optional site configuration
+#
+# This file is NOT part of the theme and cannot be shipped inside a theme zip: routes.yaml is
+# site configuration, not theme code. It lives here, outside ghost/, so the staging step cannot
+# pick it up by accident — a path is a stronger guarantee than an exclude rule.
+#
+# Upload it in Ghost admin under Settings → Labs → Routes. Every MIRROR template renders
+# correctly without it; this only changes which Surface owns which URL.
+#
+# What it buys, and what it costs
+# -------------------------------
+# Bare (no routes.yaml), `/` is the posts collection. Ghost renders home.hbs for page 1 and
+# index.hbs for /page/2/ onwards, so the magazine cover and the Feed share one URL and the
+# Feed is only reachable as page two of the homepage.
+#
+# With this file, `/` becomes a route: — the cover, at its own URL, always — and /archive/
+# becomes the collection that owns the posts and paginates. That is the split the design
+# draws, and it is the only way to get it: a post can live in exactly one collection, so
+# there is no configuration in which both `/` and /archive/ own the same posts.
+#
+# The cost is that a route: has no posts context and no pagination at all. That is why every
+# editorial slot in home.hbs is a {{#get}} rather than a {{#foreach posts}} — the template has
+# to render identically whether it is a collection's page 1 or a bare route.
+
+routes:
+  /:
+    template: home
+
+collections:
+  /archive/:
+    permalink: /{slug}/
+    template: index
+
+taxonomies:
+  tag: /tag/{slug}/
+  author: /author/{slug}/

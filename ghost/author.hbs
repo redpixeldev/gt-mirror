@@ -1,0 +1,34 @@
+{{!< default}}
+
+{{!-- One author's profile and their posts. The A2 rail and the designed header arrive with
+the Author ticket. --}}
+{{#author}}
+    <header class="container pt-16">
+        <p class="font-meta text-muted text-[12px] uppercase">{{t "Writer"}}</p>
+        <h1 class="font-display text-h1 text-text mt-3 tracking-tight">{{name}}</h1>
+        {{#if bio}}
+            <p class="font-body text-muted text-lead measure mt-4">{{bio}}</p>
+        {{/if}}
+        <p class="font-meta text-muted mt-4 text-[12px] uppercase">
+            {{#if location}}{{location}}<span aria-hidden="true"> · </span>{{/if}}{{plural ../pagination.total empty=(t "No posts") singular=(t "% post") plural=(t "% posts")}}
+        </p>
+    </header>
+{{/author}}
+
+<div class="container py-12">
+    {{#foreach posts}}
+        <article class="{{post_class}} border-border border-b py-8 last:border-0">
+            <h2 class="font-display text-h3 tracking-tight">
+                <a href="{{url}}" class="text-text no-underline">{{title}}</a>
+            </h2>
+            <p class="font-meta text-muted mt-2 text-[12px] uppercase">
+                {{date format="D MMM YYYY"}}
+                <span aria-hidden="true"> · </span>{{reading_time seconds=(t "< 1 min read") minute=(t "1 min read") minutes=(t "% min read")}}
+            </p>
+        </article>
+    {{else}}
+        <p class="font-body text-muted">{{t "No posts by this writer yet."}}</p>
+    {{/foreach}}
+
+    {{pagination}}
+</div>

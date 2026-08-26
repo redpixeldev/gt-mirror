@@ -571,11 +571,11 @@ written against 6.61.0, and the installed release is what the numbers below desc
 **Ports, reconciled.** This file previously recorded "4393 dev, 4394 staged originals", which was
 never true of this repo. The real values:
 
-| what                        | port | source of truth              |
-| :-------------------------- | ---: | :--------------------------- |
-| Astro dev server            | 4380 | `server.port`, `astro.config.mjs` |
-| staged design originals     | 4381 | `scripts/verify/README.md` example, free on this machine |
-| local Ghost                 | 2368 | Ghost default, `~/ghost-mirror` |
+| what                    | port | source of truth                                          |
+| :---------------------- | ---: | :------------------------------------------------------- |
+| Astro dev server        | 4380 | `server.port`, `astro.config.mjs`                        |
+| staged design originals | 4381 | `scripts/verify/README.md` example, free on this machine |
+| local Ghost             | 2368 | Ghost default, `~/ghost-mirror`                          |
 
 **`{{reading_time}}` constants**, read out of the installed `@tryghost/helpers@1.1.106`
 (`lib/utils/reading-minutes.js`), not from memory: **275 words per minute**, and image time added
@@ -605,7 +605,7 @@ wrong on contact: a setting ships with the template that consumes it, never befo
 declares exactly one, `default_appearance`, because `default.hbs` reads it.
 
 The same scan produced the opposite lesson about cards: `card_assets.exclude` is what makes gscan
-*demand* the theme style that card. Declaring the plan's exclude list against a theme with no
+_demand_ the theme style that card. Declaring the plan's exclude list against a theme with no
 `.kg-*` layer turned 2 errors into 13 and 3 warnings into 30, and would have shipped four card
 types unstyled. `card_assets` is `true` until the layer exists.
 
@@ -641,3 +641,76 @@ currently be reproduced or extended: **parity** (Ghost vs Astro) is runnable onc
 a Ghost origin, but **identity** (Ghost vs the design originals) is blocked until the design
 sources are back on disk and `prep.json`'s `source` is repointed. Every later ticket that promises
 "within a documented gap of its recorded Floor" depends on unblocking this first.
+
+## The Ghost route map: one Surface, one template, one URL
+
+Ghost gives native routes for some Surfaces and nothing for others, so the binding is decided
+once here rather than re-invented by each Surface as it lands.
+
+| Surface           | URL (configured)         | Template                               | Why that treatment                                                                  |
+| :---------------- | :----------------------- | :------------------------------------- | :---------------------------------------------------------------------------------- |
+| homepage          | `/`                      | `home.hbs`                             | A `route:` — the magazine cover, always at `/`, never page one of something else    |
+| Feed              | `/archive/`              | `index.hbs`                            | The `collection:` — it owns the posts and their permalinks, and it paginates        |
+| Post              | `/{slug}/`               | `post.hbs`                             | The collection's `permalink`, so post URLs stay at the site root as in the design   |
+| Tag archive       | `/tag/{slug}/`           | `tag.hbs`                              | Native taxonomy                                                                     |
+| Author archive    | `/author/{slug}/`        | `author.hbs`                           | Native taxonomy                                                                     |
+| Tags Directory    | `/tags/`                 | `page-tags.hbs`                        | A standing page: it lists tags, not posts, so no collection can produce it          |
+| Authors Directory | `/authors/`              | `page-authors.hbs`                     | Same — a masthead is a page, not a feed                                             |
+| About             | `/about/`                | `page-about.hbs`                       | Standing page                                                                       |
+| Membership        | `/membership/`           | `page-membership.hbs`                  | Standing page                                                                       |
+| Recommendations   | `/recommendations/`      | `page-recommendations.hbs`             | Standing page wrapping the `{{recommendations}}` helper                             |
+| Sign in / Sign up | `/sign-in/`, `/sign-up/` | `page-sign-in.hbs`, `page-sign-up.hbs` | Standing pages; Portal owns the exchange itself                                     |
+| Error             | any missing URL          | `error-404.hbs`                        | Ghost resolves `error-404.hbs` before `error.hbs`; verified with a real missing URL |
+
+**Why the homepage is a route and the Feed is the collection.** A post can live in exactly one
+collection, so no configuration exists in which both `/` and `/archive/` own the same posts. The
+design draws a magazine cover and a separate archive; the only way to get both is to make one of
+them a `route:`. The cover is the one that can be a route, because it is editorially curated
+rather than paginated.
+
+The consequence is the constraint every home partial is written under: a `route:` has **no posts
+context and no pagination at all**, so every editorial slot in `home.hbs` is a `{{#get}}`. That
+also makes the template correct bare, where `/` _is_ the collection and `home.hbs` is its page 1.
+Verified in both configurations — bare, `/` renders `home.hbs` and `/archive/` correctly 404s;
+configured, both resolve and only `/archive/` paginates.
+
+**Every page layout ships twice**, `page-{slug}.hbs` and `custom-{slug}.hbs` over one shared
+partial in `partials/pages/`. Ghost resolves `page-{slug}` → the selected custom template →
+`page.hbs`, so the demo slugs keep working while a buyer can apply any of these layouts to a page
+named anything. `custom-wide.hbs` has no `page-*` counterpart on purpose: it is a layout to opt
+into, not a demo page.
+
+Departure from the plan: it specified a single `custom-directory.hbs` for the tags, authors and
+recommendations directories. Those are three different Surfaces reading three different sources,
+so one alias could only ever render one of them and a buyer picking "Directory" would have no way
+to know which. Three aliases, named for what they render.
+
+### Route paths against the reference build
+
+Post, tag and author URLs match the reference build. The rest cannot: the Astro build has one
+route per template × layout (`/homepage-01`, `/homepage-02`, …) because it is a preview of a
+design, and a Ghost publication has one URL per Surface with the layout chosen in settings. That
+is the layout picker's job, not a route's, and it is why 27 Astro routes collapse to 13 Surfaces.
+`/blog-01` becomes `/archive/`; `/tags-single-01` becomes `/tag/{slug}/`; `/404-02` has no URL of
+its own at all.
+
+### Two traps this cost
+
+**Ghost caches the theme's template list.** Adding `home.hbs` to an already-active theme produced
+`Missing template home.hbs for route "/"` and a 400 on the homepage until Ghost was restarted. New
+template, restart Ghost — the same brand-new-file trap the Astro build has with Tailwind's Vite
+plugin, in a different costume.
+
+**The routes.yaml upload endpoint is `POST`, not `PUT`.** `PUT
+/ghost/api/admin/settings/routes/yaml/` answers 404 with a misleading "client accept-version is
+behind" message; the route is registered as `POST` in
+`core/server/web/api/endpoints/admin/routes.js`.
+
+### Smoke assertions are read, never composed
+
+`scripts/ghost/routes.json` (configured) and `routes-bare.json` (bare) drive `pnpm ghost:smoke`
+and `ghost:smoke:bare`. Every `expect` string was copied out of a live rendered response, and each
+one is a marker only its own template emits — that is what makes the run prove template
+resolution rather than prove a 200. An assertion nobody checked against a real response is a
+silently inert check. The 404 Surface is deliberately absent from both files: `smoke.py` requires
+status 200, so asserting the error Surface there would fail the run for being right.
