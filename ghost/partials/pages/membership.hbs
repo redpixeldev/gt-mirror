@@ -6,16 +6,16 @@ in the theme, and {{monthly_price}} renders an integer in the currency's smalles
 every price goes through the {{price}} helper. Nothing here renders a price yet, precisely
 so that no fixture copy can be mistaken for one. --}}
 {{#post}}
-    <article class="{{post_class}} container py-16">
-        {{#if @page.show_title_and_feature_image}}
-            <header class="mx-auto mb-10 max-w-[720px] text-center">
-                <p class="font-meta text-muted text-[12px] uppercase">{{t "Membership"}}</p>
-                <h1 class="font-display text-h1 text-text mt-3 tracking-tight">{{title}}</h1>
-            </header>
-        {{/if}}
+	<article class="{{post_class}} container py-16" data-surface="page-membership">
+		{{#if @page.show_title_and_feature_image}}
+			<header class="mx-auto mb-10 max-w-[720px] text-center">
+				<p class="font-meta text-muted text-[12px] uppercase">{{t "Membership"}}</p>
+				<h1 class="font-display text-h1 text-text mt-3 tracking-tight">{{title}}</h1>
+			</header>
+		{{/if}}
 
-        <div class="mirror-content measure prose mx-auto">
-            {{content}}
-        </div>
-    </article>
+		<div class="mirror-content measure prose mx-auto">
+			{{content}}
+		</div>
+	</article>
 {{/post}}

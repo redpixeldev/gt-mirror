@@ -4,25 +4,25 @@ and [data-members-email] is what makes the submit do anything.
 Wrapped by its template in the members-state guards — an invite-only publication must not
 show a public signup form. --}}
 <form
-    data-members-form="signup"
-    class="border-border bg-surface mx-auto max-w-[420px] rounded-md border p-8 shadow-sm">
+	data-members-form="signup"
+	class="border-border bg-surface mx-auto max-w-[420px] rounded-md border p-8 shadow-sm">
 
-    <h1 class="font-display text-h2 text-text tracking-tight">{{t "Subscribe"}}</h1>
-    <p class="font-body text-muted mt-2 text-[15px]">{{@custom.newsletter_text}}</p>
+	<h1 class="font-display text-h2 text-text tracking-tight">{{t "Subscribe"}}</h1>
+	<p class="font-body text-muted mt-2 text-[15px]">{{@custom.newsletter_text}}</p>
 
-    <label for="signup-email" class="font-meta text-muted mt-6 block text-[12px] uppercase">{{t "Email address"}}</label>
-    <input
-        id="signup-email"
-        type="email"
-        name="email"
-        required
-        autocomplete="email"
-        data-members-email
-        class="border-border bg-bg text-text font-body mt-2 w-full rounded-sm border px-3 py-2">
+	<label for="signup-email" class="font-meta text-muted mt-6 block text-[12px] uppercase">{{t "Email address"}}</label>
+	<input
+		id="signup-email"
+		type="email"
+		name="email"
+		required
+		autocomplete="email"
+		data-members-email
+		class="border-border bg-bg text-text font-body mt-2 w-full rounded-sm border px-3 py-2">
 
-    <button type="submit" class="btn btn-primary font-ui mt-5 w-full cursor-pointer rounded-sm py-2.5 text-[14px]">
-        {{t "Subscribe"}}
-    </button>
+	<button type="submit" class="btn btn-primary font-ui mt-5 w-full cursor-pointer rounded-sm py-2.5 text-[14px]">
+		{{t "Subscribe"}}
+	</button>
 
-    <p data-members-error class="font-meta text-danger mt-3 text-[12px]"></p>
+	<p data-members-error class="font-meta text-danger mt-3 text-[12px]"></p>
 </form>

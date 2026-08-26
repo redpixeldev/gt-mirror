@@ -4,27 +4,27 @@
 which lists tags rather than posts — the two look alike in the card layout and conflating
 them is exactly the ambiguity CONTEXT.md was written to settle. --}}
 {{#tag}}
-    <header class="container pt-16">
-        <p class="font-meta text-muted text-[12px] uppercase">{{t "Tag"}}</p>
-        <h1 class="font-display text-h1 text-text mt-3 tracking-tight">{{name}}</h1>
-        {{#if description}}
-            <p class="font-body text-muted text-lead measure mt-4">{{description}}</p>
-        {{/if}}
-        <p class="font-meta text-muted mt-4 text-[12px] uppercase">{{plural ../pagination.total empty=(t "No posts") singular=(t "% post") plural=(t "% posts")}}</p>
-    </header>
+	<header class="container pt-16" data-surface="tag">
+		<p class="font-meta text-muted text-[12px] uppercase">{{t "Tag"}}</p>
+		<h1 class="font-display text-h1 text-text mt-3 tracking-tight">{{name}}</h1>
+		{{#if description}}
+			<p class="font-body text-muted text-lead measure mt-4">{{description}}</p>
+		{{/if}}
+		<p class="font-meta text-muted mt-4 text-[12px] uppercase">{{plural ../pagination.total empty=(t "No posts") singular=(t "% post") plural=(t "% posts")}}</p>
+	</header>
 {{/tag}}
 
 <div class="container py-12">
-    {{#foreach posts}}
-        <article class="{{post_class}} border-border border-b py-8 last:border-0">
-            <h2 class="font-display text-h3 tracking-tight">
-                <a href="{{url}}" class="text-text no-underline">{{title}}</a>
-            </h2>
-            {{> "post-meta"}}
-        </article>
-    {{else}}
-        <p class="font-body text-muted">{{t "Nothing filed under this tag yet."}}</p>
-    {{/foreach}}
+	{{#foreach posts}}
+		<article class="{{post_class}} border-border border-b py-8 last:border-0">
+			<h2 class="font-display text-h3 tracking-tight">
+				<a href="{{url}}" class="text-text no-underline">{{title}}</a>
+			</h2>
+			{{> "post-meta"}}
+		</article>
+	{{else}}
+		<p class="font-body text-muted">{{t "Nothing filed under this tag yet."}}</p>
+	{{/foreach}}
 
-    {{pagination}}
+	{{pagination}}
 </div>

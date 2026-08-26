@@ -11,7 +11,7 @@
  */
 import Alpine from 'alpinejs';
 
-const STORAGE_KEY = 'mirror-theme';
+const STORAGE_KEY = 'mirror-mode';
 
 document.addEventListener('alpine:init', () => {
 	/*
@@ -19,7 +19,7 @@ document.addEventListener('alpine:init', () => {
 	 * on <html>; this store only reads it back, so the two can never disagree on first
 	 * paint. It owns every later change.
 	 */
-	Alpine.store('theme', {
+	Alpine.store('mode', {
 		dark: document.documentElement.classList.contains('dark'),
 
 		toggle() {

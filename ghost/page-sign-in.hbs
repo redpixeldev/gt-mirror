@@ -7,18 +7,18 @@ worse than no control: @site.members_enabled decides whether members exist at al
 @member decides whether this visitor already is one. Ghost renders the actual magic-link
 exchange through Portal, which a theme cannot template — the residual gap between these
 cards and Portal is recorded as a concession in DECISIONS.md. --}}
-<div class="bg-page-field min-h-[70vh] py-20">
-    {{#if @site.members_enabled}}
-        {{#if @member}}
-            <div class="border-border bg-surface mx-auto max-w-[420px] rounded-md border p-8 text-center shadow-sm">
-                <h1 class="font-display text-h2 text-text tracking-tight">{{t "You are signed in"}}</h1>
-                <p class="font-body text-muted mt-2 text-[15px]">{{@member.email}}</p>
-                <a href="#/portal/account" data-portal="account" class="font-ui mt-6 inline-block text-[14px]">{{t "Manage your account"}} &rarr;</a>
-            </div>
-        {{else}}
-            {{> "auth/sign-in-form"}}
-        {{/if}}
-    {{else}}
-        <p class="font-body text-muted text-center">{{t "This publication does not have memberships."}}</p>
-    {{/if}}
+<div class="bg-page-field min-h-[70vh] py-20" data-surface="sign-in">
+	{{#if @site.members_enabled}}
+		{{#if @member}}
+			<div class="border-border bg-surface mx-auto max-w-[420px] rounded-md border p-8 text-center shadow-sm">
+				<h1 class="font-display text-h2 text-text tracking-tight">{{t "You are signed in"}}</h1>
+				<p class="font-body text-muted mt-2 text-[15px]">{{@member.email}}</p>
+				<a href="#/portal/account" data-portal="account" class="font-ui mt-6 inline-block text-[14px]">{{t "Manage your account"}} &rarr;</a>
+			</div>
+		{{else}}
+			{{> "auth/sign-in-form"}}
+		{{/if}}
+	{{else}}
+		<p class="font-body text-muted text-center">{{t "This publication does not have memberships."}}</p>
+	{{/if}}
 </div>

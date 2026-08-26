@@ -4,22 +4,22 @@
 Error Surfaces ticket; Ghost falls back to this template for every other status code.
 {{statusCode}}, {{message}} and {{errorDetails}} are the whole error context — see
 core/server/views/error.hbs. --}}
-<div class="container py-24 text-center">
+<div class="container py-24 text-center" data-surface="error">
 
-    <p class="font-display text-display text-ghost-num leading-none">{{statusCode}}</p>
+	<p class="font-display text-display text-ghost-num leading-none">{{statusCode}}</p>
 
-    <h1 class="font-display text-h2 text-text mt-4 tracking-tight">{{message}}</h1>
+	<h1 class="font-display text-h2 text-text mt-4 tracking-tight">{{message}}</h1>
 
-    <a
-        href="{{@site.url}}"
-        class="font-ui mt-8 inline-block text-[14px]">{{t "Back to the front page"}} &rarr;</a>
+	<a
+		href="{{@site.url}}"
+		class="font-ui mt-8 inline-block text-[14px]">{{t "Back to the front page"}} &rarr;</a>
 
-    {{#if errorDetails}}
-        <ul class="font-mono text-muted measure mx-auto mt-10 text-left text-[12px]">
-            {{#foreach errorDetails}}
-                <li>{{{this.message}}}</li>
-            {{/foreach}}
-        </ul>
-    {{/if}}
+	{{#if errorDetails}}
+		<ul class="font-mono text-muted measure mx-auto mt-10 text-left text-[12px]">
+			{{#foreach errorDetails}}
+				<li>{{{this.message}}}</li>
+			{{/foreach}}
+		</ul>
+	{{/if}}
 
 </div>

@@ -2,71 +2,71 @@
 <html lang="{{@site.locale}}">
 <head>
 
-    {{!-- Basic meta only. Every other meta tag, OG tag and the JSON-LD block are
-    emitted by {{ghost_head}} at the end of this block — hand-rolling any of them
-    duplicates Ghost's output and gscan flags it. --}}
-    <title>{{meta_title page=(t " (Page %)")}}</title>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+	{{!-- Basic meta only. Every other meta tag, OG tag and the JSON-LD block are
+	emitted by {{ghost_head}} at the end of this block — hand-rolling any of them
+	duplicates Ghost's output and gscan flags it. --}}
+	<title>{{meta_title page=(t " (Page %)")}}</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <link rel="preload" as="style" href="{{asset "built/screen.css"}}">
-    <link rel="preload" as="script" href="{{asset "built/main.js"}}">
+	<link rel="preload" as="style" href="{{asset "built/screen.css"}}">
+	<link rel="preload" as="script" href="{{asset "built/main.js"}}">
 
-    {{!-- The @font-face rules are compiled into screen.css from src/styles/fonts.css,
-    which stays the single source of truth for the two families. The font files are NOT
-    preloaded: {{asset}} always appends ?v=<content hash> (core/frontend/meta/asset-url.js),
-    so a preload href can never match the bare url() a static stylesheet requests, and the
-    browser would fetch every preloaded face twice. Matching them means re-declaring all 24
-    faces in a template partial — see DECISIONS.md. --}}
-    <link rel="stylesheet" type="text/css" href="{{asset "built/screen.css"}}">
+	{{!-- The @font-face rules are compiled into screen.css from src/styles/fonts.css,
+	which stays the single source of truth for the two families. The font files are NOT
+	preloaded: {{asset}} always appends ?v=<content hash> (core/frontend/meta/asset-url.js),
+	so a preload href can never match the bare url() a static stylesheet requests, and the
+	browser would fetch every preloaded face twice. Matching them means re-declaring all 24
+	faces in a template partial — see DECISIONS.md. --}}
+	<link rel="stylesheet" type="text/css" href="{{asset "built/screen.css"}}">
 
-    {{!-- The publication's accent colour drives the theme's one chromatic token. --}}
-    <style>
-        :root { --mirror-accent: {{@site.accent_color}}; }
-    </style>
+	{{!-- The publication's accent colour drives the theme's one chromatic token. --}}
+	<style>
+		:root { --mirror-accent: {{@site.accent_color}}; }
+	</style>
 
-    {{!-- Resolve the appearance before first paint so a dark visitor never sees a
-    light flash. Precedence: ?mode= (support/debug hook, documented in README.md) >
-    the visitor's stored choice > the publication's default_appearance setting. --}}
-    <script>
-        (function () {
-            try {
-                var forced = new URLSearchParams(window.location.search).get('mode');
-                var stored = window.localStorage.getItem('mirror-theme');
-                var fallback = '{{@custom.default_appearance}}';
-                var dark = forced
-                    ? forced === 'dark'
-                    : stored
-                        ? stored === 'dark'
-                        : fallback === 'Dark'
-                            ? true
-                            : fallback === 'Light'
-                                ? false
-                                : window.matchMedia('(prefers-color-scheme: dark)').matches;
-                document.documentElement.classList.toggle('dark', dark);
-            } catch (e) {
-                /* private mode or storage disabled — the Light default stands */
-            }
-        })();
-    </script>
+	{{!-- Resolve the appearance before first paint so a dark visitor never sees a
+	light flash. Precedence: ?mode= (support/debug hook, documented in README.md) >
+	the visitor's stored choice > the publication's default_appearance setting. --}}
+	<script>
+		(function () {
+			try {
+				var forced = new URLSearchParams(window.location.search).get('mode');
+				var stored = window.localStorage.getItem('mirror-mode');
+				var fallback = '{{@custom.default_appearance}}';
+				var dark = forced
+					? forced === 'dark'
+					: stored
+						? stored === 'dark'
+						: fallback === 'Dark'
+							? true
+							: fallback === 'Light'
+								? false
+								: window.matchMedia('(prefers-color-scheme: dark)').matches;
+				document.documentElement.classList.toggle('dark', dark);
+			} catch (e) {
+				/* private mode or storage disabled — the Light default stands */
+			}
+		})();
+	</script>
 
-    {{ghost_head}}
+	{{ghost_head}}
 
 </head>
 
 <body class="{{body_class}} bg-bg font-body text-text min-h-screen">
 
-    {{> "header"}}
+	{{> "header"}}
 
-    <main id="main">
-        {{{body}}}
-    </main>
+	<main id="main">
+		{{{body}}}
+	</main>
 
-    {{> "footer"}}
+	{{> "footer"}}
 
-    <script src="{{asset "built/main.js"}}"></script>
+	<script src="{{asset "built/main.js"}}"></script>
 
-    {{ghost_foot}}
+	{{ghost_foot}}
 
 </body>
 </html>

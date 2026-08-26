@@ -3,15 +3,25 @@
  *
  *   node --env-file=.env scripts/ghost/build-routes.mjs
  *
- * Two rules this exists to enforce:
+ * Three rules this exists to enforce:
  *
  *   1. Routes come from the fixture, not from whatever the install happens to contain. The first
  *      version of these configs pointed at Ghost's seeded /coming-soon/ post and `news` tag, which
  *      passed until the demo publication replaced them.
  *
- *   2. Every `expect` string is verified against a live response before it is written. An assertion
- *      nobody checked is a silently inert check, and a config full of them reports twelve passes
- *      while proving nothing.
+ *   2. Every assertion is verified present on its own route before it is written. An assertion
+ *      nobody checked is a silently inert check.
+ *
+ *   3. Every assertion is verified ABSENT from a control route. This is the rule the first version
+ *      lacked and it mattered: the markers were design strings like "Subjects" and "About", and
+ *      once the demo publication seeded a real navigation menu those five strings appeared in the
+ *      Chrome of every page. The config still reported 12/12 while proving nothing about which
+ *      template rendered. Presence alone is not evidence of resolution.
+ *
+ * Hence `data-surface`: one attribute on each template's outermost element, naming the Surface it
+ * renders. body_class cannot do this job — `/about/` is `page-template page-about` whether
+ * page-about.hbs rendered or page.hbs fell back — and design copy cannot either, because it is
+ * neither unique nor layout-independent ("Latest" exists only in the A1 home layout).
  */
 import { readFileSync, writeFileSync } from 'node:fs';
 
@@ -28,47 +38,73 @@ const slug = (s) =>
 		.replace(/[^a-z0-9]+/g, '-')
 		.replace(/^-|-$/g, '');
 
-/* Each marker belongs to exactly one template, which is what makes the run prove resolution. */
+const surface = (name) => `data-surface="${name}"`;
+
 const bare = [
-	{ path: '/', expect: 'Latest' },
-	{ path: `/${post.slug}/`, expect: 'mirror-content' },
-	{ path: `/tag/${slug(tag.name)}/`, expect: '>Tag<' },
-	{ path: `/author/${author.slug}/`, expect: '>Writer<' },
-	{ path: '/tags/', expect: 'Subjects' },
-	{ path: '/authors/', expect: 'Writers' },
-	{ path: '/about/', expect: 'About' },
-	{ path: '/membership/', expect: 'Membership' },
-	{ path: '/recommendations/', expect: 'Recommendations' },
-	{ path: '/sign-in/', expect: 'data-members-form="signin"' },
-	{ path: '/sign-up/', expect: 'data-members-form="signup"' },
+	{ path: '/', expect: surface('home') },
+	{ path: `/${post.slug}/`, expect: surface('post') },
+	{ path: `/tag/${slug(tag.name)}/`, expect: surface('tag') },
+	{ path: `/author/${author.slug}/`, expect: surface('author') },
+	{ path: '/tags/', expect: surface('page-tags') },
+	{ path: '/authors/', expect: surface('page-authors') },
+	{ path: '/about/', expect: surface('page-about') },
+	{ path: '/membership/', expect: surface('page-membership') },
+	{ path: '/recommendations/', expect: surface('page-recommendations') },
+	{ path: '/sign-in/', expect: surface('sign-in') },
+	{ path: '/sign-up/', expect: surface('sign-up') },
 ];
 
-const configured = [...bare, { path: '/archive/', expect: 'pagination' }];
+const configured = [...bare, { path: '/archive/', expect: surface('feed') }];
+
+const body = async (path) => {
+	const response = await fetch(`${base}${path}`);
+	return response.ok ? await response.text() : null;
+};
 
 const problems = [];
+
+/*
+ * The control is every other route in the set: a marker that shows up on a Surface it does not
+ * belong to is not a marker. This is a stronger check than one fixed control page and it costs
+ * nothing — the bodies are already fetched.
+ */
+const bodies = new Map();
 for (const route of configured) {
-	const response = await fetch(`${base}${route.path}`);
-	if (!response.ok) {
-		problems.push(`${route.path} → ${response.status}`);
+	const html = await body(route.path);
+	if (html === null) {
+		problems.push(`${route.path} did not answer 200`);
 		continue;
 	}
-	const body = await response.text();
-	if (!body.includes(route.expect)) {
+	bodies.set(route.path, html);
+}
+
+for (const route of configured) {
+	const own = bodies.get(route.path);
+	if (own === undefined) {
+		continue;
+	}
+	if (!own.includes(route.expect)) {
 		problems.push(`${route.path} does not contain ${JSON.stringify(route.expect)}`);
+	}
+	for (const [path, html] of bodies) {
+		if (path !== route.path && html.includes(route.expect)) {
+			problems.push(`${JSON.stringify(route.expect)} is not unique — it also appears on ${path}`);
+		}
 	}
 }
 
 if (problems.length) {
-	console.error('refusing to write a config with unverified assertions:');
-	for (const problem of problems) {
+	console.error('refusing to write a config with unverified or inert assertions:');
+	for (const problem of [...new Set(problems)]) {
 		console.error(`  ${problem}`);
 	}
 	process.exit(1);
 }
 
-writeFileSync('scripts/ghost/routes-bare.json', JSON.stringify(bare, null, 2) + '\n');
-writeFileSync('scripts/ghost/routes.json', JSON.stringify(configured, null, 2) + '\n');
+writeFileSync('scripts/ghost/routes-bare.json', JSON.stringify(bare, null, '\t') + '\n');
+writeFileSync('scripts/ghost/routes.json', JSON.stringify(configured, null, '\t') + '\n');
 
 console.log(
-	`routes: ${bare.length} bare, ${configured.length} configured — every assertion verified against a live response`,
+	`routes: ${bare.length} bare, ${configured.length} configured — every assertion present on its own ` +
+		`Surface and absent from all ${configured.length - 1} others`,
 );

@@ -4,25 +4,25 @@
 form silently no-ops while looking complete. The four visual states are driven by the
 .loading / .success / .error classes Ghost puts on the form, plus [data-members-error]. --}}
 <form
-    data-members-form="signin"
-    class="border-border bg-surface mx-auto max-w-[420px] rounded-md border p-8 shadow-sm">
+	data-members-form="signin"
+	class="border-border bg-surface mx-auto max-w-[420px] rounded-md border p-8 shadow-sm">
 
-    <h1 class="font-display text-h2 text-text tracking-tight">{{t "Sign in"}}</h1>
-    <p class="font-body text-muted mt-2 text-[15px]">{{t "We will email you a link — no password to remember."}}</p>
+	<h1 class="font-display text-h2 text-text tracking-tight">{{t "Sign in"}}</h1>
+	<p class="font-body text-muted mt-2 text-[15px]">{{t "We will email you a link — no password to remember."}}</p>
 
-    <label for="signin-email" class="font-meta text-muted mt-6 block text-[12px] uppercase">{{t "Email address"}}</label>
-    <input
-        id="signin-email"
-        type="email"
-        name="email"
-        required
-        autocomplete="email"
-        data-members-email
-        class="border-border bg-bg text-text font-body mt-2 w-full rounded-sm border px-3 py-2">
+	<label for="signin-email" class="font-meta text-muted mt-6 block text-[12px] uppercase">{{t "Email address"}}</label>
+	<input
+		id="signin-email"
+		type="email"
+		name="email"
+		required
+		autocomplete="email"
+		data-members-email
+		class="border-border bg-bg text-text font-body mt-2 w-full rounded-sm border px-3 py-2">
 
-    <button type="submit" class="btn btn-primary font-ui mt-5 w-full cursor-pointer rounded-sm py-2.5 text-[14px]">
-        {{t "Email me a link"}}
-    </button>
+	<button type="submit" class="btn btn-primary font-ui mt-5 w-full cursor-pointer rounded-sm py-2.5 text-[14px]">
+		{{t "Email me a link"}}
+	</button>
 
-    <p data-members-error class="font-meta text-danger mt-3 text-[12px]"></p>
+	<p data-members-error class="font-meta text-danger mt-3 text-[12px]"></p>
 </form>

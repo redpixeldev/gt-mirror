@@ -2,26 +2,26 @@
 
 {{!-- The paginated post feed. Both designed layouts and the editorial slicing land in
 the Feed ticket; this renders the publication's real posts, in the theme's own type. --}}
-<div class="container py-16">
+<div class="container py-16" data-surface="feed">
 
-    <h1 class="font-display text-h1 text-text mb-10 tracking-tight">{{@site.title}}</h1>
+	<h1 class="font-display text-h1 text-text mb-10 tracking-tight">{{@site.title}}</h1>
 
-    {{#foreach posts}}
-        <article class="{{post_class}} border-border border-b py-8 last:border-0">
-            <h2 class="font-display text-h3 mb-2 tracking-tight">
-                <a
-                    href="{{url}}"
-                    class="text-text no-underline">{{title}}</a>
-            </h2>
+	{{#foreach posts}}
+		<article class="{{post_class}} border-border border-b py-8 last:border-0">
+			<h2 class="font-display text-h3 mb-2 tracking-tight">
+				<a
+					href="{{url}}"
+					class="text-text no-underline">{{title}}</a>
+			</h2>
 
-            <p class="font-body text-muted measure mb-3">{{excerpt words="28"}}</p>
+			<p class="font-body text-muted measure mb-3">{{excerpt words="28"}}</p>
 
-            {{> "post-meta" byline=true}}
-        </article>
-    {{else}}
-        <p class="font-body text-muted">{{t "No posts yet."}}</p>
-    {{/foreach}}
+			{{> "post-meta" byline=true}}
+		</article>
+	{{else}}
+		<p class="font-body text-muted">{{t "No posts yet."}}</p>
+	{{/foreach}}
 
-    {{pagination}}
+	{{pagination}}
 
 </div>

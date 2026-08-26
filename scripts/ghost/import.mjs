@@ -69,6 +69,24 @@ async function find(path) {
 	}
 }
 
+/**
+ * Page through a browse endpoint and return every row.
+ *
+ * `limit=all` is a trap on Ghost 6: applyLimitCap silently caps every browse at 100
+ * (core/shared/max-limit-cap.js), so asking for "all" of a 104-post publication returns 100 and
+ * reports success.
+ */
+async function browse(resource, query = '') {
+	const rows = [];
+	for (let page = 1; ; page += 1) {
+		const payload = await api('GET', `/${resource}/?limit=100&page=${page}${query}`);
+		rows.push(...payload[resource]);
+		if (page >= (payload.meta?.pagination?.pages ?? 1)) {
+			return { [resource]: rows };
+		}
+	}
+}
+
 /*
  * Ghost sniffs the multipart part's content type and answers 415 "Please select a valid image" for
  * an untyped one — and openAsBlob produces exactly that unless the type is passed in.
@@ -197,13 +215,21 @@ for (const path of [...localImages].sort()) {
 writeFileSync(IMAGE_MAP, JSON.stringify(imageMap, null, '\t') + '\n');
 
 const remote = (path) => (path ? (imageMap[path] ?? path) : null);
+
+/*
+ * Body HTML needs the same rewrite as the image fields. The styleguide page embeds a figure
+ * pointing at /img/…, which Ghost serves nothing from — it rendered as a broken image until this
+ * existed, because only feature_image and profile_image were being mapped.
+ */
+const remoteHtml = (html) =>
+	html ? html.replace(/\/img\/[A-Za-z0-9._-]+/g, (match) => imageMap[match] ?? match) : html;
 const bytes = [...localImages].reduce(
 	(total, p) => total + (existsSync(`public${p}`) ? statSync(`public${p}`).size : 0),
 	0,
 );
 log(`images  ${uploaded} uploaded, ${reused} already present (${(bytes / 1048576).toFixed(2)} MB referenced)`);
 
-/* ── 2. writers ───────────────────────────────────────────────────────────────────────── */
+/* ── 2. authors ───────────────────────────────────────────────────────────────────────── */
 
 /*
  * Created through Ghost's own importer, because the Admin API has no way to create a staff user.
@@ -245,7 +271,7 @@ if (missing.length) {
 const afterUsers = await api('GET', '/users/?limit=all');
 const userByEmail = new Map(afterUsers.users.map((u) => [u.email, u]));
 
-let writersUpdated = 0;
+let authorsUpdated = 0;
 for (const author of fixture.authors) {
 	const user = userByEmail.get(author.email);
 	if (!user) {
@@ -266,11 +292,11 @@ for (const author of fixture.authors) {
 			},
 		],
 	});
-	writersUpdated += 1;
+	authorsUpdated += 1;
 }
-log(`writers ${missing.length} created, ${writersUpdated} profiles applied`);
+log(`authors ${missing.length} created, ${authorsUpdated} profiles applied`);
 
-/* ── 3. subjects ──────────────────────────────────────────────────────────────────────── */
+/* ── 3. tags ──────────────────────────────────────────────────────────────────────── */
 
 let tagsCreated = 0;
 let tagsUpdated = 0;
@@ -291,7 +317,7 @@ for (const tag of fixture.tags) {
 		tagsCreated += 1;
 	}
 }
-log(`subjects ${tagsCreated} created, ${tagsUpdated} updated`);
+log(`tags    ${tagsCreated} created, ${tagsUpdated} updated`);
 
 /* ── 4. posts ─────────────────────────────────────────────────────────────────────────── */
 
@@ -311,7 +337,7 @@ for (const post of fixture.posts) {
 	const payload = {
 		title: post.title,
 		slug: post.slug,
-		html: post.html,
+		html: remoteHtml(post.html),
 		custom_excerpt: post.custom_excerpt,
 		feature_image: remote(post.feature_image),
 		feature_image_alt: post.feature_image_alt,
@@ -344,7 +370,7 @@ for (const page of fixture.pages) {
 	const payload = {
 		title: page.title,
 		slug: page.slug,
-		html: page.body,
+		html: remoteHtml(page.body),
 		custom_template: page.template,
 		status: 'published',
 	};
@@ -474,11 +500,13 @@ if (process.argv.includes('--prune')) {
 	const keepPages = new Set(fixture.pages.map((p) => p.slug));
 	const keepTags = new Set(fixture.tags.map((t) => t.slug));
 
-	const [allPosts, allPages, allTags] = await Promise.all([
-		api('GET', '/posts/?limit=all&formats=html'),
-		api('GET', '/pages/?limit=all'),
-		api('GET', '/tags/?limit=all'),
-	]);
+	/*
+	 * Paged, not `limit=all`. Ghost 6 caps every browse at 100 (applyLimitCap in
+	 * core/shared/max-limit-cap.js) and reports success, so `limit=all` against a 104-post
+	 * publication returns 100 — and a prune that only sees 100 leaves foreign posts behind while
+	 * reporting that it pruned everything.
+	 */
+	const [allPosts, allPages, allTags] = await Promise.all([browse('posts'), browse('pages'), browse('tags')]);
 
 	let pruned = 0;
 	for (const post of allPosts.posts.filter((p) => !keepPosts.has(p.slug))) {

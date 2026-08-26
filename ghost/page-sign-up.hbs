@@ -4,23 +4,23 @@
 happy one: members off, invite-only (no public signup — the only honest control is sign in),
 and open signup. @site.signup_url rather than a hardcoded #/portal, because Ghost resolves
 it to a Feedly RSS URL when members_signup_access is 'none'. --}}
-<div class="bg-page-field min-h-[70vh] py-20">
-    {{#if @site.members_enabled}}
-        {{#if @member}}
-            <div class="border-border bg-surface mx-auto max-w-[420px] rounded-md border p-8 text-center shadow-sm">
-                <h1 class="font-display text-h2 text-text tracking-tight">{{t "You are already a member"}}</h1>
-                <a href="#/portal/account" data-portal="account" class="font-ui mt-6 inline-block text-[14px]">{{t "Manage your account"}} &rarr;</a>
-            </div>
-        {{else if @site.members_invite_only}}
-            <div class="border-border bg-surface mx-auto max-w-[420px] rounded-md border p-8 text-center shadow-sm">
-                <h1 class="font-display text-h2 text-text tracking-tight">{{t "Members only by invitation"}}</h1>
-                <p class="font-body text-muted mt-2 text-[15px]">{{t "New memberships are closed. Existing members can still sign in."}}</p>
-                <a href="{{@site.url}}sign-in/" class="font-ui mt-6 inline-block text-[14px]">{{t "Sign in"}} &rarr;</a>
-            </div>
-        {{else}}
-            {{> "auth/sign-up-form"}}
-        {{/if}}
-    {{else}}
-        <p class="font-body text-muted text-center">{{t "This publication does not have memberships."}}</p>
-    {{/if}}
+<div class="bg-page-field min-h-[70vh] py-20" data-surface="sign-up">
+	{{#if @site.members_enabled}}
+		{{#if @member}}
+			<div class="border-border bg-surface mx-auto max-w-[420px] rounded-md border p-8 text-center shadow-sm">
+				<h1 class="font-display text-h2 text-text tracking-tight">{{t "You are already a member"}}</h1>
+				<a href="#/portal/account" data-portal="account" class="font-ui mt-6 inline-block text-[14px]">{{t "Manage your account"}} &rarr;</a>
+			</div>
+		{{else if @site.members_invite_only}}
+			<div class="border-border bg-surface mx-auto max-w-[420px] rounded-md border p-8 text-center shadow-sm">
+				<h1 class="font-display text-h2 text-text tracking-tight">{{t "Members only by invitation"}}</h1>
+				<p class="font-body text-muted mt-2 text-[15px]">{{t "New memberships are closed. Existing members can still sign in."}}</p>
+				<a href="{{@site.url}}sign-in/" class="font-ui mt-6 inline-block text-[14px]">{{t "Sign in"}} &rarr;</a>
+			</div>
+		{{else}}
+			{{> "auth/sign-up-form"}}
+		{{/if}}
+	{{else}}
+		<p class="font-body text-muted text-center">{{t "This publication does not have memberships."}}</p>
+	{{/if}}
 </div>

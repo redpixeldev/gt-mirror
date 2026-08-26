@@ -7,25 +7,25 @@ rather than excluding is deliberate: get.js only optimises a filter carrying exa
 `id:-` term, so a chain of exclusions turns the most-requested URL on the site into an
 uncacheable per-visitor query. Positions cannot collide, so no exclusion is needed. --}}
 {{#foreach feed limit="1"}}
-    <article class="{{post_class}} border-border mb-12 border-b pb-12">
-        {{#primary_tag}}<a href="{{url}}" class="font-meta text-accent text-[12px] uppercase">{{name}}</a>{{/primary_tag}}
-        <h2 class="font-display text-display mt-3 leading-none tracking-tight">
-            <a href="{{url}}" class="text-text no-underline">{{title}}</a>
-        </h2>
-        <p class="font-body text-muted text-lead measure mt-4">{{excerpt words="40"}}</p>
-        {{> "post-meta" byline=true}}
-    </article>
+	<article class="{{post_class}} border-border mb-12 border-b pb-12">
+		{{#primary_tag}}<a href="{{url}}" class="font-meta text-accent text-[12px] uppercase">{{name}}</a>{{/primary_tag}}
+		<h2 class="font-display text-display mt-3 leading-none tracking-tight">
+			<a href="{{url}}" class="text-text no-underline">{{title}}</a>
+		</h2>
+		<p class="font-body text-muted text-lead measure mt-4">{{excerpt words="40"}}</p>
+		{{> "post-meta" byline=true}}
+	</article>
 {{/foreach}}
 
 <h2 class="font-meta text-muted mb-6 text-[12px] uppercase">{{t "Latest"}}</h2>
 
 <div class="grid gap-8 md:grid-cols-3">
-    {{#foreach feed from="2" to="7" columns="3"}}
-        <article class="{{post_class}}">
-            <h3 class="font-display text-h4 tracking-tight">
-                <a href="{{url}}" class="text-text no-underline">{{title}}</a>
-            </h3>
-            {{> "post-meta"}}
-        </article>
-    {{/foreach}}
+	{{#foreach feed from="2" to="7" columns="3"}}
+		<article class="{{post_class}}">
+			<h3 class="font-display text-h4 tracking-tight">
+				<a href="{{url}}" class="text-text no-underline">{{title}}</a>
+			</h3>
+			{{> "post-meta"}}
+		</article>
+	{{/foreach}}
 </div>

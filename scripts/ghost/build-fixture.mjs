@@ -1,5 +1,5 @@
 /*
- * Build the demo publication fixture: 5 writers, 14 subjects, 104 posts, 7 standing pages.
+ * Build the demo publication fixture: 5 Authors, 14 Tags, 104 Posts, 8 standing Pages.
  *
  * The fixture is the artifact and the Admin API only applies it (scripts/ghost/import.mjs). That
  * ordering is deliberate: the gates and the buyer-facing demo content both depend on this data, so
@@ -9,8 +9,8 @@
  * Two things this script has to SOLVE rather than approximate, because a near miss surfaces at
  * gate time as "the directory says 33, not 34" with no traceable cause:
  *
- *   1. The counts are a joint assignment. 104 posts must satisfy five author marginals
- *      (34/27/19/14/10, summing to exactly 104) and fourteen tag marginals (summing 173) at the
+ *   1. The counts are a joint assignment. 104 posts must satisfy five Author marginals
+ *      (34/27/19/14/10, summing to exactly 104) and fourteen Tag marginals (summing 173) at the
  *      same time, with the designed posts' own author and tag already fixed. Every marginal is
  *      asserted exactly before anything is written.
  *
@@ -507,34 +507,60 @@ if (failures.length) {
 
 /* ── standing pages, site settings, tiers, recommendations ────────────────────────────── */
 
+/*
+ * `template` is deliberately null on every one of these.
+ *
+ * Ghost resolves a page in this order: page-{slug}.hbs, then a custom template the editor picked,
+ * then page.hbs. These slugs exist precisely so the first step resolves, so the demo needs no
+ * custom template — and `custom_template` is the wrong field to state it in anyway: it holds a
+ * selected custom template's name (`custom-about`), never a filename. An earlier version wrote
+ * `page-about.hbs` into it, which Ghost cannot match; the pages rendered correctly only because
+ * slug resolution had already done the work.
+ *
+ * The custom-* aliases are the other half of the same decision and are selected in admin, not
+ * seeded here.
+ */
 const pages = [
-	{ slug: 'about', title: 'About', template: 'page-about.hbs', body: `<p>${data.navigation.SITE_TAGLINE}</p>` },
+	{ slug: 'about', title: 'About', template: null, body: `<p>${data.navigation.SITE_TAGLINE}</p>` },
 	{
 		slug: 'membership',
 		title: 'Membership',
-		template: 'page-membership.hbs',
+		template: null,
 		body: '<p>Free members get the archive. Paid members get the interviews.</p>',
 	},
-	{
-		slug: 'tags',
-		title: 'Subjects',
-		template: 'page-tags.hbs',
-		body: '<p>Everything we publish, filed by subject.</p>',
-	},
-	{
-		slug: 'authors',
-		title: 'Writers',
-		template: 'page-authors.hbs',
-		body: '<p>The people behind the publication.</p>',
-	},
+	{ slug: 'tags', title: 'Subjects', template: null, body: '<p>Everything we publish, filed by subject.</p>' },
+	{ slug: 'authors', title: 'Writers', template: null, body: '<p>The people behind the publication.</p>' },
 	{
 		slug: 'recommendations',
 		title: 'Recommendations',
-		template: 'page-recommendations.hbs',
+		template: null,
 		body: '<p>Publications we read every week.</p>',
 	},
-	{ slug: 'sign-in', title: 'Sign in', template: 'page-sign-in.hbs', body: '' },
-	{ slug: 'sign-up', title: 'Subscribe', template: 'page-sign-up.hbs', body: '' },
+	{ slug: 'sign-in', title: 'Sign in', template: null, body: '' },
+	{ slug: 'sign-up', title: 'Subscribe', template: null, body: '' },
+	/*
+	 * The kitchen sink. Not a template — a page whose body exercises the Koenig card types the
+	 * scoped .kg-* layer has to style, which is what the post ticket's gate reads: "the styleguide
+	 * page renders every card styled with no unstyled .kg-* block". Ghost converts this HTML to
+	 * Lexical on import, so the cards are real editor nodes rather than hand-written markup.
+	 */
+	{
+		slug: 'styleguide',
+		title: 'Styleguide',
+		template: null,
+		body: [
+			'<h2>Headings and body</h2>',
+			'<p>Body copy at the measure, so the type scale can be read against the design source.</p>',
+			'<h3>A third-level heading</h3>',
+			'<blockquote>A pull quote, which the design sets larger than the body and without quote marks.</blockquote>',
+			'<ul><li>An unordered list item</li><li>And a second, to show the marker</li></ul>',
+			'<ol><li>An ordered list item</li><li>And its sibling</li></ol>',
+			'<hr>',
+			'<pre><code>const words = 275 * (minutes - 0.2);</code></pre>',
+			'<figure><img src="/img/pexels-38048095.jpg" alt="Vintage roll-top writing desk with papers and office supplies"><figcaption>A figure with a caption.</figcaption></figure>',
+			'<p>A paragraph with <strong>bold</strong>, <em>italic</em>, <code>inline code</code> and a <a href="https://ghost.org">link</a>.</p>',
+		].join('\n'),
+	},
 ];
 
 const fixture = {

@@ -1,46 +1,46 @@
 [
 	{
 		"path": "/",
-		"expect": "Latest"
+		"expect": "data-surface=\"home\""
 	},
 	{
 		"path": "/the-quiet-economics-of-a-one-person-publication/",
-		"expect": "mirror-content"
+		"expect": "data-surface=\"post\""
 	},
 	{
 		"path": "/tag/essays/",
-		"expect": ">Tag<"
+		"expect": "data-surface=\"tag\""
 	},
 	{
 		"path": "/author/erin-laurier/",
-		"expect": ">Writer<"
+		"expect": "data-surface=\"author\""
 	},
 	{
 		"path": "/tags/",
-		"expect": "Subjects"
+		"expect": "data-surface=\"page-tags\""
 	},
 	{
 		"path": "/authors/",
-		"expect": "Writers"
+		"expect": "data-surface=\"page-authors\""
 	},
 	{
 		"path": "/about/",
-		"expect": "About"
+		"expect": "data-surface=\"page-about\""
 	},
 	{
 		"path": "/membership/",
-		"expect": "Membership"
+		"expect": "data-surface=\"page-membership\""
 	},
 	{
 		"path": "/recommendations/",
-		"expect": "Recommendations"
+		"expect": "data-surface=\"page-recommendations\""
 	},
 	{
 		"path": "/sign-in/",
-		"expect": "data-members-form=\"signin\""
+		"expect": "data-surface=\"sign-in\""
 	},
 	{
 		"path": "/sign-up/",
-		"expect": "data-members-form=\"signup\""
+		"expect": "data-surface=\"sign-up\""
 	}
 ]

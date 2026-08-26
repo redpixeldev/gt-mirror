@@ -5,21 +5,21 @@ nothing when the feature is off (core/frontend/helpers/recommendations.js), so w
 {{#if}} the heading above it would render over an empty section. Do not "simplify" it away.
 {{#if}}, not {{#match}} — {{#match}} is a comparison helper. --}}
 {{#post}}
-    <div class="container py-16">
-        {{#if @page.show_title_and_feature_image}}
-            <header class="mb-12">
-                <h1 class="font-display text-h1 text-text tracking-tight">{{title}}</h1>
-            </header>
-        {{/if}}
+	<div class="container py-16" data-surface="page-recommendations">
+		{{#if @page.show_title_and_feature_image}}
+			<header class="mb-12">
+				<h1 class="font-display text-h1 text-text tracking-tight">{{title}}</h1>
+			</header>
+		{{/if}}
 
-        {{#if content}}
-            <div class="mirror-content measure prose mb-12">{{content}}</div>
-        {{/if}}
+		{{#if content}}
+			<div class="mirror-content measure prose mb-12">{{content}}</div>
+		{{/if}}
 
-        {{#if @site.recommendations_enabled}}
-            {{recommendations}}
-        {{else}}
-            <p class="font-body text-muted">{{t "Recommendations are turned off for this publication."}}</p>
-        {{/if}}
-    </div>
+		{{#if @site.recommendations_enabled}}
+			{{recommendations}}
+		{{else}}
+			<p class="font-body text-muted">{{t "Recommendations are turned off for this publication."}}</p>
+		{{/if}}
+	</div>
 {{/post}}

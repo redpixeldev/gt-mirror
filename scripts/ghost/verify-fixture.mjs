@@ -109,10 +109,10 @@ if (renderedTags.size !== fixture.tags.length) {
 }
 
 note(
-	`subjects   ${renderedTags.size}/${fixture.tags.length} exact: ${!failures.some((f) => f.startsWith('tag directory'))}`,
+	`tags       ${renderedTags.size}/${fixture.tags.length} exact: ${!failures.some((f) => f.startsWith('tag directory'))}`,
 );
 note(
-	`writers    ${renderedAuthors.size}/${fixture.authors.length} exact: ${!failures.some((f) => f.startsWith('author directory'))}`,
+	`authors    ${renderedAuthors.size}/${fixture.authors.length} exact: ${!failures.some((f) => f.startsWith('author directory'))}`,
 );
 
 /* ── 3. every designed reading-time label, byte for byte ─────────────────────────────── */

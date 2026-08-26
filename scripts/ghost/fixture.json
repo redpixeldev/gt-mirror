@@ -2271,44 +2271,50 @@
 		{
 			"slug": "about",
 			"title": "About",
-			"template": "page-about.hbs",
+			"template": null,
 			"body": "<p>Independent writing on media, craft, and the cost of attention.</p>"
 		},
 		{
 			"slug": "membership",
 			"title": "Membership",
-			"template": "page-membership.hbs",
+			"template": null,
 			"body": "<p>Free members get the archive. Paid members get the interviews.</p>"
 		},
 		{
 			"slug": "tags",
 			"title": "Subjects",
-			"template": "page-tags.hbs",
+			"template": null,
 			"body": "<p>Everything we publish, filed by subject.</p>"
 		},
 		{
 			"slug": "authors",
 			"title": "Writers",
-			"template": "page-authors.hbs",
+			"template": null,
 			"body": "<p>The people behind the publication.</p>"
 		},
 		{
 			"slug": "recommendations",
 			"title": "Recommendations",
-			"template": "page-recommendations.hbs",
+			"template": null,
 			"body": "<p>Publications we read every week.</p>"
 		},
 		{
 			"slug": "sign-in",
 			"title": "Sign in",
-			"template": "page-sign-in.hbs",
+			"template": null,
 			"body": ""
 		},
 		{
 			"slug": "sign-up",
 			"title": "Subscribe",
-			"template": "page-sign-up.hbs",
+			"template": null,
 			"body": ""
+		},
+		{
+			"slug": "styleguide",
+			"title": "Styleguide",
+			"template": null,
+			"body": "<h2>Headings and body</h2>\n<p>Body copy at the measure, so the type scale can be read against the design source.</p>\n<h3>A third-level heading</h3>\n<blockquote>A pull quote, which the design sets larger than the body and without quote marks.</blockquote>\n<ul><li>An unordered list item</li><li>And a second, to show the marker</li></ul>\n<ol><li>An ordered list item</li><li>And its sibling</li></ol>\n<hr>\n<pre><code>const words = 275 * (minutes - 0.2);</code></pre>\n<figure><img src=\"/img/pexels-38048095.jpg\" alt=\"Vintage roll-top writing desk with papers and office supplies\"><figcaption>A figure with a caption.</figcaption></figure>\n<p>A paragraph with <strong>bold</strong>, <em>italic</em>, <code>inline code</code> and a <a href=\"https://ghost.org\">link</a>.</p>"
 		}
 	],
 	"concessions": [
