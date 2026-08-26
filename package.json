@@ -10,7 +10,19 @@
 		"start": "astro dev",
 		"build": "astro build",
 		"preview": "astro preview",
-		"astro": "astro"
+		"astro": "astro",
+		"ghost:css": "cd ghost && tailwindcss -i assets/css/screen.css -o assets/built/screen.css --minify && cd .. && node scripts/ghost/rewrite-font-urls.mjs",
+		"ghost:js": "esbuild ghost/assets/js/main.js --bundle --minify --outfile=ghost/assets/built/main.js",
+		"ghost:build": "pnpm ghost:css && pnpm ghost:js",
+		"ghost:dev": "concurrently --names css,js \"node scripts/ghost/watch-css.mjs\" \"esbuild ghost/assets/js/main.js --bundle --outfile=ghost/assets/built/main.js --watch\"",
+		"ghost:scan": "gscan --fatal --verbose ghost/",
+		"ghost:stage": "rm -rf dist/mirror && mkdir -p dist/mirror && rsync -a --exclude '.DS_Store' --exclude 'assets/css/' --exclude 'assets/js/' ghost/ dist/mirror/",
+		"ghost:zip": "pnpm ghost:build && pnpm ghost:scan && pnpm ghost:stage && (cd dist && zip -rq mirror.zip mirror) && gscan --fatal -z dist/mirror.zip",
+		"verify:smoke": "python3 scripts/verify/smoke.py --base http://localhost:4380 --routes scripts/verify/routes.json",
+		"verify:prep": "python3 scripts/verify/prep_originals.py --config scripts/verify/prep.json --clean",
+		"verify:shots": "python3 scripts/verify/shoot.py --jobs scripts/verify/baseline-jobs.json --out-dir .shots",
+		"ghost:smoke": "python3 scripts/verify/smoke.py --base http://localhost:2368 --routes scripts/ghost/routes.json",
+		"ghost:shots": "python3 scripts/verify/shoot.py --jobs scripts/ghost/jobs.json --out-dir .shots/ghost"
 	},
 	"dependencies": {
 		"@tailwindcss/forms": "^0.5.11",
@@ -20,8 +32,12 @@
 		"tailwindcss": "^4.3.1"
 	},
 	"devDependencies": {
+		"@tailwindcss/cli": "^4.3.3",
 		"@tailwindcss/vite": "^4.3.1",
 		"@typescript-eslint/parser": "^8.62.0",
+		"alpinejs": "^3.16.3",
+		"concurrently": "^10.0.5",
+		"esbuild": "^0.28.2",
 		"eslint": "^10.5.0",
 		"eslint-plugin-astro": "^2.1.1",
 		"eslint-plugin-jsx-a11y": "^6.10.2",

@@ -554,3 +554,90 @@ captures in one run are pixel-identical, but across runs there is sub-0.05 drift
 
 The audit is now 324 checks over five working rules, at 0 failures. That number means
 something it did not mean before.
+
+## The Ghost port: toolchain, ports, and what Phase 0 measured (2026-08)
+
+The theme lives in `ghost/` beside the Astro build. The Astro build does not move — it is the
+evidence the port is scored against, so `src/` is read-only to the port. `ghost/` is symlinked
+into the local install at `~/ghost-mirror/content/themes/mirror`.
+
+**Two Node versions, on purpose.** Astro and the verify harness run on Node 24 (`.nvmrc`).
+Ghost 6 declares `engines.node ^22.23.1` and `engines.cli ^1.29.1`, so the local Ghost runs on
+**Node 22.23.2** with **Ghost-CLI 1.32.2**; the Homebrew CLI on this machine was 1.28.6, below
+Ghost 6's floor, and neither installed Node 22 (22.14.0, 22.17.0) satisfied `^22.23.1`. Never run
+`ghost` under Node 24. Measured against **Ghost 6.60.0** and **gscan 6.4.2** — the plan was
+written against 6.61.0, and the installed release is what the numbers below describe.
+
+**Ports, reconciled.** This file previously recorded "4393 dev, 4394 staged originals", which was
+never true of this repo. The real values:
+
+| what                        | port | source of truth              |
+| :-------------------------- | ---: | :--------------------------- |
+| Astro dev server            | 4380 | `server.port`, `astro.config.mjs` |
+| staged design originals     | 4381 | `scripts/verify/README.md` example, free on this machine |
+| local Ghost                 | 2368 | Ghost default, `~/ghost-mirror` |
+
+**`{{reading_time}}` constants**, read out of the installed `@tryghost/helpers@1.1.106`
+(`lib/utils/reading-minutes.js`), not from memory: **275 words per minute**, and image time added
+as **12 s for the first image, 11 s for the second, decreasing by one, floored at 3 s**, then
+`Math.round(seconds / 60)`. A `feature_image` counts as one image, so it costs a designed post
+12 s before a single word is counted. `reading_time` short-circuits the calculation when the API
+supplies it, but it is a serializer-computed field and not writable, so a fixture's only lever on
+the rendered label is word count — which is why the generator has to solve word counts backwards
+from the design's labels rather than approximate them.
+
+### Both open questions settled empirically — do not re-litigate
+
+**`signin` and `signup` are not reserved slugs.** The pitfall was folklore. Ghost's only protected
+slugs are `ghost`, `rss` and `amp` (`core/shared/config/overrides.json`). Pages created with slugs
+`signin`, `signup` and `sign-in` all kept the requested slug and served 200. The theme keeps
+`sign-in` / `sign-up` because they read better, not because it must.
+
+**The custom-settings cap is exactly 20.** gscan 6.4.2 passes a theme with 20 entries under
+`config.custom` and fails 21 with `property "config.custom" contains too many settings`. Measured,
+not inferred.
+
+### gscan enforces that a declared setting is a used setting
+
+A setting declared in `config.custom` but never read from a template is a gscan **error**, named
+per setting. So the plan's instruction to write the whole ten-setting config block in Phase 1 is
+wrong on contact: a setting ships with the template that consumes it, never before. The skeleton
+declares exactly one, `default_appearance`, because `default.hbs` reads it.
+
+The same scan produced the opposite lesson about cards: `card_assets.exclude` is what makes gscan
+*demand* the theme style that card. Declaring the plan's exclude list against a theme with no
+`.kg-*` layer turned 2 errors into 13 and 3 warnings into 30, and would have shipped four card
+types unstyled. `card_assets` is `true` until the layer exists.
+
+### Divergences the platform forced on the skeleton
+
+**The two font preloads are not ported.** `{{asset}}` unconditionally appends `?v=<content hash>`
+(`core/frontend/meta/asset-url.js`), so a preload `href` can never match the bare `url()` a static
+stylesheet requests, and the browser fetches every preloaded face twice. Ghost's own Source theme
+buys the match by re-declaring its `@font-face` rules inside a template partial — for MIRROR that
+would fork 24 declarations away from `src/styles/fonts.css` and give the fonts two sources of
+truth. Measured on the running install: three faces on the critical path, each fetched exactly
+once, no request to Google. The stylesheet and script preloads are kept.
+
+**`.kg-width-full` reuses the wide bleed.** `ImageCard.astro` honours `wide` (`--wide-out`, 88 px
+each side, above 64rem) and renders `full` as a regular image, so the design source defines no
+viewport-edge treatment to port. Ghost ships no CSS for either class whatever `card_assets` says,
+and gscan errors on their absence, so both map to `bleed-wide`. A concession, and the first entry
+in the `.kg-*` layer.
+
+**Ghost's font settings are honoured through a fallback.** `--gh-font-heading` / `--gh-font-body`
+are read in `ghost/assets/css/screen.css` as `var(--gh-font-heading, var(--font-newsreader))` and
+friends — the idiom Source uses. With no font chosen the variables are undefined and every role
+resolves to the family the design was built against, so the pixel reference does not move; a buyer
+who picks a font gets the control gscan says they should have.
+
+### The identity axis cannot be scored on this machine
+
+`scripts/verify/prep.json` points `source` at `/Users/danielaguillen/Downloads/Mirror Ghost Theme`
+— another machine's home directory. The design source HTML is not on this machine, there is no
+`.originals/` and no `.shots/`, and `python3` here has neither `pillow` nor `numpy`. So the
+recorded floors in `baseline-scores.json` / `after-scores.json` were produced elsewhere and cannot
+currently be reproduced or extended: **parity** (Ghost vs Astro) is runnable once the harness gets
+a Ghost origin, but **identity** (Ghost vs the design originals) is blocked until the design
+sources are back on disk and `prep.json`'s `source` is repointed. Every later ticket that promises
+"within a documented gap of its recorded Floor" depends on unblocking this first.

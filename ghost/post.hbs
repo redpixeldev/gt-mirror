@@ -1,0 +1,37 @@
+{{!< default}}
+
+{{!-- Both designed post layouts, the rail, the TOC and the members gate land in the Post
+and Gate tickets. `.mirror-content` is already the scoping hook the Koenig card layer needs:
+Ghost emits cards.min.css out of {{ghost_head}}, below this theme's stylesheet, so every
+.kg-* rule has to be written under this container to win on specificity. --}}
+{{#post}}
+    <article class="{{post_class}} container py-16">
+
+        <header class="measure mx-auto mb-10">
+            {{#primary_tag}}
+                <a
+                    href="{{url}}"
+                    class="font-meta text-accent text-[12px] uppercase">{{name}}</a>
+            {{/primary_tag}}
+
+            <h1 class="font-display text-h1 text-text mt-3 tracking-tight">{{title}}</h1>
+
+            {{#if custom_excerpt}}
+                <p class="font-body text-muted text-lead mt-4">{{custom_excerpt}}</p>
+            {{/if}}
+
+            <p class="font-meta text-muted mt-5 text-[12px] uppercase">
+                {{#primary_author}}<a
+                        href="{{url}}"
+                        class="text-muted">{{name}}</a>{{/primary_author}}
+                <span aria-hidden="true"> · </span>{{date format="D MMM YYYY"}}
+                <span aria-hidden="true"> · </span>{{reading_time seconds=(t "< 1 min read") minute=(t "1 min read") minutes=(t "% min read")}}
+            </p>
+        </header>
+
+        <div class="mirror-content measure prose mx-auto">
+            {{content}}
+        </div>
+
+    </article>
+{{/post}}

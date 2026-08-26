@@ -2,6 +2,9 @@
 dist/
 .wrangler/
 
+# generated theme assets — the zip is a release artifact, not a commit
+ghost/assets/built/
+
 # generated types
 .astro/
 

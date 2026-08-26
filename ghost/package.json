@@ -1,0 +1,63 @@
+{
+	"name": "mirror",
+	"description": "MIRROR — an editorial theme for considered publications, in two layouts and two modes",
+	"demo": "https://mirror.ghost.io",
+	"version": "0.1.0",
+	"engines": {
+		"ghost": ">=6.0.0",
+		"node": ">=22.12.0"
+	},
+	"license": "MIT",
+	"author": {
+		"name": "MIRROR",
+		"email": "hello@example.com"
+	},
+	"gpm": {
+		"type": "theme",
+		"categories": [
+			"Blog",
+			"Magazine",
+			"Newsletter"
+		]
+	},
+	"keywords": [
+		"ghost",
+		"theme",
+		"ghost-theme"
+	],
+	"config": {
+		"posts_per_page": 18,
+		"card_assets": true,
+		"image_sizes": {
+			"xs": {
+				"width": 160
+			},
+			"s": {
+				"width": 320
+			},
+			"m": {
+				"width": 600
+			},
+			"l": {
+				"width": 960
+			},
+			"xl": {
+				"width": 1200
+			},
+			"xxl": {
+				"width": 2000
+			}
+		},
+		"custom": {
+			"default_appearance": {
+				"type": "select",
+				"options": [
+					"Light",
+					"Dark",
+					"System"
+				],
+				"default": "Light"
+			}
+		}
+	}
+}

@@ -1,0 +1,64 @@
+/*
+ * MIRROR — Ghost theme stylesheet entry.
+ *
+ * This file adds nothing to the design. It imports the Astro build's stylesheet
+ * wholesale so the tokens, the two @theme blocks, the @font-face rules and every
+ * @utility have exactly one source of truth: src/styles/main.css. Anything that
+ * belongs to the design belongs there, not here.
+ *
+ * Three things this entry does own:
+ *
+ * 1. Source detection. `pnpm ghost:css` runs the Tailwind CLI with its working
+ *    directory set to ghost/, because v4 bases automatic detection on the CWD —
+ *    run from the repo root it would also scan src/ and compile the Astro build's
+ *    utilities into the theme's payload. The @source below is the explicit half of
+ *    the same statement, and it is what picks up a brand-new .hbs file.
+ *
+ * 2. The scoped .kg-* Koenig card layer. Every rule here must be written under
+ *    .mirror-content: Ghost emits cards.min.css from {{ghost_head}}, which sits below
+ *    this stylesheet, so at equal specificity Ghost wins. The layer grows with the
+ *    post template; only the two image widths Ghost never styles are here today.
+ *
+ * 3. The font URLs. fonts.css spells them absolute (/fonts/…, correct for Astro's
+ *    public/ directory); `pnpm ghost:css` rewrites them to ../fonts/… for this
+ *    stylesheet's built location — see scripts/ghost/rewrite-font-urls.mjs.
+ */
+
+@import '../../../src/styles/main.css';
+
+@source '../../**/*.hbs';
+
+/*
+ * Ghost's font settings. A publication owner can pick a heading and a body font in admin;
+ * Ghost then defines --gh-font-heading / --gh-font-body in :root out of {{ghost_head}}.
+ * A theme that never reads them shows the buyer two controls that do nothing, which gscan
+ * reports as a warning.
+ *
+ * Reading them through a fallback is what keeps MIRROR's type intact: with no font chosen
+ * the variables are undefined and every role resolves to exactly the family the design was
+ * built against, so the pixel reference does not move. This is the idiom Ghost's own Source
+ * theme uses (assets/css/screen.css: `var(--gh-font-body, var(--font-sans))`).
+ *
+ * Unlayered on purpose: it has to win against the @theme block main.css emits into :root,
+ * and unlayered declarations beat any @layer.
+ */
+:root {
+	--font-display: var(--gh-font-heading, var(--font-newsreader));
+	--font-body: var(--gh-font-body, var(--font-newsreader));
+	--font-ui: var(--gh-font-body, var(--font-archivo));
+	--font-meta: var(--gh-font-body, var(--font-archivo));
+}
+
+/*
+ * Koenig image widths. Ghost ships no CSS for these two whatever `card_assets` says, so
+ * a theme must always define them — gscan treats their absence as an error.
+ *
+ * The design source defines exactly one step beyond the measure (`--wide-out`, via the
+ * `bleed-wide` utility) and no viewport-edge treatment at all: src/components/cards/
+ * ImageCard.astro honours `wide` and renders `full` as a regular image. Reusing the wide
+ * step for `full` therefore stays closer to the design than inventing a full-bleed
+ * treatment for it would. Recorded as a concession in DECISIONS.md.
+ */
+.mirror-content :is(.kg-width-wide, .kg-width-full) {
+	@apply bleed-wide;
+}
