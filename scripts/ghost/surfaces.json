@@ -43,7 +43,7 @@
 		"layout": "A1",
 		"path": "{gated_post}",
 		"settings": { "post_layout": "Centered classic" },
-		"why": "The Gate is a state of one Post, so this row is the same Surface at a members-only slug, captured signed out. Ghost core emits its own gh-post-upgrade-cta panel inside the body for a gated Post and no reference PNG has it; suppressing it belongs to the Gate state ticket, which owns the designed Gate that replaces it"
+		"why": "The Gate is a state of one Post, so this row is the same Surface at a members-only slug, captured signed out. What it scores is the designed Gate over the free portion the post's paywall card leaves public; the theme never calls {{content}} on that branch, so Ghost core's gh-post-upgrade-cta panel is not on the page at all"
 	},
 	{
 		"route": "post-02-paywalled",
@@ -51,7 +51,7 @@
 		"layout": "A2",
 		"path": "{gated_post}",
 		"settings": { "post_layout": "Title page" },
-		"why": "The same Surface at a members-only slug in the A2 layout, captured signed out. Same caveat as the A1 row: Ghost core's own gh-post-upgrade-cta panel is in the body until the Gate state ticket replaces it with the designed Gate"
+		"why": "The same Surface at a members-only slug in the A2 layout, captured signed out — the rail keeps its share block and drops the contents list, because a gated post's free portion is the opening and has no headings to jump to"
 	},
 	{
 		"route": "404",

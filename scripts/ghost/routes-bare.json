@@ -5,7 +5,19 @@
 	},
 	{
 		"path": "/against-the-infinite-feed/",
-		"expect": "data-surface=\"post\""
+		"expect": "data-surface=\"post\"",
+		"absent": [
+			"data-gate=",
+			"class=\"gh-post-upgrade-cta"
+		]
+	},
+	{
+		"path": "/what-editors-owe-their-readers-now/",
+		"expect": [
+			"data-surface=\"post\"",
+			"data-gate=\"paid\""
+		],
+		"absent": "class=\"gh-post-upgrade-cta"
 	},
 	{
 		"path": "/tag/essays/",

@@ -36,6 +36,7 @@
 		"ghost:import:fresh": "node --env-file=.env scripts/ghost/import.mjs --prune",
 		"ghost:verify": "node --env-file=.env scripts/ghost/verify-fixture.mjs",
 		"ghost:idempotence": "node --env-file=.env scripts/ghost/check-idempotence.mjs",
+		"ghost:access": "node --env-file=.env scripts/ghost/check-access.mjs",
 		"ghost:jobs": "node scripts/ghost/build-jobs.mjs",
 		"ghost:shots": ".venv/bin/python3 scripts/verify/shoot.py --jobs scripts/ghost/jobs.json --out-dir .shots/ghost",
 		"ghost:score": "node --env-file=.env scripts/ghost/score.mjs"

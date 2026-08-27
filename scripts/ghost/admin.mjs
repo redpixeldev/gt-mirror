@@ -11,16 +11,39 @@
  * `ownerSession()` returns the headers rather than a fetch wrapper because one caller — the
  * importer's multipart upload — must send them *without* a Content-Type of its own, or Ghost
  * answers 415.
+ *
+ * THE SESSION IS CACHED ON DISK, not just in the process. Ghost's brute-force protection allows a
+ * hundred logins per IP per hour and answers 429 for the rest of the hour after that — measured,
+ * from a ticket that ran these scripts often enough to hit it, which locked the harness out for an
+ * hour in the middle of verifying. One login per Ghost restart is enough: the cached cookie is
+ * tried against a cheap authenticated read first, and a login only happens when that read says the
+ * session is gone.
  */
-const base = (process.env.GHOST_URL ?? 'http://localhost:2368').replace(/\/$/, '');
+import { readFileSync, writeFileSync, rmSync } from 'node:fs';
 
-/** The owner session, memoised. One login per run. */
+const base = (process.env.GHOST_URL ?? 'http://localhost:2368').replace(/\/$/, '');
+const SESSION_FILE = process.env.GHOST_SESSION_FILE ?? '.ghost-session.json';
+
+/** The owner session, memoised for this process. */
 let sessionAuth;
 
-export async function ownerSession() {
-	if (sessionAuth) {
-		return sessionAuth;
+function cached() {
+	try {
+		const stored = JSON.parse(readFileSync(SESSION_FILE, 'utf8'));
+		return stored.base === base && stored.Cookie ? { Cookie: stored.Cookie, Origin: base } : null;
+	} catch {
+		return null;
 	}
+}
+
+async function alive(auth) {
+	const response = await fetch(`${base}/ghost/api/admin/users/me/`, {
+		headers: { ...auth, 'Accept-Version': 'v6.0' },
+	});
+	return response.ok;
+}
+
+async function login() {
 	const email = process.env.GHOST_ADMIN_EMAIL;
 	const password = process.env.GHOST_ADMIN_PASSWORD;
 	if (!email || !password) {
@@ -34,14 +57,37 @@ export async function ownerSession() {
 	if (!response.ok) {
 		throw new Error(`session → ${response.status} ${(await response.text()).slice(0, 200)}`);
 	}
-	sessionAuth = {
+	return {
 		Cookie: response.headers
 			.getSetCookie()
 			.map((cookie) => cookie.split(';')[0])
 			.join('; '),
 		Origin: base,
 	};
+}
+
+export async function ownerSession() {
+	if (sessionAuth) {
+		return sessionAuth;
+	}
+	const stored = cached();
+	if (stored && (await alive(stored))) {
+		sessionAuth = stored;
+		return sessionAuth;
+	}
+	sessionAuth = await login();
+	try {
+		writeFileSync(SESSION_FILE, JSON.stringify({ base, Cookie: sessionAuth.Cookie }) + '\n');
+	} catch {
+		/* A cache that cannot be written is a slower run, not a failed one. */
+	}
 	return sessionAuth;
+}
+
+/** Drop the cached session — for a caller that wants the next run to log in again. */
+export function forgetSession() {
+	sessionAuth = undefined;
+	rmSync(SESSION_FILE, { force: true });
 }
 
 /*

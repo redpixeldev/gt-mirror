@@ -115,8 +115,19 @@ const HEADINGS = [
  *
  * Headings are included in the body because Ghost counts them too, and because the table of
  * contents the post Surface builds needs real h2s to find.
+ *
+ * `paywall` closes the opening paragraph with Ghost's `<!--members-only-->` marker, which its
+ * HTML-to-Lexical converter turns into a paywall card on import. That is what gives a gated post
+ * a free portion: without it Ghost blanks the whole body for a reader without access, and the
+ * theme's Gate would have no teaser above it.
+ *
+ * After the FIRST paragraph, because that is what the design draws — its gated Post shows 423px
+ * of teaser above the Gate, and one paragraph of this generator's prose is 392px. A marker at the
+ * end of the opening section instead gives three paragraphs and 1,249px, which is a realistic
+ * publication and the wrong drawing. It costs no words either way: Ghost's own word count strips
+ * comments along with tags.
  */
-function prose(words, random) {
+function prose(words, random, { paywall = false } = {}) {
 	if (words <= 0) {
 		return '';
 	}
@@ -175,6 +186,9 @@ function prose(words, random) {
 			const take = p === paraCount - 1 ? budget - base * (paraCount - 1) : base;
 			if (take > 0) {
 				blocks.push(paragraph(take));
+			}
+			if (paywall && s === 0 && p === 0) {
+				blocks.push('<!--members-only-->');
 			}
 		}
 	}
@@ -419,7 +433,8 @@ const posts = assigned.map((post) => {
 			throw new Error(`Designed post ${JSON.stringify(post.title)} has no parseable reading-time label: ${post.read}`);
 		}
 		const words = wordsForMinutes(minutes);
-		const html = prose(words, random);
+		const visibility = post.visibility ?? 'public';
+		const html = prose(words, random, { paywall: visibility !== 'public' });
 		const actual = countWords(html);
 		if (actual !== words) {
 			throw new Error(`${post.title}: generated ${actual} words, needed exactly ${words}`);
@@ -435,7 +450,7 @@ const posts = assigned.map((post) => {
 			feature_image: post.img ?? null,
 			feature_image_alt: post.alt ?? null,
 			published_at: parseDate(post.date).toISOString(),
-			visibility: post.visibility ?? 'public',
+			visibility,
 			featured: Boolean(post.featured),
 			author: post.author,
 			tags: post.tags,

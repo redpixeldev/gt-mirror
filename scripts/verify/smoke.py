@@ -10,10 +10,15 @@ few dozen bytes, and the dev server logs it where nobody is looking. Three separ
 pages shipped that way in one build before the byte floor was added.
 
 routes.json is a list of paths, or of `{"path", "min_bytes"?, "min_body_bytes"?, "expect"?,
-"status"?}` where `expect` is a substring that must appear in the body and `status` is the
-expected status code, default 200. `status` exists for the error Surface: the designed 404
-page is a real Surface with a byte floor and a marker of its own, and asserting it as a 200
-would fail the run for being right.
+"absent"?, "status"?}`. `expect` and `absent` are each a substring or a list of them: every
+`expect` must appear in the body and every `absent` must not. `status` is the expected status
+code, default 200 — it exists for the error Surface, where the designed 404 page is a real
+Surface with a byte floor and a marker of its own, and asserting it as a 200 would fail the run
+for being right.
+
+`absent` is how a state is checked rather than a Surface. A Post that is not gated must not
+carry the Gate, and that is not provable by any marker the page does contain: the failure mode
+is the paywall silently opening, which reads as a perfectly healthy page.
 
 `min_body_bytes` measures only what lies between `<body` and `</body>`, and exists because a
 whole-document floor is worthless on a platform that injects its own head. On the Ghost
@@ -34,10 +39,18 @@ import urllib.request
 DEFAULT_MIN = 5000
 
 
+def markers(route: dict, key: str) -> list[str]:
+    """A route's `expect`/`absent` as a list, whether it was written as one or as a bare string."""
+    value = route.get(key)
+    if value is None:
+        return []
+    return [value] if isinstance(value, str) else list(value)
+
+
 def main() -> int:
     p = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     p.add_argument('--base', required=True, help='dev-server origin; use the port recorded in DECISIONS.md')
-    p.add_argument('--routes', required=True, help='JSON list of paths or {path, min_bytes?, expect?, status?}')
+    p.add_argument('--routes', required=True, help='JSON list of paths or {path, min_bytes?, expect?, absent?, status?}')
     p.add_argument('--min-bytes', type=int, default=DEFAULT_MIN)
     p.add_argument('--timeout', type=float, default=30)
     args = p.parse_args()
@@ -71,9 +84,12 @@ def main() -> int:
             rendered = closing - opening if opening != -1 and closing > opening else 0
             if rendered < body_floor:
                 problems.append(f'{rendered:,} body bytes < {body_floor:,} floor')
-        expect = route.get('expect')
-        if expect and expect.encode() not in body:
-            problems.append(f'missing {expect!r}')
+        for marker in markers(route, 'expect'):
+            if marker.encode() not in body:
+                problems.append(f'missing {marker!r}')
+        for marker in markers(route, 'absent'):
+            if marker.encode() in body:
+                problems.append(f'present but must not be: {marker!r}')
 
         if problems:
             print(f'FAIL {route["path"]:<32} {"; ".join(problems)}')

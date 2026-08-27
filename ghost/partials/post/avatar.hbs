@@ -10,13 +10,18 @@ the badge is the fallback.
 The badge carries ONE letter where the design draws two. Handlebars cannot take a substring and
 Ghost ships no helper that can, so a second initial would have to come from a lookup the template
 does not have; `{{name.[0]}}` is index access on the name string, which is the whole of what is
-available. Recorded as a concession in DECISIONS.md. --}}
+available. Recorded as a concession in DECISIONS.md.
+
+NEITHER `loading="lazy"` NOR `decoding="async"`, which the design source puts only on images below
+the fold. This one sits under the title, it is a 3KB thumbnail, and both places it appears on a
+post request the same URL — so deferring the second saves nothing the first has not already done.
+It is also what made the identity harness lie: two captures of the same page differed by exactly
+these two 34px and 56px squares, because both attributes tell the browser it may paint a frame
+without this image, and a headless screenshot takes that permission. --}}
 {{#if profile_image}}
 	<img
 		src="{{img_url profile_image size="xs"}}"
 		alt=""
-		loading="lazy"
-		decoding="async"
 		class="{{size}} flex-none rounded-full object-cover">
 {{else}}
 	<span

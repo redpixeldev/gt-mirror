@@ -8,11 +8,18 @@ grid in post/a2.hbs collapses at, so the two cannot disagree.
 
 `top-[120px]` is the design's own offset. It clears the bar with room to spare rather than
 tracking its height: the reading bar is 76px, and a rail that starts exactly at the bar's
-edge reads as a collision. --}}
+edge reads as a collision.
+
+The contents list goes when the article goes. A gated post has no sections to jump to — its
+free portion is the opening, which is where the headings are not — and a list of anchors into
+a body the reader cannot read is navigation that leads nowhere. The share block stays: the
+post is still shareable, and the design keeps it. --}}
 <aside
 	aria-label="{{t "Post details"}}"
 	class="max-stack:static sticky top-[120px]">
-	{{> "post/toc" variant="rail"}}
+	{{#if access}}
+		{{> "post/toc" variant="rail"}}
+	{{/if}}
 
 	{{> "post/share" rail=true}}
 </aside>

@@ -9,11 +9,13 @@ A2 has the second column. --}}
 
 <div class="container pt-14">
 	<div class="measure mx-auto min-w-0">
-		{{> "post/toc" variant="inline"}}
+		{{!-- The contents list goes when the article goes; post/rail.hbs carries the reasoning for
+		both layouts, which hang the same list in different places. --}}
+		{{#if access}}
+			{{> "post/toc" variant="inline"}}
+		{{/if}}
 
-		<div class="mirror-content">{{content}}</div>
-
-		{{> "post/tags"}}
+		{{> "post/body"}}
 
 		{{> "post/share"}}
 

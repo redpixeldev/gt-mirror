@@ -42,21 +42,41 @@ const problems = [];
 
 /*
  * The Gate is a state of one Post rather than a Surface of its own, so the paywalled rows need a
- * members-only slug that no route config carries: `routes.json` asserts one marker per Surface and
- * `data-surface="post"` is already spoken for by the public Post.
+ * members-only slug of their own. `routes.json` now carries that slug too — a Post that gates and
+ * a Post that does not are both the Post Surface — which is exactly why the map below cannot read
+ * whichever route mentions `data-surface="post"` last.
  */
 const gated = fixture.posts.find((post) => post.designed && post.visibility !== 'public');
 if (!gated) {
 	problems.push('no designed members-only post in the fixture — the paywalled rows have nothing to capture');
 }
 
-/* Every marker in routes.json is unique by construction, so surface -> path is a function. */
+/*
+ * surface -> the route that IS that Surface and nothing else. A route claiming a second marker is
+ * a state of a Surface (the gated Post claims `data-gate` as well), and capturing a Surface at its
+ * gated slug would score the wrong page against every reference PNG the Surface has — silently,
+ * because both pages are the Post Surface and both answer 200.
+ *
+ * The test is the marker COUNT, not the JSON shape: build-routes.mjs treats a bare string and a
+ * one-element array as the same thing everywhere else, so reading `Array.isArray` here would make
+ * a route stop registering its Surface over a spelling.
+ */
+const list = (value) => (value === undefined ? [] : Array.isArray(value) ? value : [value]);
+
 const pathBySurface = new Map();
 for (const route of routes) {
-	const surface = /data-surface="([^"]+)"/.exec(route.expect)?.[1];
-	if (surface) {
-		pathBySurface.set(surface, route.path);
+	const markers = list(route.expect);
+	if (markers.length !== 1) {
+		continue;
 	}
+	const surface = /data-surface="([^"]+)"/.exec(markers[0])?.[1];
+	if (!surface) {
+		continue;
+	}
+	if (pathBySurface.has(surface)) {
+		problems.push(`two routes claim data-surface="${surface}" alone: ${pathBySurface.get(surface)} and ${route.path}`);
+	}
+	pathBySurface.set(surface, route.path);
 }
 
 const referenceByKey = new Map(reference.map((row) => [`${row.route}|${row.mode}`, row]));

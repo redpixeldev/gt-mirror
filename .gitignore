@@ -27,6 +27,9 @@ pnpm-debug.log*
 .env
 .env.production
 
+# the cached Ghost owner session; a credential, and per-install
+.ghost-session.json
+
 # macOS-specific files
 .DS_Store
 

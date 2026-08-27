@@ -1,0 +1,123 @@
+{{!-- The Gate: what a reader without access reads instead of the rest of the article.
+
+THE PLATFORM DECIDES, NOT THE POST. `post/body.hbs` chooses between the article and this card on
+`{{#if access}}`, which Ghost computes per request from the reader's session against the post's
+visibility and tiers. `visibility` is only what the post ASKS for; a paying member on an entitled
+tier reading a `paid` post has `visibility: paid` and `access: true`, and a theme that gated on
+visibility would show them a paywall they had already bought.
+
+`visibility` is still what this card SAYS, because the pitch differs: a `members` post wants a
+free account and a `paid` post wants money, and offering the wrong one is a dead end. Ghost's
+`{{#has}}` reads the three cases directly, so no template arithmetic is needed.
+
+THERE IS NO PRICE IN THE BUTTON, and the design draws one ("Upgrade — $8/month"). A theme cannot
+ask the platform for a publication's entry price: `{{#get "tiers"}}` accepts `order` and `limit`
+in its signature and the tiers service ignores both — `order="monthly_price ASC"` and
+`order="monthly_price DESC"` return the same sequence — so "from $X" would quote whichever paid
+tier the service happened to return first. A wrong price on a paywall is the worst thing this
+theme could print, and Portal — which the button below opens whenever the publication has signups
+to open — quotes every tier's real price against live Stripe data. Recorded as a Concession.
+
+`data-gate` names the state for the smoke run: it is the one assertion that separates "the Gate
+rendered" from "the body happened to be empty". --}}
+<aside
+	data-gate="{{visibility}}"
+	class="border-accent-border bg-accent-soft mt-[22px] rounded-md border px-8 py-9 text-center">
+	<p class="text-accent-strong font-mono text-[11px] tracking-[0.1em] uppercase">
+		{{#has visibility="paid"}}{{t "Paid members only"}}{{/has}}
+		{{#has visibility="members"}}{{t "Members only"}}{{/has}}
+		{{#has visibility="tiers"}}{{tiers separator=", " lastSeparator=(t " and ")}}{{/has}}
+	</p>
+
+	<h2 class="font-display text-h2 tracking-heading mt-4 leading-[1.2] font-medium">
+		{{#has visibility="members"}}
+			{{t "Keep reading with a free account"}}
+		{{else}}
+			{{t "Keep reading with a paid membership"}}
+		{{/has}}
+	</h2>
+
+	{{!-- The length is the platform's own reading time, computed from the whole post: Ghost gates
+	the body after it counts the words, so the figure survives on a post whose body is gone.
+	The second sentence is the publication's own pitch rather than the theme's — a theme that
+	claims what a membership includes is guessing at someone else's product. --}}
+	<p class="text-small text-muted-on-soft mx-auto mt-3.5 max-w-[46ch] leading-[1.6]">
+		{{t "This post runs {length} in full." length=(reading_time seconds=(t "under a minute") minute=(t "1 minute") minutes=(t "% minutes"))}}
+		{{@site.description}}
+	</p>
+
+	{{!-- A CALL TO ACTION THAT CANNOT GRANT ACCESS IS WORSE THAN NO CALL TO ACTION, which is the
+	rule chrome/cta.hbs already applies to the bar's Subscribe button. Here the question is sharper,
+	because what unlocks the page depends on the post as well as the publication: a `members` post
+	is opened by any account, a `paid` or `tiers` post only by a paid one. Ghost's three signup
+	settings answer exactly that, so each kind of post asks the one that applies to it:
+
+		post kind      needs                    setting that says whether it is for sale
+		members        any account              allow_self_signup  (signup access is "all")
+		paid, tiers    a paid account           not members_invite_only  ("all" or "paid")
+
+		signed out, `members` post, open signups   Sign up free, then Sign in beside it
+		signed out, paid post, signups for sale    Choose a membership, then Sign in
+		signed out, invite-only                    Sign in only — new memberships are closed
+		signed out, `members` post, paid-only      Sign in only — no free account is on offer
+		signed in, wrong tier                      Upgrade, into Portal's plans panel
+		members off entirely                       no buttons; the card still says why it stops
+
+	`allow_self_signup` rather than `members_enabled` for the free case: `members_enabled` is only
+	`signup_access !== 'none'`, so it is true on a publication set to paid-members-only, where a
+	button promising a free account promises something Portal will not create.
+
+	`@site.signup_url` carries NO `data-portal`, and that is the point rather than an omission.
+	Portal binds a click listener to every `[data-portal]` element and its handler calls
+	`preventDefault()` unconditionally, so the attribute wins and the href becomes decorative — an
+	anchor with `data-portal="signup"` opens Portal's signup on a publication that has none. Ghost
+	computes `signup_url` from the publication's own signup access, so the state where the href must
+	be obeyed is exactly the state where the attribute must be absent. The other two routes have no
+	computed equivalent, so they are named and their hrefs agree with them.
+
+	The class list repeats because these states differ in destination, attribute AND label at once,
+	and grouping each state on one anchor is what makes it checkable end to end. --}}
+	{{#if @site.members_enabled}}
+		<div class="mt-[26px] flex flex-wrap justify-center gap-3">
+			{{#if @member}}
+				<a
+					href="#/portal/account/plans"
+					data-portal="account/plans"
+					class="btn btn-primary font-ui rounded-sm px-6 py-[13px] text-[15px] font-semibold no-underline">{{t "Upgrade your membership"}}</a>
+			{{else}}
+				{{#has visibility="members"}}
+					{{#if @site.allow_self_signup}}
+						<a
+							href="{{@site.signup_url}}"
+							class="btn btn-primary font-ui rounded-sm px-6 py-[13px] text-[15px] font-semibold no-underline">{{t "Sign up free"}}</a>
+					{{/if}}
+				{{else}}
+					{{#unless @site.members_invite_only}}
+						<a
+							href="{{@site.signup_url}}"
+							class="btn btn-primary font-ui rounded-sm px-6 py-[13px] text-[15px] font-semibold no-underline">{{t "Choose a membership"}}</a>
+					{{/unless}}
+				{{/has}}
+
+				<a
+					href="#/portal/signin"
+					data-portal="signin"
+					class="btn border-text font-ui text-text hover:bg-text hover:text-surface rounded-sm border bg-transparent px-6 py-[13px] text-[15px] font-semibold no-underline">{{t "Sign in"}}</a>
+			{{/if}}
+		</div>
+	{{/if}}
+
+	{{!-- The writer count is the publication's, from the platform. It counts author accounts,
+	which includes the owner whether or not the owner writes.
+
+	Block params and a guard because a {{#get}} can abort: past Ghost Pro's getHelper timeout the
+	helper resolves to `{authors: [], '@@ABORTED_GET_HELPER@@': true}` — no `meta` key at all — and
+	still renders its block, so reading `meta.pagination.total` straight out of the context would
+	print a sentence with a hole in it. The whole paragraph is inside the guard, so an empty answer
+	costs no stray margin either. --}}
+	{{#get "authors" limit="1" as |writers pageInfo|}}
+		{{#if pageInfo.total}}
+			<p class="font-ui text-muted-on-soft mt-[18px] text-[12.5px]">{{plural pageInfo.total empty="" singular=(t "Your membership supports % writer.") plural=(t "Your membership supports % writers.")}}</p>
+		{{/if}}
+	{{/get}}
+</aside>

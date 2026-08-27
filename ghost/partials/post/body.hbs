@@ -1,0 +1,42 @@
+{{!-- The reading column's body, in whichever state the platform put it.
+
+THE BODY'S ACCESS BRANCH LIVES HERE. Both layouts call this partial, so the Gate cannot be
+reachable from one of them and not the other, and there is no second copy of the article-or-Gate
+decision to fall behind the first. Everything above this — the cover or the title page, the
+standfirst, the byline — is the same in both states, which is the point: the Gate is a state of
+one Post, not a Layout and not a Surface of its own.
+
+Two other places read `access`, and both are the same decision about the contents list rather
+than about the body: `post/a1.hbs` guards its inline disclosure and `post/rail.hbs` guards A2's
+rail list. They are separate because the two layouts hang that list in different places, and
+rail.hbs carries the reasoning for both.
+
+WHY THIS DOES NOT CALL {{content}} ON THE GATED BRANCH. Ghost's content helper substitutes its
+own `gh-post-upgrade-cta` panel for the body whenever `access` is false, and takes no option to
+stop it — the panel is the helper's return value, not something appended after it. So the gated
+branch prints `html` directly. That is not a hole in the gate: Ghost's output serializer has
+already replaced `html` with the free portion before any template runs (the part before the
+post's paywall card, or the empty string when there is none), so the triple-stash cannot reach
+a word the reader has not been given. It is also why the free portion needs no clipping.
+
+The design clips that teaser to 150px and fades it into the card. That is not ported, and the
+reason is the same one that says a photograph must not be cropped: the free portion is the part
+the author chose to publish, and hiding it behind a gradient with no way to open it is the
+theme deciding to withhold something the platform gave away. The fade only means anything above
+a clip, so it goes with it. Recorded as a Concession.
+
+The tags row goes with the body because it closes the article — the design's own source keeps
+"Filed under" inside the body component, so a gated post shows the chips no more than it shows
+the last chapter. What stays is everything below the article: the share row, the writer, the
+neighbours, the related posts, the subscribe band. --}}
+{{#if access}}
+	<div class="mirror-content">{{content}}</div>
+
+	{{> "post/tags"}}
+{{else}}
+	{{#if html}}
+		<div class="mirror-content">{{{html}}}</div>
+	{{/if}}
+
+	{{> "post/gate"}}
+{{/if}}

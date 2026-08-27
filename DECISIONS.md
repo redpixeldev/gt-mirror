@@ -1585,14 +1585,13 @@ to hold still:
   a tag is not, because a reset can arrive after Ghost processed the request and a duplicate is
   worse than a failed run.
 - **A screenshot is accepted only once the PNG reaches its IEND chunk.** `shoot.py` treated the
-  file's EXISTENCE as completion and terminated Chrome on it — but Chrome creates the file before
-  it has finished writing it, and with `--concurrency 4` that truncated one shot per run at random.
-  It presented as a Surface losing six points between two runs of unchanged code: the gated A1 row
-  read 86.55, then 80.56, while the same URL captured on its own read 86.24 three times in a row.
-  Waiting for the end of the PNG cannot hang the run — Chrome with `--screenshot` never exits, so
-  the file has to stay the signal, and the existing deadline still covers a Chrome that stalls.
-  Two consecutive full runs after the fix differ on two rows by 0.17 and 0.07, where before they
-  differed by 5.99.
+  file's EXISTENCE as completion and terminated Chrome on it, and Chrome creates the file before it
+  has finished writing it. This was found while chasing a Surface that lost six points between two
+  runs of unchanged code — the gated A1 row read 86.55, then 80.56, while the same URL captured on
+  its own read 86.24 three times in a row — and it is NOT what caused that. The cause is in the
+  next section, found on the next ticket. Waiting for the end of the PNG is still the correct test
+  and cannot hang the run: Chrome with `--screenshot` never exits, so the file has to stay the
+  signal, and the existing deadline covers a Chrome that stalls.
 
 Three smaller Concessions, all recorded rather than worked around:
 
@@ -1609,3 +1608,275 @@ Three smaller Concessions, all recorded rather than worked around:
 One trap worth writing down: **prettier must never be pointed at a `.hbs` file here.** There is no
 Handlebars plugin configured, so its HTML printer rewrote `default.hbs` — single-quoted attributes,
 `{{!-- --}}` comments collapsed to `{{! }}`, and the doctype deleted.
+
+## The Gate, and the five-point ghost in the harness (2026-08)
+
+A members-only Post shows the Gate to a reader without access and the whole article to a reader
+with it. That sentence contains the only decision that matters here, and it is about which of two
+platform fields the template is allowed to read.
+
+### `access`, never `visibility`
+
+`visibility` is what the post ASKS for — `public`, `members`, `paid`, or a named set of `tiers`. It
+is a column on the post and it is the same for every reader. `access` is what Ghost computed for
+THIS request, by checking the reader's session against that visibility. A paying member on an
+entitled tier reading a `paid` post has `visibility: paid` and `access: true`.
+
+So the branch is `{{#if access}}`, and a theme that branches on visibility shows a paywall to a
+reader who has already paid. That is not a subtle failure — it is the one bug on this Surface that
+costs a publication money, and it is invisible to everything the harness measures, because the
+identity axis only ever captures a signed-out reader.
+
+Verified against all four states rather than argued from the docs. A member comped on the Basic
+tier and a free member were created through the Admin API, signed in with real magic-link tokens,
+and both deleted afterwards:
+
+| reader         | `paid` post                                                | `members` post | public post  |
+| -------------- | ---------------------------------------------------------- | -------------- | ------------ |
+| signed out     | Gate                                                       | Gate           | full article |
+| free member    | Gate, "Upgrade your membership" → `#/portal/account/plans` | full article   | full article |
+| Basic (comped) | full article, 6 headings, contents list, tag chips         | full article   | full article |
+
+`visibility` is still what the card SAYS. A `members` post wants a free account and a `paid` post
+wants money; offering the wrong one is a dead end for the reader, so the eyebrow, the heading and
+the button all read `{{#has visibility=…}}`. A free member sees no "Sign in" button, because they
+are signed in and the only move left is the upgrade.
+
+### The branch lives in one partial
+
+`post/body.hbs` holds it, and both layouts call that partial. The Gate is a state of one Post, not
+a Layout and not a Surface: everything above it — the cover or the title page, the standfirst, the
+byline — is identical in both states, and everything below the article stays too. What goes is the
+body, the contents list, and the tag chips.
+
+The chips go because they close the article: the design's own source keeps "Filed under" inside its
+body component, so a gated post shows the chips no more than it shows the last chapter. The
+contents list goes because a gated post's free portion is its opening, where the headings are not,
+and a list of anchors into a body the reader cannot read is navigation that leads nowhere. A1 drops
+its inline disclosure and A2's rail drops its list and keeps its share block, which is what the
+design draws.
+
+### Why the gated branch prints `html` instead of calling `{{content}}`
+
+Ghost's content helper substitutes its own `gh-post-upgrade-cta` panel for the body whenever
+`access` is false. It is the helper's return value, not something appended after it, and there is
+no option to stop it — so a theme with its own Gate must not call the helper on that branch.
+
+That is not a hole in the gate. Ghost's output serializer replaces `html` with the free portion
+before any template runs: the part before the post's paywall card, or the empty string when the
+post has none. `{{{html}}}` on the no-access branch cannot reach a word the reader has not been
+given, and the theme never reaches for it on the other branch.
+
+One measured consequence: Ghost's injected `<style id="gh-members-styles">` still ships the CSS for
+the panel nobody renders. Left alone. It is a few hundred bytes of the platform's own head, and the
+alternative is a theme that tries to edit `{{ghost_head}}`.
+
+### The demo publication gives its opening away
+
+A gated post with no paywall card has `html: ''`, so the Gate would sit directly under the byline
+with nothing above it. Ghost's HTML-to-Lexical converter turns an `<!--members-only-->` comment
+into a paywall card, so `build-fixture.mjs` closes the opening paragraph of every gated designed
+post with one. The marker costs no words — Ghost's own word count strips comments along with tags,
+so the reading-time labels still assert exactly.
+
+After the FIRST paragraph, because that is what the design draws. Measured in a browser: the
+design's gated Post shows 423px of teaser above its Gate, and one paragraph of the generator's
+prose is 392px. The marker at the end of the opening SECTION instead gives three paragraphs and
+1,249px — a realistic publication and the wrong drawing, worth 4.6 points on the A2 row.
+
+**The Concession: the teaser is not clipped, and the fade goes with the clip.** The design holds
+its third paragraph to 150px and fades it into the card. The free portion is the part the author
+chose to publish; hiding it behind a gradient with no way to open it is the theme withholding
+something the platform gave away, which is the same mistake as cropping the photograph one section
+up. `paywall-fade` stays in `main.css` unused by the theme, because a fade without a clip is a
+drawing of truncation over text that is not truncated.
+
+### There is no price in the button
+
+The design's primary button reads "Upgrade — $8/month". `$8` is a real number the platform holds:
+the Basic tier's `monthly_price` is 800, and `{{price monthly_price currency=currency}}` prints
+`$8`. It is still not printed, because a theme cannot ask the platform which tier is the entry
+price. `{{#get "tiers"}}` accepts `order` and `limit` in its signature and the tiers service
+ignores both — measured: `order="monthly_price ASC"` and `order="monthly_price DESC"` return the
+same sequence, and `limit="1"` returns two tiers. So "from $X" would quote whichever paid tier the
+service happened to return first.
+
+A wrong price on a paywall is the worst thing this theme could print, and Portal — which the button
+opens — quotes every tier's real price against live Stripe data. The button reads "Choose a
+membership" signed out, "Sign up free" on a members-only post, and "Upgrade your membership" for a
+member who needs a higher tier.
+
+The pitch takes the same rule. Its first sentence is the platform's reading time, which survives
+gating because Ghost counts the words before it removes them. Its second is `@site.description` —
+the publication's own pitch, in the publication's own voice. The design's second sentence names
+specific member benefits ("the annual field report and the complete interview archive"), and a
+theme that claims what a membership includes is guessing at someone else's product.
+
+### The button carries a `data-portal` attribute only where the href agrees with it
+
+Portal binds a click listener to every `[data-portal]` element and its handler calls
+`preventDefault()` unconditionally, then routes on the attribute alone. So an anchor that pairs
+`href="{{@site.signup_url}}"` with `data-portal="signup"` throws away the computed URL and asks
+Portal for a signup page — including on a publication whose signups are closed, where Ghost turns
+`signup_url` into a feed-reader address precisely so a theme will not offer one. Ghost still loads
+Portal on such a site if donations or recommendations are on, and this theme ships a
+`/recommendations/` Surface, so the popup really would open.
+
+The Gate therefore resolves the publication's member states the way `chrome/cta.hbs` does, by the
+same rule: the state whose address the platform computes gets the href and no attribute, and the
+states with no computed equivalent name their Portal route and agree with it.
+
+What each state offers is one question further, because what unlocks the page depends on the post
+as well as the publication: a `members` post is opened by any account, a `paid` or `tiers` post
+only by a paid one. Ghost has a setting for each, and `members_enabled` is not it — it is only
+`signup_access !== 'none'`, so it is true on a publication set to paid-members-only, where a button
+promising a free account promises something Portal will not create.
+
+| the reader, the post, the publication           | the Gate's buttons                                               |
+| ----------------------------------------------- | ---------------------------------------------------------------- |
+| signed out, `members` post, `allow_self_signup` | Sign up free, `{{@site.signup_url}}`, no attribute, plus Sign in |
+| signed out, paid post, not invite-only          | Choose a membership, same href rule, plus Sign in                |
+| signed out, invite-only                         | Sign in only — new memberships are closed, so offering one lies  |
+| signed out, `members` post, paid-only signups   | Sign in only — no free account is on offer                       |
+| member on too low a tier                        | Upgrade, `#/portal/account/plans`, href and attribute agreeing   |
+| members off entirely                            | no buttons; the card still says why the page stops               |
+
+The card's eyebrow, heading and pitch are the same in all of them. A reader on a publication with
+members switched off is still owed the reason the article ends where it does.
+
+### The five-point ghost had two causes, and the second one was the harness's own cache
+
+Twice, hours apart, the gated A1 row lost five to six points between two full runs of unchanged
+code, and both times the same page captured on its own was stable to the byte. The second time it
+was cornered: keep the bad PNG, diff it against a known-good one, and look.
+
+Every row from y=20 down differed, because the site header was 50px taller — its navigation had
+rendered as an **unstyled vertical list**, in the body serif and the accent colour, while the rest
+of the page was styled correctly. A stylesheet arriving partly applied. `shoot.py` was running four
+headless Chromes at once against a single-process Ghost, and occasionally one of them got a
+stylesheet it could only half apply. `--concurrency` now defaults to 1. Measured before changing it:
+
+| how                                        | result                           |
+| ------------------------------------------ | -------------------------------- |
+| one page, six times, alone                 | byte-identical, 90.65 every time |
+| that page's group of four, three times     | byte-identical                   |
+| two full 36-shot runs at `--concurrency 4` | one row differs by 4.98          |
+| two full 36-shot runs at `--concurrency 1` | all 36 byte-identical            |
+
+That was not the end of it, and the way the rest was found is the part worth keeping. **Every job is
+now captured twice and the run fails unless the two files match**, because nothing about a finished
+PNG says the page finished: `--virtual-time-budget` settles a failed subresource exactly as it
+settles a loaded one, and a capture missing one image scores five hundredths of a point away from
+the truth rather than obviously wrong. The check found a second defect on its first run, and a
+reviewer had found the same one by hand in the artefacts of the run before it.
+
+The gated dark capture rendered both author avatars as Chrome's broken-image placeholder — two
+squares, 34px and 56px, and nothing else on the page different. It reproduced in run after run,
+which is why it did not read as a flake. Ghost served that image 40 times out of 40 under a burst,
+a cold Chrome profile captured the page correctly four times out of four, and the second pass of
+the same run was always right. The difference was that `shoot.py` reused its Chrome profiles across
+runs: 507MB of them had accumulated in `.shots/ghost/.profiles`, and the one profile index that
+captured that row held a cached failure for that image. Warm caches had been hiding every other
+image fetch, and poisoning that one permanently.
+
+A capture must not inherit another run's cache, so each job's profile directory is now removed
+before its Chrome starts. Two full `score.mjs` runs after that — 72 captures each, every pair
+compared — report 0 of 36 rows differing, and the gated dark row reads 90.67, which is what a cold
+capture had said all along.
+
+The suite costs about 220 seconds for 72 captures against 19 for a parallel 36. That is the cheapest
+200 seconds in this repo: between them these two faults sent three separate investigations after
+bugs in the theme that were never there.
+
+One of the three did find something. The author avatar carried `loading="lazy"` and
+`decoding="async"`, which the design source puts only on images below the fold — and this one sits
+under the title. Both attributes tell the browser it may paint a frame without the image, so the
+capture was within its rights. Removed: it is a 3KB thumbnail, and both places it appears on a post
+request the same URL, so deferring the second saves nothing the first has not already done.
+
+### The route configs learned that a marker can belong to two routes
+
+A Post that gates and a Post that does not are both the Post Surface, so `data-surface="post"` is
+now on two routes by design while `data-gate` is on exactly one. `build-routes.mjs` used to assert
+one marker per route and uniqueness per route, which made a second Post route unrepresentable; it
+now maps marker → the routes that claim it, and checks each marker is present on all of them and
+absent from every other.
+
+`smoke.py` gained `absent` alongside `expect`, both taking a string or a list. It is the only way
+to assert a state a page does NOT enter: the interesting failure here is the paywall silently
+opening, and a page with no Gate on it looks perfectly healthy. Both new checks were negative-tested
+— an `absent` marker that is present and an `expect` marker that is missing each fail the run.
+
+`absent` is also the one assertion this harness can only verify one way. A run can prove a string
+is not on a page; it cannot prove the string is one any page could ever produce, so a typo would
+pass forever — and the strongest of the three is exactly the one nothing else corroborates:
+`class="gh-post-upgrade-cta` names markup only Ghost core emits, and the theme now renders its own
+Gate in its place, so no page in this configuration can show it. `build-routes.mjs` therefore
+requires every `absent` marker to be either some route's `expect` or named in an `UNCORROBORATED`
+map with the reason it cannot be shown. Two of the three qualify on the first count; the third is
+named, once, deliberately.
+
+### The check the harness could not make, and now does
+
+Every route config in this repo is fetched signed out, which is the blind spot on this Surface. A
+regression was constructed to prove it: replace `{{#if access}}` with `{{#match visibility "public"}}`
+and the smoke suite reports **13/13** while every paying member is shown a paywall they had already
+bought. That is the one failure on this Surface that costs a publication money, and the hand
+verification that caught it during this ticket would have run exactly once.
+
+`scripts/ghost/check-access.mjs` (`pnpm ghost:access`) is that verification, kept. Nine reads: three
+readers — signed out, a free member, a member comped on the Basic tier — against the fixture's
+first designed public, `members` and `paid` posts. The members are created through the Admin API,
+signed in with real magic-link tokens, and deleted in a `finally`, because a probe member left
+behind is a member the publication now has. "Article" is asserted as the presence of what the Gate
+replaces — the body headings and the tag chips — because a template that rendered nothing would
+pass the absence of a Gate. It fails on the constructed regression and passes on the shipped one.
+
+One thing had to change for it to be runnable at all: **the owner session is now cached on disk.**
+Ghost allows a hundred logins per IP per hour and then answers 429 for the rest of the hour — which
+it did, mid-verification, because every script invocation logged in afresh. `admin.mjs` now tries a
+stored cookie against a cheap authenticated read first, and only logs in when that read says the
+session is gone. One login per Ghost restart.
+
+### What the run reports
+
+| row                     | before | after     | Floor | gap   |
+| ----------------------- | ------ | --------- | ----- | ----- |
+| post-01-paywalled light | 86.55  | **90.65** | 96.14 | −5.49 |
+| post-01-paywalled dark  | 87.53  | **90.67** | 96.10 | −5.43 |
+| post-02-paywalled light | 85.09  | **90.74** | 97.46 | −6.72 |
+| post-02-paywalled dark  | 85.66  | **90.59** | 97.53 | −6.94 |
+
+The four gated rows are now the closest Post rows in the build — the ungated pair sits at −8.93 to
+−10.11 — which is the expected shape: a gated page has one paragraph of the demo publication's
+generated prose to differ from the design on, and an ungated one has thirty.
+
+The residual is 65px of accumulated height, not the copy. Measured on the A1 light pair:
+
+| landmark                | design | theme | running total |
+| ----------------------- | -----: | ----: | ------------: |
+| first line of the body  |   1076 |  1041 |          35px |
+| top of the Gate card    |   1493 |  1449 |          44px |
+| bottom of the Gate card |   1828 |  1760 |          68px |
+| top of the writer card  |      — |     — |          65px |
+
+The first 35px is above the body — title, standfirst, byline — and belongs to the ungated Post rows,
+which carry a larger version of it. The Gate's own contribution is 33px: the card is 24px shorter
+than the design's, because its pitch is two lines where the design's is three, and the teaser region
+is 9px short rather than the 31px the paragraph measurement suggested, because the card's own
+`mt-[22px]` absorbs most of the difference.
+
+65px is what produces the gap, because it is past `score.py`'s ±40px per-band realignment. Three
+bands carry almost all of it — y=2400 at 29.81%, y=2500 at 33.90% and y=2600 at 66.98%, the first
+and third with their shift clamped at +40 — while every band above the card is within a point or
+two of the reference build. The Astro build tracks the design to within 9px over the same span,
+which is why it sits at −0.09 and this sits at −5.49.
+
+Two defects from the previous ticket were fixed on the way, both visible in every Post capture and
+neither large enough for the score to notice:
+
+- **Dates were not zero-padded.** Every date in `src/data` is `09 Mar 2026`; the theme asked for
+  `D MMM YYYY` and rendered `9 Mar 2026`. Six call sites across five partials, now `DD MMM YYYY`.
+- **The adjacent-post cards quoted no reading time.** The design shows `28 FEB 2026 · 6 MIN READ`.
+  `{{reading_time}}` does work inside `{{#prev_post}}` and `{{#next_post}}` — verified — so both
+  cards now carry it.
