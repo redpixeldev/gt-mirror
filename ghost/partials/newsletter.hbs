@@ -1,8 +1,11 @@
 {{!-- The full-width subscribe band the design puts at the end of a reading Surface.
 
-	{{> "newsletter" anchor="end-newsletter"}}   the Post Surface's, which "Follow" links to
+	{{> "newsletter" anchor="end-newsletter"}}      the Post Surface's, which "Follow" links to
+	{{> "newsletter" anchor="newsletter" pt="pt-16"}}   the homepage's
+	{{> "newsletter" anchor="newsletter" pt="pt-20"}}   the Feed's, which the design sits lower
 
 	anchor    the id, so a link on the same page can reach it
+	pt        the section's top padding, which the design sets per Surface
 
 Ghost's own signup, not a form the theme invents: `data-members-form` and `data-members-email`
 are the whole contract, Portal binds the submit out of {{ghost_head}}, and the report comes
@@ -16,7 +19,7 @@ renders only where members exist. --}}
 	<section
 		{{#if anchor}}id="{{anchor}}"{{/if}}
 		aria-labelledby="newsletter-head"
-		class="container pt-18">
+		class="container {{#if pt}}{{pt}}{{else}}pt-18{{/if}}">
 		<div
 			class="border-accent-border bg-accent-soft grid grid-cols-[repeat(auto-fit,minmax(min(300px,100%),1fr))] items-center gap-9 rounded-md border px-10 py-12">
 			<div>

@@ -227,5 +227,34 @@ if (searchRoot) {
 	pending.observe(document.body, { childList: true });
 }
 
+/*
+ * The featured strip's prev/next controls.
+ *
+ * The track is a native scroll-snap container, so the strip is already scrollable, keyboard
+ * reachable and swipeable with nothing loaded — these two buttons only give a pointer visitor
+ * the affordance the design draws. Nothing here measures or positions a card: the step is one
+ * card plus its gap, read off the DOM at click time rather than cached, so a re-flow after the
+ * webfonts settle needs no re-measure hook (which is the one thing Swiper needed a
+ * `document.fonts.ready` callback for in the reference build).
+ *
+ * `scrollBy` with a `behavior` the visitor chose: `auto` under prefers-reduced-motion is the
+ * platform's own instant jump, which is the whole of what honouring it means here.
+ */
+document.addEventListener('click', (event) => {
+	const button = event.target.closest?.('[data-featured-prev], [data-featured-next]');
+	if (!button) return;
+
+	const track = button.closest('section')?.querySelector('[data-featured]');
+	const card = track?.firstElementChild;
+	if (!card) return;
+
+	/* The gap is on the track, so the step is the card's own width plus the space after it. */
+	const gap = parseFloat(getComputedStyle(track).columnGap) || 0;
+	const step = card.getBoundingClientRect().width + gap;
+	const behavior = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
+
+	track.scrollBy({ left: button.hasAttribute('data-featured-prev') ? -step : step, behavior });
+});
+
 window.Alpine = Alpine;
 Alpine.start();

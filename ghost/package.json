@@ -72,6 +72,15 @@
 				"group": "homepage",
 				"description": "A single lead story over a grid, or the publication masthead over a numbered list"
 			},
+			"feed_layout": {
+				"type": "select",
+				"options": [
+					"Two-column list",
+					"Three-column grid"
+				],
+				"default": "Two-column list",
+				"description": "A wide row per post with a thumbnail beside it, or a three-column grid of cards"
+			},
 			"post_layout": {
 				"type": "select",
 				"options": [

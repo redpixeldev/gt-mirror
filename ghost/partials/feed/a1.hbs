@@ -1,0 +1,70 @@
+{{!-- A1, "two-column list": one wide row per post, thumbnail beside the headline block.
+
+The list runs to a 1120px measure while everything around it stays page-width, so the column
+override is a wrapper here rather than a value on the Surface — `--container-max` is what every
+`container` reads.
+
+`minmax(0,1fr)`, not a bare `1fr`: bare `1fr` means `minmax(auto,1fr)`, whose floor is the
+column's min-content width, so a long headline would push the row wider than the page instead of
+wrapping. Below `stack` the thumbnail moves above the text.
+
+The thumbnail's link is hidden from assistive technology and taken out of the tab order — the
+headline right beside it goes to the same place, so exposing both would make a screen reader
+announce every post twice. --}}
+<div style="--container-max:1120px">
+	<section
+		aria-label="{{t "Posts"}}"
+		class="container pt-2">
+		{{#foreach posts}}
+			<article
+				class="{{post_class}} border-border max-stack:grid-cols-[minmax(0,1fr)] max-stack:gap-5 grid grid-cols-[300px_minmax(0,1fr)] items-start gap-9 border-b py-11">
+				{{#if feature_image}}
+					<a
+						href="{{url}}"
+						tabindex="-1"
+						aria-hidden="true"
+						class="block">
+						<img
+							src="{{img_url feature_image size="m"}}"
+							alt=""
+							loading="lazy"
+							decoding="async"
+							class="border-border block aspect-[4/3] w-full rounded-md border object-cover">
+					</a>
+				{{/if}}
+
+				<div>
+					<div class="flex items-center gap-3">
+						{{#primary_tag}}
+							<span class="font-meta text-meta tracking-meta text-accent uppercase">{{name}}</span>
+						{{/primary_tag}}
+
+						{{> "tier-chip"}}
+					</div>
+
+					<h2 class="font-display tracking-heading mt-3 text-[30px] leading-[1.18] font-medium text-balance">
+						<a
+							href="{{url}}"
+							class="text-text hover:text-accent no-underline">{{title}}</a>
+					</h2>
+
+					<p class="text-body text-muted mt-3.5 max-w-[62ch] leading-[1.6] text-pretty">{{excerpt}}</p>
+
+					<div class="mt-5 flex items-center gap-3">
+						{{#primary_author}}
+							{{> "post/avatar" size="size-[30px]" textSize="text-xs"}}
+
+							<a
+								href="{{url}}"
+								class="font-ui text-text text-[13.5px] font-semibold no-underline">{{name}}</a>
+						{{/primary_author}}
+
+						<span class="font-meta text-meta tracking-meta text-muted uppercase">{{> "dateline"}}</span>
+					</div>
+				</div>
+			</article>
+		{{else}}
+			<p class="font-body text-muted py-11">{{t "No posts yet."}}</p>
+		{{/foreach}}
+	</section>
+</div>

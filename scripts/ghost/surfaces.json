@@ -18,12 +18,17 @@
 		"layout": "A2",
 		"settings": { "homepage_layout": "Editorial masthead" }
 	},
-	{ "route": "blog-01", "surface": "feed", "layout": "A1" },
+	{
+		"route": "blog-01",
+		"surface": "feed",
+		"layout": "A1",
+		"settings": { "feed_layout": "Two-column list" }
+	},
 	{
 		"route": "blog-02",
 		"surface": "feed",
 		"layout": "A2",
-		"skip": "no layout picker on the Feed yet — the Feed and homepage Surfaces ticket adds one"
+		"settings": { "feed_layout": "Three-column grid" }
 	},
 	{
 		"route": "post-01",

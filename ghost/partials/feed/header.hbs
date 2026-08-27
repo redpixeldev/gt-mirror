@@ -1,0 +1,49 @@
+{{!-- The Feed's masthead: what this Surface is, and how much of it there is.
+
+	{{> "feed/header"}}
+
+Three of the four lines are the publication's, and the fourth is the theme's.
+
+The heading is Chrome copy — the theme's own wording, translatable, like "Latest" or "Writers".
+Ghost gives a collection or a channel no title of its own: the buyer names the URL in
+routes.yaml and nothing about that reaches a template, so a heading here is either the theme's
+word for "all the posts" or nothing at all. The design's word is "The Archive".
+
+The line under it is `@site.description`, the publication's own sentence about itself, because
+that is the only per-publication prose Ghost has here. The design source writes a description
+specific to its archive Surface; there is no field to keep one in, so the site's own line
+stands in. Recorded as a concession in DECISIONS.md.
+
+The post count is `pagination.total`, the whole collection rather than the eighteen rows on this
+page.
+
+THE WRITER COUNT IS STAFF ACCOUNTS, NOT PUBLISHED WRITERS. It is read off the pagination of a
+one-row authors query — {{#get}}'s second block param carries the pagination for the query, so
+asking for one author answers "how many are there" without loading them all. What it cannot do
+is exclude a staff account that has not published: count.posts is not filterable on authors in
+Ghost 6 (`filter="count.posts:>0"` returns an empty set, `filter="posts.count:>0"` fails the
+query), and Handlebars has no way to count the rows a loop's own guard kept. The writers strip
+lower down the page CAN guard row by row and does, so on a publication with an unpublished
+account this line reads one higher than the strip below it. Recorded as a concession in
+DECISIONS.md. --}}
+<section
+	aria-labelledby="arch-head"
+	class="container pt-16">
+	<p class="text-accent font-mono text-[11px] tracking-[0.1em] uppercase">{{t "All posts"}}</p>
+
+	<h1
+		id="arch-head"
+		class="font-display tracking-display mt-[18px] text-[clamp(34px,4.4vw,56px)] leading-[1.06] font-medium">{{t "The Archive"}}</h1>
+
+	{{#if @site.description}}
+		<p class="text-lead text-muted mt-5 max-w-[60ch] leading-[1.55] text-pretty">{{@site.description}}</p>
+	{{/if}}
+
+	<p class="text-muted mt-5 font-mono text-xs">
+		{{~plural pagination.total empty=(t "No posts") singular=(t "% post") plural=(t "% posts")~}}
+		{{#get "authors" limit="1" as |writers writerPages|}}
+			<span aria-hidden="true"> · </span>
+			{{~plural writerPages.total empty=(t "No writers") singular=(t "% writer") plural=(t "% writers")~}}
+		{{/get}}
+	</p>
+</section>

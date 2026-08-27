@@ -698,8 +698,8 @@ once here rather than re-invented by each Surface as it lands.
 
 | Surface           | URL (configured)         | Template                               | Why that treatment                                                                  |
 | :---------------- | :----------------------- | :------------------------------------- | :---------------------------------------------------------------------------------- |
-| homepage          | `/`                      | `home.hbs`                             | A `route:` — the magazine cover, always at `/`, never page one of something else    |
-| Feed              | `/archive/`              | `index.hbs`                            | The `collection:` — it owns the posts and their permalinks, and it paginates        |
+| homepage          | `/`                      | `home.hbs`                             | The `collection:` — the magazine cover is page 1 of it, so the cover paginates      |
+| Feed              | `/archive/`              | `index.hbs`                            | A `controller: channel` — the same posts, paginated, at a URL of their own          |
 | Post              | `/{slug}/`               | `post.hbs`                             | The collection's `permalink`, so post URLs stay at the site root as in the design   |
 | Tag archive       | `/tag/{slug}/`           | `tag.hbs`                              | Native taxonomy                                                                     |
 | Author archive    | `/author/{slug}/`        | `author.hbs`                           | Native taxonomy                                                                     |
@@ -711,17 +711,34 @@ once here rather than re-invented by each Surface as it lands.
 | Sign in / Sign up | `/sign-in/`, `/sign-up/` | `page-sign-in.hbs`, `page-sign-up.hbs` | Standing pages; Portal owns the exchange itself                                     |
 | Error             | any missing URL          | `error-404.hbs`                        | Ghost resolves `error-404.hbs` before `error.hbs`; verified with a real missing URL |
 
-**Why the homepage is a route and the Feed is the collection.** A post can live in exactly one
+**Why the homepage is the collection and the Feed is a channel.** A post lives in exactly one
 collection, so no configuration exists in which both `/` and `/archive/` own the same posts. The
-design draws a magazine cover and a separate archive; the only way to get both is to make one of
-them a `route:`. The cover is the one that can be a route, because it is editorially curated
-rather than paginated.
+design draws a magazine cover and a separate archive, and both of them paginate — which rules out
+the obvious split. A `route:` would give `/archive/` a URL and no posts context and no pagination
+at all, and the Surface whose whole job is paging through everything is the wrong one to spend
+that on.
 
-The consequence is the constraint every home partial is written under: a `route:` has **no posts
-context and no pagination at all**, so every editorial slot in `home.hbs` is a `{{#get}}`. That
-also makes the template correct bare, where `/` _is_ the collection and `home.hbs` is its page 1.
-Verified in both configurations — bare, `/` renders `home.hbs` and `/archive/` correctly 404s;
-configured, both resolve and only `/archive/` paginates.
+`controller: channel` is the third option Ghost offers and the right one here: a channel is a
+paginated view over posts that does **not** own their permalinks. So `/` stays the collection,
+keeps issuing `/{slug}/`, and is page 1 of six; `/archive/` lists the same posts with a page count
+of its own. Ghost resolves a channel's page size exactly as it resolves a collection's — `limit:`
+on the route if present, otherwise `posts_per_page` from the theme's package.json.
+
+The `/` collection deliberately declares **no** `template:`. Ghost's own template hierarchy puts
+`home.hbs` on `/` and `index.hbs` on `/page/2/` onwards (`frontPageTemplate`, applied only when
+the path is exactly `/`), so the cover owns the first page and the Feed layout owns the rest.
+Naming a template there would put the cover — and its fixed twelve most recent posts — on all six.
+
+The constraint every home partial is still written under is that a publication may instead hand
+`/` to a `route:`, which has **no posts context and no pagination**. So every editorial slot in
+`home.hbs` is a `{{#get}}` and the pagination call is guarded on `pagination.pages`. Verified in
+both configurations — bare, `/` renders `home.hbs`, `/page/2/`…`/page/6/` render the Feed layout
+and `/archive/` correctly 404s; configured, `/` and `/archive/` both resolve and both paginate.
+
+History, because the earlier note here reached the opposite conclusion: this was first configured
+with `/` as a `route:` and `/archive/` as the collection, on the reasoning that a cover is curated
+rather than paginated. That reasoning missed the channel controller, and its cost was a homepage
+that could not draw the pagination control the design puts on it at all.
 
 **Every page layout ships twice**, `page-{slug}.hbs` and `custom-{slug}.hbs` over one shared
 partial in `partials/pages/`. Ghost resolves `page-{slug}` → the selected custom template →
@@ -791,12 +808,20 @@ decided once here and every later Surface repeats it without re-deciding anythin
 end-to-end on the homepage.
 
 ```handlebars
-{{#get "posts" limit="7" include="authors,tags" as |feed|}}
-  {{#match @custom.homepage_layout "Editorial masthead"}}
+{{!-- home.hbs --}}
+{{#match @custom.homepage_layout "Editorial masthead"}}
+  {{> "home/window" wide=true}}
+{{else}}
+  {{> "home/window"}}
+{{/match}}
+
+{{!-- partials/home/window.hbs --}}
+{{#get "posts" limit="12" include="authors,tags" as |feed|}}
+  {{#if ../wide}}
     {{> "home/a2" feed=feed}}
   {{else}}
     {{> "home/a1" feed=feed}}
-  {{/match}}
+  {{/if}}
 {{else}}
   …empty state…
 {{/get}}
@@ -808,10 +833,17 @@ Four rules, each load-bearing:
    can be shared or moved without dragging a settings dependency behind it.
 2. **Match the non-default option; the default lives in the `{{else}}`.** A value that does not
    match cannot render nothing — it falls through to a layout.
-3. **Fetch once, above the dispatch; both layouts consume the same block param.** Two layouts must
-   never mean two queries.
+3. **Fetch once; both layouts consume the same block param.** Two layouts must never mean two
+   queries. The query lives one partial down rather than directly under the `{{#match}}` so that
+   `{{pagination}}` can be called outside it — see the Feed and homepage section below.
 4. **A child partial that varies takes it as an argument** — `{{> "post-meta" byline=true}}` — and
    never reaches back up to `@custom`. This is Source's `navigationLayout=` pattern.
+
+Rule 4 has one trap, and it is silent. `{{#get}}` renders its block with the query's response as
+the context, so a partial argument read from inside the block is **one frame up**: `{{#if wide}}`
+is undefined there and renders the default layout under either setting. It has to be
+`{{#if ../wide}}`. This cost a full capture run: the A2 homepage rendered A1 and the capture
+harness's Layout guard passed it, because the two settings groups did differ — by a wrapper `div`.
 
 ### What Ghost guarantees about the value, measured
 
@@ -1880,3 +1912,207 @@ neither large enough for the score to notice:
 - **The adjacent-post cards quoted no reading time.** The design shows `28 FEB 2026 · 6 MIN READ`.
   `{{reading_time}}` does work inside `{{#prev_post}}` and `{{#next_post}}` — verified — so both
   cards now carry it.
+
+## The Feed and homepage Surfaces, and the pagination that made the route map wrong (2026-08)
+
+Both paginated post Surfaces, in both layouts and both Modes, against the reconciled publication.
+
+### The routing had to change before a single template did
+
+The design draws a pagination control on the homepage. The route map said `/` was a `route:`, and a
+`route:` has no pagination context at all — `{{pagination}}` throws inside one. So the homepage
+could not have the control the ticket asks for, in the configuration the captures are taken in.
+
+`controller: channel` is what the original decision missed. The full reasoning is in the route map
+section above; the short version is that `/` is now the collection (so the cover is page 1 of six
+and paginates) and `/archive/` is a channel over the same posts (so the Feed paginates
+independently without owning permalinks). Verified in both configurations, and the bare install is
+not a worse experience for it: `/` is the cover, `/page/2/`…`/page/6/` are the Feed layout,
+`/archive/` 404s.
+
+`pnpm ghost:routes:apply` and `ghost:routes:bare` now push `docs/routes.example.yaml` and Ghost's
+own defaults to the running install. A buyer pastes that file into Settings → Labs → Routes; this
+repo cannot, because which Surface owns which URL is the difference between the capture set finding
+the Feed and finding the homepage, and re-pasting a file into an admin screen after every change is
+exactly the step that drifts from the file in git. The script waits for the URLs to resolve with
+the right `data-surface` marker rather than for the upload's 200 — the URL service restarts
+asynchronously.
+
+### The per-page count is `posts_per_page`, and routes.yaml is the knob
+
+Ghost resolves how many posts a page holds in the **routing layer**, before a template runs:
+`limit:` on the route if the publication set one, otherwise `posts_per_page` from the theme's
+`package.json` (`core/frontend/services/routing/controllers/{collection,channel}.js`). A
+`config.custom` setting cannot reach it, so there is no admin control for it and a theme that
+claimed one would be lying. The theme ships 18 — the archive length the design draws, which over
+104 posts is six pages — and the publication owner changes it by editing `limit:` in the routes
+file they already own, which is editable in admin under Labs. Verified: `limit: 9` gives nine rows
+and twelve pages on `/archive/`, and removing it returns to eighteen and six.
+
+### `{{pagination}}` counts whatever context it is called in
+
+The helper reads `page`/`pages`/`prev`/`next` off `this`, and `{{#get}}` renders its block with the
+query's own response as the context — including that query's pagination. Called inside the
+homepage's twelve-post `{{#get}}`, the control offered **nine pages of twelve** on a Surface that
+has six pages of eighteen, and it looked entirely plausible.
+
+`{{#with @root}}` fixes it in place and **gscan rejects `@root`** as an unknown global
+(GS120-NO-UNKNOWN-GLOBALS), so the structure carries it instead: the query and the two layouts moved
+into `partials/home/window.hbs` and the control is called from `home.hbs`, one frame out, on the
+page's own context. `{{#if pagination.pages}}` guards the call — the dotted path is unambiguously a
+lookup where a bare `pagination` shares a namespace with the helper — which is also what lets a
+publication hand `/` to a `route:` after all.
+
+### The numbered control is four pages wide, not five, and Handlebars is why
+
+The design draws `1 2 3 … 6`. Handlebars has no arithmetic and Ghost ships no `math` helper, so the
+only page numbers `partials/pagination.hbs` can name are the ones already in context: `1` (a
+literal), `prev`, `page`, `next` and `pages`. On page 1 that is `1 2 … 6`; from page 2 on it is the
+standard elided window `1 … 3 4 5 … 6`, which is wider than the design's and more useful.
+
+The gap on the left is exact — `prev > 2` is a literal comparison. The gap on the right can only be
+tested as `pages > next`, so on the one page per run where exactly one number is hidden between
+`next` and the last page, the ellipsis stands in for that single page. Accepted; it is one glyph.
+
+Two traps in the same file. `prev`/`next` are `null` at the ends of the range and **a null
+comparison is not false in JavaScript**: `null < 6` is true, so the right-hand blocks need an
+existence guard and not just the comparison. And the design draws both arrows on page 1, muted on
+the left and inked on the right, which is exactly a disabled previous and a live next — so the
+inert step renders as a `span` with the same box rather than as a link to nowhere.
+
+### Swiper's arithmetic, written out — and a Tailwind ordering trap worth 21 points
+
+The featured strip drops Swiper for native scroll-snap. Swiper's only remaining consumers were
+`slidesPerView`/`spaceBetween` and two buttons calling `slidePrev`/`slideNext`; snap is
+keyboard- and touch-accessible for free, caches no width to re-measure once the webfonts settle,
+and honours `prefers-reduced-motion` by switching the scroll behaviour rather than a speed.
+
+For a numeric `slidesPerView`, Swiper sets each slide to
+`(trackWidth - spaceBetween * (slidesPerView - 1)) / slidesPerView`. The design source configures
+1.15 slides, 2.2 from 640px and 3.3 from 1000px, 20px apart, so at the 1568px capture width a card
+is `(1256 - 46) / 3.3 = 366.67px` — the number the reference build's Swiper produces, which is why
+the two strips land on the same pixels.
+
+Writing that as `sm:basis-[…] min-[1000px]:basis-[…]` **does not work**: Tailwind v4 groups
+arbitrary `min-[…]` variants apart from the named breakpoints and emits them first, so at 1568px
+the `sm` rule won and every card came out at the 2.2-per-view width. The first homepage capture
+scored **75.17 against a floor of 96.59** for that one reason. It is now the `featured-card`
+utility in `ghost/assets/css/screen.css`: three media queries in source order, with no ordering to
+get wrong.
+
+### The active pill is `aria-current`, because on Ghost the pills are links
+
+In the reference build the Feed's tag row is a set of buttons driving a client-side filter over 18
+posts on one page. Here the Feed is 104 posts over six pages and a filter would hide only the rows
+on the page the reader happens to be on; filtering by tag on Ghost is a Surface of its own. So each
+pill is a link to that tag's archive and "All" is a link to `{{page_url 1}}` — the Feed's own first
+page, resolved from the request, because the URL is the buyer's.
+
+That changes the attribute that marks the active pill: `aria-pressed` belongs to a button. The
+value is `aria-current="true"` — "the current item within a set", which is what an active filter
+is — and not `"page"`, because from `/archive/page/3/` the All pill's href points at page 1 rather
+than at the page the reader is on. `tag-pill` in `src/styles/main.css` colours from `aria-pressed`,
+so `ghost/assets/css/screen.css` adds the link case beside it rather than widening the utility —
+the utility belongs to the design, links here belong to the platform — and it matches on the
+attribute's presence rather than its value, so a Surface that really is the URL its pill names can
+use `"page"` and get the same fill. Verified on `/archive/`: the All pill computes to
+`background: #1c1917` with white text, the other seven are transparent, the strip wraps, and a
+walk of every pill's ancestors reports **zero** clipping containers, so the focus ring has room
+to draw.
+
+### The counts are the publication's, not the page's
+
+The design counts each tag within the eighteen posts it lists. A pill here links to every post
+under that tag, so the number on it is that tag's real total, and the tags shown are the busiest
+rather than a hardcoded list: the homepage strip shows eight, the Feed's filter row shows All plus
+seven, which is the pill count the design draws on each. On the demo publication the first four
+match the design exactly (Essays 34, Interviews 21, Craft 18, Field notes 16) and the rest do not,
+because the reconciled fixture has fourteen tags where the design drew eight and seven.
+
+### Concessions
+
+| Surface        | What the design draws                  | What ships                                                                | Why the platform forces it                                                                                                                                                                                                                                                                                                                    |
+| :------------- | :------------------------------------- | :------------------------------------------------------------------------ | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Feed           | A "Newest first / Oldest first" toggle | No sort control                                                           | Ghost paginates server-side and offers no reader-facing order: `routes.yaml` fixes one order per route, and nothing in a template or a URL changes it per request. A toggle that reversed the eighteen rows on the current page would say "oldest first" and show the newest eighteen backwards                                               |
+| Feed           | Archive-specific standfirst            | `@site.description`                                                       | A collection or channel has no title or description of its own; the publication's own sentence is the only per-publication prose available here. Costs one line of `text-lead`, which is the whole of the residual 32px shift on both Feed captures                                                                                           |
+| Feed           | `104 posts · 5 writers`                | The writer half counts **staff accounts**                                 | `count.posts` is not filterable on authors in Ghost 6 (`count.posts:>0` returns an empty set, `posts.count:>0` fails the query) and Handlebars cannot count the rows a loop's own guard kept. The writers strip below CAN guard row by row and does, so the line reads one higher than the strip on a publication with an unpublished account |
+| Feed, homepage | Two-letter initials on every avatar    | The writer's photo where they uploaded one, one letter where they did not | Already recorded on the Post Surface; not re-decided here                                                                                                                                                                                                                                                                                     |
+| Homepage       | `1 2 3 … 6`                            | `1 2 … 6` on page 1                                                       | No arithmetic in Handlebars — see above                                                                                                                                                                                                                                                                                                       |
+
+The access chip returns to the design source's own wording, `Members` and `Paid`, where the
+reference build deliberately renders `Pro` and `Basic`. Those are Ghost's words for the two
+visibilities and they are what the reference PNGs show, so the port is both more honest and closer
+to the drawing. `visibility: tiers` has no single word and prints the tier list, as the Gate does.
+
+### What the run reports
+
+All eight captures, against the Floors recorded for the reference build:
+
+| route         | mode  | layout |     Ghost | reference build | Floor |   gap |
+| :------------ | :---- | :----- | --------: | --------------: | ----: | ----: |
+| `homepage-01` | light | A1     | **96.15** |           96.64 | 96.59 | −0.44 |
+| `homepage-01` | dark  | A1     | **96.06** |           96.62 | 96.61 | −0.55 |
+| `homepage-02` | light | A2     | **97.49** |           97.66 | 98.31 | −0.82 |
+| `homepage-02` | dark  | A2     | **97.42** |           97.67 | 98.36 | −0.94 |
+| `blog-01`     | light | A1     | **97.54** |           98.09 | 97.98 | −0.44 |
+| `blog-01`     | dark  | A1     | **97.51** |           98.13 | 98.02 | −0.51 |
+| `blog-02`     | light | A2     | **95.95** |           97.02 | 96.62 | −0.67 |
+| `blog-02`     | dark  | A2     | **95.89** |           97.10 | 96.70 | −0.81 |
+
+The reference-build column is the number the Astro build scores against the same PNG, which is the
+useful comparison: the Floor for the two homepage rows predates the pagination divergence, and
+`homepage-02` has sat ~0.68 below its Floor ever since that control moved. Against the reference
+build the port is within **0.17 to 1.21**, and the whole of `blog-02`'s 1.21 is the one-line site
+description shifting every band below the masthead by 32px — measured, and consistent at +32/+33
+across every band from y=300 to y=4100.
+
+`blog-02` was `skip`ped in the Surface map until this ticket; it is now captured, and the run's
+pending count drops from 18 to 16.
+
+### Two captures came out unstable, and it was not the markup
+
+`shoot.py` captures every job twice and fails the run unless the two files are byte-identical. The
+first run of each of `blog-01` and `homepage-01` failed it: 34 pixels, maximum delta 2, on two
+thumbnails near the bottom of a 7,061px page.
+
+The cause is Ghost generating image derivatives on first request. These Surfaces are the first to
+ask for `size/w600` and `size/w960` of the archive photos, so the first capture raced a JPEG that
+was still being written. The second run of the identical command was byte-identical in both cases.
+Nothing in the theme needed changing — but the lesson for the next Surface ticket is that the first
+capture run after new `img_url` sizes appear is a warm-up, not a result.
+
+### What the review caught, and what it says about this repo's own trap
+
+Two of the fixes above came out of the code review rather than out of the harness, and both are
+the **same** `{{#get}}` frame bug the layout picker section now documents:
+
+- `tag-strip.hbs` read `wide` instead of `../wide`, so the A2 homepage rendered A1's right-tucked
+  strip with no post counts. Worth **0.06 and 0.10** on the two `homepage-02` captures — small
+  enough that the identity numbers would never have found it, and wrong enough that a buyer
+  would.
+- `writers.hbs` read `anchor` and `headingId` instead of `../anchor` and `../headingId`, shipping
+  `id=""` and an `aria-labelledby` pointing at nothing on both Surfaces: a region landmark with no
+  accessible name, and no `#authors`/`#writers` anchor for a same-page link to reach. Zero pixels.
+
+That is three occurrences of one trap in one ticket, which makes it the most expensive thing in
+this file to not know. **Anything read from inside a `{{#get}}` block that was passed INTO the
+partial needs `../`.** `{{#if}}` does not add a frame of its own, so one `../` is right even when
+the read is nested inside a guard.
+
+A second class of bug, three times over: a `{{#get}}`'s `{{else}}` is **not** the empty-result
+branch. `options.inverse` is called for an invalid resource and for an API error and for nothing
+else (`core/frontend/helpers/get.js`), so an empty result — and a slow query under
+`optimization:getHelper:timeout:threshold`, which resolves empty with Ghost's own
+`<span data-aborted-get-helper>` prepended — both render the main block. The homepage's "No posts
+yet." was therefore unreachable, and the featured strip and both tag rows would have rendered a
+heading, a rule and 36–64px of padding around nothing. Every one of them now guards inside the
+block on its own block param, which is the shape `post/related.hbs` and `partials/pages/*.hbs`
+already used. The comment that claimed the `{{else}}` caught a get-helper timeout was inherited
+from the previous version of `home.hbs` and was exactly backwards.
+
+Also fixed, all on the same pass: the featured track's `overflow-x: auto` makes `overflow-y`
+compute to `auto`, so it clipped the focus ring on a card the way the tag strips once clipped the
+ring on a pill — `snap-track` now carries 4px of block padding and a matching negative margin, so
+the ring has room and the box is unchanged. The Feed's All pill moved from `aria-current="page"` to
+`aria-current="true"`. And `partials/pagination-page.hbs` collapsed seven repeated class lists in
+the control down to two.

@@ -1,0 +1,12 @@
+{{!-- A publication with nothing published yet, on the homepage.
+
+One line at page width, because there is no drawing for this: the design was made with 104 posts
+and every homepage slot presumes a post to put in it. What matters is that a first-run install
+answers with a sentence rather than with a cover that has no headline, an empty featured strip and
+an empty grid.
+
+Its own partial because home/window.hbs reaches it twice — once when the query comes back empty,
+once when the query fails — and those are different situations with the same honest answer. --}}
+<div class="container py-16">
+	<p class="font-body text-muted">{{t "No posts yet."}}</p>
+</div>

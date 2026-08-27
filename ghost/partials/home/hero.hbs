@@ -1,0 +1,65 @@
+{{!-- A1's cover: the newest post, full-bleed, with the titling over the photo.
+
+	{{> "home/hero" feed=feed}}
+
+The lead is the first row of the shared query, which is to say the most recent post. That is the
+signal, not a position in a fixture: the publication's own reverse-chronological order decides
+what leads the cover, so publishing moves it.
+
+The text colours are literal white rather than theme tokens — the scrim is dark in both Modes,
+so nothing here can resolve against the page. That and the panel background below are the theme's
+only non-token colours, and they are the same colour: #0c0a09 is rgb(12 10 9), the darkest stop of
+the `hero-scrim` gradient in src/styles/main.css.
+
+`h-[min(76vh,660px)]` is the design's height, and it is viewport-relative on purpose. Worth
+knowing when reading a capture: a screenshot's window is as tall as the page, so 76vh always
+resolves past the 660px cap there.
+
+The panel carries the scrim's own darkest stop as a background. With a feature image the photo
+covers it and it costs nothing; without one — Ghost lets a post publish with no image, and the
+design has no drawing for that — the cover is a dark panel with the titling on it rather than
+white text on the page background. --}}
+{{#foreach feed limit="1"}}
+	<section
+		aria-labelledby="a1-lead"
+		class="border-border relative border-b">
+		<div class="relative h-[min(76vh,660px)] overflow-hidden bg-[#0c0a09]">
+			{{#if feature_image}}
+				<img
+					src="{{img_url feature_image size="xxl"}}"
+					{{#if feature_image_alt}}alt="{{feature_image_alt}}"{{else}}alt=""{{/if}}
+					fetchpriority="high"
+					decoding="async"
+					class="block h-full w-full object-cover">
+			{{/if}}
+
+			<div
+				aria-hidden="true"
+				class="hero-scrim absolute inset-0"></div>
+
+			<div class="absolute inset-x-0 bottom-0 px-5 pb-14 md:px-8">
+				<div class="mx-auto max-w-[var(--container-max,1240px)]">
+					<div class="flex items-center gap-3.5">
+						{{#primary_tag}}
+							<a
+								href="{{url}}"
+								class="font-meta tracking-meta border-b border-white/50 text-xs text-white uppercase no-underline">{{name}}</a>
+						{{/primary_tag}}
+
+						<span class="font-meta tracking-meta text-xs text-white/72 uppercase">{{> "dateline"}}</span>
+					</div>
+
+					<h1
+						id="a1-lead"
+						class="font-display tracking-display mt-[18px] max-w-[20ch] text-[clamp(38px,5.4vw,72px)] leading-[1.03] font-medium text-balance text-white">
+						<a
+							href="{{url}}"
+							class="text-white no-underline">{{title}}</a>
+					</h1>
+
+					<p class="text-lead mt-5 max-w-[56ch] leading-[1.5] text-pretty text-white/82">{{excerpt}}</p>
+				</div>
+			</div>
+		</div>
+	</section>
+{{/foreach}}

@@ -1,0 +1,24 @@
+{{!-- One numbered entry in the pagination control.
+
+	{{> "pagination-page" n=3}}             a link to page 3
+	{{> "pagination-page" n=3 here=true}}   page 3, which is the page you are on
+
+	n       the page number
+	here    render it as the current page rather than as a link
+
+Its own partial because pagination.hbs names five numbers — 1, `prev`, `page`, `next` and `pages`
+— and each of them can be either state, so the two class lists would otherwise be written out
+seven times between them. Nothing here needs the Tailwind scanner to see a duplicate: one literal
+occurrence anywhere under the theme's `@source` glob compiles the class for the whole theme.
+
+`{{page_url n}}` resolves against the request, so this works on the homepage collection and on the
+Feed channel without either knowing its own URL. --}}
+{{#if here}}
+	<span
+		aria-current="page"
+		class="border-accent bg-accent text-on-accent font-ui rounded-sm border px-4 py-2.5 text-sm font-semibold">{{n}}</span>
+{{else}}
+	<a
+		href="{{page_url n}}"
+		class="border-border font-ui text-text hover:bg-surface-2 rounded-sm border px-4 py-2.5 text-sm no-underline">{{n}}</a>
+{{/if}}

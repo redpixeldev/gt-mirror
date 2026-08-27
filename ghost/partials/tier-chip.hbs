@@ -1,0 +1,27 @@
+{{!-- The access chip on a post card: what a reader needs to read this one.
+
+	{{> "tier-chip"}}                the card sizing
+	{{> "tier-chip" tight=true}}     the numbered row's, which sits on a baseline grid
+
+Called inside a post's context; renders nothing for a public post, which is what the design draws
+— the chip is the exception, not a field every card carries.
+
+The outer guard is `{{#match visibility "!=" "public"}}` rather than a `{{#has}}` over the three
+gated values, because `{{#has visibility=…}}` compares one exact string and takes no list
+(core/frontend/helpers/has.js, `evaluateStringMatch`). Keeping it one branch keeps the class list
+in one place; the three {{#has}} blocks inside choose only the word.
+
+The wording is the platform's own and the design source's: "Members" and "Paid". Ghost's fourth
+visibility, `tiers`, has no single word — the post is open to a named list — so the chip prints the
+list, the same way post/gate.hbs does.
+
+The whitespace control is not cosmetic: this is an inline element with a border and padding, so a
+newline either side of the label would print as a space inside the chip and widen it. --}}
+{{#match visibility "!=" "public"}}
+	<span
+		class="border-border text-muted rounded-pill border font-mono text-[10.5px] tracking-[0.06em] uppercase {{#if tight}}px-[9px] py-1 whitespace-nowrap{{else}}px-2 py-[3px]{{/if}}">
+		{{~#has visibility="members"}}{{t "Members"}}{{/has~}}
+		{{~#has visibility="paid"}}{{t "Paid"}}{{/has~}}
+		{{~#has visibility="tiers"}}{{tiers separator=", " lastSeparator=(t " and ")}}{{/has~}}
+	</span>
+{{/match}}

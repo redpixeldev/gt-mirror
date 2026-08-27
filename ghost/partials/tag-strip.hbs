@@ -1,0 +1,68 @@
+{{!-- "Browse by tag" — the pill strip the design draws on both homepage layouts.
+
+	{{> "tag-strip"}}                    A1's: tucked to the right of the section heading, no counts
+	{{> "tag-strip" wide=true}}          A2's: a full-width row, each pill carrying its post count
+
+	wide    the A2 sizing and layout
+
+The strip wraps; it does not scroll. That is the `strip` utility's whole job, and the reasoning
+— a hidden scrollbar reads as absent content, and an overflow container crops the focus ring on
+the pill inside it — is in src/styles/main.css beside the utility.
+
+WHICH TAGS. The design source hardcodes eight, ordered by post count. Here the order and the
+membership are the publication's own: the eight tags with the most posts, which is the only
+"top tags" a theme can mean. A publication with fewer than eight renders fewer; the pills wrap
+rather than scroll, so no count breaks the row.
+
+`limit="8"` rather than `"all"` is deliberate — Ghost 6 caps every {{#get}} at 100 silently
+(core/shared/max-limit-cap.js) and this strip is a taste of the filing system, not the Tags
+Directory, which is the Surface that lists all of them.
+
+Two things about the two `{{#if}}`s, both of which cost a capture run to learn:
+
+- `../wide`, not `wide`. {{#get}} renders its block with the query's response as the context, so
+  a partial argument passed to THIS partial is one frame up from inside the block. Read as `wide`
+  it is undefined, and the A2 homepage silently renders A1's right-tucked strip. (`{{#if}}` does
+  not add a frame of its own — Handlebars only pushes one when the context object changes — so
+  one `../` is right even nested inside the guard below.)
+- `{{#if tags}}` and not the get's `{{else}}`. get calls `options.inverse` only for an invalid
+  resource or an API error (core/frontend/helpers/get.js), never for an empty result, so a
+  publication with no public tags would otherwise render the label and a rule with nothing after
+  them. Same shape as post/related.hbs.
+
+Both branches spell their class lists out in full. A class assembled at render time is a class
+Tailwind's scanner never sees in the source, so it is never compiled — the same reason
+chrome/header.hbs writes its two bars out twice. --}}
+{{#get "tags" include="count.posts" order="count.posts desc" limit="8" as |tags|}}
+	{{#if tags}}
+		{{#if ../wide}}
+			<div class="max-stack:block flex flex-wrap items-center gap-[18px]">
+				<span
+					class="font-ui text-muted max-stack:mb-3.5 max-stack:block text-[11.5px] font-semibold tracking-[0.16em] whitespace-nowrap uppercase">{{t "Browse by tag"}}</span>
+
+				<div class="strip flex gap-[9px] p-0.5">
+					{{#foreach tags}}
+						<a
+							href="{{url}}"
+							class="font-meta tracking-meta border-border bg-surface text-text hover:border-accent hover:text-accent rounded-pill flex-none border px-[15px] py-2 text-[12.5px] whitespace-nowrap uppercase no-underline">{{name}}
+							<span class="text-muted font-mono text-[11px]">{{count.posts}}</span></a>
+					{{/foreach}}
+				</div>
+			</div>
+		{{else}}
+			<div
+				class="max-stack:ml-0 max-stack:block max-stack:w-full ml-auto flex min-w-0 flex-[0_1_auto] items-center gap-3.5">
+				<span
+					class="font-ui text-muted max-stack:mb-3.5 max-stack:block text-[11.5px] font-semibold tracking-[0.16em] whitespace-nowrap uppercase">{{t "Browse by tag"}}</span>
+
+				<div class="strip flex gap-2 p-0.5">
+					{{#foreach tags}}
+						<a
+							href="{{url}}"
+							class="font-meta tracking-meta border-border bg-surface text-text hover:border-accent hover:text-accent rounded-pill flex-none border px-[13px] py-[7px] text-xs whitespace-nowrap uppercase no-underline">{{name}}</a>
+					{{/foreach}}
+				</div>
+			</div>
+		{{/if}}
+	{{/if}}
+{{/get}}

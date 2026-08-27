@@ -1,0 +1,14 @@
+{{!-- "12 Mar 2026 · 7 min read" — the inline half of every card's meta line, with no wrapper.
+
+	<p class="…">{{> "dateline"}}</p>
+
+Only the text, because the wrapper's type size, colour and spacing are part of the drawing of
+the card around it and differ on every one of them. What is shared is the two values and their
+separator, and those are exactly what is easy to get wrong twice: the date format, and
+`reading_time`'s three translated forms.
+
+`reading_time` is computed by Ghost from word count and image count and stored nowhere, so the
+label is whatever the body length implies — never a field a fixture can set. --}}
+{{~date format="DD MMM YYYY"~}}
+<span aria-hidden="true"> · </span>
+{{~reading_time seconds=(t "< 1 min read") minute=(t "1 min read") minutes=(t "% min read")~}}

@@ -18,14 +18,35 @@ The theme requires **Ghost 6.0 or newer**.
 
 Everything below lives in **Settings → Design & branding**, under the theme's own section.
 
-| Setting                | Options                       | What it does                                                               |
-| :--------------------- | :---------------------------- | :------------------------------------------------------------------------- |
-| **Default appearance** | Light · Dark · System         | The mode a first-time visitor sees. Their own choice always wins.          |
-| **Dark mode logo**     | An image                      | Your logo, redrawn in light ink, for the dark Mode.                        |
-| **Post layout**        | Centered classic · Title page | Cover photo over centred titling, or a title page with a sticky side rail. |
-| **Newsletter heading** | Text                          | The heading on every subscribe block.                                      |
+| Setting                | Options                             | What it does                                                               |
+| :--------------------- | :---------------------------------- | :------------------------------------------------------------------------- |
+| **Default appearance** | Light · Dark · System               | The mode a first-time visitor sees. Their own choice always wins.          |
+| **Dark mode logo**     | An image                            | Your logo, redrawn in light ink, for the dark Mode.                        |
+| **Homepage layout**    | Magazine cover · Editorial masthead | A cover story over a grid, or your masthead over a ranked list.            |
+| **Feed layout**        | Two-column list · Three-column grid | A wide row per post, or a grid of cards.                                   |
+| **Post layout**        | Centered classic · Title page       | Cover photo over centred titling, or a title page with a sticky side rail. |
+| **Newsletter heading** | Text                                | The heading on every subscribe block.                                      |
 
 More settings arrive with the layouts they control; each one is documented here as it lands.
+
+### The front page and the feed
+
+- **Homepage layout** picks between the two designed front pages. _Magazine cover_ leads with your
+  newest post at full width over its photo, then your featured posts in a strip you can scroll,
+  then a lead story with the rest of the latest around it. _Editorial masthead_ drops the photo,
+  sets the newest post centred and typographic, and runs the rest as a numbered shortlist over a
+  grid.
+- **Nothing on the front page is a list you maintain.** The cover story is simply your newest
+  post, the strip is every post you marked **featured**, and the grid is what follows. Publishing
+  moves all of them; there is no ordering to keep in step by hand.
+- **Feed layout** picks between the two designed archives. _Two-column list_ gives each post a
+  wide row with a thumbnail, an excerpt and the writer's face; _Three-column grid_ gives each one
+  a card.
+- **The tag row above the feed** shows your seven busiest subjects, with the number of posts under
+  each, and every pill is a link to that subject's own archive. The one you are on is filled.
+- **How many posts a page holds** is `posts_per_page` in this theme, and it ships at 18. Ghost
+  decides that in its routing layer rather than in the theme's settings, so there is no control
+  for it in admin — to change it, add `limit:` to the route in **Settings → Labs → Routes**.
 
 ### Posts
 
@@ -79,6 +100,14 @@ More settings arrive with the layouts they control; each one is documented here 
 - If you pick fonts under **Design & branding → Typography**, MIRROR honours them. Leave them
   alone and you get Newsreader and Archivo as the theme was designed.
 
+### URLs
+
+MIRROR works on a stock Ghost install, where `/` is your posts collection: the magazine cover is
+its first page and the feed layout takes over from `/page/2/`. If you would rather have the cover
+at `/` always and the feed at a URL of its own, upload `docs/routes.example.yaml` from this
+theme's repository under **Settings → Labs → Routes** — it puts the feed at `/archive/`, and both
+pages then page independently. Nothing else about the theme changes either way.
+
 ## Support and debugging
 
 **`?mode=light` / `?mode=dark`** on any URL forces that mode for the page view, ahead of both
@@ -91,10 +120,12 @@ report can address a colour mode directly instead of describing it.
 From the repository root, not from this directory:
 
 ```bash
-pnpm ghost:build   # compile assets/built/screen.css and assets/built/main.js
-pnpm ghost:dev     # the same two, in watch mode
-pnpm ghost:scan    # gscan, warnings fatal
-pnpm ghost:zip     # build, scan, stage and zip to dist/mirror.zip
+pnpm ghost:build         # compile assets/built/screen.css and assets/built/main.js
+pnpm ghost:dev           # the same two, in watch mode
+pnpm ghost:scan          # gscan, warnings fatal
+pnpm ghost:zip           # build, scan, stage and zip to dist/mirror.zip
+pnpm ghost:routes:apply  # push docs/routes.example.yaml to the running install
+pnpm ghost:routes:bare   # put Ghost's own default routes back
 ```
 
 `assets/css/` and `assets/js/` are sources and are excluded from the zip; `assets/built/` is

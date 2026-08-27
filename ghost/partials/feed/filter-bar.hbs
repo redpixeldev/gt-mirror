@@ -1,0 +1,63 @@
+{{!-- The Feed's tag row: All, then the publication's busiest subjects.
+
+	{{> "feed/filter-bar"}}
+
+THE PILLS ARE LINKS, NOT A FILTER. In the design source this row is a set of buttons driving a
+client-side filter over the whole archive, which works there because the archive is 18 posts on
+one page. Here the Feed is 104 posts over six pages, and a filter that hid rows would hide only
+the rows on the page the reader happens to be on. Filtering by tag on Ghost is a Surface of its
+own — the tag archive — so each pill is a link to it, and "All" is a link back to this Surface's
+first page.
+
+That changes which attribute marks the active pill. `aria-pressed` belongs to a button; a link
+to the page you are on is `aria-current="page"`. The `tag-pill` utility colours from
+`aria-pressed`, so assets/css/screen.css adds the link case beside it — one selector, in the
+Ghost-only stylesheet, because the reference build has no links here to colour.
+
+`{{page_url 1}}` rather than a hardcoded path: the Feed's URL is the buyer's, named in their
+routes.yaml, and page_url resolves it from the request — so this pill points at page 1 of
+whatever URL this Surface is mounted on, from any page of it.
+
+THE COUNTS ARE THE PUBLICATION'S, NOT THE PAGE'S. The design source counts each tag within the
+18 posts it lists; a pill here links to a Surface listing every post under that tag, so the
+number on it is that tag's real total.
+
+NO SORT CONTROL. The design draws a "Newest first / Oldest first" toggle beside the pills.
+Ghost paginates a collection server-side and offers no reader-facing order: routes.yaml can fix
+one order per route, and nothing in a template or a URL can change it per request. A toggle
+that reversed the eighteen rows on the current page would say "oldest first" and show the
+newest eighteen posts backwards. Recorded as a concession in DECISIONS.md.
+
+`aria-current="true"`, not `"page"`. The All pill marks the active filter within a set, which is
+what `true` means; `page` would claim the link points at the page the reader is on, and from
+`/archive/page/3/` it points at page 1. The fill is the same either way — screen.css colours on
+the attribute's presence, not its value.
+
+`{{#if tags}}` and not the get's `{{else}}`: get calls `options.inverse` only for an invalid
+resource or an API error (core/frontend/helpers/get.js), never for an empty result, so a
+publication that files nothing under a public tag would otherwise get a rule and 36px of padding
+around a lone "All" pill that links to the page it is already on. --}}
+{{#get "tags" include="count.posts" order="count.posts desc" limit="7" as |tags|}}
+	{{#if tags}}
+		<section
+			id="archive"
+			aria-label="{{t "Filter by tag"}}"
+			class="container pt-9">
+			<div class="border-border flex flex-wrap items-center gap-5 border-b pb-4">
+				<div class="strip flex min-w-0 flex-[1_1_420px] gap-[9px] p-0.5">
+					<a
+						href="{{page_url 1}}"
+						aria-current="true"
+						class="tag-pill font-meta tracking-meta rounded-pill flex-none border px-[15px] py-2 text-[12.5px] whitespace-nowrap uppercase no-underline">{{t "All"}}</a>
+
+					{{#foreach tags}}
+						<a
+							href="{{url}}"
+							class="tag-pill font-meta tracking-meta rounded-pill flex-none border px-[15px] py-2 text-[12.5px] whitespace-nowrap uppercase no-underline">{{name}}
+							<span class="font-mono text-[11px] opacity-70">{{count.posts}}</span></a>
+					{{/foreach}}
+				</div>
+			</div>
+		</section>
+	{{/if}}
+{{/get}}

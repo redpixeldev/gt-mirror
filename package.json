@@ -31,6 +31,8 @@
 		"ghost:smoke": ".venv/bin/python3 scripts/verify/smoke.py --base http://localhost:2368 --routes scripts/ghost/routes.json",
 		"ghost:smoke:bare": ".venv/bin/python3 scripts/verify/smoke.py --base http://localhost:2368 --routes scripts/ghost/routes-bare.json",
 		"ghost:routes": "node --env-file=.env scripts/ghost/build-routes.mjs",
+		"ghost:routes:apply": "node --env-file=.env scripts/ghost/upload-routes.mjs",
+		"ghost:routes:bare": "node --env-file=.env scripts/ghost/upload-routes.mjs --bare",
 		"ghost:fixture": "node scripts/ghost/build-fixture.mjs",
 		"ghost:import": "node --env-file=.env scripts/ghost/import.mjs",
 		"ghost:import:fresh": "node --env-file=.env scripts/ghost/import.mjs --prune",

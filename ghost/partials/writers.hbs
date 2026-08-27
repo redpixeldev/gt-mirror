@@ -1,0 +1,58 @@
+{{!-- The masthead strip: a chip per writer, with their post count.
+
+	{{> "writers" anchor="authors" headingId="au-head"}}   the homepage's
+	{{> "writers" anchor="writers" headingId="wr-head"}}    the Feed's
+
+	anchor / headingId    the ids the design gives the strip on each Surface, because a link on
+	                      the same page reaches it and two Surfaces must not share one id
+
+Ten at most, ordered by post count. The design draws every writer because its demo publication
+has five; a real masthead has no bound, and the Authors Directory is the Surface that lists all
+of them. The grid auto-fills, so any number between one and ten fills its rows.
+
+The face is post/avatar.hbs, the same drawing the reading Surface uses: a writer who uploaded a
+photo gets the photo, and the tinted initial is the fallback. The design draws a two-letter
+monogram everywhere; that gap is one concession, recorded once, and not re-decided here.
+
+A STAFF ACCOUNT IS NOT YET A WRITER. Every staff user is an "author" to Ghost, so an owner or
+an editor who has not published renders as a chip reading "No posts" — on this install that was
+a sixth chip beside the design's five. The guard is in the loop rather than in the query
+because count.posts is NOT filterable on authors in Ghost 6: `filter="count.posts:>0"` returns
+an empty set and `filter="posts.count:>0"` fails the query outright. Ordering by count.posts
+descending means the first row carries the highest count, so testing that one is enough to know
+whether anybody has published at all — the same shape partials/pages/authors.hbs uses.
+
+`../anchor` and `../headingId`, not the bare names: {{#get}} renders its block with the query's
+response as the context, so a partial argument passed to THIS partial is one frame up from inside
+the block. Read bare they are undefined and the section ships `id=""` and an `aria-labelledby`
+pointing at nothing — a region landmark with no accessible name, and the anchor a link on the same
+page is supposed to reach. --}}
+{{#get "authors" include="count.posts" order="count.posts desc" limit="10" as |writers|}}
+	{{#if writers.[0].count.posts}}
+		<section
+			id="{{../anchor}}"
+			aria-labelledby="{{../headingId}}"
+			class="container pt-16">
+			<h2
+				id="{{../headingId}}"
+				class="font-ui text-muted mb-6 text-xs font-semibold tracking-[0.16em] uppercase">{{t "Writers"}}</h2>
+
+			<div class="grid grid-cols-[repeat(auto-fill,minmax(min(210px,100%),1fr))] gap-4">
+				{{#foreach writers}}
+					{{#if count.posts}}
+						<a
+							href="{{url}}"
+							class="border-border bg-surface text-text hover:border-accent flex items-center gap-3.5 rounded-md border p-4 no-underline">
+							{{> "post/avatar" size="size-[42px]" textSize="text-sm"}}
+
+							<span class="flex min-w-0 flex-col gap-[3px]">
+								<span class="font-ui text-[14.5px] font-semibold">{{name}}</span>
+								<span class="text-muted font-mono text-[11px]">{{plural count.posts empty=(t "No posts") singular=(t "% post") plural=(t "% posts")}}</span>
+							</span>
+						</a>
+					{{/if}}
+				{{/foreach}}
+			</div>
+		</section>
+	{{/if}}
+{{/get}}

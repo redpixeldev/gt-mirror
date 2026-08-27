@@ -1,0 +1,118 @@
+{{!-- The design's numbered pagination. Registered as `pagination`, so it REPLACES the one Ghost
+ships: `{{pagination}}` resolves the partial by that name and the theme's copy wins.
+
+	{{pagination pt="pt-14"}}    the homepage's, directly below the article grid
+	{{pagination pt="pt-12"}}    the Feed's, directly below the list or grid
+
+	pt    the section's top padding — the two Surfaces sit the control at different heights
+
+The wrapper is inside this partial rather than at the call site so a publication with one page
+of posts gets no empty band: there is nothing to move to, so neither the control nor its
+padding renders. The design source always draws it because its demo has exactly one page.
+
+WHICH NUMBERS APPEAR, AND WHY IT IS NOT THE DESIGN'S FIVE. Ghost's pagination context carries
+`page`, `pages`, `prev`, `next`, `total` and `limit`, and Handlebars has no arithmetic — Ghost
+ships no `math` helper, so the only page numbers this template can name are the ones already in
+that context: 1 (a literal), `prev`, `page`, `next` and `pages`. Over six pages that renders
+`1 2 … 6` · `1 2 3 … 6` · `1 2 3 4 … 6` · `1 … 3 4 5 … 6` · `1 … 4 5 6` · `1 … 5 6`, where the
+design draws `1 2 3 … 6` on its one page. The gap on the left is exact (`prev > 2` is a literal
+comparison, so it can never appear between 1 and 2); the gap on the right can only be tested as
+`pages > next`, so on page 4 of six the ellipsis stands in for a single hidden page.
+Recorded, with its measured cost, in DECISIONS.md.
+
+`prev` and `next` are `null` at the ends of the range. The step keeps its box either way — the
+design draws both arrows on page 1, muted on the left and inked on the right, which is exactly
+a disabled previous and a live next — so the inert one renders as a `span` rather than as a
+link to nowhere. --}}
+{{#match pages ">" 1}}
+	<section
+		aria-label="{{t "Pagination"}}"
+		class="container {{#if pt}}{{pt}}{{else}}pt-12{{/if}}">
+		<nav
+			aria-label="{{t "Pagination"}}"
+			class="flex flex-wrap items-center justify-center gap-2">
+
+			{{#if prev}}
+				<a
+					href="{{page_url prev}}"
+					rel="prev"
+					aria-label="{{t "Previous page"}}"
+					class="border-border font-ui text-muted hover:bg-surface-2 rounded-sm border px-[15px] py-2.5 text-sm no-underline">
+					<span
+						aria-hidden="true"
+						class="font-[system-ui,sans-serif]">←</span>
+				</a>
+			{{else}}
+				<span
+					aria-hidden="true"
+					class="border-border font-ui text-muted rounded-sm border px-[15px] py-2.5 text-sm">
+					<span class="font-[system-ui,sans-serif]">←</span>
+				</span>
+			{{/if}}
+
+			{{!-- Page 1 is always in the control, and on page 1 it is the current page. --}}
+			{{#match page 1}}
+				{{> "pagination-page" n=1 here=true}}
+			{{else}}
+				{{> "pagination-page" n=1}}
+			{{/match}}
+
+			{{#match prev ">" 2}}
+				<span
+					aria-hidden="true"
+					class="text-muted px-1 font-mono text-[13px]">…</span>
+			{{/match}}
+
+			{{#match prev ">" 1}}
+				{{> "pagination-page" n=prev}}
+			{{/match}}
+
+			{{!-- The current page, only where 1 and `pages` have not already drawn it. --}}
+			{{#match page ">" 1}}
+				{{#match page "<" pages}}
+					{{> "pagination-page" n=page here=true}}
+				{{/match}}
+			{{/match}}
+
+			{{!-- `next` is null on the last page, and a null comparison is not false in JavaScript:
+			`null < 6` is true, so both blocks below need the existence guard rather than the
+			comparison alone. The same trap does not exist on the left, where `null > 2` is false. --}}
+			{{#if next}}
+				{{#match next "<" pages}}
+					{{> "pagination-page" n=next}}
+				{{/match}}
+
+				{{#match pages ">" next}}
+					<span
+						aria-hidden="true"
+						class="text-muted px-1 font-mono text-[13px]">…</span>
+				{{/match}}
+			{{/if}}
+
+			{{#match page pages}}
+				{{> "pagination-page" n=pages here=true}}
+			{{else}}
+				{{> "pagination-page" n=pages}}
+			{{/match}}
+
+			{{#if next}}
+				<a
+					href="{{page_url next}}"
+					rel="next"
+					aria-label="{{t "Next page"}}"
+					class="border-border font-ui text-text hover:bg-surface-2 rounded-sm border px-[15px] py-2.5 text-sm no-underline">
+					<span
+						aria-hidden="true"
+						class="font-[system-ui,sans-serif]">→</span>
+				</a>
+			{{else}}
+				<span
+					aria-hidden="true"
+					class="border-border font-ui text-muted rounded-sm border px-[15px] py-2.5 text-sm">
+					<span class="font-[system-ui,sans-serif]">→</span>
+				</span>
+			{{/if}}
+
+		</nav>
+	</section>
+{{/match}}

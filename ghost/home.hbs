@@ -19,33 +19,55 @@ once rather than re-deciding:
 	 ({{> "post-meta" author=true}}), the way Source threads navigationLayout — it never
 	 reaches back up to @custom.
 
-Both branches also have to work with no posts context at all: bare, `/` is the posts
-collection and this is its page 1, but with docs/routes.example.yaml `/` is a route: and has
-no collection, no posts and no pagination. The {{#get}} is what makes the template
-indifferent to which. --}}
+The dispatch is the {{#match}} here; the query and the two layouts are home/window.hbs, one
+level down, and the layout reaches it as an argument. Rule 3 is why the query is not repeated in
+the two branches: `{{> "home/window"}}` is one query definition, whichever branch calls it.
+
+WHY THE PAGINATION IS HERE AND NOT IN THE LAYOUT. {{pagination}} reads its numbers off the
+current context, and the {{#get}} in home/window.hbs renders its block with the query's own
+response as the context — a control inside it would offer nine pages of twelve on a Surface that
+has six pages of eighteen. Called here it reads the page's own pagination. (`@root` would rebind
+it in place, and gscan rejects `@root` as an unknown global, so the structure carries it
+instead.)
+
+`pagination.pages` guards the call because the helper throws outside a paginated context: with
+the layout in docs/routes.example.yaml this Surface IS page 1 of the `/` collection and pages
+through it, but a publication that hands `/` to a `route:` has no pagination at all, and one
+that has fewer posts than a page has no second page to offer. The editorial slots are indifferent
+to all three, which is what the {{#get}} in home/window.hbs buys.
+
+A2 narrows its article column to 1120px and leaves the blocks below it — the subscribe band and
+the writers strip — at page width. The override is a wrapper here because it has to contain the
+pagination too: `--container-max` is what every `container` reads, and the control belongs to the
+grid above it rather than to the page. --}}
 
 {{> "chrome/header"}}
 
-<main id="main" class="grow">
-	<div class="container py-16" data-surface="home">
+<main
+	id="main"
+	class="grow"
+	data-surface="home">
 
-		{{#get "posts" limit="7" include="authors,tags" as |feed|}}
+	{{#match @custom.homepage_layout "Editorial masthead"}}
+		<div style="--container-max:1120px">
+			{{> "home/window" wide=true}}
 
-			{{#match @custom.homepage_layout "Editorial masthead"}}
-				{{> "home/a2" feed=feed}}
-			{{else}}
-				{{> "home/a1" feed=feed}}
-			{{/match}}
+			{{#if pagination.pages}}
+				{{pagination pt="pt-14"}}
+			{{/if}}
+		</div>
+	{{else}}
+		{{> "home/window"}}
 
-		{{else}}
-			{{!-- Also the branch a get-helper timeout lands in: where
-			optimization:getHelper:timeout:threshold is configured, a slow query returns empty and
-			Ghost prepends its own <span data-aborted-get-helper>. Without this, a slow homepage
-			renders as a hole. --}}
-			<p class="font-body text-muted">{{t "No posts yet."}}</p>
-		{{/get}}
+		{{#if pagination.pages}}
+			{{pagination pt="pt-14"}}
+		{{/if}}
+	{{/match}}
 
-	</div>
+	{{> "newsletter" anchor="newsletter" pt="pt-16"}}
+
+	{{> "writers" anchor="authors" headingId="au-head"}}
+
 </main>
 
 {{> "chrome/footer"}}

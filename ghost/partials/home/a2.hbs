@@ -1,28 +1,10 @@
-{{!-- A2, "Editorial masthead": the publication states itself first, then the stories run as
-a numbered editorial list rather than a grid. Same query, same slices, different arrangement
-— which is the point of the picker: one Surface, two layouts, no second set of data.
+{{!-- A2, "Editorial masthead": the publication states its newest story first, then the rest run
+as a ranked list over a card grid. Same query, same slices, different arrangement.
 
-@number comes from {{#foreach}} rather than a counter in the markup. --}}
-<header class="border-border mb-12 border-b pb-10">
-	<h2 class="font-display text-h1 text-text tracking-tight">{{@site.title}}</h2>
-	{{#if @site.description}}
-		<p class="font-body text-muted text-lead measure mt-3">{{@site.description}}</p>
-	{{/if}}
-</header>
+Neither the 1120px article column nor the pagination is here. The column has to contain the
+control as well as these two sections, and the control has to be called on the page's own
+context rather than on the editorial window's — so home.hbs owns both, and this partial is the
+arrangement and nothing else. --}}
+{{> "home/masthead" feed=feed}}
 
-<ol class="border-border border-t">
-	{{#foreach feed}}
-		<li class="border-border flex gap-6 border-b py-7">
-			<span
-				aria-hidden="true"
-				class="font-meta text-muted w-8 shrink-0 pt-1 text-[12px]">{{@number}}</span>
-			<div>
-				<h3 class="font-display text-h3 tracking-tight">
-					<a href="{{url}}" class="text-text no-underline">{{title}}</a>
-				</h3>
-				<p class="font-body text-muted measure mt-2">{{excerpt words="24"}}</p>
-				{{> "post-meta" byline=true}}
-			</div>
-		</li>
-	{{/foreach}}
-</ol>
+{{> "home/digest" feed=feed}}

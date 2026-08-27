@@ -1,31 +1,17 @@
-{{!-- A1, "Magazine cover": a single lead story at display size, then the latest in a
-three-column grid. The designed cover — featured strip, writers row, newsletter band —
-arrives with the Feed ticket; the arrangement is what distinguishes it from A2.
+{{!-- A1, "Magazine cover": one story at cover size, the featured strip, then the latest in a
+lead-plus-grid arrangement.
 
-Every slot comes from the {{#get}} in home.hbs, sliced by {{#foreach}}'s from/to. Slicing
-rather than excluding is deliberate: get.js only optimises a filter carrying exactly one
-`id:-` term, so a chain of exclusions turns the most-requested URL on the site into an
-uncacheable per-visitor query. Positions cannot collide, so no exclusion is needed. --}}
-{{#foreach feed limit="1"}}
-	<article class="{{post_class}} border-border mb-12 border-b pb-12">
-		{{#primary_tag}}<a href="{{url}}" class="font-meta text-accent text-[12px] uppercase">{{name}}</a>{{/primary_tag}}
-		<h2 class="font-display text-display mt-3 leading-none tracking-tight">
-			<a href="{{url}}" class="text-text no-underline">{{title}}</a>
-		</h2>
-		<p class="font-body text-muted text-lead measure mt-4">{{excerpt words="40"}}</p>
-		{{> "post-meta" byline=true}}
-	</article>
-{{/foreach}}
+Same query as A2, same slices, different arrangement — which is the point of the picker: one
+Surface, two layouts, no second set of data. Only the featured strip has a query of its own,
+because "featured" is a flag rather than a position and A2 does not draw the strip at all.
 
-<h2 class="font-meta text-muted mb-6 text-[12px] uppercase">{{t "Latest"}}</h2>
+The pagination is NOT here. It belongs directly below the article grid — a deliberate divergence
+from the design source, which puts it at the foot of the page after the subscribe band and the
+writers strip, made on the client's instruction and measured in DECISIONS.md — and home.hbs is
+where it can read the page's own pagination rather than the editorial window's. That is the whole
+reason this partial ends at the grid. --}}
+{{> "home/hero" feed=feed}}
 
-<div class="grid gap-8 md:grid-cols-3">
-	{{#foreach feed from="2" to="7" columns="3"}}
-		<article class="{{post_class}}">
-			<h3 class="font-display text-h4 tracking-tight">
-				<a href="{{url}}" class="text-text no-underline">{{title}}</a>
-			</h3>
-			{{> "post-meta"}}
-		</article>
-	{{/foreach}}
-</div>
+{{> "home/featured"}}
+
+{{> "home/latest" feed=feed}}

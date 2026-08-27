@@ -60,6 +60,86 @@
 }
 
 /*
+ * The featured strip's track.
+ *
+ * The reference build drives this strip with Swiper, which translates a wrapper inside an
+ * `overflow: hidden` box; the theme drops the library for native scroll-snap, so the track is a
+ * real scroll container and needs the declarations Tailwind has no utility for. The design
+ * draws no scrollbar under the cards and the two arrow buttons are the affordance, which is why
+ * hiding it here is not the mistake the tag strips made — a strip of pills with nothing but a
+ * hidden scrollbar reads as absent content, a carousel with prev/next does not.
+ *
+ * The block padding is the other half of that same note, and it is not decoration. Setting
+ * `overflow-x` makes `overflow-y` compute to `auto` rather than `visible`, so the box clips on
+ * all four sides — and the theme's `:focus-visible` ring is a 2px outline at a 2px offset, i.e.
+ * 4px outside the card's border box. Tabbing to a card would draw a ring cropped top and bottom.
+ * 4px of padding gives it room and the matching negative margin gives the space back, so the
+ * strip occupies exactly the box it did before; block padding cannot move a horizontal snap
+ * position, which is the geometry the `featured-card` widths depend on.
+ *
+ * Ghost-only, because the reference build has no scroll container here to style.
+ */
+@utility snap-track {
+	scroll-snap-type: x mandatory;
+	scrollbar-width: none;
+	padding-block: 4px;
+	margin-block: -4px;
+
+	&::-webkit-scrollbar {
+		display: none;
+	}
+}
+
+/*
+ * A featured card's width — Swiper's own arithmetic, written out.
+ *
+ * For a numeric `slidesPerView`, Swiper sets every slide to
+ * `(trackWidth - spaceBetween * (slidesPerView - 1)) / slidesPerView`, and the design source
+ * configures 1.15 slides, 2.2 from 640px and 3.3 from 1000px, all 20px apart. At the 1568px
+ * capture width the last of those is `(1256 - 46) / 3.3 = 366.67px`, which is the number the
+ * reference build's Swiper produces — so the two strips render identically.
+ *
+ * WHY THIS IS CSS AND NOT THREE TAILWIND VARIANTS. `sm:basis-[…] min-[1000px]:basis-[…]` looks
+ * equivalent and is not: Tailwind v4 groups arbitrary `min-[…]` variants apart from the named
+ * breakpoints and emits them first, so at 1568px the `sm` rule won and every card came out at
+ * the 2.2-per-view width. Measured, on the first capture of this Surface: −21 points. Three
+ * media queries in source order have no ordering to get wrong, and 1000px is Swiper's number
+ * rather than one of the three breakpoints the layout otherwise turns on.
+ */
+@utility featured-card {
+	flex: none;
+	scroll-snap-align: start;
+	width: calc((100% - 3px) / 1.15);
+
+	@media (width >= 640px) {
+		width: calc((100% - 24px) / 2.2);
+	}
+
+	@media (width >= 1000px) {
+		width: calc((100% - 46px) / 3.3);
+	}
+}
+
+/*
+ * A tag pill that marks the active filter.
+ *
+ * `tag-pill` in src/styles/main.css colours from `aria-pressed`, because in the reference build
+ * every pill is a button driving a client-side filter. On Ghost a tag is a Surface, so the pills
+ * are links and the active one carries `aria-current` — the same fill, from the attribute a link
+ * is allowed to carry. Declared as its own selector rather than by widening the utility: the
+ * utility belongs to the design, and links here belong to the platform.
+ *
+ * Matched on the attribute rather than on a value, so `aria-current="true"` (the active filter,
+ * which is what the Feed's All pill is) and `aria-current="page"` (a pill that really is the URL
+ * you are on) both fill without this file having to know which a Surface used.
+ */
+.tag-pill[aria-current] {
+	border-color: var(--mirror-text);
+	background: var(--mirror-text);
+	color: var(--mirror-surface);
+}
+
+/*
  * Koenig image widths. Ghost ships no CSS for these two whatever `card_assets` says, so
  * a theme must always define them — gscan treats their absence as an error.
  *

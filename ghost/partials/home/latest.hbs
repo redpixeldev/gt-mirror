@@ -1,0 +1,120 @@
+{{!-- A1's body: a lead story with three companion rows beside it, then the archive grid.
+
+	{{> "home/latest" feed=feed}}
+
+Every slot is a slice of the one query in home/window.hbs, taken with {{#foreach}}'s `from`/`to`, which
+are 1-based and inclusive. Slicing rather than excluding is deliberate and it is not a style
+preference: core/frontend/helpers/get.js only optimises a filter carrying exactly one `id:-`
+term, so a chain of exclusions would turn the most-requested URL on the site into an uncacheable
+per-visitor query. Positions cannot collide, so no exclusion is needed.
+
+Position 1 is the cover, so this section starts at 2: the lead story, rows 3–5 beside it, and
+6–12 in the grid. --}}
+<section
+	id="latest"
+	aria-labelledby="a1-latest"
+	class="container pt-18">
+	<div class="border-border mb-8 flex flex-wrap items-baseline gap-7 border-b pb-3.5">
+		<h2
+			id="a1-latest"
+			class="font-display text-h2 tracking-heading font-medium">{{t "Latest"}}</h2>
+
+		{{> "tag-strip"}}
+	</div>
+
+	<div class="grid items-start gap-11 lg:grid-cols-[1.35fr_1fr]">
+		{{#foreach feed from="2" to="2"}}
+			<article class="{{post_class}}">
+				<a
+					href="{{url}}"
+					class="text-text block no-underline">
+					{{#if feature_image}}
+						<img
+							src="{{img_url feature_image size="l"}}"
+							{{#if feature_image_alt}}alt="{{feature_image_alt}}"{{else}}alt=""{{/if}}
+							loading="lazy"
+							decoding="async"
+							class="border-border block aspect-[16/10] w-full rounded-md border object-cover">
+					{{/if}}
+
+					{{#primary_tag}}
+						<p class="font-meta text-meta tracking-meta text-accent mt-[18px] uppercase">{{name}}</p>
+					{{/primary_tag}}
+
+					<h3 class="font-display tracking-heading mt-2.5 text-[32px] leading-[1.18] font-medium text-balance">{{title}}</h3>
+
+					<p class="text-body text-muted mt-3.5 max-w-[56ch] leading-[1.6] text-pretty">{{excerpt}}</p>
+
+					<p class="font-meta text-meta tracking-meta text-muted mt-4 uppercase">{{> "dateline"}}</p>
+				</a>
+			</article>
+		{{/foreach}}
+
+		<div class="flex flex-col gap-7">
+			{{#foreach feed from="3" to="5"}}
+				<article
+					class="{{post_class}} border-border max-stack:grid-cols-[minmax(0,1fr)] grid grid-cols-[minmax(0,1fr)_116px] items-start gap-5 border-b pb-7">
+					<div>
+						{{#primary_tag}}
+							<p class="font-meta text-meta tracking-meta text-accent uppercase">{{name}}</p>
+						{{/primary_tag}}
+
+						<h3 class="font-display tracking-heading mt-2 text-[21px] leading-[1.26] font-medium">
+							<a
+								href="{{url}}"
+								class="text-text hover:text-accent no-underline">{{title}}</a>
+						</h3>
+
+						<p class="text-small text-muted mt-2.5 leading-[1.55]">{{excerpt}}</p>
+
+						<p class="font-meta text-meta tracking-meta text-muted mt-3 uppercase">{{> "dateline"}}</p>
+					</div>
+
+					{{#if feature_image}}
+						<img
+							src="{{img_url feature_image size="s"}}"
+							{{#if feature_image_alt}}alt="{{feature_image_alt}}"{{else}}alt=""{{/if}}
+							width="116"
+							height="88"
+							loading="lazy"
+							decoding="async"
+							class="border-border block h-22 w-[116px] rounded-sm border object-cover">
+					{{/if}}
+				</article>
+			{{/foreach}}
+		</div>
+	</div>
+
+	<div class="mt-14 grid grid-cols-[repeat(auto-fill,minmax(min(280px,100%),1fr))] gap-9">
+		{{#foreach feed from="6" to="12"}}
+			<article class="{{post_class}}">
+				<a
+					href="{{url}}"
+					class="text-text block no-underline">
+					{{#if feature_image}}
+						<img
+							src="{{img_url feature_image size="m"}}"
+							{{#if feature_image_alt}}alt="{{feature_image_alt}}"{{else}}alt=""{{/if}}
+							loading="lazy"
+							decoding="async"
+							class="border-border block aspect-[3/2] w-full rounded-md border object-cover">
+					{{/if}}
+
+					<div class="mt-4 flex items-center gap-2.5">
+						{{#primary_tag}}
+							<span class="font-meta text-meta tracking-meta text-accent uppercase">{{name}}</span>
+						{{/primary_tag}}
+
+						{{> "tier-chip"}}
+					</div>
+
+					<h3 class="font-display tracking-heading mt-2.5 text-[22px] leading-[1.24] font-medium">{{title}}</h3>
+
+					<p class="text-small text-muted mt-2.5 leading-[1.58]">{{excerpt}}</p>
+
+					<p class="font-meta text-meta tracking-meta text-muted mt-3.5 uppercase">{{> "dateline"}}</p>
+				</a>
+			</article>
+		{{/foreach}}
+	</div>
+</section>

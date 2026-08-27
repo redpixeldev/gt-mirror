@@ -1,34 +1,46 @@
 {{!< default}}
 
-{{!-- The paginated post feed. Both designed layouts and the editorial slicing land in
-the Feed ticket; this renders the publication's real posts, in the theme's own type. --}}
+{{!-- The Feed Surface: every post, newest first, paginated — in whichever layout the
+publication picked.
+
+The layout picker is the pattern home.hbs documents: one {{#match}} at the top, the non-default
+option matched explicitly so an unrecognised stored value falls through to a layout rather than
+to nothing, and no partial below reading @custom.
+
+No query here. Unlike the homepage, this Surface IS its own query: `posts` is the page's slice of
+the collection or channel that owns this URL, and `pagination` is the shape of the rest of it.
+That is also why the theme cannot decide how many rows a page holds — Ghost resolves the limit in
+the routing layer, from `posts_per_page` in this theme's package.json or from `limit:` on the
+route in the publication's routes.yaml, both of which are settled long before a template runs.
+
+This template also serves page 2 onwards of a `/` collection: with the layout in
+docs/routes.example.yaml the cover owns `/` and this Surface owns `/archive/`, but a publication
+that leaves `/` as its posts collection gets the cover on page 1 and this Surface on every page
+after it. Both are correct, and neither needs a branch here. --}}
 
 {{> "chrome/header"}}
 
-<main id="main" class="grow">
-	<div class="container py-16" data-surface="feed">
+<main
+	id="main"
+	class="grow"
+	data-surface="feed">
 
-		<h1 class="font-display text-h1 text-text mb-10 tracking-tight">{{@site.title}}</h1>
+	{{> "feed/header"}}
 
-		{{#foreach posts}}
-			<article class="{{post_class}} border-border border-b py-8 last:border-0">
-				<h2 class="font-display text-h3 mb-2 tracking-tight">
-					<a
-						href="{{url}}"
-						class="text-text no-underline">{{title}}</a>
-				</h2>
+	{{> "feed/filter-bar"}}
 
-				<p class="font-body text-muted measure mb-3">{{excerpt words="28"}}</p>
+	{{#match @custom.feed_layout "Three-column grid"}}
+		{{> "feed/a2"}}
+	{{else}}
+		{{> "feed/a1"}}
+	{{/match}}
 
-				{{> "post-meta" byline=true}}
-			</article>
-		{{else}}
-			<p class="font-body text-muted">{{t "No posts yet."}}</p>
-		{{/foreach}}
+	{{pagination pt="pt-12"}}
 
-		{{pagination}}
+	{{> "newsletter" anchor="newsletter" pt="pt-20"}}
 
-	</div>
+	{{> "writers" anchor="writers" headingId="wr-head"}}
+
 </main>
 
 {{> "chrome/footer"}}

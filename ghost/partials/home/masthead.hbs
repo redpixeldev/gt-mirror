@@ -1,0 +1,41 @@
+{{!-- A2's lead: the publication states its newest story typographically, with no cover photo.
+
+	{{> "home/masthead" feed=feed}}
+
+The same first row of the same query A1 leads with — the difference between the two layouts is
+the drawing, never the data.
+
+The face is the writer's, at 32px, drawn by post/avatar.hbs so a publication whose writers
+uploaded photos gets photos here as it does everywhere else. --}}
+{{#foreach feed limit="1"}}
+	<section
+		aria-labelledby="a2-lead"
+		class="border-border container border-b pt-20 text-center">
+		<p class="font-meta text-meta text-muted tracking-[0.16em] uppercase">
+			{{~#primary_tag}}{{name}}<span aria-hidden="true"> · </span>{{/primary_tag~}}
+			{{date format="DD MMM YYYY"}}
+		</p>
+
+		<h1
+			id="a2-lead"
+			class="font-display tracking-display mt-6 text-[clamp(36px,4.6vw,60px)] leading-[1.08] font-medium text-balance">
+			<a
+				href="{{url}}"
+				class="text-text no-underline">{{title}}</a>
+		</h1>
+
+		<p class="font-body text-muted mx-auto mt-[22px] max-w-[58ch] text-[21px] leading-[1.55] text-pretty italic">{{excerpt}}</p>
+
+		<div class="mt-7 mb-11 flex items-center justify-center gap-3">
+			{{#primary_author}}
+				{{> "post/avatar" size="size-8" textSize="text-xs"}}
+
+				<a
+					href="{{url}}"
+					class="font-ui text-text text-sm font-semibold no-underline">{{name}}</a>
+			{{/primary_author}}
+
+			<span class="font-meta text-meta tracking-meta text-muted uppercase">{{reading_time seconds=(t "< 1 min read") minute=(t "1 min read") minutes=(t "% min read")}}</span>
+		</div>
+	</section>
+{{/foreach}}

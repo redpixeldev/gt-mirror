@@ -1,0 +1,88 @@
+{{!-- A1's featured strip: the posts the publication flagged, in a track that scrolls.
+
+	{{> "home/featured"}}
+
+Its own query, and the only one on this Surface that is not the shared post window: "featured"
+is a flag on the post, not a position, so `filter="featured:true"` is the whole of it. A post can
+be both featured and recent, so a card here may also appear below — which is what the design
+draws too.
+
+NO SWIPER. The design source drives this strip with Swiper 11, and the whole of what it uses is
+`slidesPerView` with `spaceBetween` plus two buttons calling `slidePrev`/`slideNext`. Native
+scroll-snap is the same control with no library: keyboard- and touch-accessible for free, no
+width cached at init to re-measure once the webfonts settle, and `prefers-reduced-motion`
+honoured by switching the scroll behaviour rather than a speed.
+
+The card widths are Swiper's own arithmetic, written out as the `featured-card` utility in
+assets/css/screen.css — three media queries rather than three Tailwind breakpoint variants, for
+a reason worth reading there before touching it.
+
+`{{#if featured}}` and not the get's `{{else}}`: get calls `options.inverse` only for an invalid
+resource or an API error (core/frontend/helpers/get.js), never for an empty result. Without the
+guard, a publication that has flagged nothing renders the heading, its rule, four rem of padding
+and two arrow buttons scrolling an empty track. "Featured" is an editorial choice; a publication
+that has not made one has no strip. --}}
+{{#get "posts" filter="featured:true" limit="6" include="authors,tags" as |featured|}}
+	{{#if featured}}
+		<section
+			aria-labelledby="a1-featured"
+			class="container pt-16">
+			<div class="border-border flex items-baseline justify-between gap-5 border-b pb-3.5">
+				<h2
+					id="a1-featured"
+					class="font-display text-h2 tracking-heading font-medium">{{t "Featured"}}</h2>
+
+				<div class="flex gap-2">
+					<button
+						type="button"
+						data-featured-prev
+						aria-label="{{t "Previous featured posts"}}"
+						class="btn border-border bg-surface text-text hover:bg-surface-2 rounded-pill grid size-9 cursor-pointer place-items-center border font-mono">
+						<span aria-hidden="true">←</span>
+					</button>
+					<button
+						type="button"
+						data-featured-next
+						aria-label="{{t "Next featured posts"}}"
+						class="btn border-border bg-surface text-text hover:bg-surface-2 rounded-pill grid size-9 cursor-pointer place-items-center border font-mono">
+						<span aria-hidden="true">→</span>
+					</button>
+				</div>
+			</div>
+
+			{{!-- The padding lives on a wrapper rather than on the track, so the scroll container's
+			own box starts exactly where the first card does — padding inside a snap container shifts
+			every snap position by that amount. --}}
+			<div class="pt-7">
+				<div
+					data-featured
+					class="snap-track flex gap-5 overflow-x-auto">
+					{{#foreach featured}}
+						<article class="featured-card">
+							<a
+								href="{{url}}"
+								class="text-text block no-underline">
+								{{#if feature_image}}
+									<img
+										src="{{img_url feature_image size="l"}}"
+										{{#if feature_image_alt}}alt="{{feature_image_alt}}"{{else}}alt=""{{/if}}
+										loading="lazy"
+										decoding="async"
+										class="border-border block aspect-[4/3] w-full rounded-md border object-cover">
+								{{/if}}
+
+								{{#primary_tag}}
+									<p class="font-meta text-meta tracking-meta text-accent mt-3.5 uppercase">{{name}}</p>
+								{{/primary_tag}}
+
+								<h3 class="font-display tracking-heading mt-2 text-[21px] leading-[1.25] font-medium">{{title}}</h3>
+
+								<p class="font-meta text-meta tracking-meta text-muted mt-2.5 uppercase">{{> "dateline"}}</p>
+							</a>
+						</article>
+					{{/foreach}}
+				</div>
+			</div>
+		</section>
+	{{/if}}
+{{/get}}

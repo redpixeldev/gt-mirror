@@ -92,7 +92,9 @@
 		"surface": "feed",
 		"path": "/archive/",
 		"status": 200,
-		"settings": {},
+		"settings": {
+			"feed_layout": "Two-column list"
+		},
 		"build": ".shots/ghost/ghost-blog-01-light.png",
 		"ref": "03-blog-A1-light.png",
 		"h": 7061,
@@ -105,7 +107,9 @@
 		"surface": "feed",
 		"path": "/archive/",
 		"status": 200,
-		"settings": {},
+		"settings": {
+			"feed_layout": "Two-column list"
+		},
 		"build": ".shots/ghost/ghost-blog-01-dark.png",
 		"ref": "03-blog-A1-dark.png",
 		"h": 7061,
@@ -118,12 +122,13 @@
 		"surface": "feed",
 		"path": "/archive/",
 		"status": 200,
-		"settings": {},
+		"settings": {
+			"feed_layout": "Three-column grid"
+		},
 		"build": ".shots/ghost/ghost-blog-02-light.png",
 		"ref": "03-blog-A2-light.png",
 		"h": 4530,
-		"w": 1568,
-		"skip": "no layout picker on the Feed yet — the Feed and homepage Surfaces ticket adds one"
+		"w": 1568
 	},
 	{
 		"route": "blog-02",
@@ -132,12 +137,13 @@
 		"surface": "feed",
 		"path": "/archive/",
 		"status": 200,
-		"settings": {},
+		"settings": {
+			"feed_layout": "Three-column grid"
+		},
 		"build": ".shots/ghost/ghost-blog-02-dark.png",
 		"ref": "03-blog-A2-dark.png",
 		"h": 4530,
-		"w": 1568,
-		"skip": "no layout picker on the Feed yet — the Feed and homepage Surfaces ticket adds one"
+		"w": 1568
 	},
 	{
 		"route": "post-01",

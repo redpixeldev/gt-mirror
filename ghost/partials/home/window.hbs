@@ -1,0 +1,46 @@
+{{!-- The homepage's editorial window: twelve posts, one query, either arrangement.
+
+	{{> "home/window"}}             the magazine cover
+	{{> "home/window" wide=true}}   the editorial masthead
+
+	wide    render A2 rather than A1
+
+Both layouts fill every slot from this one window, sliced by {{#foreach}}'s 1-based inclusive
+`from`/`to`: A1 takes 1 for the cover, 2 for the lead story, 3–5 for the rows beside it and 6–12
+for the grid; A2 takes 1 for the masthead, 2–4 for the shortlist and 5–12 for the grid. The
+slots come from the publication's own recency, not from positions in a fixture. A1's featured
+strip is the one exception and has a query of its own, because "featured" is a flag on the post
+rather than a place in the order.
+
+The layout arrives as an argument rather than being read from @custom here, so this partial and
+everything under it can be moved or shared without dragging a settings dependency along —
+Source threads `navigationLayout` the same way. home.hbs is the one place that reads the setting.
+
+The query is here, and not in home.hbs, because {{pagination}} cannot be called inside it: the
+{{#get}} helper renders its block with the query's own response as the context, so a pagination
+control inside would count the twelve-post window instead of the publication. Keeping the get in
+a partial lets home.hbs call the control on the page's own context, one level out. --}}
+{{#get "posts" limit="12" include="authors,tags" as |feed|}}
+	{{!-- `../wide`, not `wide`: {{#get}} renders its block with the query's own response as the
+	context, so a partial argument passed to THIS partial is one frame up from here. Read as
+	`wide` it is simply undefined, which silently renders A1 under the A2 setting — and the only
+	visible difference would be a wrapper div, which is not enough for the capture harness's
+	Layout guard to catch. --}}
+	{{#if feed}}
+		{{#if ../wide}}
+			{{> "home/a2" feed=feed}}
+		{{else}}
+			{{> "home/a1" feed=feed}}
+		{{/if}}
+	{{else}}
+		{{> "home/no-posts"}}
+	{{/if}}
+{{else}}
+	{{!-- The get's own inverse, which is NOT the empty-publication branch: get calls
+	`options.inverse` for an invalid resource or an API error and for nothing else
+	(core/frontend/helpers/get.js), so an empty result — and a slow query under
+	optimization:getHelper:timeout:threshold, which resolves empty with Ghost's own
+	<span data-aborted-get-helper> prepended — both render the block above. That is why the
+	emptiness guard is inside it. This branch is the API falling over. --}}
+	{{> "home/no-posts"}}
+{{/get}}
