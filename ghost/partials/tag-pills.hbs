@@ -1,0 +1,72 @@
+{{!-- The pill strip itself: a label, and one link per tag, in the three sizes the design draws.
+
+	{{> "tag-pills" tags=tags label=(t "Browse by tag")}}               A1's homepage strip
+	{{> "tag-pills" tags=tags label=(t "Browse by tag") wide=true}}     A2's homepage strip, with counts
+	{{> "tag-pills" tags=tags label=(t "Other tags") stacked=true headingId="other-tags"}}
+	                                                                    the tag archive's
+
+	tags        the rows to render — always passed in, never queried here
+	label       the strip's own word for itself
+	wide        the A2 sizing: a full-width row, each pill carrying its post count
+	stacked     the tag archive's sizing, the label on its own line above the pills
+	headingId   render the label as an <h2> with this id, so a section can be labelled by it
+
+The markup lives apart from tag-strip.hbs because the tag archive draws the same strip over a
+DIFFERENT query — every tag except the one being read. A {{#get}} cannot take a filter
+conditionally: `filter="slug:-{{exclude}}"` with nothing to exclude reaches NQL as `slug:-` and
+fails the whole query. So each caller owns its {{#get}} and hands the rows here, and the pill is
+written once.
+
+Every branch spells its class list out in full. A class assembled at render time is a class
+Tailwind's scanner never sees in the source, so it is never compiled — the same reason
+chrome/header.hbs writes its two bars out twice. --}}
+{{#if stacked}}
+	<div>
+		{{#if headingId}}
+			<h2
+				id="{{headingId}}"
+				class="font-ui text-muted mb-[18px] text-xs font-semibold tracking-[0.16em] uppercase">{{label}}</h2>
+		{{else}}
+			<span class="font-ui text-muted mb-[18px] text-xs font-semibold tracking-[0.16em] uppercase">{{label}}</span>
+		{{/if}}
+
+		<div class="strip flex gap-2.5 p-0.5">
+			{{#foreach tags}}
+				<a
+					href="{{url}}"
+					class="font-meta tracking-meta border-border bg-surface text-text hover:border-accent hover:text-accent rounded-pill flex-none border px-4 py-[9px] text-[12.5px] whitespace-nowrap uppercase no-underline">{{name}}
+					<span class="text-muted font-mono text-[11px]">{{count.posts}}</span></a>
+			{{/foreach}}
+		</div>
+	</div>
+{{else}}
+	{{#if wide}}
+		<div class="max-stack:block flex flex-wrap items-center gap-[18px]">
+			<span
+				class="font-ui text-muted max-stack:mb-3.5 max-stack:block text-[11.5px] font-semibold tracking-[0.16em] whitespace-nowrap uppercase">{{label}}</span>
+
+			<div class="strip flex gap-[9px] p-0.5">
+				{{#foreach tags}}
+					<a
+						href="{{url}}"
+						class="font-meta tracking-meta border-border bg-surface text-text hover:border-accent hover:text-accent rounded-pill flex-none border px-[15px] py-2 text-[12.5px] whitespace-nowrap uppercase no-underline">{{name}}
+						<span class="text-muted font-mono text-[11px]">{{count.posts}}</span></a>
+				{{/foreach}}
+			</div>
+		</div>
+	{{else}}
+		<div
+			class="max-stack:ml-0 max-stack:block max-stack:w-full ml-auto flex min-w-0 flex-[0_1_auto] items-center gap-3.5">
+			<span
+				class="font-ui text-muted max-stack:mb-3.5 max-stack:block text-[11.5px] font-semibold tracking-[0.16em] whitespace-nowrap uppercase">{{label}}</span>
+
+			<div class="strip flex gap-2 p-0.5">
+				{{#foreach tags}}
+					<a
+						href="{{url}}"
+						class="font-meta tracking-meta border-border bg-surface text-text hover:border-accent hover:text-accent rounded-pill flex-none border px-[13px] py-[7px] text-xs whitespace-nowrap uppercase no-underline">{{name}}</a>
+				{{/foreach}}
+			</div>
+		</div>
+	{{/if}}
+{{/if}}

@@ -2116,3 +2116,179 @@ ring on a pill — `snap-track` now carries 4px of block padding and a matching 
 the ring has room and the box is unchanged. The Feed's All pill moved from `aria-current="page"` to
 `aria-current="true"`. And `partials/pagination-page.hbs` collapsed seven repeated class lists in
 the control down to two.
+
+## Browsing by subject: the Tags Directory and the tag archive (2026-08)
+
+Two Surfaces, not one. The Directory lists subjects; the archive is the Feed filtered to one of
+them. They look alike in the card layout, and `CONTEXT.md` was written to settle exactly that — so
+they get separate templates, separate queries and separate layout selects: the Directory follows a
+new `@custom.directory_layout`, the archive follows `@custom.feed_layout`, because a buyer who
+asked for a wide row per post meant it wherever posts are listed.
+
+### The scored route moved, because the design drew a different tag
+
+`scripts/ghost/routes.json` pointed the `tag` Surface at `/tag/essays/`, which was fine while the
+row only had to prove a template resolved. The reference PNG is the **Interviews** archive — 21
+posts, its own description, its own twelve stories — so the capture path is now
+`/tag/interviews/`. Scoring one tag's archive against another tag's drawing measures nothing.
+
+### A tag can be filed twice, so the fixture stopped dropping the second one
+
+`build-fixture.mjs` resolved every disagreement between the Astro build's per-template datasets by
+precedence and recorded the loser as a dropped value. That is right for a date, a photograph or a
+primary author, and wrong for a tag: **a tag is the one field a post can hold twice.** A piece can
+be filed under Craft and still be one of the Interviews.
+
+So where two pools disagree about a post's tag, the higher pool still decides which is PRIMARY —
+primary is what every card's eyebrow prints — and the loser is now carried as a **secondary** tag
+instead of being dropped. Two assertions came back:
+
+| post                      | primary | also carried |
+| :------------------------ | :------ | :----------- |
+| Type is the interface     | Craft   | Typography   |
+| On refusing the interview | Craft   | Interviews   |
+
+The reconciliation concession count falls from **10 to 8**, and `/tag/interviews/` lists the post
+the design draws seventh rather than eleven of twelve stories plus whatever the marginals spared.
+The fixture reports the count on every build, so this cannot drift silently either.
+
+### What still separates the Ghost tag archive from its drawing
+
+Three things, in descending order of what they cost:
+
+1. **One `posts_per_page` for every paginated Surface.** The design draws twelve posts on the tag
+   archive and eighteen on the Feed; Ghost resolves the page length in the routing layer, and
+   `taxonomies` in `routes.yaml` takes a permalink string and nothing else
+   (`route-settings-parser.js`: `z.record(z.string(), z.string())`) — there is no per-taxonomy
+   `limit`. Eighteen wins because the Feed is the Surface with more traffic and `archive.ts` is
+   the broader dataset. The consequence is structural: from y≈2550 the reference PNG shows
+   pagination, the tag strip and the subscribe band while the port is still showing cards. On the
+   A2 card grid, where the differing pixels are photographs rather than text, that alone bounds
+   the capture at roughly 83 %.
+2. **The tag's description has two values in the design and one field in Ghost.** `tags.ts` gives
+   Interviews "Editors and founders on the decisions they would make again."; `tagArchive.ts`
+   gives it "Editors, founders and reporters on the decisions they would make again — and the
+   ones they wouldn't." The fixture keeps the first, by the same breadth rule that governs every
+   other reconciliation — fourteen tags beat one. Measured cost: the archive's description sets on
+   one line instead of two, so every band below the masthead is **28px** high on the page.
+3. **Two more posts genuinely carry the tag.** `posts.ts` files "Notes on a slower publishing
+   calendar" and "The fixer's ledger" under Interviews; the design's standalone archive dataset
+   does not list them. They are the publication's own filing, not a defect, and deleting them to
+   match a mockup would be the fixture lying about the content.
+
+None of the three is a port defect and none is fixable in the theme. They are recorded here so the
+Ship ticket's report has a named reason per capture rather than a shrug.
+
+### The first crumb is not a link, because there is no URL to point it at
+
+The design draws "Tags / Interviews" with the first word linking to the Directory. **Ghost has no
+Tags Directory URL.** The directory is a Page the publication creates and names, so its slug is the
+buyer's and nothing about it reaches a template; hardcoding `/tags/` would 404 on every publication
+that called it something else. The crumb is a `<span>` that inherits the nav's colour, so the
+drawing is unchanged and no link points at nothing. Concession, and it costs zero pixels.
+
+### The date range is two queries, and the second one lives in a partial
+
+The masthead prints "21 posts · 2025 — 2026". Ghost stores no date range on a tag and Handlebars
+has no arithmetic, so the two ends are the tag's oldest and its newest post — two `limit="1"`
+queries against an indexed order. Neither can be read off the page's own `posts`: the masthead
+renders on every page of the archive and page 3 carries neither end.
+
+The second query is in `partials/tag/range-to.hbs` rather than nested in the first, and that is
+forced. `{{#get}}` resolves the mustaches in its `filter` against the **current context**
+(`parseOptions(ghostGlobals, this, …)` in `core/frontend/helpers/get.js`), and inside a `{{#get}}`
+block that context is the query's response — the tag's slug is one frame up, and the resolver
+understands a plain path and a dotted one and nothing else, so `filter="tag:{{../slug}}"` fails the
+render outright. A partial's hash arguments **are** merged into its context, so handing the slug to
+a second partial puts it back within reach of a plain path. That is the general escape hatch for
+any second query that needs a value from outside the first.
+
+A tag whose posts all fall in one year prints that year once. `{{#match}}` unwraps a `SafeString`
+before comparing (`core/frontend/helpers/match.js`), which is what lets two rendered `{{date}}`
+calls be compared at all.
+
+### The Directory is alphabetical, and an empty tag never reaches it
+
+The reference build orders the Directory by name, and so does the port: a directory is browsed, and
+a browsed list is alphabetical. The earlier stub ordered by post count to make the silent 100-row
+cap (`core/shared/max-limit-cap.js`) drop the emptiest tags; ordering by name means a publication
+past 100 public tags loses the end of the alphabet instead, which `ghost/README.md` now says out
+loud. Reordering a Surface to hide a cap is worse than the cap.
+
+**A tag with no posts is not in the Directory at all, whatever the theme does.** `TagPublic` is
+declared with `shouldHavePosts` (`core/server/models/tag-public.js`), which joins through
+`posts_tags` — so the public tags API only ever answers with tags something is filed under.
+Measured: a tag created through the Admin API with no posts is absent from `/tags/`; the moment a
+post carries it, it appears. The empty-state branch below the query is therefore for a publication
+with no tags at all, not for an empty tag.
+
+### An imageless tag keeps its frame; an imageless post does not
+
+Opposite calls, on purpose. In `directory/tag-cards.hbs` a tag with no `feature_image` renders a
+bordered panel of the same 16:10 box, because every card in a row shares a baseline and dropping
+the box on one tag lifts its name while its neighbours' stay put — a grid whose whole job is
+comparison, visibly broken. In `archive/card.hbs` a post with no feature image starts at the
+eyebrow, the same as the Feed's grid and the related strip, because a post without a photograph is
+a normal post and a placeholder panel there would be the theme inventing one.
+
+Verified against a real tag: `Zzz bare`, created with no description and no image and attached to
+one post, rendered the frame in the card layout and a name-and-count row in the editorial layout,
+and its own archive printed "1 post · 2020" with no empty column where the description would be.
+
+### The lead story is page 1 only
+
+The A1 archive opens with the newest post as a lead under the eyebrow "Latest in Interviews". That
+is true of the newest post in the tag and of nothing on page 2, so later pages run every post
+through the same row as the rest rather than printing a lie or dropping the eyebrow. The archive
+narrows to a list once the reader has paged past the front of it, which is also what paging asked
+for.
+
+### One strip, two queries
+
+`partials/tag-strip.hbs` split into a query and a drawing. The tag archive's "Other tags" is the
+same strip over a different query — every tag EXCEPT the one being read — and a `{{#get}}` cannot
+take a filter conditionally: `filter="slug:-{{exclude}}"` with nothing to exclude reaches NQL as
+`slug:-` and fails the query. So each caller owns its `{{#get}}` and `partials/tag-pills.hbs` owns
+the pill, in the three sizes the design draws. The A2 strip and the homepage's two are unchanged.
+
+### `pnpm ghost:scan` had never run on this machine
+
+The script calls a bare `gscan`, which was on nobody's PATH; `npx gscan` serves a cached **3.3.1**
+from the Ghost 3.x era, which does not know the `match` helper and reports four templates as
+invalid Handlebars. `gscan` is now a devDependency at **6.4.2** — the same version Ghost 6.60
+bundles — and `pnpm ghost:scan` is clean.
+
+Two non-fatal findings it reports are older than this ticket and belong to the Ship ticket: the
+`dark_mode_logo` description is 136 characters against gscan's 100-character advice, and
+`partials/chrome/mode-toggle.hbs` is flagged for a `{{t}}` with no string, which it has —
+`{{t "Toggle dark mode"}}` inside a double-quoted attribute is a parser false positive worth
+confirming against gscan 6 before it is worked around.
+
+### What the run reports
+
+All eight captures, against the Floors recorded for the reference build:
+
+| route            | mode  | layout |     Ghost | Floor |    gap |
+| :--------------- | :---- | :----- | --------: | ----: | -----: |
+| `tags-01`        | light | A1     | **98.38** | 98.76 |  −0.38 |
+| `tags-01`        | dark  | A1     | **98.31** | 98.81 |  −0.50 |
+| `tags-02`        | light | A2     | **97.82** | 97.83 |  −0.01 |
+| `tags-02`        | dark  | A2     | **97.73** | 97.89 |  −0.16 |
+| `tags-single-01` | light | A1     | **95.89** | 98.37 |  −2.48 |
+| `tags-single-01` | dark  | A1     | **96.07** | 98.42 |  −2.35 |
+| `tags-single-02` | light | A2     | **77.02** | 97.18 | −20.16 |
+| `tags-single-02` | dark  | A2     | **79.53** | 97.25 | −17.72 |
+
+The two Directory rows are the whole Surface, top to bottom, and `tags-02` is within a hundredth of
+its Floor. The two archive rows are the three content divergences above, in the two shapes that
+weigh them differently: A1's rows are text on a background, so a shifted row costs a few percent of
+its band, while A2's cards are photographs, so a shifted card costs all of one. Ordered by how much
+each is worth, the archive gap is the page length first, the description second and the two extra
+posts third — and the first of those is the platform's.
+
+`tags-02` and `tags-single-02` were `skip`ped in the Surface map until this ticket; the run's
+pending count drops from 16 to 12.
+
+Also: the first capture run after new `img_url` sizes appear is a warm-up, not a result. This ticket
+introduced `size="s"` and `size="xl"` derivatives and `shoot.py` failed its own stability check on
+the first run of `tags-single-01`, exactly as the Feed ticket predicted it would.

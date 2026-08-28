@@ -1,0 +1,51 @@
+{{!-- A2, "cover cards", on the Tags Directory: a card per subject, photograph over the name.
+
+	{{> "directory/tag-cards" tags=tags}}
+
+	tags   the rows to render — the Directory partial owns the query
+
+A TAG WITH NO IMAGE KEEPS THE PANEL. Every card in a row shares a baseline because every card
+starts with the same 16:10 box; drop the box on one tag and its name climbs while its neighbours'
+stay put, which reads as a broken grid rather than as a tag without a picture. The empty panel is
+the surface tint and the same border, so it reads as "no photograph here" and the row stays a
+row. This is the opposite call from a post card in archive/card.hbs, and deliberately: a post
+without a feature image is a normal post, whereas a directory of subjects is a grid whose whole
+job is comparison. --}}
+<section
+	id="tags"
+	aria-label="{{t "Tag directory"}}"
+	class="border-border container border-t pt-16">
+	<div class="grid grid-cols-[repeat(auto-fill,minmax(min(320px,100%),1fr))] gap-x-10 gap-y-12">
+		{{#foreach tags}}
+			<article>
+				<a
+					href="{{url}}"
+					class="text-text block no-underline">
+					{{#if feature_image}}
+						<img
+							src="{{img_url feature_image size="m"}}"
+							alt=""
+							loading="lazy"
+							decoding="async"
+							class="border-border block aspect-[16/10] w-full rounded-md border object-cover">
+					{{else}}
+						<div
+							aria-hidden="true"
+							class="border-border bg-surface-2 block aspect-[16/10] w-full rounded-md border"></div>
+					{{/if}}
+
+					<div class="mt-[18px] flex items-baseline gap-3.5">
+						<h2 class="font-display tracking-heading text-[26px] leading-[1.18] font-medium">{{name}}</h2>
+
+						<span
+							class="font-meta text-meta tracking-meta text-muted ml-auto whitespace-nowrap uppercase">{{plural count.posts empty=(t "No posts") singular=(t "% post") plural=(t "% posts")}}</span>
+					</div>
+
+					{{#if description}}
+						<p class="text-small text-muted mt-2.5 leading-[1.6] text-pretty">{{description}}</p>
+					{{/if}}
+				</a>
+			</article>
+		{{/foreach}}
+	</div>
+</section>

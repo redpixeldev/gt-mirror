@@ -61,6 +61,7 @@
 		"eslint-plugin-astro": "^2.1.1",
 		"eslint-plugin-jsx-a11y": "^6.10.2",
 		"eslint-plugin-tailwindcss": "^4.0.4",
+		"gscan": "^6.4.2",
 		"prettier": "^3.8.4",
 		"prettier-plugin-astro": "^0.14.1",
 		"prettier-plugin-tailwindcss": "^0.8.0",

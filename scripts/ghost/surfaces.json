@@ -72,19 +72,29 @@
 		"layout": "A2",
 		"skip": "no layout picker on the error Surface yet — the Error Surfaces ticket adds one"
 	},
-	{ "route": "tags-01", "surface": "page-tags", "layout": "A1" },
+	{
+		"route": "tags-01",
+		"surface": "page-tags",
+		"layout": "A1",
+		"settings": { "directory_layout": "Editorial rows" }
+	},
 	{
 		"route": "tags-02",
 		"surface": "page-tags",
 		"layout": "A2",
-		"skip": "no layout picker on the Tags Directory yet — the Tag archive and Tags Directory ticket adds one"
+		"settings": { "directory_layout": "Cover cards" }
 	},
-	{ "route": "tags-single-01", "surface": "tag", "layout": "A1" },
+	{
+		"route": "tags-single-01",
+		"surface": "tag",
+		"layout": "A1",
+		"settings": { "feed_layout": "Two-column list" }
+	},
 	{
 		"route": "tags-single-02",
 		"surface": "tag",
 		"layout": "A2",
-		"skip": "no layout picker on the Tag archive yet — the Tag archive and Tags Directory ticket adds one"
+		"settings": { "feed_layout": "Three-column grid" }
 	},
 	{ "route": "authors-01", "surface": "page-authors", "layout": "A1" },
 	{

@@ -1,0 +1,73 @@
+{{!-- A compact archive row: the text block against a small fixed thumbnail on the right.
+
+	{{> "archive/row"}}                                    the tag archive's
+	{{> "archive/row" tagEyebrow=true titleClass="text-[25px] leading-[1.2]" padding="py-[30px]"}}
+	                                                       the author archive's
+
+	tagEyebrow   lead with the post's primary tag in the accent, and sign off with the date
+	titleClass   headline size — 26px on the tag archive, 25px on the author archive
+	padding      row padding — 32px on the tag archive, 30px on the author archive
+
+Shared by the tag archive and the author archive, which is how the design draws them: one row,
+differing only in which of the two meta facts leads and which signs off. On a tag archive every
+row already carries the tag, so the date leads and the writer signs; on an author archive every
+row is by the same writer, so the tag leads and the date signs. The same trade the reference
+build makes in src/components/PostListRow.astro.
+
+Called from inside {{#foreach posts}}, so the post is the context and a partial's hash arguments
+are merged into it — `tagEyebrow` is a plain read, no `../`.
+
+The whole row is ONE link, unlike the Feed's wide row, because the design draws it that way: no
+second link to the same place means nothing to hide from assistive technology, and the image
+takes an empty alt because the headline inside the same link already names the destination.
+
+A post with no feature image drops the second column rather than leaving a 132px gutter beside
+it. Both class lists are written out in full — a class assembled at render time is one Tailwind's
+scanner never compiles. --}}
+<article class="{{post_class}} border-border border-b">
+	<a
+		href="{{url}}"
+		class="text-text no-underline {{#if feature_image}}max-stack:grid-cols-[minmax(0,1fr)] max-stack:gap-4 grid grid-cols-[minmax(0,1fr)_132px] items-start gap-8{{else}}block{{/if}} {{#if padding}}{{padding}}{{else}}py-8{{/if}}">
+		<div>
+			<div class="flex items-center gap-2.5">
+				{{#if tagEyebrow}}
+					{{#primary_tag}}
+						<span class="font-meta text-meta tracking-meta text-accent uppercase">{{name}}</span>
+					{{/primary_tag}}
+				{{else}}
+					<span class="font-meta text-meta tracking-meta text-muted uppercase">{{date format="DD MMM YYYY"}}</span>
+				{{/if}}
+
+				{{> "tier-chip"}}
+			</div>
+
+			<h2
+				class="font-display tracking-heading mt-2.5 font-medium {{#if titleClass}}{{titleClass}}{{else}}text-[26px] leading-[1.2]{{/if}}">{{title}}</h2>
+
+			{{#if excerpt}}
+				<p class="text-small text-muted mt-2.5 max-w-[64ch] leading-[1.6] text-pretty">{{excerpt}}</p>
+			{{/if}}
+
+			<p class="font-meta text-meta tracking-meta text-muted mt-3 uppercase">
+				{{#if tagEyebrow}}
+					{{~date format="DD MMM YYYY"~}}
+				{{else}}
+					{{~#primary_author}}{{name}}{{/primary_author~}}
+				{{/if}}
+				<span aria-hidden="true"> · </span>
+				{{~reading_time seconds=(t "< 1 min read") minute=(t "1 min read") minutes=(t "% min read")~}}
+			</p>
+		</div>
+
+		{{#if feature_image}}
+			<img
+				src="{{img_url feature_image size="s"}}"
+				{{#if feature_image_alt}}alt="{{feature_image_alt}}"{{else}}alt=""{{/if}}
+				width="132"
+				height="99"
+				loading="lazy"
+				decoding="async"
+				class="border-border block h-[99px] w-[132px] rounded-sm border object-cover">
+		{{/if}}
+	</a>
+</article>

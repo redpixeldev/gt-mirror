@@ -144,28 +144,56 @@
 		"out": "ghost-tags-01-light.png",
 		"height": 3022,
 		"width": 1568,
-		"group": "{}"
+		"group": "{\"directory_layout\":\"Editorial rows\"}"
 	},
 	{
 		"url": "http://localhost:2368/tags/?mode=dark",
 		"out": "ghost-tags-01-dark.png",
 		"height": 3022,
 		"width": 1568,
-		"group": "{}"
+		"group": "{\"directory_layout\":\"Editorial rows\"}"
 	},
 	{
-		"url": "http://localhost:2368/tag/essays/?mode=light",
+		"url": "http://localhost:2368/tags/?mode=light",
+		"out": "ghost-tags-02-light.png",
+		"height": 3097,
+		"width": 1568,
+		"group": "{\"directory_layout\":\"Cover cards\"}"
+	},
+	{
+		"url": "http://localhost:2368/tags/?mode=dark",
+		"out": "ghost-tags-02-dark.png",
+		"height": 3097,
+		"width": 1568,
+		"group": "{\"directory_layout\":\"Cover cards\"}"
+	},
+	{
+		"url": "http://localhost:2368/tag/interviews/?mode=light",
 		"out": "ghost-tags-single-01-light.png",
 		"height": 4253,
 		"width": 1568,
-		"group": "{}"
+		"group": "{\"feed_layout\":\"Two-column list\"}"
 	},
 	{
-		"url": "http://localhost:2368/tag/essays/?mode=dark",
+		"url": "http://localhost:2368/tag/interviews/?mode=dark",
 		"out": "ghost-tags-single-01-dark.png",
 		"height": 4253,
 		"width": 1568,
-		"group": "{}"
+		"group": "{\"feed_layout\":\"Two-column list\"}"
+	},
+	{
+		"url": "http://localhost:2368/tag/interviews/?mode=light",
+		"out": "ghost-tags-single-02-light.png",
+		"height": 3376,
+		"width": 1568,
+		"group": "{\"feed_layout\":\"Three-column grid\"}"
+	},
+	{
+		"url": "http://localhost:2368/tag/interviews/?mode=dark",
+		"out": "ghost-tags-single-02-dark.png",
+		"height": 3376,
+		"width": 1568,
+		"group": "{\"feed_layout\":\"Three-column grid\"}"
 	},
 	{
 		"url": "http://localhost:2368/authors/?mode=light",

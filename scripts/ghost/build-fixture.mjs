@@ -253,6 +253,7 @@ function reconcile(data) {
 	const FIELDS = ['tag', 'author', 'date', 'read', 'visibility', 'featured', 'img', 'alt', 'excerpt'];
 	const posts = [];
 	const concessions = [];
+	const secondaries = [];
 
 	for (const [title, entries] of byTitle) {
 		const resolved = { title };
@@ -267,6 +268,28 @@ function reconcile(data) {
 				continue;
 			}
 			resolved[field] = seen[0].value; // entries are already in precedence order
+
+			/*
+			 * A TAG IS THE ONE FIELD A POST CAN HOLD TWICE.
+			 *
+			 * Every other field here resolves to one value and the rest are dropped, because a post
+			 * has one date, one photograph, one primary author. Tags are a set: a piece can be filed
+			 * under Craft and still be one of the Interviews. So where two pools disagree about a
+			 * post's tag, the loser becomes a SECONDARY tag rather than a concession — the higher
+			 * pool still decides which tag is primary, and primary is what every card's eyebrow
+			 * prints, but the tag archive that asserted membership gets to keep it.
+			 *
+			 * This is what makes /tag/interviews/ list the twelve posts tagArchive.ts draws instead
+			 * of eleven of them plus whatever the marginals happened to spare.
+			 */
+			if (field === 'tag') {
+				const extras = [...new Set(seen.map((entry) => entry.value))].filter((value) => value !== resolved.tag);
+				if (extras.length) {
+					resolved.extraTags = extras;
+					secondaries.push({ title, primary: resolved.tag, extras });
+				}
+				continue;
+			}
 			const distinct = new Set(seen.map((s) => JSON.stringify(s.value)));
 			if (distinct.size > 1) {
 				concessions.push({
@@ -280,7 +303,7 @@ function reconcile(data) {
 		posts.push(resolved);
 	}
 
-	return { posts, concessions };
+	return { posts, concessions, secondaries };
 }
 
 /* ── the joint assignment ─────────────────────────────────────────────────────────────── */
@@ -301,13 +324,13 @@ function assign({ designed, authors, tags }) {
 				`Designed post ${JSON.stringify(post.title)} names an author who is not in the masthead: ${post.author}`,
 			);
 		}
-		if (!tagNeed.has(post.tag)) {
-			throw new Error(
-				`Designed post ${JSON.stringify(post.title)} names a tag that is not in the directory: ${post.tag}`,
-			);
+		for (const tag of [post.tag, ...(post.extraTags ?? [])]) {
+			if (!tagNeed.has(tag)) {
+				throw new Error(`Designed post ${JSON.stringify(post.title)} names a tag that is not in the directory: ${tag}`);
+			}
+			tagNeed.set(tag, tagNeed.get(tag) - 1);
 		}
 		authorNeed.set(post.author, authorNeed.get(post.author) - 1);
-		tagNeed.set(post.tag, tagNeed.get(post.tag) - 1);
 	}
 
 	for (const [name, left] of authorNeed) {
@@ -338,7 +361,10 @@ function assign({ designed, authors, tags }) {
 	const filler = authorSlots.map((author, i) => ({ author, tag: primaries[i] }));
 
 	// whatever is still owed becomes a secondary tag on a post that does not already carry it
-	const all = [...designed.map((p) => ({ ...p, tags: [p.tag] })), ...filler.map((p) => ({ ...p, tags: [p.tag] }))];
+	const all = [
+		...designed.map((p) => ({ ...p, tags: [p.tag, ...(p.extraTags ?? [])] })),
+		...filler.map((p) => ({ ...p, tags: [p.tag] })),
+	];
 	let owed = [...tagNeed].filter(([, n]) => n > 0);
 
 	while (owed.length) {
@@ -385,7 +411,7 @@ const tags = data.tags.TAG_DIRECTORY.map((t) => ({
 	count: t.count,
 }));
 
-const { posts: designed, concessions } = reconcile(data);
+const { posts: designed, concessions, secondaries } = reconcile(data);
 
 /*
  * The design's own stats fix the publication's span: "Publishing since 2020" on the About page, and
@@ -543,7 +569,20 @@ const pages = [
 		template: null,
 		body: '<p>Free members get the archive. Paid members get the interviews.</p>',
 	},
-	{ slug: 'tags', title: 'Subjects', template: null, body: '<p>Everything we publish, filed by subject.</p>' },
+	/*
+	 * The directory Pages carry the design's own title and lead sentence, because the theme reads
+	 * both off the page record rather than writing them into a template: the h1 is `{{title}}` and
+	 * the lead is `{{excerpt}}`, which with no custom excerpt set is the body's first 50 words.
+	 * One sentence in, one sentence out, and no second copy of it in the fixture.
+	 */
+	{
+		slug: 'tags',
+		title: 'Every tag',
+		template: null,
+		body:
+			`<p>Six years of writing, filed into ${data.tags.TAG_TOTAL} subjects. ` +
+			`Each tag collects everything published under it.</p>`,
+	},
 	{ slug: 'authors', title: 'Writers', template: null, body: '<p>The people behind the publication.</p>' },
 	{
 		slug: 'recommendations',
@@ -643,6 +682,7 @@ const fixture = {
 	posts,
 	pages,
 	concessions,
+	secondaries,
 };
 
 writeFileSync(OUT, JSON.stringify(fixture, null, '\t') + '\n');
@@ -653,5 +693,8 @@ console.log(
 		`${authors.length} authors, ${tags.length} tags, ${pages.length} pages, ` +
 		`${fixture.tiers.length} tiers, ${fixture.recommendations.length} recommendations`,
 );
-console.log(`         every author and tag marginal hit exactly; ${concessions.length} reconciliation concession(s)`);
+console.log(
+	`         every author and tag marginal hit exactly; ${concessions.length} reconciliation concession(s), ` +
+		`${secondaries.length} secondary tag assertion(s) kept`,
+);
 console.log(`         → ${OUT}`);

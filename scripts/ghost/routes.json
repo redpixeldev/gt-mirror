@@ -20,7 +20,7 @@
 		"absent": "class=\"gh-post-upgrade-cta"
 	},
 	{
-		"path": "/tag/essays/",
+		"path": "/tag/interviews/",
 		"expect": "data-surface=\"tag\""
 	},
 	{

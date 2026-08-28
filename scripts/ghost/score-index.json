@@ -326,7 +326,9 @@
 		"surface": "page-tags",
 		"path": "/tags/",
 		"status": 200,
-		"settings": {},
+		"settings": {
+			"directory_layout": "Editorial rows"
+		},
 		"build": ".shots/ghost/ghost-tags-01-light.png",
 		"ref": "06-tags-A1-light.png",
 		"h": 3022,
@@ -339,7 +341,9 @@
 		"surface": "page-tags",
 		"path": "/tags/",
 		"status": 200,
-		"settings": {},
+		"settings": {
+			"directory_layout": "Editorial rows"
+		},
 		"build": ".shots/ghost/ghost-tags-01-dark.png",
 		"ref": "06-tags-A1-dark.png",
 		"h": 3022,
@@ -352,12 +356,13 @@
 		"surface": "page-tags",
 		"path": "/tags/",
 		"status": 200,
-		"settings": {},
+		"settings": {
+			"directory_layout": "Cover cards"
+		},
 		"build": ".shots/ghost/ghost-tags-02-light.png",
 		"ref": "06-tags-A2-light.png",
 		"h": 3097,
-		"w": 1568,
-		"skip": "no layout picker on the Tags Directory yet — the Tag archive and Tags Directory ticket adds one"
+		"w": 1568
 	},
 	{
 		"route": "tags-02",
@@ -366,21 +371,24 @@
 		"surface": "page-tags",
 		"path": "/tags/",
 		"status": 200,
-		"settings": {},
+		"settings": {
+			"directory_layout": "Cover cards"
+		},
 		"build": ".shots/ghost/ghost-tags-02-dark.png",
 		"ref": "06-tags-A2-dark.png",
 		"h": 3097,
-		"w": 1568,
-		"skip": "no layout picker on the Tags Directory yet — the Tag archive and Tags Directory ticket adds one"
+		"w": 1568
 	},
 	{
 		"route": "tags-single-01",
 		"mode": "light",
 		"layout": "A1",
 		"surface": "tag",
-		"path": "/tag/essays/",
+		"path": "/tag/interviews/",
 		"status": 200,
-		"settings": {},
+		"settings": {
+			"feed_layout": "Two-column list"
+		},
 		"build": ".shots/ghost/ghost-tags-single-01-light.png",
 		"ref": "07-tag-archive-A1-light.png",
 		"h": 4253,
@@ -391,9 +399,11 @@
 		"mode": "dark",
 		"layout": "A1",
 		"surface": "tag",
-		"path": "/tag/essays/",
+		"path": "/tag/interviews/",
 		"status": 200,
-		"settings": {},
+		"settings": {
+			"feed_layout": "Two-column list"
+		},
 		"build": ".shots/ghost/ghost-tags-single-01-dark.png",
 		"ref": "07-tag-archive-A1-dark.png",
 		"h": 4253,
@@ -404,28 +414,30 @@
 		"mode": "light",
 		"layout": "A2",
 		"surface": "tag",
-		"path": "/tag/essays/",
+		"path": "/tag/interviews/",
 		"status": 200,
-		"settings": {},
+		"settings": {
+			"feed_layout": "Three-column grid"
+		},
 		"build": ".shots/ghost/ghost-tags-single-02-light.png",
 		"ref": "07-tag-archive-A2-light.png",
 		"h": 3376,
-		"w": 1568,
-		"skip": "no layout picker on the Tag archive yet — the Tag archive and Tags Directory ticket adds one"
+		"w": 1568
 	},
 	{
 		"route": "tags-single-02",
 		"mode": "dark",
 		"layout": "A2",
 		"surface": "tag",
-		"path": "/tag/essays/",
+		"path": "/tag/interviews/",
 		"status": 200,
-		"settings": {},
+		"settings": {
+			"feed_layout": "Three-column grid"
+		},
 		"build": ".shots/ghost/ghost-tags-single-02-dark.png",
 		"ref": "07-tag-archive-A2-dark.png",
 		"h": 3376,
-		"w": 1568,
-		"skip": "no layout picker on the Tag archive yet — the Tag archive and Tags Directory ticket adds one"
+		"w": 1568
 	},
 	{
 		"route": "authors-01",

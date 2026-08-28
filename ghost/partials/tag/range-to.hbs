@@ -1,0 +1,19 @@
+{{!-- The newer end of a tag's date range, and the decision to print one year or two.
+
+	{{> "tag/range-to" slug=slug from=published_at}}     from tag/range.hbs, which owns the older end
+
+	slug   the tag being read, back within reach of a {{#get}} filter — see tag/range.hbs
+	from   the tag's oldest post's date
+
+A tag whose posts all fall in one year prints that year once. "2025 — 2025" is not a range, and
+it is the shape a publication in its first year would see on every one of its archives.
+
+`{{#match}}` unwraps a SafeString before comparing (core/frontend/helpers/match.js), which is
+what lets two rendered `{{date}}` calls be compared at all. --}}
+{{#get "posts" filter="tag:{{slug}}" order="published_at desc" limit="1" as |newest|}}
+	{{#match (date ../from format="YYYY") "!=" (date newest.[0].published_at format="YYYY")}}
+		{{~date ../from format="YYYY"}} &mdash; {{date newest.[0].published_at format="YYYY"~}}
+	{{else}}
+		{{~date ../from format="YYYY"~}}
+	{{/match}}
+{{/get}}

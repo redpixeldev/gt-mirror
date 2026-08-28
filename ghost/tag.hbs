@@ -1,37 +1,45 @@
 {{!< default}}
 
-{{!-- One tag's archive: a Feed filtered to a single tag. Distinct from the Tags Directory,
-which lists tags rather than posts — the two look alike in the card layout and conflating
-them is exactly the ambiguity CONTEXT.md was written to settle. --}}
+{{!-- One tag's archive: a Feed filtered to a single tag.
+
+Distinct from the Tags Directory, which lists tags rather than posts — the two look alike in the
+card layout, and conflating them is exactly the ambiguity CONTEXT.md was written to settle. This
+Surface pages through posts; that one lists subjects and does not.
+
+The layout picker is `@custom.feed_layout`, the same select the Feed reads, because a buyer who
+asked for a wide row per post meant it wherever posts are listed. One {{#match}} at the top, the
+non-default option matched explicitly so an unrecognised stored value falls through to a layout
+rather than to nothing, and no partial below reads @custom.
+
+`posts` and `pagination` are this channel's own: Ghost resolves how many rows a page holds in the
+routing layer, from `posts_per_page` in this theme's package.json or from `limit:` on the route
+in the publication's routes.yaml. Nothing here decides it. --}}
 
 {{> "chrome/header" compact=true}}
 
-<main id="main" class="grow">
+<main
+	id="main"
+	class="grow"
+	data-surface="tag">
+
 	{{#tag}}
-		<header class="container pt-16" data-surface="tag">
-			<p class="font-meta text-muted text-[12px] uppercase">{{t "Tag"}}</p>
-			<h1 class="font-display text-h1 text-text mt-3 tracking-tight">{{name}}</h1>
-			{{#if description}}
-				<p class="font-body text-muted text-lead measure mt-4">{{description}}</p>
-			{{/if}}
-			<p class="font-meta text-muted mt-4 text-[12px] uppercase">{{plural ../pagination.total empty=(t "No posts") singular=(t "% post") plural=(t "% posts")}}</p>
-		</header>
+		{{> "tag/header" total=../pagination.total}}
 	{{/tag}}
 
-	<div class="container py-12">
-		{{#foreach posts}}
-			<article class="{{post_class}} border-border border-b py-8 last:border-0">
-				<h2 class="font-display text-h3 tracking-tight">
-					<a href="{{url}}" class="text-text no-underline">{{title}}</a>
-				</h2>
-				{{> "post-meta"}}
-			</article>
-		{{else}}
-			<p class="font-body text-muted">{{t "Nothing filed under this tag yet."}}</p>
-		{{/foreach}}
+	{{#match @custom.feed_layout "Three-column grid"}}
+		{{> "tag/a2"}}
+	{{else}}
+		{{> "tag/a1" tagName=tag.name}}
+	{{/match}}
 
-		{{pagination}}
-	</div>
+	{{pagination pt="pt-13"}}
+
+	{{#tag}}
+		{{> "tag/other-tags" exclude=slug}}
+	{{/tag}}
+
+	{{> "newsletter" anchor="tag-newsletter" pt="pt-18"}}
+
 </main>
 
 {{> "chrome/footer"}}

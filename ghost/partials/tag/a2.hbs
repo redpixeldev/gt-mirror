@@ -1,0 +1,22 @@
+{{!-- A2, "three-column grid", on a tag archive: every post as an equal card.
+
+	{{> "tag/a2"}}
+
+No lead story here, which is the whole of what distinguishes this layout from A1: the design's
+card grid gives every post in the subject the same weight, so there is nothing for the first row
+to be first at, and nothing that changes on page 2.
+
+The grid's track is 330px rather than the Feed's 320px — the design sets a slightly wider card
+on an archive that carries fewer posts. --}}
+<section
+	id="posts"
+	aria-label="{{t "Posts"}}"
+	class="container pt-2">
+	<div class="grid grid-cols-[repeat(auto-fill,minmax(min(330px,100%),1fr))] gap-x-10 gap-y-13">
+		{{#foreach posts}}
+			{{> "archive/card"}}
+		{{else}}
+			<p class="font-body text-muted">{{t "Nothing filed under this tag yet."}}</p>
+		{{/foreach}}
+	</div>
+</section>

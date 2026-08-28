@@ -338,7 +338,7 @@
 			"author": "Erin Laurier",
 			"tags": [
 				"Essays",
-				"Books"
+				"Business"
 			],
 			"reading_time_label": "7 min read",
 			"expected_minutes": 7,
@@ -357,7 +357,7 @@
 			"author": "Marisol Ade",
 			"tags": [
 				"Interviews",
-				"Business"
+				"Craft"
 			],
 			"reading_time_label": "12 min read",
 			"expected_minutes": 12,
@@ -376,7 +376,7 @@
 			"author": "Tomas Vrel",
 			"tags": [
 				"Essays",
-				"Craft"
+				"Design"
 			],
 			"reading_time_label": "9 min read",
 			"expected_minutes": 9,
@@ -395,7 +395,7 @@
 			"author": "Erin Laurier",
 			"tags": [
 				"Field notes",
-				"Design"
+				"Essays"
 			],
 			"reading_time_label": "6 min read",
 			"expected_minutes": 6,
@@ -414,7 +414,7 @@
 			"author": "Nadia Roth",
 			"tags": [
 				"Craft",
-				"Essays"
+				"Field notes"
 			],
 			"reading_time_label": "8 min read",
 			"expected_minutes": 8,
@@ -433,7 +433,7 @@
 			"author": "Marisol Ade",
 			"tags": [
 				"Interviews",
-				"Field notes"
+				"Media"
 			],
 			"reading_time_label": "15 min read",
 			"expected_minutes": 15,
@@ -452,7 +452,7 @@
 			"author": "Tomas Vrel",
 			"tags": [
 				"Craft",
-				"Interviews"
+				"Typography"
 			],
 			"reading_time_label": "5 min read",
 			"expected_minutes": 5,
@@ -471,7 +471,7 @@
 			"author": "Nadia Roth",
 			"tags": [
 				"Field notes",
-				"Media"
+				"Interviews"
 			],
 			"reading_time_label": "6 min read",
 			"expected_minutes": 6,
@@ -585,7 +585,7 @@
 			"author": "Erin Laurier",
 			"tags": [
 				"Essays",
-				"Typography"
+				"Books"
 			],
 			"reading_time_label": "6 min read",
 			"expected_minutes": 6,
@@ -604,7 +604,7 @@
 			"author": "Marisol Ade",
 			"tags": [
 				"Interviews",
-				"Books"
+				"Business"
 			],
 			"reading_time_label": "13 min read",
 			"expected_minutes": 13,
@@ -642,7 +642,7 @@
 			"author": "Nadia Roth",
 			"tags": [
 				"Field notes",
-				"Business"
+				"Design"
 			],
 			"reading_time_label": "7 min read",
 			"expected_minutes": 7,
@@ -661,7 +661,7 @@
 			"author": "Nadia Roth",
 			"tags": [
 				"Craft",
-				"Design"
+				"Essays"
 			],
 			"reading_time_label": "9 min read",
 			"expected_minutes": 9,
@@ -680,7 +680,7 @@
 			"author": "Marisol Ade",
 			"tags": [
 				"Craft",
-				"Essays"
+				"Interviews"
 			],
 			"reading_time_label": "8 min read",
 			"expected_minutes": 8,
@@ -1527,14 +1527,14 @@
 			"title": "Paper, and what replaced it (2)",
 			"slug": "paper-and-what-replaced-it-2",
 			"custom_excerpt": null,
-			"feature_image": "/img/pexels-29833970.jpg",
+			"feature_image": "/img/pexels-7610808.jpg",
 			"feature_image_alt": null,
 			"published_at": "2022-04-06T16:14:07.044Z",
 			"visibility": "public",
 			"featured": false,
 			"author": "Erin Laurier",
 			"tags": [
-				"Interviews",
+				"Newsletters",
 				"Media"
 			],
 			"reading_time_label": null,
@@ -1546,14 +1546,14 @@
 			"title": "The interview nobody asked for (2)",
 			"slug": "the-interview-nobody-asked-for-2",
 			"custom_excerpt": null,
-			"feature_image": "/img/pexels-7610808.jpg",
+			"feature_image": "/img/pexels-7610771.jpg",
 			"feature_image_alt": null,
 			"published_at": "2022-05-05T21:31:45.867Z",
 			"visibility": "public",
 			"featured": false,
 			"author": "Marisol Ade",
 			"tags": [
-				"Newsletters",
+				"Reporting",
 				"Membership"
 			],
 			"reading_time_label": null,
@@ -1565,14 +1565,14 @@
 			"title": "Reading rates and what they hide (2)",
 			"slug": "reading-rates-and-what-they-hide-2",
 			"custom_excerpt": null,
-			"feature_image": "/img/pexels-7610771.jpg",
+			"feature_image": "/img/pexels-7970681.jpg",
 			"feature_image_alt": null,
 			"published_at": "2022-06-04T02:49:24.690Z",
 			"visibility": "public",
 			"featured": false,
 			"author": "Marisol Ade",
 			"tags": [
-				"Reporting",
+				"Craft",
 				"Newsletters"
 			],
 			"reading_time_label": null,
@@ -1584,14 +1584,14 @@
 			"title": "How a page earns attention (2)",
 			"slug": "how-a-page-earns-attention-2",
 			"custom_excerpt": null,
-			"feature_image": "/img/pexels-7970681.jpg",
+			"feature_image": "/img/pexels-28993989.jpg",
 			"feature_image_alt": null,
 			"published_at": "2022-07-03T08:07:03.513Z",
 			"visibility": "public",
 			"featured": false,
 			"author": "Marisol Ade",
 			"tags": [
-				"Craft",
+				"Design",
 				"Photography"
 			],
 			"reading_time_label": null,
@@ -1603,14 +1603,14 @@
 			"title": "The margin is the message (2)",
 			"slug": "the-margin-is-the-message-2",
 			"custom_excerpt": null,
-			"feature_image": "/img/pexels-28993989.jpg",
+			"feature_image": "/img/pexels-38048095.jpg",
 			"feature_image_alt": null,
 			"published_at": "2022-08-01T13:24:42.336Z",
 			"visibility": "public",
 			"featured": false,
 			"author": "Marisol Ade",
 			"tags": [
-				"Design",
+				"Essays",
 				"Reporting"
 			],
 			"reading_time_label": null,
@@ -1622,14 +1622,14 @@
 			"title": "Commissioning without a budget (2)",
 			"slug": "commissioning-without-a-budget-2",
 			"custom_excerpt": null,
-			"feature_image": "/img/pexels-38048095.jpg",
+			"feature_image": "/img/pexels-4641190.jpg",
 			"feature_image_alt": null,
 			"published_at": "2022-08-30T18:42:21.159Z",
 			"visibility": "public",
 			"featured": false,
 			"author": "Marisol Ade",
 			"tags": [
-				"Essays",
+				"Field notes",
 				"Typography"
 			],
 			"reading_time_label": null,
@@ -1641,14 +1641,14 @@
 			"title": "One desk, five deadlines (2)",
 			"slug": "one-desk-five-deadlines-2",
 			"custom_excerpt": null,
-			"feature_image": "/img/pexels-4641190.jpg",
+			"feature_image": "/img/pexels-29833970.jpg",
 			"feature_image_alt": null,
 			"published_at": "2022-09-28T23:59:59.982Z",
 			"visibility": "public",
 			"featured": false,
 			"author": "Marisol Ade",
 			"tags": [
-				"Field notes"
+				"Interviews"
 			],
 			"reading_time_label": null,
 			"expected_minutes": 6,
@@ -1659,14 +1659,14 @@
 			"title": "What we stopped measuring (2)",
 			"slug": "what-we-stopped-measuring-2",
 			"custom_excerpt": null,
-			"feature_image": "/img/pexels-29833970.jpg",
+			"feature_image": "/img/pexels-7610808.jpg",
 			"feature_image_alt": null,
 			"published_at": "2022-10-28T05:17:38.805Z",
 			"visibility": "public",
 			"featured": false,
 			"author": "Marisol Ade",
 			"tags": [
-				"Interviews"
+				"Newsletters"
 			],
 			"reading_time_label": null,
 			"expected_minutes": 11,
@@ -1677,14 +1677,14 @@
 			"title": "A shorter weekly letter (2)",
 			"slug": "a-shorter-weekly-letter-2",
 			"custom_excerpt": null,
-			"feature_image": "/img/pexels-7610808.jpg",
+			"feature_image": "/img/pexels-7610771.jpg",
 			"feature_image_alt": null,
 			"published_at": "2022-11-26T10:35:17.628Z",
 			"visibility": "public",
 			"featured": false,
 			"author": "Marisol Ade",
 			"tags": [
-				"Newsletters"
+				"Reporting"
 			],
 			"reading_time_label": null,
 			"expected_minutes": 6,
@@ -1695,14 +1695,14 @@
 			"title": "The photograph does the work (2)",
 			"slug": "the-photograph-does-the-work-2",
 			"custom_excerpt": null,
-			"feature_image": "/img/pexels-7610771.jpg",
+			"feature_image": "/img/pexels-7970681.jpg",
 			"feature_image_alt": null,
 			"published_at": "2022-12-25T15:52:56.451Z",
 			"visibility": "public",
 			"featured": false,
 			"author": "Marisol Ade",
 			"tags": [
-				"Reporting"
+				"Craft"
 			],
 			"reading_time_label": null,
 			"expected_minutes": 11,
@@ -1713,14 +1713,14 @@
 			"title": "Pricing for a niche you can name (2)",
 			"slug": "pricing-for-a-niche-you-can-name-2",
 			"custom_excerpt": null,
-			"feature_image": "/img/pexels-7970681.jpg",
+			"feature_image": "/img/pexels-28993989.jpg",
 			"feature_image_alt": null,
 			"published_at": "2023-01-23T21:10:35.274Z",
 			"visibility": "public",
 			"featured": false,
 			"author": "Marisol Ade",
 			"tags": [
-				"Craft"
+				"Design"
 			],
 			"reading_time_label": null,
 			"expected_minutes": 9,
@@ -1731,14 +1731,14 @@
 			"title": "Type, before layout (2)",
 			"slug": "type-before-layout-2",
 			"custom_excerpt": null,
-			"feature_image": "/img/pexels-28993989.jpg",
+			"feature_image": "/img/pexels-38048095.jpg",
 			"feature_image_alt": null,
 			"published_at": "2023-02-22T02:28:14.097Z",
 			"visibility": "public",
 			"featured": false,
 			"author": "Marisol Ade",
 			"tags": [
-				"Design"
+				"Essays"
 			],
 			"reading_time_label": null,
 			"expected_minutes": 8,
@@ -1749,14 +1749,14 @@
 			"title": "Notes on a smaller masthead (3)",
 			"slug": "notes-on-a-smaller-masthead-3",
 			"custom_excerpt": null,
-			"feature_image": "/img/pexels-38048095.jpg",
+			"feature_image": "/img/pexels-4641190.jpg",
 			"feature_image_alt": null,
 			"published_at": "2023-03-23T07:45:52.920Z",
 			"visibility": "public",
 			"featured": false,
 			"author": "Marisol Ade",
 			"tags": [
-				"Essays"
+				"Field notes"
 			],
 			"reading_time_label": null,
 			"expected_minutes": 8,
@@ -1767,14 +1767,14 @@
 			"title": "The cost of a second read (3)",
 			"slug": "the-cost-of-a-second-read-3",
 			"custom_excerpt": null,
-			"feature_image": "/img/pexels-4641190.jpg",
+			"feature_image": "/img/pexels-29833970.jpg",
 			"feature_image_alt": null,
 			"published_at": "2023-04-21T13:03:31.743Z",
 			"visibility": "public",
 			"featured": false,
 			"author": "Tomas Vrel",
 			"tags": [
-				"Field notes"
+				"Interviews"
 			],
 			"reading_time_label": null,
 			"expected_minutes": 11,
@@ -1785,14 +1785,14 @@
 			"title": "What a house style is for (3)",
 			"slug": "what-a-house-style-is-for-3",
 			"custom_excerpt": null,
-			"feature_image": "/img/pexels-29833970.jpg",
+			"feature_image": "/img/pexels-7610808.jpg",
 			"feature_image_alt": null,
 			"published_at": "2023-05-20T18:21:10.566Z",
 			"visibility": "public",
 			"featured": false,
 			"author": "Tomas Vrel",
 			"tags": [
-				"Interviews"
+				"Newsletters"
 			],
 			"reading_time_label": null,
 			"expected_minutes": 8,
@@ -1803,14 +1803,14 @@
 			"title": "Subscriptions, six years in (3)",
 			"slug": "subscriptions-six-years-in-3",
 			"custom_excerpt": null,
-			"feature_image": "/img/pexels-7610808.jpg",
+			"feature_image": "/img/pexels-2705436.jpg",
 			"feature_image_alt": null,
 			"published_at": "2023-06-18T23:38:49.389Z",
 			"visibility": "public",
 			"featured": false,
 			"author": "Tomas Vrel",
 			"tags": [
-				"Newsletters"
+				"Photography"
 			],
 			"reading_time_label": null,
 			"expected_minutes": 6,
@@ -1821,14 +1821,14 @@
 			"title": "On keeping the archive open (3)",
 			"slug": "on-keeping-the-archive-open-3",
 			"custom_excerpt": null,
-			"feature_image": "/img/pexels-2705436.jpg",
+			"feature_image": "/img/pexels-7610771.jpg",
 			"feature_image_alt": null,
 			"published_at": "2023-07-18T04:56:28.212Z",
 			"visibility": "public",
 			"featured": false,
 			"author": "Tomas Vrel",
 			"tags": [
-				"Photography"
+				"Reporting"
 			],
 			"reading_time_label": null,
 			"expected_minutes": 13,
@@ -1839,14 +1839,14 @@
 			"title": "A schedule you can actually hold (3)",
 			"slug": "a-schedule-you-can-actually-hold-3",
 			"custom_excerpt": null,
-			"feature_image": "/img/pexels-7610771.jpg",
+			"feature_image": "/img/pexels-27409011.jpg",
 			"feature_image_alt": null,
 			"published_at": "2023-08-16T10:14:07.035Z",
 			"visibility": "public",
 			"featured": false,
 			"author": "Tomas Vrel",
 			"tags": [
-				"Reporting"
+				"Books"
 			],
 			"reading_time_label": null,
 			"expected_minutes": 12,
@@ -1857,14 +1857,14 @@
 			"title": "Against the launch (3)",
 			"slug": "against-the-launch-3",
 			"custom_excerpt": null,
-			"feature_image": "/img/pexels-27409011.jpg",
+			"feature_image": "/img/pexels-7970681.jpg",
 			"feature_image_alt": null,
 			"published_at": "2023-09-14T15:31:45.858Z",
 			"visibility": "public",
 			"featured": false,
 			"author": "Tomas Vrel",
 			"tags": [
-				"Books"
+				"Craft"
 			],
 			"reading_time_label": null,
 			"expected_minutes": 11,
@@ -1875,14 +1875,14 @@
 			"title": "Why the corrections page matters (3)",
 			"slug": "why-the-corrections-page-matters-3",
 			"custom_excerpt": null,
-			"feature_image": "/img/pexels-7970681.jpg",
+			"feature_image": "/img/pexels-28993989.jpg",
 			"feature_image_alt": null,
 			"published_at": "2023-10-13T20:49:24.681Z",
 			"visibility": "public",
 			"featured": false,
 			"author": "Tomas Vrel",
 			"tags": [
-				"Craft"
+				"Design"
 			],
 			"reading_time_label": null,
 			"expected_minutes": 4,
@@ -1893,14 +1893,14 @@
 			"title": "Paper, and what replaced it (3)",
 			"slug": "paper-and-what-replaced-it-3",
 			"custom_excerpt": null,
-			"feature_image": "/img/pexels-28993989.jpg",
+			"feature_image": "/img/pexels-38048095.jpg",
 			"feature_image_alt": null,
 			"published_at": "2023-11-12T02:07:03.504Z",
 			"visibility": "public",
 			"featured": false,
 			"author": "Tomas Vrel",
 			"tags": [
-				"Design"
+				"Essays"
 			],
 			"reading_time_label": null,
 			"expected_minutes": 7,
@@ -1911,14 +1911,14 @@
 			"title": "The interview nobody asked for (3)",
 			"slug": "the-interview-nobody-asked-for-3",
 			"custom_excerpt": null,
-			"feature_image": "/img/pexels-38048095.jpg",
+			"feature_image": "/img/pexels-4641190.jpg",
 			"feature_image_alt": null,
 			"published_at": "2023-12-11T07:24:42.327Z",
 			"visibility": "public",
 			"featured": false,
 			"author": "Tomas Vrel",
 			"tags": [
-				"Essays"
+				"Field notes"
 			],
 			"reading_time_label": null,
 			"expected_minutes": 5,
@@ -1929,14 +1929,14 @@
 			"title": "Reading rates and what they hide (3)",
 			"slug": "reading-rates-and-what-they-hide-3",
 			"custom_excerpt": null,
-			"feature_image": "/img/pexels-4641190.jpg",
+			"feature_image": "/img/pexels-29833970.jpg",
 			"feature_image_alt": null,
 			"published_at": "2024-01-09T12:42:21.150Z",
 			"visibility": "public",
 			"featured": false,
 			"author": "Tomas Vrel",
 			"tags": [
-				"Field notes"
+				"Interviews"
 			],
 			"reading_time_label": null,
 			"expected_minutes": 6,
@@ -1947,14 +1947,14 @@
 			"title": "How a page earns attention (3)",
 			"slug": "how-a-page-earns-attention-3",
 			"custom_excerpt": null,
-			"feature_image": "/img/pexels-29833970.jpg",
+			"feature_image": "/img/pexels-11468500.jpg",
 			"feature_image_alt": null,
 			"published_at": "2024-02-07T17:59:59.973Z",
 			"visibility": "public",
 			"featured": false,
 			"author": "Tomas Vrel",
 			"tags": [
-				"Interviews"
+				"Media"
 			],
 			"reading_time_label": null,
 			"expected_minutes": 7,
@@ -1965,14 +1965,14 @@
 			"title": "The margin is the message (3)",
 			"slug": "the-margin-is-the-message-3",
 			"custom_excerpt": null,
-			"feature_image": "/img/pexels-11468500.jpg",
+			"feature_image": "/img/pexels-7610808.jpg",
 			"feature_image_alt": null,
 			"published_at": "2024-03-07T23:17:38.796Z",
 			"visibility": "public",
 			"featured": false,
 			"author": "Tomas Vrel",
 			"tags": [
-				"Media"
+				"Newsletters"
 			],
 			"reading_time_label": null,
 			"expected_minutes": 10,
@@ -1983,14 +1983,14 @@
 			"title": "Commissioning without a budget (3)",
 			"slug": "commissioning-without-a-budget-3",
 			"custom_excerpt": null,
-			"feature_image": "/img/pexels-7610808.jpg",
+			"feature_image": "/img/pexels-2705436.jpg",
 			"feature_image_alt": null,
 			"published_at": "2024-04-06T04:35:17.619Z",
 			"visibility": "public",
 			"featured": false,
 			"author": "Tomas Vrel",
 			"tags": [
-				"Newsletters"
+				"Photography"
 			],
 			"reading_time_label": null,
 			"expected_minutes": 12,
@@ -2001,14 +2001,14 @@
 			"title": "One desk, five deadlines (3)",
 			"slug": "one-desk-five-deadlines-3",
 			"custom_excerpt": null,
-			"feature_image": "/img/pexels-2705436.jpg",
+			"feature_image": "/img/pexels-7610771.jpg",
 			"feature_image_alt": null,
 			"published_at": "2024-05-05T09:52:56.442Z",
 			"visibility": "public",
 			"featured": false,
 			"author": "Tomas Vrel",
 			"tags": [
-				"Photography"
+				"Reporting"
 			],
 			"reading_time_label": null,
 			"expected_minutes": 13,
@@ -2019,14 +2019,14 @@
 			"title": "What we stopped measuring (3)",
 			"slug": "what-we-stopped-measuring-3",
 			"custom_excerpt": null,
-			"feature_image": "/img/pexels-7610771.jpg",
+			"feature_image": "/img/pexels-27409011.jpg",
 			"feature_image_alt": null,
 			"published_at": "2024-06-03T15:10:35.265Z",
 			"visibility": "public",
 			"featured": false,
 			"author": "Tomas Vrel",
 			"tags": [
-				"Reporting"
+				"Books"
 			],
 			"reading_time_label": null,
 			"expected_minutes": 8,
@@ -2037,14 +2037,14 @@
 			"title": "A shorter weekly letter (3)",
 			"slug": "a-shorter-weekly-letter-3",
 			"custom_excerpt": null,
-			"feature_image": "/img/pexels-27409011.jpg",
+			"feature_image": "/img/pexels-305814.jpg",
 			"feature_image_alt": null,
 			"published_at": "2024-07-02T20:28:14.088Z",
 			"visibility": "public",
 			"featured": false,
 			"author": "Nadia Roth",
 			"tags": [
-				"Books"
+				"Business"
 			],
 			"reading_time_label": null,
 			"expected_minutes": 8,
@@ -2055,14 +2055,14 @@
 			"title": "The photograph does the work (3)",
 			"slug": "the-photograph-does-the-work-3",
 			"custom_excerpt": null,
-			"feature_image": "/img/pexels-305814.jpg",
+			"feature_image": "/img/pexels-7970681.jpg",
 			"feature_image_alt": null,
 			"published_at": "2024-08-01T01:45:52.911Z",
 			"visibility": "public",
 			"featured": false,
 			"author": "Nadia Roth",
 			"tags": [
-				"Business"
+				"Craft"
 			],
 			"reading_time_label": null,
 			"expected_minutes": 11,
@@ -2073,14 +2073,14 @@
 			"title": "Pricing for a niche you can name (3)",
 			"slug": "pricing-for-a-niche-you-can-name-3",
 			"custom_excerpt": null,
-			"feature_image": "/img/pexels-7970681.jpg",
+			"feature_image": "/img/pexels-28993989.jpg",
 			"feature_image_alt": null,
 			"published_at": "2024-08-30T07:03:31.734Z",
 			"visibility": "public",
 			"featured": false,
 			"author": "Nadia Roth",
 			"tags": [
-				"Craft"
+				"Design"
 			],
 			"reading_time_label": null,
 			"expected_minutes": 7,
@@ -2091,14 +2091,14 @@
 			"title": "Type, before layout (3)",
 			"slug": "type-before-layout-3",
 			"custom_excerpt": null,
-			"feature_image": "/img/pexels-28993989.jpg",
+			"feature_image": "/img/pexels-38048095.jpg",
 			"feature_image_alt": null,
 			"published_at": "2024-09-28T12:21:10.557Z",
 			"visibility": "public",
 			"featured": false,
 			"author": "Nadia Roth",
 			"tags": [
-				"Design"
+				"Essays"
 			],
 			"reading_time_label": null,
 			"expected_minutes": 11,
@@ -2109,14 +2109,14 @@
 			"title": "Notes on a smaller masthead (4)",
 			"slug": "notes-on-a-smaller-masthead-4",
 			"custom_excerpt": null,
-			"feature_image": "/img/pexels-38048095.jpg",
+			"feature_image": "/img/pexels-4641190.jpg",
 			"feature_image_alt": null,
 			"published_at": "2024-10-27T17:38:49.380Z",
 			"visibility": "public",
 			"featured": false,
 			"author": "Nadia Roth",
 			"tags": [
-				"Essays"
+				"Field notes"
 			],
 			"reading_time_label": null,
 			"expected_minutes": 14,
@@ -2127,14 +2127,14 @@
 			"title": "The cost of a second read (4)",
 			"slug": "the-cost-of-a-second-read-4",
 			"custom_excerpt": null,
-			"feature_image": "/img/pexels-4641190.jpg",
+			"feature_image": "/img/pexels-29833970.jpg",
 			"feature_image_alt": null,
 			"published_at": "2024-11-25T22:56:28.203Z",
 			"visibility": "public",
 			"featured": false,
 			"author": "Nadia Roth",
 			"tags": [
-				"Field notes"
+				"Interviews"
 			],
 			"reading_time_label": null,
 			"expected_minutes": 7,
@@ -2145,14 +2145,14 @@
 			"title": "What a house style is for (4)",
 			"slug": "what-a-house-style-is-for-4",
 			"custom_excerpt": null,
-			"feature_image": "/img/pexels-29833970.jpg",
+			"feature_image": "/img/pexels-11468500.jpg",
 			"feature_image_alt": null,
 			"published_at": "2024-12-25T04:14:07.026Z",
 			"visibility": "public",
 			"featured": false,
 			"author": "Nadia Roth",
 			"tags": [
-				"Interviews"
+				"Media"
 			],
 			"reading_time_label": null,
 			"expected_minutes": 6,
@@ -2163,14 +2163,14 @@
 			"title": "Subscriptions, six years in (4)",
 			"slug": "subscriptions-six-years-in-4",
 			"custom_excerpt": null,
-			"feature_image": "/img/pexels-11468500.jpg",
+			"feature_image": "/img/pexels-32526792.jpg",
 			"feature_image_alt": null,
 			"published_at": "2025-01-23T09:31:45.849Z",
 			"visibility": "public",
 			"featured": false,
 			"author": "Nadia Roth",
 			"tags": [
-				"Media"
+				"Membership"
 			],
 			"reading_time_label": null,
 			"expected_minutes": 8,
@@ -2181,14 +2181,14 @@
 			"title": "On keeping the archive open (4)",
 			"slug": "on-keeping-the-archive-open-4",
 			"custom_excerpt": null,
-			"feature_image": "/img/pexels-32526792.jpg",
+			"feature_image": "/img/pexels-7610808.jpg",
 			"feature_image_alt": null,
 			"published_at": "2025-02-21T14:49:24.672Z",
 			"visibility": "public",
 			"featured": false,
 			"author": "Iben Falk",
 			"tags": [
-				"Membership"
+				"Newsletters"
 			],
 			"reading_time_label": null,
 			"expected_minutes": 5,
@@ -2199,14 +2199,14 @@
 			"title": "A schedule you can actually hold (4)",
 			"slug": "a-schedule-you-can-actually-hold-4",
 			"custom_excerpt": null,
-			"feature_image": "/img/pexels-7610808.jpg",
+			"feature_image": "/img/pexels-2705436.jpg",
 			"feature_image_alt": null,
 			"published_at": "2025-03-22T20:07:03.495Z",
 			"visibility": "public",
 			"featured": false,
 			"author": "Iben Falk",
 			"tags": [
-				"Newsletters"
+				"Photography"
 			],
 			"reading_time_label": null,
 			"expected_minutes": 12,
@@ -2217,14 +2217,14 @@
 			"title": "Against the launch (4)",
 			"slug": "against-the-launch-4",
 			"custom_excerpt": null,
-			"feature_image": "/img/pexels-2705436.jpg",
+			"feature_image": "/img/pexels-7610771.jpg",
 			"feature_image_alt": null,
 			"published_at": "2025-04-21T01:24:42.318Z",
 			"visibility": "public",
 			"featured": false,
 			"author": "Iben Falk",
 			"tags": [
-				"Photography"
+				"Reporting"
 			],
 			"reading_time_label": null,
 			"expected_minutes": 12,
@@ -2235,14 +2235,14 @@
 			"title": "Why the corrections page matters (4)",
 			"slug": "why-the-corrections-page-matters-4",
 			"custom_excerpt": null,
-			"feature_image": "/img/pexels-7610771.jpg",
+			"feature_image": "/img/pexels-27872005.jpg",
 			"feature_image_alt": null,
 			"published_at": "2025-05-20T06:42:21.141Z",
 			"visibility": "public",
 			"featured": false,
 			"author": "Iben Falk",
 			"tags": [
-				"Reporting"
+				"Archive"
 			],
 			"reading_time_label": null,
 			"expected_minutes": 11,
@@ -2253,14 +2253,14 @@
 			"title": "Paper, and what replaced it (4)",
 			"slug": "paper-and-what-replaced-it-4",
 			"custom_excerpt": null,
-			"feature_image": "/img/pexels-27872005.jpg",
+			"feature_image": "/img/pexels-27409011.jpg",
 			"feature_image_alt": null,
 			"published_at": "2025-06-18T11:59:59.964Z",
 			"visibility": "public",
 			"featured": false,
 			"author": "Iben Falk",
 			"tags": [
-				"Archive"
+				"Books"
 			],
 			"reading_time_label": null,
 			"expected_minutes": 9,
@@ -2282,9 +2282,9 @@
 		},
 		{
 			"slug": "tags",
-			"title": "Subjects",
+			"title": "Every tag",
 			"template": null,
-			"body": "<p>Everything we publish, filed by subject.</p>"
+			"body": "<p>Six years of writing, filed into 14 subjects. Each tag collects everything published under it.</p>"
 		},
 		{
 			"slug": "authors",
@@ -2343,34 +2343,6 @@
 				{
 					"pool": "archive",
 					"value": false
-				}
-			]
-		},
-		{
-			"title": "Type is the interface",
-			"field": "tag",
-			"kept": {
-				"pool": "posts",
-				"value": "Craft"
-			},
-			"dropped": [
-				{
-					"pool": "archive",
-					"value": "Typography"
-				}
-			]
-		},
-		{
-			"title": "On refusing the interview",
-			"field": "tag",
-			"kept": {
-				"pool": "authorArchive",
-				"value": "Craft"
-			},
-			"dropped": [
-				{
-					"pool": "tagArchive",
-					"value": "Interviews"
 				}
 			]
 		},
@@ -2456,6 +2428,22 @@
 					"pool": "tagArchive",
 					"value": "Rustic study with open books, a map and candles"
 				}
+			]
+		}
+	],
+	"secondaries": [
+		{
+			"title": "Type is the interface",
+			"primary": "Craft",
+			"extras": [
+				"Typography"
+			]
+		},
+		{
+			"title": "On refusing the interview",
+			"primary": "Craft",
+			"extras": [
+				"Interviews"
 			]
 		}
 	]

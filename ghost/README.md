@@ -23,7 +23,8 @@ Everything below lives in **Settings → Design & branding**, under the theme's 
 | **Default appearance** | Light · Dark · System               | The mode a first-time visitor sees. Their own choice always wins.          |
 | **Dark mode logo**     | An image                            | Your logo, redrawn in light ink, for the dark Mode.                        |
 | **Homepage layout**    | Magazine cover · Editorial masthead | A cover story over a grid, or your masthead over a ranked list.            |
-| **Feed layout**        | Two-column list · Three-column grid | A wide row per post, or a grid of cards.                                   |
+| **Feed layout**        | Two-column list · Three-column grid | A wide row per post, or a grid of cards. Also the tag and writer archives. |
+| **Directory layout**   | Editorial rows · Cover cards        | A row per subject, or a grid of cards with cover photos.                   |
 | **Post layout**        | Centered classic · Title page       | Cover photo over centred titling, or a title page with a sticky side rail. |
 | **Newsletter heading** | Text                                | The heading on every subscribe block.                                      |
 
@@ -69,6 +70,29 @@ More settings arrive with the layouts they control; each one is documented here 
   platform's layout with MIRROR's colours. Two exceptions the design draws itself: a callout
   gets an accent rail rather than a filled block, and a pull quote is set centred in the
   display face.
+
+### Subjects
+
+- **A tag's archive** — `/tag/{slug}/` — is your feed filtered to one subject, and it follows
+  **Feed layout**: _Two-column list_ gives it a lead story over compact rows, _Three-column
+  grid_ gives every post an equal card. The lead only appears on page 1, because on page 2 it
+  would not be the latest anything.
+- The archive's masthead prints the tag's **name**, its **description** and its **post count**,
+  followed by the years it spans — read from the tag's oldest and newest posts, so a subject
+  published in one year prints that year rather than a range of it to itself.
+- Below it, **Other tags** links to your eight busiest subjects, never including the one being
+  read. A tag with no description simply prints its count.
+- **The Tags Directory** is a page of your own — the demo calls it `/tags/`, and any page can
+  use the layout by picking **Tags directory** in the page settings menu. It lists every subject
+  **alphabetically**, with its post count, and follows **Directory layout**. A subject with no
+  cover photo keeps the empty frame so the grid stays a grid.
+- **A subject with no posts is not listed.** Ghost's own tag API only answers with tags that
+  have something filed under them, so an empty tag never reaches the directory.
+- A publication with **more than 100 public tags** loses the end of the alphabet: Ghost caps
+  every theme query at 100 rows, and that cap is not something a theme can lift.
+- **The page's own title and one-line summary** are the directory's heading and lead. Write the
+  sentence in the page body, or set an excerpt in the page settings if the body is longer — the
+  directory prints the excerpt, because the list below it is the page's real content.
 
 ### Header, menu and footer
 

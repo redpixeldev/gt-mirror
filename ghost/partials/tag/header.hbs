@@ -1,0 +1,46 @@
+{{!-- The tag archive's masthead: where you are, what the subject is, and how much of it there is.
+
+	{{#tag}}{{> "tag/header" total=../pagination.total}}{{/tag}}
+
+	total   the tag's whole post count, not the page's — one frame up from inside {{#tag}}
+
+Everything else is read from the tag itself, so the partial takes the tag as its context and
+needs no `../` of its own.
+
+THE FIRST CRUMB IS NOT A LINK. The design draws "Tags / Interviews" with the first word linking
+to the Tags Directory. Ghost has no Tags Directory URL: the directory is a Page a publication
+creates and names, so its slug is the buyer's and nothing reaches a template. Inventing `/tags/`
+would break every publication that called it something else — a crumb pointing at a 404 is worse
+than a crumb that does not move. The span inherits the nav's colour, so the drawing is unchanged.
+Recorded as a Concession in DECISIONS.md.
+
+A tag with no description renders the count alone: `auto-fit` collapses the empty column instead
+of leaving a gap where the sentence would have been. --}}
+<section
+	aria-labelledby="tag-name"
+	class="container pt-18 pb-16">
+	<nav
+		aria-label="{{t "Breadcrumb"}}"
+		class="text-muted font-mono text-[11px] tracking-[0.1em] uppercase">
+		<span>{{t "Tags"}}</span>
+		<span aria-hidden="true">/</span>
+		<span class="text-accent">{{name}}</span>
+	</nav>
+
+	<h1
+		id="tag-name"
+		class="font-display tracking-display mt-6 text-[clamp(40px,6vw,80px)] leading-[1.02] font-medium">{{name}}</h1>
+
+	<div
+		class="border-border mt-8 grid grid-cols-[repeat(auto-fit,minmax(min(280px,100%),1fr))] gap-10 border-t pt-[26px]">
+		{{#if description}}
+			<p class="font-body text-muted max-w-[52ch] text-[21px] leading-[1.5] text-pretty">{{description}}</p>
+		{{/if}}
+
+		<p class="font-meta text-meta tracking-meta text-muted self-start uppercase">
+			{{~plural total empty=(t "No posts") singular=(t "% post") plural=(t "% posts")~}}
+			<span aria-hidden="true"> · </span>
+			{{~> "tag/range" slug=slug~}}
+		</p>
+	</div>
+</section>

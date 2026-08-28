@@ -1,0 +1,28 @@
+{{!-- "Other tags" — the sibling-subject strip under a tag archive.
+
+	{{> "tag/other-tags" exclude=slug}}      called from inside {{#tag}}, so `slug` is this tag's
+
+	exclude   the slug of the tag being read
+
+The word is "other", so the tag the reader is already on is filtered out rather than listed
+second. On this publication Interviews holds 21 posts and would otherwise rank second in its own
+strip.
+
+`filter="slug:-{{exclude}}"` is resolved by the get helper against the CURRENT context
+(`parseOptions(ghostGlobals, this, …)` in core/frontend/helpers/get.js), and a partial's hash
+arguments are merged into that context — so `exclude` is a plain path here and needs no `../`.
+Plain and dotted paths are the only two shapes that resolver understands; `{{../slug}}` would
+fail the render outright.
+
+The section wrapper is inside the guard rather than at the call site: a publication filing
+everything under one tag has no other tags, and an empty band with a heading over it is worse
+than no band. --}}
+{{#get "tags" include="count.posts" order="count.posts desc" limit="8" filter="slug:-{{exclude}}" as |tags|}}
+	{{#if tags}}
+		<section
+			aria-labelledby="other-tags"
+			class="container pt-18">
+			{{> "tag-pills" tags=tags label=(t "Other tags") stacked=true headingId="other-tags"}}
+		</section>
+	{{/if}}
+{{/get}}

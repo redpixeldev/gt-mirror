@@ -1,0 +1,40 @@
+{{!-- A standing Page's opener: accent eyebrow, the page's title, its one-line summary.
+
+	{{> "page-intro" eyebrow=(t "Browse") headingId="tags-title"}}
+	{{> "page-intro" eyebrow=… headingId="rec-title" padding="pt-16 pb-14" measure="max-w-[60ch]"}}
+
+	eyebrow     the theme's word for what kind of Surface this is
+	headingId   the h1's id, so the section can be labelled by it
+	padding     section padding — 64/72 on the directories, 64/56 on recommendations
+	measure     the lead's measure — 58ch by default, 60ch on recommendations
+
+Called from inside {{#post}}, so the page is the context.
+
+THE EYEBROW IS THE THEME'S AND THE REST IS THE PUBLICATION'S. "Browse", "The masthead" and
+"What we read" name the kind of Surface, which is a thing the theme knows and the page record
+does not; the title and the lead are the buyer's own words, so they are read off the page.
+
+THE LEAD IS THE EXCERPT, NOT THE BODY. A directory's content is the list below it, and the design
+draws exactly one sentence above that list. `{{excerpt}}` is Ghost's own answer for "this page in
+one sentence" — a custom excerpt where the buyer wrote one, the opening of the body where they
+did not — so a page written either way renders the same shape. A directory Page whose body is
+several paragraphs is summarised rather than printed; ghost/README.md says so.
+
+The editor's per-page toggle owns the whole opener: a buyer who turned the title off gets the
+list on its own, not a headless lead. --}}
+{{#if @page.show_title_and_feature_image}}
+	<section
+		aria-labelledby="{{headingId}}"
+		class="container {{#if padding}}{{padding}}{{else}}pt-16 pb-18{{/if}}">
+		<p class="text-accent font-mono text-[11px] tracking-[0.1em] uppercase">{{eyebrow}}</p>
+
+		<h1
+			id="{{headingId}}"
+			class="font-display tracking-display mt-[18px] text-[clamp(34px,4.4vw,56px)] leading-[1.06] font-medium">{{title}}</h1>
+
+		{{#if excerpt}}
+			<p
+				class="text-lead text-muted mt-5 leading-[1.55] text-pretty {{#if measure}}{{measure}}{{else}}max-w-[58ch]{{/if}}">{{excerpt}}</p>
+		{{/if}}
+	</section>
+{{/if}}

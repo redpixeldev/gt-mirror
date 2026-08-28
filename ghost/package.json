@@ -81,6 +81,15 @@
 				"default": "Two-column list",
 				"description": "A wide row per post with a thumbnail beside it, or a three-column grid of cards"
 			},
+			"directory_layout": {
+				"type": "select",
+				"options": [
+					"Editorial rows",
+					"Cover cards"
+				],
+				"default": "Editorial rows",
+				"description": "Layout for the tag, writer and recommendation directories"
+			},
 			"post_layout": {
 				"type": "select",
 				"options": [

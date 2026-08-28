@@ -1,0 +1,46 @@
+{{!-- The tag archive's lead story: the photograph full width over an oversized headline.
+
+	{{> "tag/lead" tagName=../tagName}}     from inside {{#foreach posts}}, on page 1 only
+
+	tagName   the subject, for the eyebrow — "Latest in Interviews"
+
+Only the A1 layout draws it, and only where the eyebrow is true: on page 2 of the archive the
+first row is not the latest anything, so tag/a1.hbs sends every row through archive/row.hbs
+there instead.
+
+`aspect-video` and no `loading="lazy"`: this is the Surface's largest image and the first thing
+below the masthead, so it is the LCP element on every tag archive and must not be deferred. The
+width and height are the design's own, and they are what keeps CLS at zero while it loads. --}}
+<article class="{{post_class}} border-border border-b pb-12">
+	<a
+		href="{{url}}"
+		class="text-text block no-underline">
+		{{#if feature_image}}
+			<img
+				src="{{img_url feature_image size="xl"}}"
+				{{#if feature_image_alt}}alt="{{feature_image_alt}}"{{else}}alt=""{{/if}}
+				width="1120"
+				height="630"
+				decoding="async"
+				class="border-border block aspect-video w-full rounded-md border object-cover">
+		{{/if}}
+
+		<div class="mt-[22px] flex items-center gap-3">
+			<span class="font-meta text-meta tracking-meta text-accent uppercase">{{t "Latest in {tag}" tag=tagName}}</span>
+
+			{{> "tier-chip"}}
+		</div>
+
+		<h2
+			class="font-display tracking-heading mt-3.5 max-w-[26ch] text-[clamp(28px,3.6vw,42px)] leading-[1.12] font-medium text-balance">{{title}}</h2>
+
+		{{#if excerpt}}
+			<p class="text-body text-muted mt-4 max-w-[62ch] leading-[1.62] text-pretty">{{excerpt}}</p>
+		{{/if}}
+
+		<p class="font-meta text-meta tracking-meta text-muted mt-[18px] uppercase">
+			{{~#primary_author}}{{name}}<span aria-hidden="true"> · </span>{{/primary_author~}}
+			{{> "dateline"}}
+		</p>
+	</a>
+</article>

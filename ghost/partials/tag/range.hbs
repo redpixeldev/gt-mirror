@@ -1,0 +1,22 @@
+{{!-- The years a tag spans — "2025 — 2026", or "2026" where it spans one.
+
+	{{> "tag/range" slug=slug}}      called from inside {{#tag}}
+
+	slug   the tag being read
+
+Ghost stores no date range on a tag and Handlebars has no arithmetic, so the two ends are two
+queries: the tag's oldest post and its newest. Both are `limit="1"` against an indexed order, and
+neither can be replaced by reading the page's own `posts` — the header renders on every page of
+the archive, and page 3 carries neither end.
+
+WHY THE SECOND QUERY IS IN A PARTIAL. `filter="tag:{{slug}}"` is resolved against the current
+context, and inside a {{#get}} block that context is the query's response — the tag's slug is one
+frame up, and the get helper's resolver understands a plain path and a dotted one and nothing
+else (`{{../slug}}` fails the render outright with `unsupported path segment ""`). A partial's
+hash arguments ARE merged into its context, so handing the slug to tag/range-to.hbs puts it back
+within reach of a plain path. --}}
+{{#get "posts" filter="tag:{{slug}}" order="published_at asc" limit="1" as |oldest|}}
+	{{#if oldest}}
+		{{> "tag/range-to" slug=../slug from=oldest.[0].published_at}}
+	{{/if}}
+{{/get}}

@@ -1,0 +1,34 @@
+{{!-- A1, "editorial rows", on the Tags Directory: one row per subject, name and description
+against a post count.
+
+	{{> "directory/tag-rows" tags=tags}}
+
+	tags   the rows to render — the Directory partial owns the query
+
+No image in this layout even though every tag may carry one; the design keeps the row
+typographic and saves the photograph for the card layout. A tag with no description renders its
+name and count and nothing else, which is a shorter row rather than a hole. --}}
+<section
+	id="tags"
+	aria-label="{{t "Tag directory"}}"
+	style="--container-max:1120px"
+	class="border-border container border-t pt-16">
+	{{#foreach tags}}
+		<article class="border-border border-b">
+			<a
+				href="{{url}}"
+				class="text-text hover:bg-surface-2 grid grid-cols-[1fr_auto] items-baseline gap-8 px-2 py-[30px] no-underline">
+				<div>
+					<h2 class="font-display tracking-heading text-[32px] leading-[1.16] font-medium">{{name}}</h2>
+
+					{{#if description}}
+						<p class="text-small text-muted mt-2.5 max-w-[64ch] leading-[1.6] text-pretty">{{description}}</p>
+					{{/if}}
+				</div>
+
+				<span
+					class="font-meta text-meta tracking-meta text-muted whitespace-nowrap uppercase">{{plural count.posts empty=(t "No posts") singular=(t "% post") plural=(t "% posts")}}</span>
+			</a>
+		</article>
+	{{/foreach}}
+</section>
