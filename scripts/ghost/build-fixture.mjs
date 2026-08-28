@@ -691,9 +691,15 @@ const fixture = {
 			{ label: 'About', url: '/about/' },
 			{ label: 'Membership', url: '/membership/' },
 		],
+		/*
+		 * The feed is a menu item like any other — the theme hardcodes no links, so `/rss/` in the
+		 * secondary menu is the whole of how the design's footer RSS link is reproduced, and it
+		 * points at the feed Ghost serves rather than at a placeholder.
+		 */
 		secondary_navigation: [
 			{ label: 'Recommendations', url: '/recommendations/' },
 			{ label: 'Sign in', url: '/sign-in/' },
+			{ label: 'RSS', url: '/rss/' },
 		],
 	},
 	tiers: data.membership.TIERS.map((tier) => ({

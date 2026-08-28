@@ -48,6 +48,10 @@
 			{
 				"label": "Sign in",
 				"url": "/sign-in/"
+			},
+			{
+				"label": "RSS",
+				"url": "/rss/"
 			}
 		]
 	},

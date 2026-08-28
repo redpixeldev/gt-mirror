@@ -220,6 +220,8 @@ From the repository root, not from this directory:
 pnpm ghost:build         # compile assets/built/screen.css and assets/built/main.js
 pnpm ghost:dev           # the same two, in watch mode
 pnpm ghost:scan          # gscan, warnings fatal
+pnpm ghost:audit         # the responsive audit: every Surface at twelve widths
+pnpm ghost:score         # capture every Surface in both Modes and score it
 pnpm ghost:zip           # build, scan, stage and zip to dist/mirror.zip
 pnpm ghost:routes:apply  # push docs/routes.example.yaml to the running install
 pnpm ghost:routes:bare   # put Ghost's own default routes back

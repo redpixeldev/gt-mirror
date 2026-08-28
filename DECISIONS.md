@@ -2800,3 +2800,155 @@ layout that moved, a string that changed, an image that loaded late all touch th
 at full contrast, and this check caught exactly those twice earlier in the port. Outside the bound
 a capture is still unstable and still fails the run, and the report now prints what it measured
 rather than only that the files differed.
+
+## Ship: what the theme is, and the whole of what it cost (2026-08)
+
+Every Surface the design draws, captured in both Modes, scored against the Floor the reference
+build recorded, with a named reason for every capture below it. Nothing is pending.
+
+### The report
+
+54 captures. Mean **93.88**, best **98.62**, worst **77.02**, and two rows above their Floor.
+
+| route                | mode  | layout |     Ghost | Floor |    gap | why below                                                            |
+| :------------------- | :---- | :----- | --------: | ----: | -----: | :------------------------------------------------------------------- |
+| `styleguide`         | light | —      | **90.08** | 98.54 |  -8.46 | Koenig cards the design never drew — the article layer               |
+| `styleguide`         | dark  | —      | **87.41** | 98.61 | -11.20 | Koenig cards the design never drew — the article layer               |
+| `homepage-01`        | light | A1     | **96.15** | 96.59 |  -0.44 | pagination control, avatar monogram                                  |
+| `homepage-01`        | dark  | A1     | **96.06** | 96.61 |  -0.55 | pagination control, avatar monogram                                  |
+| `homepage-02`        | light | A2     | **97.49** | 98.31 |  -0.82 | pagination control, avatar monogram                                  |
+| `homepage-02`        | dark  | A2     | **97.42** | 98.36 |  -0.94 | pagination control, avatar monogram                                  |
+| `blog-01`            | light | A1     | **97.54** | 97.98 |  -0.44 | no sort control; site description stands in for the archive line     |
+| `blog-01`            | dark  | A1     | **97.51** | 98.02 |  -0.51 | no sort control; site description stands in for the archive line     |
+| `blog-02`            | light | A2     | **95.94** | 96.62 |  -0.68 | site description shifts every band below the masthead by 32px        |
+| `blog-02`            | dark  | A2     | **95.88** | 96.70 |  -0.82 | site description shifts every band below the masthead by 32px        |
+| `post-01`            | light | A1     | **81.37** | 90.67 |  -9.30 | the platform's article output against the design source              |
+| `post-01`            | dark  | A1     | **81.29** | 90.22 |  -8.93 | the platform's article output against the design source              |
+| `post-02`            | light | A2     | **88.10** | 97.69 |  -9.59 | the platform's article output against the design source              |
+| `post-02`            | dark  | A2     | **87.67** | 97.78 | -10.11 | the platform's article output against the design source              |
+| `post-01-paywalled`  | light | A1     | **90.59** | 96.14 |  -5.55 | the Gate over Ghost's free portion                                   |
+| `post-01-paywalled`  | dark  | A1     | **90.63** | 96.10 |  -5.47 | the Gate over Ghost's free portion                                   |
+| `post-02-paywalled`  | light | A2     | **90.64** | 97.46 |  -6.82 | the Gate over Ghost's free portion                                   |
+| `post-02-paywalled`  | dark  | A2     | **90.52** | 97.53 |  -7.01 | the Gate over Ghost's free portion                                   |
+| `404`                | light | A1     | **98.62** | 98.96 |  -0.34 | capture noise only                                                   |
+| `404`                | dark  | A1     | **98.10** | 98.97 |  -0.87 | capture noise only                                                   |
+| `404-02`             | light | A2     | **98.44** | 98.73 |  -0.29 | capture noise only                                                   |
+| `404-02`             | dark  | A2     | **97.91** | 98.77 |  -0.86 | capture noise only                                                   |
+| `tags-01`            | light | A1     | **98.38** | 98.76 |  -0.38 | capture noise only                                                   |
+| `tags-01`            | dark  | A1     | **98.31** | 98.81 |  -0.50 | capture noise only                                                   |
+| `tags-02`            | light | A2     | **97.82** | 97.83 |  -0.01 | capture noise only                                                   |
+| `tags-02`            | dark  | A2     | **97.73** | 97.89 |  -0.16 | capture noise only                                                   |
+| `tags-single-01`     | light | A1     | **95.89** | 98.37 |  -2.48 | one posts_per_page; tag description; two extra tagged posts          |
+| `tags-single-01`     | dark  | A1     | **96.07** | 98.42 |  -2.35 | one posts_per_page; tag description; two extra tagged posts          |
+| `tags-single-02`     | light | A2     | **77.02** | 97.18 | -20.16 | one posts_per_page (photographs, not text, below the fold)           |
+| `tags-single-02`     | dark  | A2     | **79.53** | 97.25 | -17.72 | one posts_per_page (photographs, not text, below the fold)           |
+| `authors-01`         | light | A1     | **97.86** | 98.30 |  -0.44 | capture noise only                                                   |
+| `authors-01`         | dark  | A1     | **97.64** | 98.36 |  -0.72 | capture noise only                                                   |
+| `authors-02`         | light | A2     | **97.31** | 97.96 |  -0.65 | capture noise only                                                   |
+| `authors-02`         | dark  | A2     | **97.07** | 98.06 |  -0.99 | capture noise only                                                   |
+| `author-single-01`   | light | A1     | **93.14** | 98.16 |  -5.02 | the 250-character bio cap; one posts_per_page                        |
+| `author-single-01`   | dark  | A1     | **93.35** | 98.22 |  -4.87 | the 250-character bio cap; one posts_per_page                        |
+| `author-single-02`   | light | A2     | **88.43** | 97.27 |  -8.84 | one posts_per_page                                                   |
+| `author-single-02`   | dark  | A2     | **89.35** | 97.36 |  -8.01 | one posts_per_page                                                   |
+| `recommendations-01` | light | A1     | **98.02** | 98.38 |  -0.36 | capture noise only                                                   |
+| `recommendations-01` | dark  | A1     | **97.35** | 98.42 |  -1.07 | capture noise only                                                   |
+| `recommendations-02` | light | A2     | **96.01** | 96.39 |  -0.38 | capture noise only                                                   |
+| `recommendations-02` | dark  | A2     | **95.33** | 96.48 |  -1.15 | capture noise only                                                   |
+| `about-01`           | light | A1     | **96.74** | 98.02 |  -1.28 | the masthead follows the whole body                                  |
+| `about-01`           | dark  | A1     | **95.99** | 98.12 |  -2.13 | the masthead follows the whole body                                  |
+| `about-02`           | light | A2     | **96.57** | 93.84 |  +2.73 | above its Floor                                                      |
+| `about-02`           | dark  | A2     | **95.88** | 94.06 |  +1.82 | above its Floor                                                      |
+| `membership-01`      | light | A1     | **92.73** | 97.95 |  -5.22 | matrix, quotes and FAQ are editor content; band copy is the settings |
+| `membership-01`      | dark  | A1     | **92.63** | 98.05 |  -5.42 | matrix, quotes and FAQ are editor content; band copy is the settings |
+| `membership-02`      | light | A2     | **92.69** | 97.94 |  -5.25 | matrix, quotes and FAQ are editor content; band copy is the settings |
+| `membership-02`      | dark  | A2     | **92.38** | 98.05 |  -5.67 | matrix, quotes and FAQ are editor content; band copy is the settings |
+| `sign-in`            | light | —      | **97.27** | 99.07 |  -1.80 | no policy line; upgrade panel names the cheapest real tier           |
+| `sign-in`            | dark  | —      | **96.82** | 99.09 |  -2.27 | no policy line; upgrade panel names the cheapest real tier           |
+| `sign-up`            | light | —      | **96.87** | 98.99 |  -2.12 | no policy line; upgrade panel names the cheapest real tier           |
+| `sign-up`            | dark  | —      | **96.19** | 99.01 |  -2.82 | no policy line; upgrade panel names the cheapest real tier           |
+
+"Capture noise only" means the gap is under a point and there is nothing in the render to point
+at — the same order as the reference build's own distance from the design source.
+
+### Every Concession, and the Surface it costs
+
+Collected here because a concession scattered across nine sections is a concession nobody can
+count. Each is recorded in full where it was made.
+
+| Concession                                                                                                                    | Surfaces it costs                            | Why the platform forces it                                                                                              |
+| :---------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------- | :---------------------------------------------------------------------------------------------------------------------- |
+| One `posts_per_page` for every paginated Surface — the design draws 12 on an archive and 18 on the Feed                       | tag archive, author archive                  | `taxonomies` in routes.yaml takes a permalink string and nothing else; the page length is resolved in the routing layer |
+| `users.bio` validates at 250 characters; the design's author-page bio is 437                                                  | author profile (A1)                          | `core/server/data/schema/schema.js`                                                                                     |
+| One `description` per tag against the design's two                                                                            | tag archive, Tags Directory                  | breadth: fourteen tags in `tags.ts` beat one in `tagArchive.ts`                                                         |
+| No Tags or Authors Directory URL, so the breadcrumbs are spans                                                                | tag archive, author profile                  | the directories are Pages a buyer creates and names                                                                     |
+| No author-role field, so the masthead card carries a count and a place                                                        | Authors Directory, About                     | a staff user has no field meaning "what they do here"                                                                   |
+| A one-letter monogram where the design draws two                                                                              | every Surface with a byline                  | Handlebars cannot take a substring                                                                                      |
+| The design's per-Surface newsletter copy becomes the publication's two settings                                               | tag archive, author profile, Membership, 404 | the promise on a subscribe block is a buyer's to write, not a template's                                                |
+| The masthead follows the whole page body where the design puts it mid-prose                                                   | About                                        | a Ghost page has one `{{content}}`                                                                                      |
+| The benefit matrix, member quotes and FAQ are editor content, and the matrix scrolls where the design swaps in labelled cards | Membership                                   | benefits are stored per tier; Handlebars can neither union three lists nor test membership in one                       |
+| "Two months free · −17%" is arithmetic over two prices                                                                        | Membership                                   | Handlebars has none, and a hardcoded discount would be a lie on another publication                                     |
+| One-click subscribe opens the recommended publication's signup instead of subscribing silently                                | Recommendations                              | that flow lives inside Portal's own modal                                                                               |
+| Every Chrome entry point opens Portal's drawing, not the designed auth Surface                                                | sign-in, sign-up, the Gate, the header       | Portal is an iframe a theme cannot template                                                                             |
+| Pull quote and `<cite>` are dropped by Ghost's HTML-to-Lexical conversion                                                     | About, Membership                            | measured on import; the callout and toggle cards survive                                                                |
+| The design's inert `Privacy · Terms` line is not carried                                                                      | sign-in, sign-up                             | Ghost has no policy-page field, and a link to nothing is worse than no link                                             |
+| No sort control on the Feed                                                                                                   | Feed                                         | Ghost fixes order per route; nothing in a template or a URL can change it per request                                   |
+| `1 2 … 6` where the design draws `1 2 3 … 6`                                                                                  | homepage, Feed                               | no arithmetic, so the control can only name the numbers the pagination context already holds                            |
+| Ghost's card layer beyond the two the design redraws                                                                          | Post, styleguide                             | recorded with the Post Surface                                                                                          |
+
+### Nothing preview-only ships
+
+The reference build carries three review affordances and none of them is in the theme: the variant
+browser that turns the nav into a route picker, the auth state switcher, and `?state=` previews.
+The menu is the publication's own — `{{navigation}}`, four renderings, one partial, no hardcoded
+link anywhere in the theme.
+
+No inert placeholder link remains either. Every `href="#…"` in the theme is a Portal route or an
+in-page anchor; RSS is a menu item like any other, and the demo publication puts `/rss/` in its
+secondary menu, where the theme renders it into the footer with no special case.
+
+### gscan is clean, and the zip installs
+
+`gscan` against Ghost 6 reports **zero errors and zero warnings**, on the theme directory and on
+`dist/mirror.zip`. Four findings were fixed to get there, and each was real:
+
+- `{{#author}}` outside `author.hbs` is unsupported in Ghost 6. The four author partials use
+  `{{#with author}}`, which pushes the same context without the deprecated helper.
+- `{{#each}}` should be `{{#foreach}}` — the tier card's benefit list.
+- A `{{t}}` with no string, in a **comment**. gscan scans raw file text, so prose about the
+  translate helper reads as a call to it.
+- A `config.custom` description over 100 characters, which Ghost's admin truncates.
+
+The zip was uploaded to a running Ghost through the Admin API under a second name, activated, and
+every Surface requested from it: twelve URLs, twelve correct `data-surface` markers, a 404 that is
+a 404. Then the dev theme was reactivated and the uploaded copy deleted, so the symlinked working
+tree is untouched. What that proves is that the archive Ghost validates and activates is the
+archive this repo builds; what it does not prove is a bare install with no pages and no
+routes.yaml, which is Phase 8's gate and its own ticket.
+
+### The responsive audit runs against Ghost now
+
+`pnpm ghost:audit`: **324 checks — 27 URL/Layout combinations at twelve widths — zero failures**,
+the same count and the same widths as the reference build's audit.
+
+Three things about it are worth keeping:
+
+- **The rules are one file.** `scripts/verify/probe-audit.js` is the source; `public/probe-mobile.html`
+  carries the same block inline because it runs in a browser tab with no build step to inject
+  anything, and the audit refuses to run if the two have drifted. Duplication that fails a build is
+  duplication that cannot go quiet.
+- **The layouts are settings, not routes.** On the Astro build each Layout is a URL and one pass
+  covers everything; here `/tags/` is one URL with two drawings, so the audit flips the theme's
+  selects between passes exactly as the score run does, and puts them back.
+- **The driver is CDP, not a screenshot.** The audit has to run JavaScript in the page and read a
+  value back. `--dump-dom` needs `--virtual-time-budget` to let a script finish, and virtual time
+  fires every `setTimeout` at once — measured: an iframe-based probe waiting on load events
+  measured empty documents and reported a clean pass. Chrome's own protocol asks the question
+  directly, Node ships a WebSocket client, and `Emulation.setDeviceMetricsOverride` has none of the
+  ~500px floor that made the reference build's probe use iframes in the first place.
+
+**Nine declared scroll containers are printed, not passed over.** A container that hides its
+scrollbar normally fails the audit, because content past its right edge reads as absent. Two here
+scroll on purpose and say so in the markup with `data-scroll-intent`: the featured carousel, which
+has prev/next buttons above it, and the benefit matrix, which scrolls so its last column is
+reachable rather than cropped. The audit reports both every run. An exception that is invisible is
+an exception that becomes the rule.

@@ -1,8 +1,8 @@
 {{!-- A1, "centered header": the writer's profile as a centred column above their posts.
 
-	{{#author}}{{> "author/header" total=../pagination.total}}{{/author}}
+	{{#with author}}{{> "author/header" total=../pagination.total}}{{/with}}
 
-	total   the writer's whole post count, not the page's — one frame up from inside {{#author}}
+	total   the writer's whole post count, not the page's — one frame up from inside {{#with author}}
 
 Everything else is read from the author, so the partial takes the author as its context.
 

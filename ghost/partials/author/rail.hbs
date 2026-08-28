@@ -1,8 +1,8 @@
 {{!-- A2, "sticky rail": the writer's profile in a column beside their posts.
 
-	{{#author}}{{> "author/rail" total=../pagination.total}}{{/author}}
+	{{#with author}}{{> "author/rail" total=../pagination.total}}{{/with}}
 
-	total   the writer's whole post count, not the page's — one frame up from inside {{#author}}
+	total   the writer's whole post count, not the page's — one frame up from inside {{#with author}}
 
 STICKY ONLY WHILE THERE IS A SECOND COLUMN TO SIT BESIDE. Below `stack` the grid collapses to one
 column, and a sticky child there pins itself while the rest of the column scrolls underneath — the

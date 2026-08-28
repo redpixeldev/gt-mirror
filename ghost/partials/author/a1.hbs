@@ -11,9 +11,9 @@ design's: a 25px headline and 30px of row padding against the tag archive's 26 a
 
 No lead story on this Surface in either layout. The design draws one on the tag archive and none
 here, and a writer's page is a body of work rather than a front page. --}}
-{{#author}}
+{{#with author}}
 	{{> "author/header" total=../pagination.total}}
-{{/author}}
+{{/with}}
 
 <section
 	id="posts"

@@ -89,9 +89,19 @@ function audit(doc, W) {
       if (tracks === 1) note('STUCK ' + tag + '.' + (el.className||'').toString().split(' ').slice(0,2).join('.'));
     }
 
-    // <pre> is the recognised exception: code must not be re-wrapped
+    // A scroll container whose scrollbar is hidden reads as absent content rather than as
+    // scrollable, so content past its right edge is content nobody finds.
+    //
+    // Two exceptions, and both are declared in the markup rather than assumed here. <pre> is
+    // recognised outright: code must not be re-wrapped. Anything else that scrolls on purpose
+    // carries `data-scroll-intent`, whose value says why — a carousel with prev/next buttons is
+    // not hiding anything, and a table that scrolls is reachable where a cropped one is not.
+    // Declared containers are reported, not passed over: the driver prints them so an exception
+    // cannot quietly become the rule.
     if (W < NAV && tag !== 'pre' && /auto|scroll/.test(cs.overflowX) && el.scrollWidth > el.clientWidth + 2) {
-      note('SCROLLHIDE ' + tag + '.' + (el.className||'').toString().split(' ').slice(0,3).join('.') + ' +' + (el.scrollWidth - el.clientWidth));
+      const intent = el.getAttribute('data-scroll-intent');
+      const where = tag + '.' + (el.className||'').toString().split(' ').slice(0,3).join('.') + ' +' + (el.scrollWidth - el.clientWidth);
+      note(intent ? 'DECLARED ' + intent + ' ' + where : 'SCROLLHIDE ' + where);
     }
   });
   return bad;

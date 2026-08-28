@@ -54,8 +54,13 @@ that has not made one has no strip. --}}
 			own box starts exactly where the first card does — padding inside a snap container shifts
 			every snap position by that amount. --}}
 			<div class="pt-7">
+				{{!-- `data-scroll-intent` is read by the responsive audit, not by the browser: a
+				scroll container with a hidden scrollbar normally reads as absent content, and this
+				one has two arrow buttons above it saying otherwise. Declaring it keeps the audit's
+				rule armed everywhere else. --}}
 				<div
 					data-featured
+					data-scroll-intent="carousel with prev/next controls"
 					class="snap-track flex gap-5 overflow-x-auto">
 					{{#foreach featured}}
 						<article class="featured-card">

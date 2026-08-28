@@ -21,9 +21,9 @@ left over beside the rail, and the design tightens the gutters to match. --}}
 
 	<div
 		class="max-stack:grid-cols-[minmax(0,1fr)] max-stack:gap-10 grid grid-cols-[280px_minmax(0,1fr)] items-start gap-18">
-		{{#author}}
+		{{#with author}}
 			{{> "author/rail" total=../pagination.total}}
-		{{/author}}
+		{{/with}}
 
 		<section
 			id="posts"
