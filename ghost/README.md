@@ -141,6 +141,16 @@ More settings arrive with the layouts they control; each one is documented here 
   Directory layout. Every entry links to the publication, and where Ghost knows it runs Ghost,
   a second button opens that publication's own signup.
 
+### When a link is wrong
+
+- **A missing URL gets the designed page**, in whichever **Page hero** you picked, with the menu
+  above it and the one-row foot below. The wordmark and the whole menu are the way back.
+- It offers the newsletter rather than an apology and a dead end, and that form is your real
+  signup. It disappears with memberships off.
+- **Every other error** — a server error, a temporary outage — gets a plainer page carrying
+  Ghost's own message, its code, and a link to the front page. Nothing is invented there: what
+  the platform reports is what the reader is told.
+
 ### Header, menu and footer
 
 - The header menu is **Settings → Navigation → Primary**, and the footer's two link columns

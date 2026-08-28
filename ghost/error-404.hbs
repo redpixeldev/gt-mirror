@@ -1,23 +1,36 @@
 {{!< default}}
 
-{{!-- The designed 404. Ghost resolves error-404.hbs ahead of error.hbs for a missing URL,
-so this is the Surface a visitor actually reaches; error.hbs still covers every other
-status code. Both designed layouts arrive with the Error Surfaces ticket. --}}
+{{!-- The designed 404. Ghost resolves error-404.hbs ahead of error.hbs for a missing URL, so this
+is the Surface a visitor actually reaches; error.hbs still covers every other status code.
+
+The layout picker is `@custom.page_hero`, the same select About and Membership read: a buyer who
+asked for a centred statement gets one here too. One {{#match}} at the top, the non-default option
+matched explicitly so an unrecognised stored value falls through to a layout rather than to
+nothing.
+
+THIS SURFACE CANNOT BE PREVIEWED, ONLY VISITED. Ghost has no route that renders an error template
+on request — an error page is what the router falls through to — so the capture set points at a
+URL that genuinely does not exist and asserts a 404 status alongside the marker. A hand-made
+preview route would have proved that the markup compiles and nothing about what a reader sees.
+
+`{{#is}}` cannot match here either: an error page has no context at all, which is why every
+Surface in this theme names its own chrome rather than deriving it. The foot is the slim one,
+because a four-column footer under an apology outweighs it, and `<body>` is a flex column so the
+message centres in whatever space is left and the foot sits on the bottom edge. --}}
 
 {{> "chrome/header" compact=true}}
 
-<main id="main" class="flex grow items-center">
-	<div class="container py-24 text-center" data-surface="error-404">
+<main
+	id="main"
+	class="flex grow items-center"
+	data-surface="error-404">
 
-		<p class="font-display text-display text-ghost-num leading-none">{{statusCode}}</p>
+	{{#match @custom.page_hero "Split hero"}}
+		{{> "error/a2"}}
+	{{else}}
+		{{> "error/a1"}}
+	{{/match}}
 
-		<h1 class="font-display text-h2 text-text mt-4 tracking-tight">{{t "That page has moved on"}}</h1>
-
-		<p class="font-body text-muted measure mx-auto mt-4">{{message}}</p>
-
-		<a href="{{@site.url}}" class="font-ui mt-8 inline-block text-[14px]">{{t "Back to the front page"}} &rarr;</a>
-
-	</div>
 </main>
 
 {{> "chrome/footer" slim=true}}

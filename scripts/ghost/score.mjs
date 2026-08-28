@@ -222,6 +222,15 @@ function logCursor() {
 }
 
 /**
+ * The one exclusion the log check makes — see logSince below for why.
+ *
+ * `ENOTFOUND` is a DNS failure on an outbound request Ghost made; the oembed provider message is
+ * the same failure reported through the recommendation refresher. Neither can be produced by a
+ * template.
+ */
+const UNRESOLVABLE = /"code":"ENOTFOUND"|No provider found for supplied URL/;
+
+/**
  * Everything Ghost logged during the run that it considers an error.
  *
  * The dedicated `.error.log` is the signal: a front-end 404 does not reach it — measured, and it
@@ -231,6 +240,14 @@ function logCursor() {
  * The directory is listed again rather than walked from the cursor: a log file created during the
  * run has no cursor entry, and a rotated one is smaller than its old offset. Either way the lines
  * are read from zero, because the alternative is discarding them and calling the log clean.
+ *
+ * ONE CLASS OF LINE IS EXCLUDED, AND ONLY ONE. Ghost refreshes a recommendation's metadata over
+ * the network, and this publication's nine recommended publications are the design's inventions —
+ * `secondread.club` and the rest resolve nowhere — so every run that touches the Recommendations
+ * Surface logs `ENOTFOUND` and `No provider found for supplied URL` at level 50. That is the
+ * demo content being fictional, not a Surface failing to render, and leaving it in would train
+ * whoever runs this to ignore the check. The filter is deliberately narrow: an outbound fetch
+ * that could not resolve, and nothing else. A template that throws still fails the run.
  */
 async function logSince(cursor) {
 	const dirty = [];
@@ -248,7 +265,7 @@ async function logSince(cursor) {
 		await handle.close();
 		const lines = buffer.toString().split('\n').filter(Boolean);
 		const relevant = name.endsWith('.error.log') ? lines : lines.filter((line) => /"level":(50|60)\b/.test(line));
-		dirty.push(...relevant.map((line) => `${name}: ${line.slice(0, 300)}`));
+		dirty.push(...relevant.filter((line) => !UNRESOLVABLE.test(line)).map((line) => `${name}: ${line.slice(0, 300)}`));
 	}
 	return dirty;
 }

@@ -64,13 +64,17 @@
 		"layout": "A1",
 		"path": "/no-such-url-mirror-harness/",
 		"status": 404,
+		"settings": { "page_hero": "Centered statement" },
 		"why": "A genuinely missing URL, not a preview route — Ghost serves errors through its own path"
 	},
 	{
 		"route": "404-02",
 		"surface": "error-404",
 		"layout": "A2",
-		"skip": "no layout picker on the error Surface yet — the Error Surfaces ticket adds one"
+		"path": "/no-such-url-mirror-harness/",
+		"status": 404,
+		"settings": { "page_hero": "Split hero" },
+		"why": "The same missing URL under the other hero select — the error Surface has no route of its own to preview from"
 	},
 	{
 		"route": "tags-01",

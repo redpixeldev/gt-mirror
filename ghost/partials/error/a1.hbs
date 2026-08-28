@@ -1,0 +1,63 @@
+{{!-- A1, "centered statement", on the error Surface: the status set enormous over the apology.
+
+	{{> "error/a1"}}
+
+The number is `{{statusCode}}` rather than a literal, so the same drawing serves the designed 404
+and every other code error.hbs falls back to. It is `aria-hidden` because it is a piece of
+typography rather than a message — the heading below says what happened in words.
+
+THE WORDS ARE THE THEME'S, NOT THE PLATFORM'S. Ghost's `{{message}}` for a missing URL is "Page
+not found", which is the status line again; the design writes a sentence instead. error.hbs, which
+serves the codes nobody designed a page for, prints Ghost's message — there the platform's text is
+the only thing that carries information.
+
+The subscribe block is Ghost's own signup, the same three-attribute contract the footer and the
+newsletter band use: `data-members-form`, `data-members-email`, and the report coming back as
+classes on the form. It renders only where members exist. --}}
+<section
+	aria-labelledby="a1-404"
+	class="container w-full py-26 text-center">
+	<p
+		aria-hidden="true"
+		class="font-display text-ghost-num text-[clamp(88px,16vw,208px)] leading-[0.86] font-medium tracking-[-0.04em]">{{statusCode}}</p>
+
+	<h1
+		id="a1-404"
+		class="font-display tracking-display mx-auto mt-7 max-w-[22ch] text-[clamp(30px,3.6vw,46px)] leading-[1.1] font-medium text-balance">{{t "This story was never filed"}}</h1>
+
+	<p class="text-lead text-muted mx-auto mt-5 max-w-[50ch] leading-[1.55] text-pretty">
+		{{~t "The page you asked for isn't in the archive — it may have moved, or the link may have been mistyped."~}}
+	</p>
+
+	{{#if @site.members_enabled}}
+		<form
+			id="cta"
+			data-members-form="signup"
+			class="mx-auto mt-10 flex max-w-[520px] flex-wrap justify-center gap-2.5">
+			<label
+				for="error-email"
+				class="sr-only">{{t "Email address"}}</label>
+			<input
+				id="error-email"
+				type="email"
+				data-members-email
+				required
+				autocomplete="email"
+				placeholder="{{t "you@publication.com"}}"
+				class="border-border bg-surface font-ui text-text min-w-0 flex-[1_1_240px] rounded-sm border px-4 py-[13px] text-[15px]">
+			<button
+				type="submit"
+				class="btn btn-primary font-ui cursor-pointer rounded-sm px-6 py-[13px] text-[15px] font-semibold">{{t "Subscribe"}}</button>
+
+			<p
+				data-members-error
+				role="alert"
+				class="font-ui text-danger w-full text-xs"></p>
+			<p
+				role="status"
+				class="font-ui text-muted members-sent w-full text-xs">{{t "Check your inbox for the link."}}</p>
+		</form>
+
+		<p class="font-ui text-muted mt-3.5 text-[13px]">{{@custom.newsletter_heading}}. {{t "No spam."}}</p>
+	{{/if}}
+</section>

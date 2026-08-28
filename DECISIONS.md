@@ -2594,3 +2594,94 @@ Post-for-post and price-for-price the Surface matches; the gap is structural and
 
 `recommendations-02`, `about-02` and `membership-02` were `skip`ped in the Surface map until this
 ticket; the run's pending count drops from 8 to 2.
+
+## The error Surfaces (2026-08)
+
+A missing URL renders the designed 404 in both Layouts and both Modes, and every other status code
+falls through to a generic Surface of the same shape. The layout picker is `@custom.page_hero`,
+the select About and Membership already read: a buyer who asked for a centred statement gets one
+here too.
+
+### This Surface cannot be previewed, only visited
+
+Ghost has no route that renders an error template on request — an error page is what the router
+falls through to. So the capture set points both rows at a URL that genuinely does not exist and
+asserts the **404 status** alongside the `data-surface` marker; a hand-made preview route would
+have proved that the markup compiles and nothing about what a reader actually reaches.
+
+The two rows share one path and differ only by the setting, which is the first time in this run
+that the Layout guard — two Layouts of one URL must put different documents on screen — is doing
+its whole job on a Surface with no URL of its own.
+
+### The words are the theme's on 404 and the platform's everywhere else
+
+Ghost's `{{message}}` for a missing URL is "Page not found", which is the status line again in
+words. The designed Surface writes a sentence instead — "This story was never filed" over an
+explanation — so error-404.hbs prints the theme's translatable copy and keeps `{{statusCode}}` for
+the numeral, which is the only part of the platform's error that carries information there.
+
+`error.hbs` does the opposite, and deliberately: a 500 or a 503 is a case nobody designed a page
+for, and Ghost's own message is the only thing on the screen that tells the reader anything. It
+prints `{{statusCode}}`, `{{message}}` and `{{errorDetails}}` in the A1 drawing, plus a link back
+to the front page.
+
+It also has no subscribe block, where the 404 does. A reader who mistyped a URL is still a reader;
+someone looking at a server error is being asked to wait, and a signup form under a 500 reads as
+the publication changing the subject.
+
+**Both branches were rendered, not assumed.** `error-404.hbs` was moved out of the theme and Ghost
+restarted, which is what it takes — the theme's file list is cached, so a new or missing template
+needs a restart, the same lesson the layout picker recorded. The missing URL then rendered
+`data-surface="error"`, the numeral 404, Ghost's own "Page not found" as the heading, the back
+link and the slim foot. The template was moved back and the run re-scored identically.
+
+### What the Chrome does here
+
+`{{#is}}` cannot match an error page — it has no context at all, which is the measurement that
+made every Surface in this theme name its own chrome — so the template names the compact bar and
+the slim foot itself. `<body>` is a flex column, so the message centres in whatever space is left
+and the foot sits on the bottom edge, which is the shape `NotFoundShell.astro` draws with
+`min-h-screen`.
+
+THE ROUTE BACK IS THE CHROME'S. The design draws no "back to the front page" link on either error
+layout, and none is added: the wordmark links to `{{@site.url}}` and the whole primary menu is in
+the bar above the message. Confirmed on the rendered 404 — the wordmark's href is the site root
+and the nav carries five working links. `error.hbs` keeps an explicit back link, because a reader
+who has hit a 500 may not trust the navigation either.
+
+Portal loads on an error page out of `{{ghost_head}}`, so the subscribe block on the 404 is Ghost's
+real signup rather than a form that goes nowhere — verified on the rendered page, which carries
+`data-members-form="signup"` and the portal bundle.
+
+### What the run reports
+
+| route    | mode  | layout |     Ghost | Floor |   gap |
+| :------- | :---- | :----- | --------: | ----: | ----: |
+| `404`    | light | A1     | **98.63** | 98.96 | −0.33 |
+| `404`    | dark  | A1     | **98.10** | 98.97 | −0.87 |
+| `404-02` | light | A2     | **98.44** | 98.73 | −0.29 |
+| `404-02` | dark  | A2     | **97.92** | 98.77 | −0.85 |
+
+The A1 row moved from **97.41** to 98.63 — the placeholder it replaced set the numeral at the
+display size rather than the design's clamp and carried a back link the design does not draw.
+`404-02` was `skip`ped in the Surface map until this ticket, and the run's pending count reaches
+**zero**: every Surface the design draws is now captured in both Modes.
+
+### The log refusal learned one exclusion
+
+With every Surface captured, the run started failing its own log check: Ghost refreshes a
+recommendation's metadata over the network, and this publication's nine recommended publications
+are the design's inventions — `secondread.club` and the rest resolve nowhere — so any run that
+renders the Recommendations Surface logs `ENOTFOUND` and `No provider found for supplied URL` at
+level 50.
+
+That is the demo content being fictional, not a Surface failing to render. `logSince` now drops
+exactly those two shapes and nothing else, with the reasoning beside the regex: an outbound fetch
+that could not resolve cannot be produced by a template, and a template that throws still fails
+the run. Leaving them in would have trained whoever runs this to read past the check, which is
+worse than not having it.
+
+The first full run with all 54 captures is clean, and `shoot.py`'s stability guard passed on every
+one of them — including the three-pixel anti-aliasing jitter on one card's rounded corner that
+failed two earlier runs. That one is capture noise on a border radius, not markup: three pixels at
+a maximum delta of 3, on the same corner both times.

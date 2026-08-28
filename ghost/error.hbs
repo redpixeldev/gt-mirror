@@ -1,22 +1,41 @@
 {{!< default}}
 
-{{!-- Generic error surface. The designed 404 (both layouts) arrives as error-404.hbs in the
-Error Surfaces ticket; Ghost falls back to this template for every other status code.
-{{statusCode}}, {{message}} and {{errorDetails}} are the whole error context — see
-core/server/views/error.hbs. --}}
+{{!-- Every error but a missing URL. Ghost resolves error-404.hbs first and falls back here for
+every other status code, so this is a 500, a 503, a rate limit — the cases where the platform's
+own message is the only thing on the page that carries information.
+
+That is the one place this Surface departs from error/a1.hbs, whose sentence is the theme's. Here
+the heading is `{{message}}` and the list below it is `{{errorDetails}}`, because a reader looking
+at a 500 needs Ghost's words, not the theme's.
+
+No subscribe block either. The designed 404 offers the newsletter because a reader who mistyped a
+URL is still a reader; someone who has hit a server error is being asked to wait, and a signup
+form under a 500 reads as the publication changing the subject.
+
+`{{{this.message}}}` is triple-braced on purpose: Ghost's error details arrive pre-escaped and
+double-brace would print the entities. The values come from Ghost, never from a request. --}}
 
 {{> "chrome/header" compact=true}}
 
-<main id="main" class="flex grow items-center">
-	<div class="container py-24 text-center" data-surface="error">
+<main
+	id="main"
+	class="flex grow items-center"
+	data-surface="error">
 
-		<p class="font-display text-display text-ghost-num leading-none">{{statusCode}}</p>
+	<section
+		aria-labelledby="error-h"
+		class="container w-full py-26 text-center">
+		<p
+			aria-hidden="true"
+			class="font-display text-ghost-num text-[clamp(88px,16vw,208px)] leading-[0.86] font-medium tracking-[-0.04em]">{{statusCode}}</p>
 
-		<h1 class="font-display text-h2 text-text mt-4 tracking-tight">{{message}}</h1>
+		<h1
+			id="error-h"
+			class="font-display tracking-display mx-auto mt-7 max-w-[22ch] text-[clamp(30px,3.6vw,46px)] leading-[1.1] font-medium text-balance">{{message}}</h1>
 
 		<a
 			href="{{@site.url}}"
-			class="font-ui mt-8 inline-block text-[14px]">{{t "Back to the front page"}} &rarr;</a>
+			class="font-ui text-accent mt-8 inline-block text-[14px]">{{t "Back to the front page"}} &rarr;</a>
 
 		{{#if errorDetails}}
 			<ul class="font-mono text-muted measure mx-auto mt-10 text-left text-[12px]">
@@ -25,8 +44,8 @@ core/server/views/error.hbs. --}}
 				{{/foreach}}
 			</ul>
 		{{/if}}
+	</section>
 
-	</div>
 </main>
 
 {{> "chrome/footer" slim=true}}

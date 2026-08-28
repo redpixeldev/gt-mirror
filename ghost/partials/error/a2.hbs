@@ -1,0 +1,63 @@
+{{!-- A2, "editorial split", on the error Surface: the apology beside the subscribe block.
+
+	{{> "error/a2"}}
+
+Only the message column narrows to 1120px; the header and the slim foot stay page-width, which is
+what the design draws and why the override is on this section rather than on the Surface.
+
+`auto-fit` is what makes the two columns stack on a phone without a breakpoint, and
+`self-start` keeps the form on the paragraph's first line rather than centring it against a
+paragraph that may run to three.
+
+See error/a1.hbs for why the copy is the theme's rather than `{{message}}`, and for the members
+contract the form uses. --}}
+<section
+	aria-labelledby="a2-404"
+	style="--container-max:1120px"
+	class="container w-full py-28">
+	<p class="font-meta text-meta text-accent tracking-[0.16em] uppercase">{{t "Error {code}" code=statusCode}}</p>
+
+	<h1
+		id="a2-404"
+		class="font-display tracking-display mt-[26px] max-w-[20ch] text-[clamp(38px,5.6vw,68px)] leading-[1.03] font-medium text-balance">{{t "We can't find that page"}}</h1>
+
+	<div class="border-border mt-10 grid grid-cols-[repeat(auto-fit,minmax(min(280px,100%),1fr))] gap-11 border-t pt-8">
+		<p class="font-body text-muted max-w-[44ch] text-[21px] leading-[1.5] text-pretty italic">
+			{{~t "It isn't in the archive. Either it moved, or the link was mistyped — but the newsletter still arrives every Thursday."~}}
+		</p>
+
+		{{#if @site.members_enabled}}
+			<form
+				id="cta"
+				data-members-form="signup"
+				class="flex flex-col gap-3 self-start">
+				<label
+					for="error-email"
+					class="font-ui text-[13px] font-semibold">{{t "Subscribe to {publication}" publication=@site.title}}</label>
+
+				<div class="flex flex-wrap gap-2.5">
+					<input
+						id="error-email"
+						type="email"
+						data-members-email
+						required
+						autocomplete="email"
+						placeholder="{{t "you@publication.com"}}"
+						class="border-border bg-surface font-ui text-text min-w-0 flex-[1_1_200px] rounded-sm border px-[15px] py-[13px] text-[15px]">
+					<button
+						type="submit"
+						class="btn btn-primary font-ui cursor-pointer rounded-sm px-6 py-[13px] text-[15px] font-semibold">{{t "Subscribe"}}</button>
+				</div>
+
+				<p
+					data-members-error
+					role="alert"
+					class="font-ui text-danger text-[12.5px]"></p>
+				<p
+					role="status"
+					class="font-ui text-muted members-sent text-[12.5px]">{{t "Check your inbox for the link."}}</p>
+				<p class="font-ui text-muted text-[12.5px]">{{t "No spam. Unsubscribe anytime."}}</p>
+			</form>
+		{{/if}}
+	</div>
+</section>

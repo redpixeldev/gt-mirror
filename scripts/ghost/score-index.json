@@ -272,7 +272,9 @@
 		"surface": "error-404",
 		"path": "/no-such-url-mirror-harness/",
 		"status": 404,
-		"settings": {},
+		"settings": {
+			"page_hero": "Centered statement"
+		},
 		"build": ".shots/ghost/ghost-404-light.png",
 		"ref": "05-404-A1-light.png",
 		"h": 928,
@@ -285,7 +287,9 @@
 		"surface": "error-404",
 		"path": "/no-such-url-mirror-harness/",
 		"status": 404,
-		"settings": {},
+		"settings": {
+			"page_hero": "Centered statement"
+		},
 		"build": ".shots/ghost/ghost-404-dark.png",
 		"ref": "05-404-A1-dark.png",
 		"h": 928,
@@ -296,28 +300,30 @@
 		"mode": "light",
 		"layout": "A2",
 		"surface": "error-404",
-		"path": null,
-		"status": 200,
-		"settings": {},
+		"path": "/no-such-url-mirror-harness/",
+		"status": 404,
+		"settings": {
+			"page_hero": "Split hero"
+		},
 		"build": ".shots/ghost/ghost-404-02-light.png",
 		"ref": "05-404-A2-light.png",
 		"h": 928,
-		"w": 1568,
-		"skip": "no layout picker on the error Surface yet — the Error Surfaces ticket adds one"
+		"w": 1568
 	},
 	{
 		"route": "404-02",
 		"mode": "dark",
 		"layout": "A2",
 		"surface": "error-404",
-		"path": null,
-		"status": 200,
-		"settings": {},
+		"path": "/no-such-url-mirror-harness/",
+		"status": 404,
+		"settings": {
+			"page_hero": "Split hero"
+		},
 		"build": ".shots/ghost/ghost-404-02-dark.png",
 		"ref": "05-404-A2-dark.png",
 		"h": 928,
-		"w": 1568,
-		"skip": "no layout picker on the error Surface yet — the Error Surfaces ticket adds one"
+		"w": 1568
 	},
 	{
 		"route": "tags-01",
