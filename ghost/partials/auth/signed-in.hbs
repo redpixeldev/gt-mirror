@@ -1,10 +1,9 @@
 {{!-- What a signed-in Member sees where the sign-in or sign-up card would be.
 
-	{{> "auth/shell" … card="auth/signed-in" cardTitle=(t "You are signed in")}}
+	{{> "auth/signed-in" cardTitle=(t "You are signed in")}}      from inside auth/shell.hbs
 
-	cardTitle   the heading, which differs by Surface — the shell passes its whole hash down, so
-	            this reads it directly rather than taking it as `title`, which the shell already
-	            uses for the page's own h1
+	cardTitle   the heading, which differs by Surface. Not `title`: the shell passes its own hash
+	            down with the context, and `title` there is the page's h1
 
 A form that would create a second account for someone who already has one is worse than no form.
 The address is `{{@member.email}}`, which is Ghost's own answer to "who is this", and the action

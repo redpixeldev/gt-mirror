@@ -145,12 +145,20 @@ async function connect(endpoint) {
 				socket.send(JSON.stringify(message));
 			});
 		},
+		/*
+		 * The timer is cleared on arrival, not left to expire: an uncleared timeout holds Node's
+		 * event loop open, so a run that finished in thirty seconds would sit for twenty more
+		 * before exiting.
+		 */
 		once(method, timeout = 20_000) {
 			return new Promise((resolve, reject) => {
+				const timer = setTimeout(() => reject(new Error(`timed out waiting for ${method}`)), timeout);
 				const list = waiters.get(method) ?? [];
-				list.push(resolve);
+				list.push((params) => {
+					clearTimeout(timer);
+					resolve(params);
+				});
 				waiters.set(method, list);
-				setTimeout(() => reject(new Error(`timed out waiting for ${method}`)), timeout);
 			});
 		},
 		close: () => socket.close(),
@@ -276,7 +284,11 @@ async function main() {
 		}
 	} finally {
 		browser.close();
+		/* Chrome is still flushing its profile when `kill` returns, and removing the directory
+		 * under it fails with ENOTEMPTY. Wait for the exit, then clean up. */
+		const gone = new Promise((resolve) => child.once('exit', resolve));
 		child.kill();
+		await gone;
 		rmSync(profile, { recursive: true, force: true });
 		await restoreThemeSettings();
 	}

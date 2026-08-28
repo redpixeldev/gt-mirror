@@ -1,6 +1,6 @@
 {{!-- The two shapes of "you cannot sign up here", each with the only honest action left.
 
-	{{> "auth/shell" … card="auth/closed"}}
+	{{> "auth/closed"}}      from inside auth/shell.hbs, which owns the state matrix
 
 Invite-only means new memberships are closed and existing ones still work, so the action is sign
 in. Members off entirely means there is nothing to sign into, so there is no action at all — and
