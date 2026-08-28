@@ -8,8 +8,6 @@ tag archive pass nothing: on an author's own page their name on every row is noi
 `reading_time` is computed by Ghost from word count and image count and is stored nowhere, so the
 label is whatever the body length implies — never a field a fixture can set directly. --}}
 <p class="font-meta text-muted mt-2 text-[12px] uppercase">
-	{{#if byline}}{{#primary_author}}<a
-				href="{{url}}"
-				class="text-muted">{{name}}</a>{{/primary_author}}<span aria-hidden="true"> · </span>{{/if}}{{date format="DD MMM YYYY"}}
+	{{#if byline}}{{> "byline-links" linkClass="text-muted"}}<span aria-hidden="true"> · </span>{{/if}}{{date format="DD MMM YYYY"}}
 	<span aria-hidden="true"> · </span>{{reading_time seconds=(t "< 1 min read") minute=(t "1 min read") minutes=(t "% min read")}}
 </p>

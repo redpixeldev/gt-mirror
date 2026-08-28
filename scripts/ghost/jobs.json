@@ -200,28 +200,56 @@
 		"out": "ghost-authors-01-light.png",
 		"height": 2230,
 		"width": 1568,
-		"group": "{}"
+		"group": "{\"directory_layout\":\"Editorial rows\"}"
 	},
 	{
 		"url": "http://localhost:2368/authors/?mode=dark",
 		"out": "ghost-authors-01-dark.png",
 		"height": 2230,
 		"width": 1568,
-		"group": "{}"
+		"group": "{\"directory_layout\":\"Editorial rows\"}"
 	},
 	{
-		"url": "http://localhost:2368/author/erin-laurier/?mode=light",
+		"url": "http://localhost:2368/authors/?mode=light",
+		"out": "ghost-authors-02-light.png",
+		"height": 1940,
+		"width": 1568,
+		"group": "{\"directory_layout\":\"Cover cards\"}"
+	},
+	{
+		"url": "http://localhost:2368/authors/?mode=dark",
+		"out": "ghost-authors-02-dark.png",
+		"height": 1940,
+		"width": 1568,
+		"group": "{\"directory_layout\":\"Cover cards\"}"
+	},
+	{
+		"url": "http://localhost:2368/author/marisol-ade/?mode=light",
 		"out": "ghost-author-single-01-light.png",
 		"height": 3693,
 		"width": 1568,
-		"group": "{}"
+		"group": "{\"feed_layout\":\"Two-column list\"}"
 	},
 	{
-		"url": "http://localhost:2368/author/erin-laurier/?mode=dark",
+		"url": "http://localhost:2368/author/marisol-ade/?mode=dark",
 		"out": "ghost-author-single-01-dark.png",
 		"height": 3693,
 		"width": 1568,
-		"group": "{}"
+		"group": "{\"feed_layout\":\"Two-column list\"}"
+	},
+	{
+		"url": "http://localhost:2368/author/marisol-ade/?mode=light",
+		"out": "ghost-author-single-02-light.png",
+		"height": 2658,
+		"width": 1568,
+		"group": "{\"feed_layout\":\"Three-column grid\"}"
+	},
+	{
+		"url": "http://localhost:2368/author/marisol-ade/?mode=dark",
+		"out": "ghost-author-single-02-dark.png",
+		"height": 2658,
+		"width": 1568,
+		"group": "{\"feed_layout\":\"Three-column grid\"}"
 	},
 	{
 		"url": "http://localhost:2368/recommendations/?mode=light",

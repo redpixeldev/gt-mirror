@@ -1,0 +1,18 @@
+{{!-- Every writer on a post, each name linking to their archive.
+
+	{{> "byline-links" linkClass="font-ui text-text text-sm font-semibold no-underline"}}
+
+	linkClass   the class list the Surface draws its byline links with
+
+The linked half of byline.hbs — see that file for why Ghost's own {{authors}} helper is not used
+here, and why the credit names everyone while the face stays the primary author's.
+
+`../linkClass` and not `linkClass`: {{#foreach}} renders its block with each row as the context,
+so a partial argument passed to THIS partial is one frame up from inside the loop. Read bare it is
+undefined and every byline link ships `class=""`. --}}
+{{~#foreach authors~}}
+	{{~#unless @first}}{{#if @last}}{{t " and "}}{{else}}, {{/if}}{{/unless~}}
+	<a
+		href="{{url}}"
+		class="{{../linkClass}}">{{name}}</a>
+{{~/foreach~}}

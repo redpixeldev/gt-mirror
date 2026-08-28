@@ -1,38 +1,37 @@
 {{!< default}}
 
-{{!-- One author's profile and their posts. The A2 rail and the designed header arrive with
-the Author ticket. --}}
+{{!-- One writer's profile and their posts.
+
+Distinct from the Authors Directory, which lists writers rather than posts — see
+partials/pages/authors.hbs. This Surface pages through one writer's work; that one lists people
+and does not.
+
+The layout picker is `@custom.feed_layout`, the same select the Feed and the tag archive read.
+One {{#match}} at the top, the non-default option matched explicitly so an unrecognised stored
+value falls through to a layout rather than to nothing, and no partial below reads @custom.
+
+`posts` and `pagination` are this channel's own: Ghost resolves how many rows a page holds in the
+routing layer, from `posts_per_page` in this theme's package.json. Nothing here decides it, and
+`taxonomies` in a publication's routes.yaml takes a permalink and no limit, so the author archive
+holds whatever the Feed holds. --}}
 
 {{> "chrome/header" compact=true}}
 
-<main id="main" class="grow">
-	{{#author}}
-		<header class="container pt-16" data-surface="author">
-			<p class="font-meta text-muted text-[12px] uppercase">{{t "Writer"}}</p>
-			<h1 class="font-display text-h1 text-text mt-3 tracking-tight">{{name}}</h1>
-			{{#if bio}}
-				<p class="font-body text-muted text-lead measure mt-4">{{bio}}</p>
-			{{/if}}
-			<p class="font-meta text-muted mt-4 text-[12px] uppercase">
-				{{#if location}}{{location}}<span aria-hidden="true"> · </span>{{/if}}{{plural ../pagination.total empty=(t "No posts") singular=(t "% post") plural=(t "% posts")}}
-			</p>
-		</header>
-	{{/author}}
+<main
+	id="main"
+	class="grow"
+	data-surface="author">
 
-	<div class="container py-12">
-		{{#foreach posts}}
-			<article class="{{post_class}} border-border border-b py-8 last:border-0">
-				<h2 class="font-display text-h3 tracking-tight">
-					<a href="{{url}}" class="text-text no-underline">{{title}}</a>
-				</h2>
-				{{> "post-meta"}}
-			</article>
-		{{else}}
-			<p class="font-body text-muted">{{t "No posts by this writer yet."}}</p>
-		{{/foreach}}
+	{{#match @custom.feed_layout "Three-column grid"}}
+		{{> "author/a2"}}
+	{{else}}
+		{{> "author/a1"}}
+	{{/match}}
 
-		{{pagination}}
-	</div>
+	{{pagination pt="pt-13"}}
+
+	{{> "newsletter" anchor="author-newsletter" pt="pt-20"}}
+
 </main>
 
 {{> "chrome/footer"}}

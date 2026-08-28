@@ -24,16 +24,14 @@ is stored nowhere, so "12 min read" is whatever the body implies, never a field.
 			{{/if}}
 
 			<dl class="flex flex-wrap gap-10 self-start">
-				{{#primary_author}}
+				{{#if authors}}
 					<div>
 						<dt class="text-muted font-mono text-[10.5px] tracking-[0.1em] uppercase">{{t "Written by"}}</dt>
 						<dd class="font-ui mt-2 ml-0 text-[15px] font-semibold">
-							<a
-								href="{{url}}"
-								class="text-text no-underline">{{name}}</a>
+							{{> "byline-links" linkClass="text-text no-underline"}}
 						</dd>
 					</div>
-				{{/primary_author}}
+				{{/if}}
 
 				<div>
 					<dt class="text-muted font-mono text-[10.5px] tracking-[0.1em] uppercase">{{t "Length"}}</dt>

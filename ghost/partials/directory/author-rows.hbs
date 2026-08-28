@@ -1,0 +1,87 @@
+{{!-- A1, "editorial rows", on the Authors Directory: a full-width row per writer.
+
+	{{> "directory/author-rows" authors=authors}}
+
+	authors   the rows to render — the Directory partial owns the query
+
+Three columns: the portrait, the biography block, and the writer's own links. Each collapses on
+its own where the publication has nothing to put in it, so a writer with no photograph, no
+location, no bio and no links still renders a name and a post count rather than an empty grid.
+
+The "Latest —" line is one extra query per writer, and there is no way around it: Ghost's authors
+resource carries `count.posts` and nothing about which post is newest, and Handlebars cannot join
+two queries. It is an indexed `limit="1"` read against the same filter the writer's own archive
+uses. A masthead is a handful of people; the 100-row cap on the Directory bounds the worst case.
+
+That query's `filter` reads `slug` as a plain path because the loop's context IS the writer, and
+its result is read through the `latest` block param rather than through the block's context —
+which is what keeps this free of the `../` that {{#get}} otherwise forces. --}}
+<section
+	id="authors"
+	aria-label="{{t "Writers"}}"
+	style="--container-max:1120px"
+	class="border-border container border-t pt-16">
+	{{#foreach authors}}
+		{{!-- Every staff account is an "author" to Ghost, so a row is drawn only for someone who
+		has published. The guard is here rather than in the query because `count.posts` is not
+		filterable on authors in Ghost 6 — see partials/pages/authors.hbs. --}}
+		{{#if count.posts}}
+			<article
+				class="border-border max-stack:grid-cols-[minmax(0,1fr)] max-stack:gap-5 grid grid-cols-[96px_minmax(0,1fr)_auto] items-start gap-9 border-b py-10">
+				{{> "authors/portrait" size="h-24 w-24" px="96" textSize="text-2xl" defer=true}}
+
+				<div>
+					<h2 class="font-display tracking-heading text-[32px] leading-[1.14] font-medium">
+						<a
+							href="{{url}}"
+							class="text-text no-underline">{{name}}</a>
+					</h2>
+
+					<p class="font-meta text-meta tracking-meta text-muted mt-2.5 uppercase">
+						{{~plural count.posts empty=(t "No posts") singular=(t "% post") plural=(t "% posts")~}}
+						{{#if location}}<span aria-hidden="true"> · </span>{{location}}{{/if}}
+					</p>
+
+					{{#if bio}}
+						<p class="text-body text-muted mt-3.5 max-w-[60ch] leading-[1.62] text-pretty">{{bio}}</p>
+					{{/if}}
+
+					{{#get "posts" filter="authors:{{slug}}" order="published_at desc" limit="1" as |latest|}}
+						{{#if latest}}
+							<p class="font-meta text-meta tracking-meta text-muted mt-4 uppercase">
+								{{~t "Latest"}} &mdash;
+								{{!-- The post title keeps its underline: the design leaves this one link underlined. --}}
+								<a
+									href="{{latest.[0].url}}"
+									class="text-text underline">{{latest.[0].title}}</a>
+							</p>
+						{{/if}}
+					{{/get}}
+				</div>
+
+				{{!-- The third column is dropped whole where a writer published neither link, so the
+				grid's 36px gap does not sit beside nothing. `{{#has any="…"}}` is Handlebars' only `or`
+				here — it tests the current context for a non-empty property (`evaluateList` in
+				core/frontend/helpers/has.js). --}}
+				{{#has any="website,twitter"}}
+					<div
+						class="max-stack:items-start max-stack:flex-row max-stack:flex-wrap flex flex-col items-end gap-2">
+						{{#if website}}
+							<a
+								href="{{website}}"
+								rel="me noopener"
+								class="border-border text-text font-ui rounded-sm border px-3.5 py-2 text-[13px] font-semibold whitespace-nowrap no-underline">{{readable_url website}}</a>
+						{{/if}}
+
+						{{#if twitter}}
+							<a
+								href="{{social_url type="twitter"}}"
+								rel="me noopener"
+								class="text-muted font-mono text-xs whitespace-nowrap no-underline">@{{twitter}}</a>
+						{{/if}}
+					</div>
+				{{/has}}
+				</article>
+		{{/if}}
+	{{/foreach}}
+</section>

@@ -1,0 +1,43 @@
+{{!-- One writer's face, in the writer's own context.
+
+	{{> "authors/portrait" size="h-24 w-24" px="96" textSize="text-2xl" defer=true}}   a masthead row or card
+	{{> "authors/portrait" size="h-[132px] w-[132px]" px="132" textSize="text-4xl" extra="mx-auto mt-9"}}
+	                                                                                   the A1 profile
+	{{> "authors/portrait" size="h-28 w-28" px="112" textSize="text-3xl"}}             the A2 rail
+
+	size       the box, as Tailwind utilities
+	px         the same box in pixels, for the width/height attributes
+	textSize   the initial's type size when there is no photograph
+	extra      positioning utilities the call site adds
+	defer      `loading="lazy" decoding="async"`, for the faces in a long list
+
+Distinct from post/avatar.hbs, which draws the small unbordered badge a byline carries. The author
+Surfaces draw a bordered circle cropped at `object-[50%_22%]` — the design's own crop, which keeps
+a head in frame rather than centring on a chest — and that treatment is the whole reason this is a
+second partial rather than an argument on the first.
+
+`defer` IS OFF BY DEFAULT, and that is not a performance oversight. Both attributes tell the
+browser it may paint a frame without the image, and a headless screenshot takes that permission —
+which is what made two captures of the same post Surface differ by exactly the two avatars on it.
+A profile portrait is the Surface's own subject, above the fold, and is never deferred; the
+directories pass `defer=true` because their faces are a list that runs past the viewport, which is
+what the design source marks lazy too.
+
+A writer with no uploaded photograph gets the tinted initial, the same fallback and the same
+one-letter concession recorded for post/avatar.hbs: Handlebars cannot take a substring and Ghost
+ships no helper that can, so `{{name.[0]}}` is the whole of what is available. The badge carries
+the border the photograph has, because in a row of five faces one circle without an outline reads
+as a rendering fault rather than as a missing picture. --}}
+{{#if profile_image}}
+	<img
+		src="{{img_url profile_image size="s"}}"
+		alt="{{t "Portrait of {name}" name=name}}"
+		width="{{px}}"
+		height="{{px}}"
+		{{#if defer}}loading="lazy" decoding="async"{{/if}}
+		class="border-border {{size}} {{extra}} block rounded-full border object-cover object-[50%_22%]">
+{{else}}
+	<span
+		aria-hidden="true"
+		class="border-border bg-accent-soft font-ui text-accent-strong {{size}} {{extra}} {{textSize}} grid place-items-center rounded-full border font-semibold">{{name.[0]}}</span>
+{{/if}}

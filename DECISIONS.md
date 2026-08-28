@@ -2292,3 +2292,129 @@ pending count drops from 16 to 12.
 Also: the first capture run after new `img_url` sizes appear is a warm-up, not a result. This ticket
 introduced `size="s"` and `size="xl"` derivatives and `shoot.py` failed its own stability check on
 the first run of `tags-single-01`, exactly as the Feed ticket predicted it would.
+
+## The writers: the masthead and one writer's archive (2026-08)
+
+The same two-Surface split as the subjects. The Authors Directory lists people and follows
+`@custom.directory_layout`; the author archive lists one writer's posts and follows
+`@custom.feed_layout`. Neither template reads the other's select.
+
+The scored route moved with the drawing, as the tag archive's did: `09-author-A1` is **Marisol
+Ade**'s page, so the capture path is `/author/marisol-ade/` rather than the `/author/erin-laurier/`
+the smoke map happened to name first.
+
+### Ghost caps a biography at 250 characters, and the design's is 437
+
+The masthead in `authors.ts` gives every writer a one-line bio; `authorArchive.ts` gives Marisol a
+five-sentence one, and the reference build prints each on its own Surface. Ghost has one field,
+and the choice is not the fixture's to make: `users.bio` carries
+`validations: { isLength: { max: 250 } }` (`core/server/data/schema/schema.js`), and the long bio
+is 437 characters. It cannot be stored.
+
+So the short bio is what a Ghost publication can hold, and the author archive's five-line
+paragraph renders as one. That costs about 90px at the top of the A1 profile, which shifts every
+band under it, and nothing at all on the A2 profile — where the bio lives in a rail beside the
+posts rather than above them, so a shorter rail moves no card. Concession, forced.
+
+### Two first-party helpers close the two link gaps
+
+The design prints a writer's site as `marisolade.net` and their handle as `@marisolade`. Ghost
+stores a full URL (`https://marisolade.net`) and a bare handle (`marisolade`), and Handlebars can
+do neither transformation — but Ghost ships both:
+
+- `{{readable_url website}}` returns `url.hostname.replace(/^www\./,'') + pathname` for a parsed
+  URL (`core/frontend/helpers/readable_url.js`), which is exactly the design's rendering.
+- `{{social_url type="twitter"}}` builds the profile URL from the handle. It resolves through
+  `localUtils.findKey(platform, this, siteData)`, and `findKey` is a `reduceRight` over
+  `[context, siteData]` (`core/frontend/services/theme-engine/handlebars/utils.js`), so the
+  CONTEXT wins — inside `{{#author}}` it is the writer's own handle, and the site's is only a
+  fallback. Every call is inside `{{#if twitter}}` so that fallback can never attribute the
+  publication's account to a writer who has none.
+
+### `{{#has any="…"}}` is the `or` Handlebars does not have
+
+A writer with neither a site nor a handle would otherwise leave an empty flex box carrying the
+row's margin, or an empty third grid column carrying its 36px gutter. `{{#has any="website,twitter"}}`
+tests the current context for a non-empty property — `evaluateList` in
+`core/frontend/helpers/has.js` splits the list and runs `_.has && !_.isEmpty` over it — so the
+whole block is dropped rather than emptied. Every other line on the profile is guarded on its own,
+which is what makes a writer with no photograph, no location, no bio and no links render a name
+and a post count instead of a broken grid.
+
+Verified by blanking a real staff user's `bio`, `website`, `twitter`, `location` and
+`profile_image` through the Admin API: the masthead row rendered the monogram, the name, "19
+POSTS" and the latest piece with no links column and no gap where one would be, and the profile
+Surface did the same. The fixture put all five fields back on the next import.
+
+### "Latest —" is one query per writer, and there is no second option
+
+The masthead prints each writer's most recent piece. Ghost's authors resource carries
+`count.posts` and nothing about which post is newest, and Handlebars cannot join two queries — so
+the row runs an indexed `limit="1"` read filtered to that writer. `filter="authors:{{slug}}"`
+resolves as a plain path because the loop's context IS the writer, and the result is read through
+the `latest` block param rather than through the block's own context, which is what keeps it free
+of the `../` that a `{{#get}}` otherwise forces on everything passed into it.
+
+A masthead is a handful of people and the Directory's own 100-row cap bounds the worst case, so
+this is a documented cost rather than a hidden one.
+
+### A post has one face and every writer's name
+
+`{{#primary_author}}{{name}}{{/primary_author}}` was the byline in nine places, and on a
+co-authored post each of them silently credited one writer. Ghost's own `{{authors}}` helper is
+the obvious replacement and does not fit: its autolink wraps every name in an **unclassed** `<a>`
+(`templates.link({url, text})` in `core/frontend/helpers/authors.js`), and this theme's bylines are
+drawn either as unlinked meta text or as links carrying a class. So the list is walked in two
+partials — `byline.hbs` for plain names, `byline-links.hbs` for linked ones — and both are used
+everywhere a post's credit is printed: the two Feed layouts, both homepage layouts, the tag
+archive's lead, the shared archive row and card, the post hero, the title page's "Written by" and
+`post-meta.hbs`.
+
+`primary_author` still supplies the FACE, because the design draws one. The separators are content
+rather than decoration, so neither the comma nor the "and" is `aria-hidden`.
+
+Measured both ways. A real co-author added to "Two editors, one masthead" through the Admin API
+rendered "Marisol Ade and Erin Laurier" on the post Surface, on the tag archive row and in the
+Feed; and with the fixture's one-author-per-post publication restored, all eighteen previously
+scored captures came back byte-for-byte identical — 96.15, 96.06, 97.49, 97.42, 97.54, 97.51,
+95.95, 95.89 and the six post rows, unchanged to the second decimal. A refactor across nine
+templates that moves no pixel is the only kind worth making on a scored theme.
+
+The fixture keeps one author per post, and that is not laziness: the design's five author
+marginals sum to exactly 104 over 104 posts, so a single co-authored post makes them
+unsatisfiable. Multi-author is a capability of the theme, demonstrated against the running
+install, not a property of the demo publication.
+
+### The rail is sticky only while there is a second column
+
+Same rule as the post Surface's rail, and the same reason: below `--breakpoint-stack` the grid
+collapses to one column, and a sticky child there pins itself while the rest of the column scrolls
+underneath — the post grid would run straight through the portrait, the bio and the links.
+Measured on the running install: at 1200px the grid computes to `280px 784px` and the rail to
+`position: sticky`; at 767px it computes to a single `727px` track and the rail to
+`position: static`.
+
+### What the run reports
+
+All eight captures, against the Floors recorded for the reference build:
+
+| route              | mode  | layout |     Ghost | Floor |   gap |
+| :----------------- | :---- | :----- | --------: | ----: | ----: |
+| `authors-01`       | light | A1     | **97.86** | 98.30 | −0.44 |
+| `authors-01`       | dark  | A1     | **97.64** | 98.36 | −0.72 |
+| `authors-02`       | light | A2     | **97.32** | 97.96 | −0.64 |
+| `authors-02`       | dark  | A2     | **97.07** | 98.06 | −0.99 |
+| `author-single-01` | light | A1     | **93.14** | 98.16 | −5.02 |
+| `author-single-01` | dark  | A1     | **93.35** | 98.22 | −4.87 |
+| `author-single-02` | light | A2     | **88.43** | 97.27 | −8.84 |
+| `author-single-02` | dark  | A2     | **89.35** | 97.36 | −8.01 |
+
+The two Directory rows are the whole Surface and sit within a point of their Floors. The two
+profile rows carry the same page-length concession the tag archive does — the design draws twelve
+posts and Ghost serves eighteen, so from y≈1900 the reference PNG shows pagination and the
+subscribe band while the port is still showing posts — plus, on A1 only, the 250-character bio cap
+above. Post order and post content match the drawing row for row on both layouts, which is what
+says the remainder is the platform rather than the port.
+
+`authors-02` and `author-single-02` were `skip`ped in the Surface map until this ticket; the run's
+pending count drops from 12 to 8.

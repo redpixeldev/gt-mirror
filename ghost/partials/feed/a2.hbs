@@ -36,7 +36,7 @@ face beside it, so this card has no avatar. --}}
 					<p class="text-small text-muted mt-3 leading-[1.58]">{{excerpt}}</p>
 
 					<p class="font-meta text-meta tracking-meta text-muted mt-4 uppercase">
-						{{~#primary_author}}{{name}}<span aria-hidden="true"> · </span>{{/primary_author~}}
+						{{~#if authors}}{{> "byline"}}<span aria-hidden="true"> · </span>{{/if~}}
 						{{> "dateline"}}
 					</p>
 				</a>

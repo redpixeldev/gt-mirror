@@ -1,0 +1,40 @@
+{{!-- A2, "three-column grid", on an author archive: the profile as a rail beside a card grid.
+
+	{{> "author/a2"}}
+
+The crumb sits above the grid here rather than inside the profile, because the profile is a
+column and a breadcrumb belongs to the page. It is a span, not a link, for the reason
+author/header.hbs records: Ghost has no Authors Directory URL to point it at.
+
+`grid-cols-[280px_minmax(0,1fr)]` and not a bare `1fr` for the second track: bare `1fr` means
+`minmax(auto,1fr)`, whose floor is the column's min-content width, so a long headline in a card
+would push the grid wider than the page instead of wrapping.
+
+The grid's track is 280px against the tag archive's 330 — the cards sit in the narrower column
+left over beside the rail, and the design tightens the gutters to match. --}}
+<div class="container pt-14">
+	<nav
+		aria-label="{{t "Breadcrumb"}}"
+		class="text-muted mb-8 font-mono text-[11px] tracking-[0.1em] uppercase">
+		<span>&larr; {{t "All writers"}}</span>
+	</nav>
+
+	<div
+		class="max-stack:grid-cols-[minmax(0,1fr)] max-stack:gap-10 grid grid-cols-[280px_minmax(0,1fr)] items-start gap-18">
+		{{#author}}
+			{{> "author/rail" total=../pagination.total}}
+		{{/author}}
+
+		<section
+			id="posts"
+			aria-label="{{t "Posts"}}">
+			<div class="grid grid-cols-[repeat(auto-fill,minmax(min(280px,100%),1fr))] gap-x-8 gap-y-11">
+				{{#foreach posts}}
+					{{> "archive/card" tagEyebrow=true eyebrowSpacing="mt-4" titleClass="text-[22px]" excerptSpacing="mt-2.5"}}
+				{{else}}
+					<p class="font-body text-muted">{{t "No posts by this writer yet."}}</p>
+				{{/foreach}}
+			</div>
+		</section>
+	</div>
+</div>

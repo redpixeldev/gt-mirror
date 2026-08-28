@@ -1,0 +1,59 @@
+{{!-- A1, "centered header": the writer's profile as a centred column above their posts.
+
+	{{#author}}{{> "author/header" total=../pagination.total}}{{/author}}
+
+	total   the writer's whole post count, not the page's — one frame up from inside {{#author}}
+
+Everything else is read from the author, so the partial takes the author as its context.
+
+THE CRUMB IS NOT A LINK, for the same reason the tag archive's is not: Ghost has no Authors
+Directory URL. The masthead is a Page the publication creates and names, so its slug is the
+buyer's and nothing about it reaches a template. The span inherits the nav's colour, so the
+drawing is unchanged and no arrow points at a 404. Recorded as a Concession in DECISIONS.md.
+
+Every line below the name is guarded on its own: a writer with no location, no biography and no
+links renders a name and a post count and nothing else, which is a shorter column rather than a
+hole. --}}
+<section
+	aria-labelledby="a1-name"
+	style="--container-max:1120px"
+	class="container pt-16 pb-16 text-center">
+	<nav
+		aria-label="{{t "Breadcrumb"}}"
+		class="text-muted font-mono text-[11px] tracking-[0.1em] uppercase">
+		<span>&larr; {{t "All writers"}}</span>
+	</nav>
+
+	{{> "authors/portrait" size="h-[132px] w-[132px]" px="132" textSize="text-4xl" extra="mx-auto mt-9"}}
+
+	<h1
+		id="a1-name"
+		class="font-display tracking-display mt-[26px] text-[clamp(34px,4.6vw,56px)] leading-[1.06] font-medium">{{name}}</h1>
+
+	<p class="font-meta text-meta text-muted mt-3.5 tracking-[0.14em] uppercase">
+		{{~plural total empty=(t "No posts") singular=(t "% post") plural=(t "% posts")~}}
+		{{#if location}}<span aria-hidden="true"> · </span>{{location}}{{/if}}
+	</p>
+
+	{{#if bio}}
+		<p class="font-body text-muted mx-auto mt-[22px] max-w-[60ch] text-[20px] leading-[1.55] text-pretty italic">{{bio}}</p>
+	{{/if}}
+
+	{{#has any="website,twitter"}}
+		<div class="mt-7 flex flex-wrap justify-center gap-3">
+			{{#if website}}
+				<a
+					href="{{website}}"
+					rel="me noopener"
+					class="border-border text-text font-ui rounded-sm border px-[18px] py-2.5 text-[13.5px] font-semibold no-underline">{{readable_url website}}</a>
+			{{/if}}
+
+			{{#if twitter}}
+				<a
+					href="{{social_url type="twitter"}}"
+					rel="me noopener"
+					class="border-border text-text font-ui rounded-sm border px-[18px] py-2.5 text-[13.5px] font-semibold no-underline">@{{twitter}}</a>
+			{{/if}}
+		</div>
+	{{/has}}
+</section>

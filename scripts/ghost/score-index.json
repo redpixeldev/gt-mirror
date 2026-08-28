@@ -446,7 +446,9 @@
 		"surface": "page-authors",
 		"path": "/authors/",
 		"status": 200,
-		"settings": {},
+		"settings": {
+			"directory_layout": "Editorial rows"
+		},
 		"build": ".shots/ghost/ghost-authors-01-light.png",
 		"ref": "08-authors-A1-light.png",
 		"h": 2230,
@@ -459,7 +461,9 @@
 		"surface": "page-authors",
 		"path": "/authors/",
 		"status": 200,
-		"settings": {},
+		"settings": {
+			"directory_layout": "Editorial rows"
+		},
 		"build": ".shots/ghost/ghost-authors-01-dark.png",
 		"ref": "08-authors-A1-dark.png",
 		"h": 2230,
@@ -472,12 +476,13 @@
 		"surface": "page-authors",
 		"path": "/authors/",
 		"status": 200,
-		"settings": {},
+		"settings": {
+			"directory_layout": "Cover cards"
+		},
 		"build": ".shots/ghost/ghost-authors-02-light.png",
 		"ref": "08-authors-A2-light.png",
 		"h": 1940,
-		"w": 1568,
-		"skip": "no layout picker on the Authors Directory yet — the Author Surface and Authors Directory ticket adds one"
+		"w": 1568
 	},
 	{
 		"route": "authors-02",
@@ -486,21 +491,24 @@
 		"surface": "page-authors",
 		"path": "/authors/",
 		"status": 200,
-		"settings": {},
+		"settings": {
+			"directory_layout": "Cover cards"
+		},
 		"build": ".shots/ghost/ghost-authors-02-dark.png",
 		"ref": "08-authors-A2-dark.png",
 		"h": 1940,
-		"w": 1568,
-		"skip": "no layout picker on the Authors Directory yet — the Author Surface and Authors Directory ticket adds one"
+		"w": 1568
 	},
 	{
 		"route": "author-single-01",
 		"mode": "light",
 		"layout": "A1",
 		"surface": "author",
-		"path": "/author/erin-laurier/",
+		"path": "/author/marisol-ade/",
 		"status": 200,
-		"settings": {},
+		"settings": {
+			"feed_layout": "Two-column list"
+		},
 		"build": ".shots/ghost/ghost-author-single-01-light.png",
 		"ref": "09-author-A1-light.png",
 		"h": 3693,
@@ -511,9 +519,11 @@
 		"mode": "dark",
 		"layout": "A1",
 		"surface": "author",
-		"path": "/author/erin-laurier/",
+		"path": "/author/marisol-ade/",
 		"status": 200,
-		"settings": {},
+		"settings": {
+			"feed_layout": "Two-column list"
+		},
 		"build": ".shots/ghost/ghost-author-single-01-dark.png",
 		"ref": "09-author-A1-dark.png",
 		"h": 3693,
@@ -524,28 +534,30 @@
 		"mode": "light",
 		"layout": "A2",
 		"surface": "author",
-		"path": "/author/erin-laurier/",
+		"path": "/author/marisol-ade/",
 		"status": 200,
-		"settings": {},
+		"settings": {
+			"feed_layout": "Three-column grid"
+		},
 		"build": ".shots/ghost/ghost-author-single-02-light.png",
 		"ref": "09-author-A2-light.png",
 		"h": 2658,
-		"w": 1568,
-		"skip": "no layout picker on the Author Surface yet — the Author Surface and Authors Directory ticket adds one"
+		"w": 1568
 	},
 	{
 		"route": "author-single-02",
 		"mode": "dark",
 		"layout": "A2",
 		"surface": "author",
-		"path": "/author/erin-laurier/",
+		"path": "/author/marisol-ade/",
 		"status": 200,
-		"settings": {},
+		"settings": {
+			"feed_layout": "Three-column grid"
+		},
 		"build": ".shots/ghost/ghost-author-single-02-dark.png",
 		"ref": "09-author-A2-dark.png",
 		"h": 2658,
-		"w": 1568,
-		"skip": "no layout picker on the Author Surface yet — the Author Surface and Authors Directory ticket adds one"
+		"w": 1568
 	},
 	{
 		"route": "recommendations-01",

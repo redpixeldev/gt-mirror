@@ -1,0 +1,77 @@
+{{!-- A2, "cover cards", on the Authors Directory: a profile card per writer.
+
+	{{> "directory/author-cards" authors=authors}}
+
+	authors   the rows to render — the Directory partial owns the query
+
+The same three blocks as the editorial row, stacked inside a bordered panel: portrait, biography,
+then the latest piece ruled off above the writer's links. See directory/author-rows.hbs for why
+the "Latest —" line costs one query per writer.
+
+Unlike a tag card, an imageless writer does not get an empty frame: the portrait is a circle at
+the top of a panel, and the tinted initial IS the design's fallback drawing for a face, so there
+is nothing to hold a place for. --}}
+<section
+	id="authors"
+	aria-label="{{t "Writers"}}"
+	class="border-border container border-t pt-16">
+	<div class="grid grid-cols-[repeat(auto-fill,minmax(min(340px,100%),1fr))] gap-x-9 gap-y-12">
+		{{#foreach authors}}
+			{{!-- Every staff account is an "author" to Ghost, so a card is drawn only for someone
+			who has published. The guard is here rather than in the query because `count.posts` is
+			not filterable on authors in Ghost 6 — see partials/pages/authors.hbs. --}}
+			{{#if count.posts}}
+				<article class="border-border bg-surface overflow-hidden rounded-md border">
+					<div class="p-7">
+						{{> "authors/portrait" size="h-24 w-24" px="96" textSize="text-2xl" defer=true}}
+
+						<h2 class="font-display tracking-heading mt-5 text-[25px] leading-[1.16] font-medium">
+							<a
+								href="{{url}}"
+								class="text-text no-underline">{{name}}</a>
+						</h2>
+
+						<p class="font-meta text-meta tracking-meta text-muted mt-2 uppercase">
+							{{~plural count.posts empty=(t "No posts") singular=(t "% post") plural=(t "% posts")~}}
+							{{#if location}}<span aria-hidden="true"> · </span>{{location}}{{/if}}
+						</p>
+
+						{{#if bio}}
+							<p class="text-small text-muted mt-3 leading-[1.6] text-pretty">{{bio}}</p>
+						{{/if}}
+
+						{{#get "posts" filter="authors:{{slug}}" order="published_at desc" limit="1" as |latest|}}
+							{{#if latest}}
+								<p class="font-meta text-meta tracking-meta text-muted border-border mt-3.5 border-t pt-3.5 uppercase">
+									{{~t "Latest"}} &mdash; {{latest.[0].title}}
+								</p>
+							{{/if}}
+						{{/get}}
+
+						{{!-- `{{#has any="…"}}` rather than two nested {{#if}}s: Handlebars has no `or`, and a
+						writer with neither link would otherwise leave the row's 16px of margin behind an
+						empty flex box. `has` tests the current context for a non-empty property
+						(`evaluateList` in core/frontend/helpers/has.js). --}}
+						{{#has any="website,twitter"}}
+							<div class="mt-4 flex flex-wrap gap-2.5">
+								{{#if website}}
+									<a
+										href="{{website}}"
+										rel="me noopener"
+										class="border-border text-text font-ui rounded-sm border px-3.5 py-2 text-[13px] font-semibold no-underline">{{readable_url website}}</a>
+								{{/if}}
+
+								{{#if twitter}}
+									<a
+										href="{{social_url type="twitter"}}"
+										rel="me noopener"
+										class="border-border text-muted rounded-sm border px-3 py-2 font-mono text-xs no-underline">@{{twitter}}</a>
+								{{/if}}
+							</div>
+						{{/has}}
+					</div>
+				</article>
+			{{/if}}
+		{{/foreach}}
+	</div>
+</section>

@@ -53,7 +53,7 @@ inventing a photograph. --}}
 			{{#if tagEyebrow}}
 				{{~date format="DD MMM YYYY"~}}
 			{{else}}
-				{{~#primary_author}}{{name}}{{/primary_author~}}
+				{{~> "byline"~}}
 			{{/if}}
 			<span aria-hidden="true"> · </span>
 			{{~reading_time seconds=(t "< 1 min read") minute=(t "1 min read") minutes=(t "% min read")~}}

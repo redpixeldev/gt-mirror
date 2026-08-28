@@ -29,11 +29,9 @@ uploaded photos gets photos here as it does everywhere else. --}}
 		<div class="mt-7 mb-11 flex items-center justify-center gap-3">
 			{{#primary_author}}
 				{{> "post/avatar" size="size-8" textSize="text-xs"}}
-
-				<a
-					href="{{url}}"
-					class="font-ui text-text text-sm font-semibold no-underline">{{name}}</a>
 			{{/primary_author}}
+
+			{{> "byline-links" linkClass="font-ui text-text text-sm font-semibold no-underline"}}
 
 			<span class="font-meta text-meta tracking-meta text-muted uppercase">{{reading_time seconds=(t "< 1 min read") minute=(t "1 min read") minutes=(t "% min read")}}</span>
 		</div>

@@ -1,0 +1,20 @@
+{{!-- Every writer on a post, as plain text.
+
+	{{> "byline"}}      called in a post's context
+
+A post has an ordered list of authors and Ghost's own {{authors}} helper renders it — but that
+helper's autolink either wraps every name in an unclassed `<a>` or drops the link entirely, and
+this theme's bylines are drawn either as unlinked meta text or as links carrying a class. So the
+list is walked here instead, once, and byline-links.hbs is the linked half of the same drawing.
+
+`{{#primary_author}}{{name}}{{/primary_author}}` is what these bylines used to say, and on a
+co-authored post that silently credits one of the writers. `primary_author` still supplies the
+FACE — the design draws one — but the credit names everyone.
+
+The separators are content, not decoration, so neither is aria-hidden: a screen reader reading
+"Marisol Ade and Erin Laurier" is reading what the page says. The middot between the byline and
+the date is decorative and stays hidden at its own call site. --}}
+{{~#foreach authors~}}
+	{{~#unless @first}}{{#if @last}}{{t " and "}}{{else}}, {{/if}}{{/unless~}}
+	{{~name~}}
+{{~/foreach~}}

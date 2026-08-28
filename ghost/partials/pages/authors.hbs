@@ -1,49 +1,39 @@
-{{!-- The Authors Directory: the masthead. Its sibling Surface, the author archive at
-/author/{slug}/, lists one writer's posts — see author.hbs.
+{{!-- The Authors Directory: the masthead. A Surface that lists people, not posts.
 
-Ghost has no author-role field, so the row carries location and post count instead; the
-designed role line becomes page content. Recorded as a concession in DECISIONS.md. --}}
+Its sibling Surface, the author archive at /author/{slug}/, lists one writer's posts — see
+author.hbs. Shared by page-authors.hbs and custom-authors.hbs so no markup is duplicated.
+
+A MASTHEAD LISTS PEOPLE WHO HAVE WRITTEN. Every staff account is an "author" to Ghost, so an owner
+or an editor who has not published yet would render as a row reading "No posts" — on this install
+that was a sixth writer beside the design's five.
+
+The guard is in the loop rather than in the query because `count.posts` is NOT filterable on
+authors in Ghost 6: `filter="count.posts:>0"`, `":>=1"` and `":-0"` each return an empty set
+rather than a filtered one. Ordering by `count.posts desc` means the first row carries the highest
+count, so testing that one row is enough to know whether anybody has published at all — without
+the outer check, a publication with no posts renders an empty bordered list.
+
+That ordering is also the design's: the masthead runs from the most prolific writer down, unlike
+the Tags Directory, which is alphabetical because a subject list is browsed rather than ranked.
+
+`limit="100"` is declared rather than `"all"` because Ghost 6 caps every {{#get}} at 100 silently
+(core/shared/max-limit-cap.js). --}}
 {{#post}}
-	<div class="container py-16" data-surface="page-authors">
-		{{#if @page.show_title_and_feature_image}}
-			<header class="mb-12">
-				<h1 class="font-display text-h1 text-text tracking-tight">{{title}}</h1>
-			</header>
-		{{/if}}
+	{{> "page-intro" eyebrow=(t "The masthead") headingId="au-title"}}
 
-		{{#if content}}
-			<div class="mirror-content measure mb-12">{{content}}</div>
-		{{/if}}
-
-		{{!-- A masthead lists people who have written, and every staff account is an "author" to
-		Ghost — so an owner or an editor who has not published yet renders as a row reading "No
-		posts". On this demo install that was a sixth writer beside the design's five.
-
-		The guard is in the loop rather than in the query because count.posts is NOT filterable on
-		authors in Ghost 6: filter="count.posts:>0", ":>=1" and ":-0" each return an empty set, not
-		a filtered one. Ordering by count.posts descending then means the first row carries the
-		highest count, so testing it is enough to know whether anyone has published at all —
-		without that outer check, a publication with no posts renders an empty bordered list. --}}
-		{{#get "authors" include="count.posts" limit="100" order="count.posts desc" as |authors|}}
-			{{#if authors.[0].count.posts}}
-				<ul class="border-border border-t">
-					{{#foreach authors}}
-						{{#if count.posts}}
-							<li class="border-border flex items-baseline justify-between gap-6 border-b py-5">
-								<div>
-									<a href="{{url}}" class="font-display text-h3 text-text tracking-tight no-underline">{{name}}</a>
-									{{#if location}}<p class="font-meta text-muted mt-1 text-[12px] uppercase">{{location}}</p>{{/if}}
-								</div>
-								<span class="font-meta text-muted text-[12px] uppercase">{{plural count.posts empty=(t "No posts") singular=(t "% post") plural=(t "% posts")}}</span>
-							</li>
-						{{/if}}
-					{{/foreach}}
-				</ul>
+	{{#get "authors" include="count.posts" order="count.posts desc" limit="100" as |authors|}}
+		{{#if authors.[0].count.posts}}
+			{{#match @custom.directory_layout "Cover cards"}}
+				{{> "directory/author-cards" authors=authors}}
 			{{else}}
-				<p class="font-body text-muted">{{t "No writers yet."}}</p>
-			{{/if}}
+				{{> "directory/author-rows" authors=authors}}
+			{{/match}}
 		{{else}}
-			<p class="font-body text-muted">{{t "No writers yet."}}</p>
-		{{/get}}
-	</div>
+			<section class="container pt-16">
+				<p class="font-body text-muted">{{t "No writers yet."}}</p>
+			</section>
+		{{/if}}
+	{{/get}}
+
+	{{> "newsletter" anchor="authors-newsletter" pt="pt-20"}}
 {{/post}}

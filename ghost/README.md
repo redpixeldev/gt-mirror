@@ -83,7 +83,7 @@ More settings arrive with the layouts they control; each one is documented here 
 - Below it, **Other tags** links to your eight busiest subjects, never including the one being
   read. A tag with no description simply prints its count.
 - **The Tags Directory** is a page of your own — the demo calls it `/tags/`, and any page can
-  use the layout by picking **Tags directory** in the page settings menu. It lists every subject
+  use the layout by picking **Tags** in the page settings menu. It lists every subject
   **alphabetically**, with its post count, and follows **Directory layout**. A subject with no
   cover photo keeps the empty frame so the grid stays a grid.
 - **A subject with no posts is not listed.** Ghost's own tag API only answers with tags that
@@ -93,6 +93,27 @@ More settings arrive with the layouts they control; each one is documented here 
 - **The page's own title and one-line summary** are the directory's heading and lead. Write the
   sentence in the page body, or set an excerpt in the page settings if the body is longer — the
   directory prints the excerpt, because the list below it is the page's real content.
+
+### Writers
+
+- **A writer's archive** — `/author/{slug}/` — follows **Feed layout** too: _Two-column list_
+  puts a centred profile above compact rows, _Three-column grid_ moves the profile into a rail
+  beside a grid of cards. The rail stops being sticky once the page stacks, so nothing scrolls
+  through the portrait on a phone.
+- **The masthead** is a page of your own — the demo calls it `/authors/`, and any page can use
+  the layout by picking **Authors** in the page settings menu. It lists every writer who has
+  published, most prolific first, and follows **Directory layout**.
+- **A staff account is not yet a writer.** Someone who has not published does not appear on the
+  masthead, and neither does an empty row where they would have been.
+- Each row prints the writer's **photo, post count, location, bio, latest piece, site and
+  social handle** — every one of them optional. A writer with none of them still gets a row
+  with their name, their count and a monogram in place of the photograph.
+- Ghost's **bio field holds 250 characters**; longer text is refused when you save it, not
+  truncated by the theme.
+- Your site link prints as its domain and your handle prints with the `@`, both linking to the
+  real destination. Both come from **Settings → Staff**, on each writer's own profile.
+- **A post with more than one writer credits all of them**, everywhere a byline appears. The
+  face beside the byline is the first writer's.
 
 ### Header, menu and footer
 

@@ -583,7 +583,14 @@ const pages = [
 			`<p>Six years of writing, filed into ${data.tags.TAG_TOTAL} subjects. ` +
 			`Each tag collects everything published under it.</p>`,
 	},
-	{ slug: 'authors', title: 'Writers', template: null, body: '<p>The people behind the publication.</p>' },
+	{
+		slug: 'authors',
+		title: 'Writers',
+		template: null,
+		body:
+			`<p>${data.authors.AUTHOR_TOTAL} people write here. Between them they have filed ` +
+			`${TOTAL_POSTS} pieces since ${new Date(SPAN_START).getUTCFullYear()}.</p>`,
+	},
 	{
 		slug: 'recommendations',
 		title: 'Recommendations',

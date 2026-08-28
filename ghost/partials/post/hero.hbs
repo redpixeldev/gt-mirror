@@ -43,11 +43,9 @@ is worth knowing when reading a capture: the screenshot's window is as tall as t
 	<div class="mt-7 flex items-center justify-center gap-3">
 		{{#primary_author}}
 			{{> "post/avatar" size="size-[34px]" textSize="text-[13px]"}}
-
-			<a
-				href="{{url}}"
-				class="font-ui text-text text-sm font-semibold no-underline">{{name}}</a>
 		{{/primary_author}}
+
+		{{> "byline-links" linkClass="font-ui text-text text-sm font-semibold no-underline"}}
 
 		<span class="font-meta text-meta tracking-meta text-muted uppercase">
 			{{date format="DD MMM YYYY"}}

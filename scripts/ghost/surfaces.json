@@ -96,19 +96,29 @@
 		"layout": "A2",
 		"settings": { "feed_layout": "Three-column grid" }
 	},
-	{ "route": "authors-01", "surface": "page-authors", "layout": "A1" },
+	{
+		"route": "authors-01",
+		"surface": "page-authors",
+		"layout": "A1",
+		"settings": { "directory_layout": "Editorial rows" }
+	},
 	{
 		"route": "authors-02",
 		"surface": "page-authors",
 		"layout": "A2",
-		"skip": "no layout picker on the Authors Directory yet — the Author Surface and Authors Directory ticket adds one"
+		"settings": { "directory_layout": "Cover cards" }
 	},
-	{ "route": "author-single-01", "surface": "author", "layout": "A1" },
+	{
+		"route": "author-single-01",
+		"surface": "author",
+		"layout": "A1",
+		"settings": { "feed_layout": "Two-column list" }
+	},
 	{
 		"route": "author-single-02",
 		"surface": "author",
 		"layout": "A2",
-		"skip": "no layout picker on the Author Surface yet — the Author Surface and Authors Directory ticket adds one"
+		"settings": { "feed_layout": "Three-column grid" }
 	},
 	{ "route": "recommendations-01", "surface": "page-recommendations", "layout": "A1" },
 	{

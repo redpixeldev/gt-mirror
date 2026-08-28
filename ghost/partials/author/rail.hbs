@@ -1,0 +1,48 @@
+{{!-- A2, "sticky rail": the writer's profile in a column beside their posts.
+
+	{{#author}}{{> "author/rail" total=../pagination.total}}{{/author}}
+
+	total   the writer's whole post count, not the page's — one frame up from inside {{#author}}
+
+STICKY ONLY WHILE THERE IS A SECOND COLUMN TO SIT BESIDE. Below `stack` the grid collapses to one
+column, and a sticky child there pins itself while the rest of the column scrolls underneath — the
+post list would run straight through the portrait, the bio and the links. `max-stack:static` turns
+it off at exactly the width the grid stacks, which is the same rule post/rail.hbs follows and for
+the same reason.
+
+`top-[120px]` is the design's offset: the header is 80px and the design leaves 40px above the
+portrait when the rail is pinned. --}}
+<aside
+	aria-label="{{t "About the writer"}}"
+	class="max-stack:static sticky top-[120px]">
+	{{> "authors/portrait" size="h-28 w-28" px="112" textSize="text-3xl"}}
+
+	<h1 class="font-display tracking-display mt-[22px] text-[34px] leading-[1.08] font-medium">{{name}}</h1>
+
+	<p class="font-meta text-meta tracking-meta text-muted mt-3 uppercase">
+		{{~plural total empty=(t "No posts") singular=(t "% post") plural=(t "% posts")~}}
+		{{#if location}}<span aria-hidden="true"> · </span>{{location}}{{/if}}
+	</p>
+
+	{{#if bio}}
+		<p class="text-small text-muted mt-4 leading-[1.68] text-pretty">{{bio}}</p>
+	{{/if}}
+
+	{{#has any="website,twitter"}}
+		<div class="border-border mt-5 flex flex-col gap-[9px] border-t pt-[18px]">
+			{{#if website}}
+				<a
+					href="{{website}}"
+					rel="me noopener"
+					class="font-ui text-text text-[13.5px] no-underline">{{readable_url website}}</a>
+			{{/if}}
+
+			{{#if twitter}}
+				<a
+					href="{{social_url type="twitter"}}"
+					rel="me noopener"
+					class="text-muted font-mono text-[12.5px] no-underline">@{{twitter}}</a>
+			{{/if}}
+		</div>
+	{{/has}}
+</aside>
