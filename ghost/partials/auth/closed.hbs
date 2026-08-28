@@ -1,0 +1,31 @@
+{{!-- The two shapes of "you cannot sign up here", each with the only honest action left.
+
+	{{> "auth/shell" … card="auth/closed"}}
+
+Invite-only means new memberships are closed and existing ones still work, so the action is sign
+in. Members off entirely means there is nothing to sign into, so there is no action at all — and
+in particular no Subscribe, because Ghost turns `@site.signup_url` into a feed-reader URL in that
+state and a Subscribe button that means RSS is bait.
+
+Both branches are reachable from a page a buyer left in their menu after turning memberships off,
+which is exactly when a dead control does the most damage. --}}
+{{#if @site.members_enabled}}
+	<div class="text-center">
+		<h2
+			class="font-display tracking-heading text-2xl leading-[1.2] font-medium">{{t "Members only by invitation"}}</h2>
+
+		<p class="text-small text-muted mx-auto mt-3.5 max-w-[38ch] leading-[1.65] text-pretty">
+			{{~t "New memberships are closed. Existing members can still sign in."~}}
+		</p>
+
+		<a
+			href="#/portal/signin"
+			data-portal="signin"
+			class="btn btn-primary font-ui mt-[26px] inline-block rounded-sm border px-5 py-[11px] text-sm font-semibold no-underline">{{t "Sign in"}}</a>
+	</div>
+{{else}}
+	<div class="text-center">
+		<h2
+			class="font-display tracking-heading text-2xl leading-[1.2] font-medium">{{t "This publication does not have memberships."}}</h2>
+	</div>
+{{/if}}

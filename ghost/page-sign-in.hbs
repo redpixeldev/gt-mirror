@@ -2,28 +2,22 @@
 
 {{!-- The sign-in Surface.
 
-Every members surface in this theme is state-aware, because a control that cannot act is
-worse than no control: @site.members_enabled decides whether members exist at all, and
-@member decides whether this visitor already is one. Ghost renders the actual magic-link
-exchange through Portal, which a theme cannot template — the residual gap between these
-cards and Portal is recorded as a concession in DECISIONS.md. --}}
+Ghost renders the members flow through Portal, which a theme cannot template — but Portal is a
+modal a reader opens, and a publication that wants a sign-in ADDRESS to send people to needs a
+page. This is that page, and it reimplements nothing: `data-members-form` and `data-members-email`
+are Ghost's own contract, Portal binds the submit out of {{ghost_head}}, and the report comes back
+as classes on the form.
+
+The residual gap — that every entry point in the Chrome opens Portal's own drawing rather than
+this one — is recorded as a Concession in DECISIONS.md.
+
+The state matrix lives in auth/shell.hbs, which both auth Surfaces share. --}}
 
 {{> "chrome/header" auth=true}}
 
-<main id="main" class="flex grow">
-	<div class="bg-page-field flex-1 py-20" data-surface="sign-in">
-		{{#if @site.members_enabled}}
-			{{#if @member}}
-				<div class="border-border bg-surface mx-auto max-w-[420px] rounded-md border p-8 text-center shadow-sm">
-					<h1 class="font-display text-h2 text-text tracking-tight">{{t "You are signed in"}}</h1>
-					<p class="font-body text-muted mt-2 text-[15px]">{{@member.email}}</p>
-					<a href="#/portal/account" data-portal="account" class="font-ui mt-6 inline-block text-[14px]">{{t "Manage your account"}} &rarr;</a>
-				</div>
-			{{else}}
-				{{> "auth/sign-in-form"}}
-			{{/if}}
-		{{else}}
-			<p class="font-body text-muted text-center">{{t "This publication does not have memberships."}}</p>
-		{{/if}}
-	</div>
-</main>
+{{> "auth/shell"
+	flow="signin"
+	surface="sign-in"
+	eyebrow=(t "Members")
+	title=(t "Sign in")
+	subhead=(t "Members read the interviews, the transcripts and the archive.")}}

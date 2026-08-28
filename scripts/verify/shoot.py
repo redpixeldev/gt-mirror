@@ -203,27 +203,72 @@ def main() -> int:
     return 0 if args.once else compare(repeats)
 
 
+def jitter(first: str, second: str) -> tuple[int, int] | None:
+    """
+    How far two captures of one URL differ: (pixels touched, worst per-pixel channel delta).
+
+    None where they cannot be compared at all — a missing file or a different size, both of which
+    are failures of a different kind and are reported as unbounded.
+    """
+    from PIL import Image
+    import numpy as np
+
+    if not (os.path.exists(first) and os.path.exists(second)):
+        return None
+    a = np.asarray(Image.open(first).convert('RGB'), dtype=np.int16)
+    b = np.asarray(Image.open(second).convert('RGB'), dtype=np.int16)
+    if a.shape != b.shape:
+        return None
+    delta = np.abs(a - b)
+    return int(np.count_nonzero(delta.max(axis=2))), int(delta.max())
+
+
+"""
+What counts as the same capture twice.
+
+Byte equality was the first rule and it was too strong. A real browser rasterises a rounded corner
+over a JPEG through a pipeline that is not bit-deterministic, so a capture of an unchanged page
+comes back with a handful of pixels one or two levels off — measured across this theme's 54
+captures: 3 pixels at delta 3 on a card's border radius, 12 at delta 2 on a grid's last row, 32 at
+delta 2 down one column of thumbnails, each on a frame of four to seven million pixels.
+
+Nothing a template can do lands in that envelope. A layout that moved, a string that changed, an
+image that loaded late — the failures this check exists to catch — all touch thousands of pixels
+at full contrast, and the first two of those were caught by this check in exactly that form
+earlier in this port.
+
+So the bound is stated rather than implied: at most two levels on any channel, and at most one
+pixel in twenty thousand. A capture outside it is unstable and fails the run.
+"""
+MAX_JITTER_DELTA = 2
+MAX_JITTER_FRACTION = 1 / 20_000
+
+
 def compare(repeats: list[dict]) -> int:
-    """Fail the run on any capture that did not come out the same twice."""
+    """Fail the run on any capture that did not come out the same twice, within the jitter bound."""
     unstable = []
     for job in repeats:
         first, second = job['first'], job['out']
-        same = (
-            os.path.exists(first)
-            and os.path.exists(second)
-            and open(first, 'rb').read() == open(second, 'rb').read()
-        )
-        if same:
+        measured = jitter(first, second)
+        if measured is None:
+            unstable.append((job, None))
+            continue
+        touched, worst = measured
+        pixels = job.get('width', 0) * job.get('height', 0)
+        allowed = max(1, int(pixels * MAX_JITTER_FRACTION)) if pixels else 0
+        if worst <= MAX_JITTER_DELTA and touched <= allowed:
             os.remove(second)
         else:
-            unstable.append(job)
+            unstable.append((job, measured))
 
-    for job in unstable:
-        print(f'UNSTABLE {job["first"]} != {job["out"]}  <- {job["url"]}')
+    for job, measured in unstable:
+        detail = 'not comparable' if measured is None else f'{measured[0]} px, delta {measured[1]}'
+        print(f'UNSTABLE {job["first"]} != {job["out"]}  ({detail})  <- {job["url"]}')
     if unstable:
         print(
-            f'\n{len(unstable)} capture(s) came out differently the second time. Both files are on '
-            'disk; diff them. A page that renders twice the same is the only page worth scoring.'
+            f'\n{len(unstable)} capture(s) came out differently the second time, beyond the jitter '
+            'bound. Both files are on disk; diff them. A page that renders twice the same is the '
+            'only page worth scoring.'
         )
         return 1
     return 0

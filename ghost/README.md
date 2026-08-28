@@ -171,6 +171,22 @@ More settings arrive with the layouts they control; each one is documented here 
   light-ink version of it: set **Dark mode logo**, or leave it empty and the dark Mode sets
   your publication name in the theme's display face.
 
+### Signing in and signing up
+
+- **`/sign-in/` and `/sign-up/` are pages of your own**, and the layouts apply to a page with
+  any name through **Sign in** and **Sign up** in the page settings menu. They are real Ghost
+  signup forms: a visitor who submits one gets a real magic link.
+- Each renders what your settings allow. Already a member: their address and a link to their
+  account. Invite-only: sign in, because offering a signup that will be refused is a lie.
+  Memberships off: a sentence and no controls.
+- **Every other button opens Ghost's own Portal** — the header's Subscribe, the paywall's call
+  to action, the plan buttons, and the subscribe buttons beside a recommendation. Portal takes
+  your **accent colour** and the plans you offer, and everything else about it belongs to Ghost
+  rather than to this theme.
+- **Which plans Portal offers** is Settings → Portal. Ghost starts a new site on the free plan
+  only; add the paid ones there once your tiers exist, or the signup modal will offer less than
+  your membership page does.
+
 ### Appearance, accent and fonts
 
 - A visitor's light/dark choice is stored in their browser and survives a reload. **Default

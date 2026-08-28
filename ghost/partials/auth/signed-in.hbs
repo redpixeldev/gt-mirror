@@ -1,0 +1,22 @@
+{{!-- What a signed-in Member sees where the sign-in or sign-up card would be.
+
+	{{> "auth/shell" … card="auth/signed-in" cardTitle=(t "You are signed in")}}
+
+	cardTitle   the heading, which differs by Surface — the shell passes its whole hash down, so
+	            this reads it directly rather than taking it as `title`, which the shell already
+	            uses for the page's own h1
+
+A form that would create a second account for someone who already has one is worse than no form.
+The address is `{{@member.email}}`, which is Ghost's own answer to "who is this", and the action
+is Portal's account panel — the one members screen a theme genuinely cannot template and should
+not try to. --}}
+<div class="text-center">
+	<h2 class="font-display tracking-heading text-2xl leading-[1.2] font-medium">{{cardTitle}}</h2>
+
+	<p class="text-small text-muted mt-3.5 leading-[1.65]">{{@member.email}}</p>
+
+	<a
+		href="#/portal/account"
+		data-portal="account"
+		class="btn btn-primary font-ui mt-[26px] inline-block rounded-sm border px-5 py-[11px] text-sm font-semibold no-underline">{{t "Manage your account"}}</a>
+</div>

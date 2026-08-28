@@ -1,0 +1,36 @@
+{{!-- What sits under the sign-up card: the upgrade panel, then the route to sign in.
+
+THE PANEL NAMES A REAL PRICE OR IT DOES NOT APPEAR. The design writes "Paid plans start at $8 a
+month", which is the cheapest paid tier — so it is queried, ordered by monthly price, and printed
+through `{{price}}`. A publication with no paid tier gets no panel rather than an invitation to
+plans it does not sell, and `@site.paid_members_enabled` is deliberately not the guard here for
+the same reason it is not the guard on the tier switch: it is false until Stripe is connected,
+and the plans exist before the payments do.
+
+"See plans" points at Portal rather than at a Membership page, because the Membership page is a
+Page a buyer creates and names — the same reason the tag and author archives carry no crumb back
+to their directories. Portal's plan chooser is the one address a theme can be sure of.
+
+See auth/sign-in-notes.hbs for why the design's Privacy · Terms line is not carried. --}}
+{{#get "tiers" filter="type:paid" order="monthly_price asc" limit="1" as |cheapest|}}
+	{{#if cheapest}}
+		<div class="border-accent-border bg-accent-soft mt-4 flex flex-wrap items-center gap-4 rounded-md border px-[22px] py-5">
+			<p class="font-ui text-muted flex-[1_1_200px] text-[13.5px] leading-[1.55]">
+				{{~t "Want everything else too? Paid plans start at {price} a month." price=(price cheapest.[0].monthly_price currency=cheapest.[0].currency)~}}
+			</p>
+
+			<a
+				href="#/portal/signup"
+				data-portal="signup"
+				class="btn btn-primary font-ui rounded-sm border px-[18px] py-2.5 text-[13.5px] font-semibold whitespace-nowrap no-underline">{{t "See plans"}}</a>
+		</div>
+	{{/if}}
+{{/get}}
+
+<p class="font-ui text-muted mt-6 text-center text-sm">
+	{{~t "Already a member?"}}
+	<a
+		href="#/portal/signin"
+		data-portal="signin"
+		class="text-accent underline">{{t "Sign in"}}</a>
+</p>

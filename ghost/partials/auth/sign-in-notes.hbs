@@ -1,0 +1,19 @@
+{{!-- What sits under the sign-in card.
+
+The design draws a Privacy · Terms line here and links neither — they are inert in the reference
+build because the demo publication has no policy pages. A theme has no field for them either, and
+a link to a page that does not exist is worse than no link, so the line is not carried. The Ship
+ticket's rule about inert placeholders applies here first. Recorded in DECISIONS.md.
+
+The route to sign-up is the publication's own signup page where one exists; where it does not,
+Portal's is the only address there is, and `@site.signup_url` is the value Ghost computes for
+exactly that question — it becomes a feed-reader URL when signups are closed, which is why no
+template in this theme spells `#/portal/signup` by hand. --}}
+{{#unless @site.members_invite_only}}
+	<p class="font-ui text-muted mt-6 text-center text-sm">
+		{{~t "Not a member yet?"}}
+		<a
+			href="{{@site.signup_url}}"
+			class="text-accent underline">{{t "Sign up free"}}</a>
+	</p>
+{{/unless}}

@@ -228,6 +228,33 @@ if (searchRoot) {
 }
 
 /*
+ * The address in "we sent a link to …", on the two auth Surfaces.
+ *
+ * Portal reports the OUTCOME of a members submit — `loading`, then `success` or `error` on the
+ * form — and never the input, so the success panel has no way to name the address the reader
+ * typed. This copies it across at submit time, which is the only moment it is still on screen.
+ *
+ * Everything about the panel already reads correctly without this: the markup ships the words
+ * "the address you entered", and this replaces them with the address itself. An enhancement over
+ * a sentence that is true either way, not a dependency.
+ *
+ * Captured on the document rather than bound per form: a `submit` listener added here cannot be
+ * detached by Portal the way its own is, and the two Surfaces have exactly one form each.
+ */
+document.addEventListener(
+	'submit',
+	(event) => {
+		const form = event.target;
+		if (!form.matches?.('[data-members-form]')) return;
+
+		const email = form.querySelector('[data-members-email]')?.value?.trim();
+		const slot = form.parentElement?.querySelector('[data-members-sent-to]');
+		if (email && slot) slot.textContent = email;
+	},
+	true,
+);
+
+/*
  * The featured strip's prev/next controls.
  *
  * The track is a native scroll-snap container, so the strip is already scrollable, keyboard

@@ -1,28 +1,85 @@
-{{!-- Sign up. Same contract as auth/sign-in-form.hbs: data-members-form carries the flow
-and [data-members-email] is what makes the submit do anything.
+{{!-- Sign up, in the four states the design draws. Same contract as auth/sign-in-form.hbs — see
+that file for why the states are Ghost's classes rather than a script's value.
 
-Wrapped by its template in the members-state guards — an invite-only publication must not
-show a public signup form. --}}
+`data-members-name` is the second half of the contract Portal reads: with the field present and
+the attribute missing, a publication's new members all arrive nameless.
+
+The whole form is wrapped by its template in the members-state guards. An invite-only publication
+must not be shown a public signup form, and a publication with members off must not be shown
+either. --}}
 <form
 	data-members-form="signup"
-	class="border-border bg-surface mx-auto max-w-[420px] rounded-md border p-8 shadow-sm">
+	class="flex flex-col gap-[18px]">
+	<div
+		role="alert"
+		aria-live="assertive"
+		class="members-error-panel border-danger-border border-l-danger bg-danger-soft rounded-sm border border-l-[3px] px-[18px] py-4">
+		<p class="font-ui text-danger text-sm font-semibold">{{t "We could not create that account"}}</p>
+		<p
+			class="font-ui text-muted mt-2 text-[13.5px] leading-[1.55]"
+			data-members-error></p>
+	</div>
 
-	<h1 class="font-display text-h2 text-text tracking-tight">{{t "Subscribe"}}</h1>
-	<p class="font-body text-muted mt-2 text-[15px]">{{@custom.newsletter_text}}</p>
+	<div class="flex flex-col gap-2">
+		<label
+			for="signup-name"
+			class="font-ui text-[13.5px] font-semibold">{{t "Name"}}</label>
+		<input
+			id="signup-name"
+			name="name"
+			type="text"
+			data-members-name
+			autocomplete="name"
+			required
+			class="font-ui bg-bg text-text border-border w-full rounded-sm border px-[15px] py-[13px] text-[15.5px]">
+	</div>
 
-	<label for="signup-email" class="font-meta text-muted mt-6 block text-[12px] uppercase">{{t "Email address"}}</label>
-	<input
-		id="signup-email"
-		type="email"
-		name="email"
-		required
-		autocomplete="email"
-		data-members-email
-		class="border-border bg-bg text-text font-body mt-2 w-full rounded-sm border px-3 py-2">
+	<div class="flex flex-col gap-2">
+		<label
+			for="signup-email"
+			class="font-ui text-[13.5px] font-semibold">{{t "Email address"}}</label>
+		<input
+			id="signup-email"
+			name="email"
+			type="email"
+			data-members-email
+			autocomplete="email"
+			required
+			aria-describedby="signup-help"
+			placeholder="{{t "you@publication.com"}}"
+			class="font-ui bg-bg text-text border-border w-full rounded-sm border px-[15px] py-[13px] text-[15.5px]">
+		<p
+			id="signup-help"
+			class="font-ui text-muted text-[12.5px]">{{t "We'll email you a link to confirm. No password to set."}}</p>
+	</div>
 
-	<button type="submit" class="btn btn-primary font-ui mt-5 w-full cursor-pointer rounded-sm py-2.5 text-[14px]">
-		{{t "Subscribe"}}
+	<button
+		type="submit"
+		class="btn btn-primary font-ui flex cursor-pointer items-center justify-center gap-2.5 rounded-sm border px-[22px] py-3.5 text-[15px] font-semibold">
+		<span
+			aria-hidden="true"
+			class="members-spinner spinner size-3.5 rounded-full border-2 border-current"></span>
+		<span class="members-idle">{{t "Sign up free"}}</span>
+		<span class="members-busy">{{t "Creating account…"}}</span>
 	</button>
 
-	<p data-members-error class="font-meta text-danger mt-3 text-[12px]"></p>
+	<p
+		aria-live="polite"
+		class="font-ui text-muted members-busy min-h-[1em] text-center text-[12.5px]">{{t "Creating your account…"}}</p>
 </form>
+
+<div
+	role="status"
+	aria-live="polite"
+	class="members-success text-center">
+	<p class="text-accent font-mono text-[11px] tracking-[0.1em] uppercase">{{t "Almost there"}}</p>
+
+	<h2 class="font-display tracking-heading mt-3.5 text-2xl leading-[1.2] font-medium">{{t "Check your email"}}</h2>
+
+	<p class="text-small text-muted mx-auto mt-3.5 max-w-[38ch] leading-[1.65] text-pretty">
+		{{~t "We sent a confirmation link to"}}
+		<strong
+			class="text-text"
+			data-members-sent-to>{{t "the address you entered"}}</strong>. {{t "It expires in 24 hours and works once."~}}
+	</p>
+</div>

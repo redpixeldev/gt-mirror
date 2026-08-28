@@ -1,28 +1,81 @@
-{{!-- Sign in. The theme owns this form; Ghost's members JS binds it by attribute.
+{{!-- Sign in, in the four states the design draws.
 
-[data-members-email] is not optional: without it Ghost finds no address on submit and the
-form silently no-ops while looking complete. The four visual states are driven by the
-.loading / .success / .error classes Ghost puts on the form, plus [data-members-error]. --}}
+THE STATES ARE GHOST'S CLASSES, NOT A SCRIPT'S. The reference build drives them from an Alpine
+value because it has no server to talk to; here Portal owns the submit and reports back by putting
+`loading`, then exactly one of `success` or `error`, on the form element — read out of portal 2.71
+rather than from documentation, and recorded beside the three rules the footer's form needed. So
+every state is real markup that CSS reveals, and `assets/css/screen.css` holds the whole of the
+theme's side.
+
+That is also why the success panel is a SIBLING of the form rather than a child: on success the
+form is hidden and the panel takes its place, which is an adjacent-sibling selector and nothing
+more.
+
+`data-members-email` is not optional. Without it Portal finds no address on submit and the form
+silently no-ops while looking complete.
+
+The address in "we sent a link to …" is written by the theme's own script, because Portal reports
+the outcome and not the input. One line of enhancement over markup that already reads correctly
+without it. --}}
 <form
 	data-members-form="signin"
-	class="border-border bg-surface mx-auto max-w-[420px] rounded-md border p-8 shadow-sm">
+	class="flex flex-col gap-[18px]">
+	<div
+		role="alert"
+		aria-live="assertive"
+		class="members-error-panel border-danger-border border-l-danger bg-danger-soft rounded-sm border border-l-[3px] px-[18px] py-4">
+		<p class="font-ui text-danger text-sm font-semibold">{{t "We could not send that link"}}</p>
+		<p
+			class="font-ui text-muted mt-2 text-[13.5px] leading-[1.55]"
+			data-members-error></p>
+	</div>
 
-	<h1 class="font-display text-h2 text-text tracking-tight">{{t "Sign in"}}</h1>
-	<p class="font-body text-muted mt-2 text-[15px]">{{t "We will email you a link — no password to remember."}}</p>
+	<div class="flex flex-col gap-2">
+		<label
+			for="signin-email"
+			class="font-ui text-[13.5px] font-semibold">{{t "Email address"}}</label>
+		<input
+			id="signin-email"
+			name="email"
+			type="email"
+			data-members-email
+			autocomplete="email"
+			required
+			aria-describedby="signin-help"
+			placeholder="{{t "you@publication.com"}}"
+			class="font-ui bg-bg text-text border-border w-full rounded-sm border px-[15px] py-[13px] text-[15.5px]">
+		<p
+			id="signin-help"
+			class="font-ui text-muted text-[12.5px]">{{t "We'll email you a link that signs you in. No password to remember."}}</p>
+	</div>
 
-	<label for="signin-email" class="font-meta text-muted mt-6 block text-[12px] uppercase">{{t "Email address"}}</label>
-	<input
-		id="signin-email"
-		type="email"
-		name="email"
-		required
-		autocomplete="email"
-		data-members-email
-		class="border-border bg-bg text-text font-body mt-2 w-full rounded-sm border px-3 py-2">
-
-	<button type="submit" class="btn btn-primary font-ui mt-5 w-full cursor-pointer rounded-sm py-2.5 text-[14px]">
-		{{t "Email me a link"}}
+	<button
+		type="submit"
+		class="btn btn-primary font-ui flex cursor-pointer items-center justify-center gap-2.5 rounded-sm border px-[22px] py-3.5 text-[15px] font-semibold">
+		<span
+			aria-hidden="true"
+			class="members-spinner spinner size-3.5 rounded-full border-2 border-current"></span>
+		<span class="members-idle">{{t "Email me a sign-in link"}}</span>
+		<span class="members-busy">{{t "Sending link…"}}</span>
 	</button>
 
-	<p data-members-error class="font-meta text-danger mt-3 text-[12px]"></p>
+	<p
+		aria-live="polite"
+		class="font-ui text-muted members-busy min-h-[1em] text-center text-[12.5px]">{{t "Sending your sign-in link…"}}</p>
 </form>
+
+<div
+	role="status"
+	aria-live="polite"
+	class="members-success text-center">
+	<p class="text-accent font-mono text-[11px] tracking-[0.1em] uppercase">{{t "Link sent"}}</p>
+
+	<h2 class="font-display tracking-heading mt-3.5 text-2xl leading-[1.2] font-medium">{{t "Check your email"}}</h2>
+
+	<p class="text-small text-muted mx-auto mt-3.5 max-w-[38ch] leading-[1.65] text-pretty">
+		{{~t "We sent a sign-in link to"}}
+		<strong
+			class="text-text"
+			data-members-sent-to>{{t "the address you entered"}}</strong>. {{t "It expires in 24 hours and works once."~}}
+	</p>
+</div>

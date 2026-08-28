@@ -1,0 +1,77 @@
+{{!-- The auth Surface, whole: the centred column, and the one card the site's state allows.
+
+	{{> "auth/shell" flow="signin" surface="sign-in" eyebrow=(t "Members") title=(t "Sign in") subhead=(t "…")}}
+	{{> "auth/shell" flow="signup" surface="sign-up" … subheadWidth="max-w-[42ch]"}}
+
+	flow           `signin` or `signup` — which form, and whether invite-only has a branch
+	surface        the `data-surface` marker the harness reads
+	eyebrow/title/subhead   the column's own heading block
+	subheadWidth   the subhead's measure — 40ch on sign-in, 42ch on sign-up
+
+THE STATE MATRIX IS HERE AND NOWHERE ELSE. Four site shapes reach these two Surfaces — a visitor
+who is already a member, an invite-only publication, members off entirely, and open signup — and
+each of them is reachable from a menu item a buyer left behind after changing a setting. Keeping
+the branches in one partial is what stops the two templates drifting apart on the third one.
+
+Static partial names, not `{{> (lookup . "card")}}`: gscan rejects the inline dynamic form
+outright, because a missing partial throws a page error rather than degrading, and the block form
+that avoids that reads worse than this `{{#match}}` does.
+
+The page is a flex column — `<body>` already is, and these two Surfaces carry no foot — so this
+main is the growing middle and the card stays optically centred on the tinted field whatever the
+viewport height. That is also why the design draws no footer here: there is nothing to sit below a
+column that is meant to be centred. --}}
+<main
+	id="auth"
+	class="bg-page-field flex flex-auto items-center justify-center px-8 py-16"
+	data-surface="{{surface}}">
+	<div class="w-full max-w-[460px]">
+		<div class="mb-7 text-center">
+			<p class="font-meta text-meta text-accent tracking-[0.16em] uppercase">{{eyebrow}}</p>
+
+			<h1
+				id="auth-title"
+				class="font-display tracking-display mt-3.5 text-[40px] leading-[1.08] font-medium">{{title}}</h1>
+
+			<p
+				class="text-small text-muted mx-auto mt-3 leading-[1.6] text-pretty {{#if subheadWidth}}{{subheadWidth}}{{else}}max-w-[40ch]{{/if}}">{{subhead}}</p>
+		</div>
+
+		<div class="border-border bg-surface rounded-md border p-9 shadow-md">
+			{{#if @member}}
+				{{#match flow "signup"}}
+					{{> "auth/signed-in" cardTitle=(t "You are already a member")}}
+				{{else}}
+					{{> "auth/signed-in" cardTitle=(t "You are signed in")}}
+				{{/match}}
+			{{else}}
+				{{#if @site.members_enabled}}
+					{{#match flow "signup"}}
+						{{#if @site.members_invite_only}}
+							{{> "auth/closed"}}
+						{{else}}
+							{{> "auth/sign-up-form"}}
+						{{/if}}
+					{{else}}
+						{{> "auth/sign-in-form"}}
+					{{/match}}
+				{{else}}
+					{{> "auth/closed"}}
+				{{/if}}
+			{{/if}}
+		</div>
+
+		{{!-- The notes belong to a card that can act, so they follow the same guards. --}}
+		{{#unless @member}}
+			{{#if @site.members_enabled}}
+				{{#match flow "signup"}}
+					{{#unless @site.members_invite_only}}
+						{{> "auth/sign-up-notes"}}
+					{{/unless}}
+				{{else}}
+					{{> "auth/sign-in-notes"}}
+				{{/match}}
+			{{/if}}
+		{{/unless}}
+	</div>
+</main>

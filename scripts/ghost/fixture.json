@@ -11,6 +11,11 @@
 		"comments_enabled": "all",
 		"recommendations_enabled": true,
 		"members_signup_access": "all",
+		"portal_plans": [
+			"free",
+			"monthly",
+			"yearly"
+		],
 		"locale": "en",
 		"timezone": "Etc/UTC",
 		"navigation": [

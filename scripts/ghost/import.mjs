@@ -353,6 +353,7 @@ const settings = [
 	{ key: 'comments_enabled', value: site.comments_enabled },
 	{ key: 'recommendations_enabled', value: site.recommendations_enabled },
 	{ key: 'members_signup_access', value: site.members_signup_access },
+	{ key: 'portal_plans', value: JSON.stringify(site.portal_plans) },
 	{ key: 'locale', value: site.locale },
 	{ key: 'timezone', value: site.timezone },
 	{ key: 'navigation', value: JSON.stringify(site.navigation) },

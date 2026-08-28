@@ -667,6 +667,16 @@ const fixture = {
 		comments_enabled: 'all',
 		recommendations_enabled: true,
 		members_signup_access: 'all',
+		/*
+		 * WHICH PLANS PORTAL OFFERS. Ghost defaults this to `["free"]` and only widens it when
+		 * Stripe is connected, so a publication that has written its tiers but not yet plugged in
+		 * payments shows a signup modal with one option — while the theme's own Membership Surface
+		 * lists all three. Naming the two paid cadences here is what makes Portal show the
+		 * publication's real tiers, which is what the auth ticket asks of it. The API accepts the
+		 * value without Stripe; what Stripe decides is whether a checkout can complete, not
+		 * whether the plan exists.
+		 */
+		portal_plans: ['free', 'monthly', 'yearly'],
 		locale: 'en',
 		timezone: 'Etc/UTC',
 		/*

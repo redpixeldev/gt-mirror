@@ -2685,3 +2685,118 @@ The first full run with all 54 captures is clean, and `shoot.py`'s stability gua
 one of them — including the three-pixel anti-aliasing jitter on one card's rounded corner that
 failed two earlier runs. That one is capture noise on a border radius, not markup: three pixels at
 a maximum delta of 3, on the same corner both times.
+
+## Members auth: how far Portal reaches, and where the design stops (2026-08)
+
+Ghost renders the members flow through **Portal**, a React bundle in an iframe that a theme cannot
+template. The design draws two full auth Surfaces. Both statements are true at once, and the
+resolution is that they are answering different questions: Portal is the modal a reader opens from
+anywhere, and the designed Surfaces are the ADDRESS a publication sends people to.
+
+So the theme ships both. `/sign-in/` and `/sign-up/` are the designed Surfaces, built on Ghost's own
+members contract rather than on anything reimplemented — `data-members-form`, `data-members-email`,
+`data-members-name`, and Portal binding the submit out of `{{ghost_head}}`. Portal is what a reader
+gets from the header, the Gate and the tier buttons.
+
+### THE CONCESSION
+
+**Every entry point in the Chrome opens Portal's drawing, not the designed one, and a theme cannot
+change that.** The header's Subscribe, the Gate's call to action, the recommendation subscribe
+buttons and the Membership Surface's tier buttons all hand off to Portal, whose type, spacing,
+field treatment and success states are Portal's own. What the theme can reach is the accent colour,
+which plans it offers, its button style and its terms copy — all publication settings — and beyond
+those the modal is the platform's.
+
+The residual distance is therefore: a reader who NAVIGATES to `/sign-in/` sees the design; a reader
+who CLICKS Subscribe sees Portal. The reference build's own auth captures already sit about 1.4
+below their Floors for a separate and accepted reason, and this Concession is on top of that.
+
+Measured, not asserted. Portal opened from the Membership Surface renders its primary button at
+`rgb(168, 88, 12)` and its links at the same value, which is `#a8580c` — the design's burnt amber,
+carried from `@site.accent_color`.
+
+### `portal_plans` defaults to free-only, which made Portal contradict the theme
+
+`portal_plans` ships as `["free"]` and Ghost only widens it when Stripe is connected. The result on
+this install was a Membership Surface listing three real tiers beside a signup modal offering one —
+the theme telling the truth and the platform's own modal appearing not to. The Admin API accepts
+`["free","monthly","yearly"]` without Stripe, so the fixture sets it: what Stripe decides is whether
+a checkout can COMPLETE, not whether a plan exists.
+
+With Stripe absent, a paid tier button opens Portal and Portal answers "Unable to initiate checkout
+session". That is the honest platform behaviour for a publication that has written its plans and
+not yet plugged in payments, and it is what a buyer in that state should see.
+
+### The four states are Ghost's three classes
+
+The reference build drives its auth form's four states from an Alpine value, because it has no
+server to answer. Here every state is real markup and Portal's own class decides which is on
+screen: `loading` for the round trip, then exactly one of `success` or `error`. Nine CSS rules in
+`assets/css/screen.css` are the whole of the theme's side, and the success panel is a SIBLING of
+the form so that "the form leaves and the panel arrives" is one adjacent-sibling selector.
+
+One line of JavaScript sits on top: Portal reports the OUTCOME of a submit and never the input, so
+the theme copies the typed address into "we sent a link to …" at submit time. The markup reads
+correctly without it — it ships the words "the address you entered" — which is the test for whether
+an enhancement is allowed to be one.
+
+### Proved against the running install, end to end
+
+| step                        | result                                                                                                |
+| :-------------------------- | :---------------------------------------------------------------------------------------------------- |
+| signup through `/sign-up/`  | Portal bound the submit; Ghost issued a magic link                                                    |
+| mail delivery               | failed — this install has no transport — reported in `[data-members-error]` and the error panel drawn |
+| the emailed link            | followed from Ghost's log; the member was created and signed in                                       |
+| the Chrome, signed in       | the bar's control changed from **Subscribe** to **Account**                                           |
+| `/sign-in/`, signed in      | "You are signed in", `harness.reader@mirror.test`, Manage your account                                |
+| sign out                    | the bar's control returned to **Subscribe**                                                           |
+| sign-in through `/sign-in/` | a second magic link, followed, signed in again                                                        |
+
+The failure in row two is worth keeping in the record rather than configuring away: it is the first
+time the theme's error branch has been driven by a real failure rather than by a class added by
+hand, and it drew exactly what it should — the panel, Ghost's own sentence inside it, and the form
+still filled in.
+
+The test member was deleted afterwards. The demo publication has no members, and it should not: a
+fixture that seeds one would make every gate check depend on who the harness happens to be.
+
+### The preview-only state switcher is not in the theme
+
+`FormStateSwitch` and its `?state=loading|success|error` are a review affordance of the reference
+build — the design source keeps the equivalent in its own preview chrome. Neither is ported, and
+grepping the theme for `state=` returns nothing. The four states are reachable here only by driving
+the form, which is the point.
+
+The design's `Privacy · Terms` line under both cards is not carried either. It links nothing in the
+reference build, Ghost has no field for a policy page, and a link to a page that does not exist is
+worse than no link.
+
+### What the run reports
+
+| route     | mode  |     Ghost | Floor |   gap |
+| :-------- | :---- | --------: | ----: | ----: |
+| `sign-in` | light | **97.27** | 99.07 | −1.80 |
+| `sign-in` | dark  | **96.82** | 99.09 | −2.27 |
+| `sign-up` | light | **96.87** | 98.99 | −2.12 |
+| `sign-up` | dark  | **96.19** | 99.01 | −2.82 |
+
+From **87.67 / 87.59 / 88.66 / 86.38**: the placeholder cards these replaced were a heading, a
+field and a button, where the design draws a centred column with an eyebrow, a subhead, a shadowed
+card and its footnotes. What remains is the upgrade panel's copy, which names the cheapest real
+tier rather than the design's sentence, and the missing policy line.
+
+### Byte equality was the wrong test for "the same capture twice"
+
+With 54 captures in a run, `shoot.py`'s stability guard started failing on a different Surface each
+time — and never on the same one twice, which is the shape of a measurement problem rather than a
+markup one. Measured across three of them: 3 pixels at a maximum channel delta of 3 on a card's
+border radius, 12 at delta 2 on a grid's last row, 32 at delta 2 down one column of thumbnails,
+each on a frame of four to seven million pixels. A browser rasterising a rounded corner over a JPEG
+is not bit-deterministic.
+
+The guard now states a bound instead of implying one: **at most two levels on any channel, and at
+most one pixel in twenty thousand.** Nothing a template can do lands inside that envelope — a
+layout that moved, a string that changed, an image that loaded late all touch thousands of pixels
+at full contrast, and this check caught exactly those twice earlier in the port. Outside the bound
+a capture is still unstable and still fails the run, and the report now prints what it measured
+rather than only that the files differed.

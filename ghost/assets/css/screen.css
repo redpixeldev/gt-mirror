@@ -395,3 +395,55 @@ form.loading button[type='submit'] {
 	pointer-events: none;
 	opacity: 0.6;
 }
+
+/*
+ * THE AUTH SURFACES' FOUR STATES, from the same three classes.
+ *
+ * The reference build drives them from an Alpine value because it has no server to answer; here
+ * every state is real markup and Portal's own class on the form decides which one is on screen.
+ * Nothing below is a new contract — it is the same `loading` / `success` / `error` the footer's
+ * form already reads, spent on a card that draws all four.
+ *
+ * The success panel is a SIBLING of the form rather than a child, which is what makes it an
+ * adjacent-sibling selector: on success the form leaves and the panel takes its place. That is
+ * also why `.members-success` has to be hidden by default and revealed, rather than the reverse —
+ * a panel that started visible would flash on every page load.
+ *
+ * `[data-members-error]` is where Portal writes the failure text. The panel around it is hidden
+ * unless the form is in error, so an empty alert never occupies a card that is doing fine.
+ */
+.members-error-panel,
+.members-busy,
+.members-spinner,
+.members-success {
+	display: none;
+}
+
+form.error .members-error-panel {
+	display: block;
+}
+
+form.loading :is(.members-busy, .members-spinner) {
+	display: block;
+}
+
+form.loading .members-idle {
+	display: none;
+}
+
+form.success {
+	display: none;
+}
+
+form.success + .members-success {
+	display: block;
+}
+
+/*
+ * `cursor: wait` and the accent-soft fill are the design's own loading treatment for this button,
+ * which the shared `form.loading` rule above cannot express because it is about pointer events
+ * rather than about how the control looks.
+ */
+form.loading button[type='submit'] {
+	cursor: wait;
+}
