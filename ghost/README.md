@@ -26,6 +26,8 @@ Everything below lives in **Settings → Design & branding**, under the theme's 
 | **Feed layout**        | Two-column list · Three-column grid | A wide row per post, or a grid of cards. Also the tag and writer archives. |
 | **Directory layout**   | Editorial rows · Cover cards        | A row per subject, or a grid of cards with cover photos.                   |
 | **Post layout**        | Centered classic · Title page       | Cover photo over centred titling, or a title page with a sticky side rail. |
+| **Page hero**          | Centered statement · Split hero     | Opener for About and Membership, and for the error page.                   |
+| **Featured tier**      | Text                                | The tier that carries the accent panel and the "Most popular" chip.        |
 | **Newsletter heading** | Text                                | The heading on every subscribe block.                                      |
 
 More settings arrive with the layouts they control; each one is documented here as it lands.
@@ -114,6 +116,30 @@ More settings arrive with the layouts they control; each one is documented here 
   real destination. Both come from **Settings → Staff**, on each writer's own profile.
 - **A post with more than one writer credits all of them**, everywhere a byline appears. The
   face beside the byline is the first writer's.
+
+### About, Membership and Recommendations
+
+- All three are pages of your own, and each has a layout you can apply to a page with any name
+  by picking **About**, **Membership** or **Recommendations** in the page settings menu. The demo
+  calls them `/about/`, `/membership/` and `/recommendations/`.
+- **Page hero** picks the opener on About and Membership: _Centered statement_ sets the title
+  large and centred, _Split hero_ sets it beside your page's feature image (on Membership,
+  beside its own standfirst).
+- **About counts its own figures.** Posts published, writers, subjects and the year you started
+  are read from the publication every time the page renders — there is nothing to keep in step
+  by hand. Below them comes your page body, then the masthead.
+- **Membership prices come from your Tiers, never from the theme.** Names, descriptions,
+  benefits and both prices are Settings → Membership, the monthly/yearly switch shows as soon as
+  one paid tier exists, and every button opens the real signup for that tier and interval.
+  **Featured tier** names the one that gets the accent panel.
+- The **benefit comparison, member quotes and questions** are your page's own body. Write the
+  comparison as a table and the questions as **toggle** cards — the theme styles both, and the
+  table scrolls rather than cropping its last column on a phone.
+- **Behind the paywall right now** is the three most recent posts a free reader cannot finish.
+  It disappears on a publication that gates nothing.
+- **Recommendations** lists what you added under **Settings → Recommendations**, in either
+  Directory layout. Every entry links to the publication, and where Ghost knows it runs Ghost,
+  a second button opens that publication's own signup.
 
 ### Header, menu and footer
 

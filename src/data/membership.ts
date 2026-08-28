@@ -186,3 +186,48 @@ export const FAQS: Faq[] = [
 			'Writer fees first, then hosting and email delivery. There is no office, no advertising spend, and no outside investment.',
 	},
 ];
+
+/**
+ * The Membership page's body, as the HTML a Ghost editor would produce.
+ *
+ * DERIVED, NOT RE-TRANSCRIBED. Every row, quote and question above is the single source; this
+ * export only arranges them the way an editor would have typed them. The three blocks are here
+ * rather than in the theme because Ghost holds no field for any of them: the matrix is
+ * benefit × tier and Ghost stores benefits per tier, a member quote is a testimonial with no
+ * resource behind it, and a FAQ is Ghost's own toggle card.
+ *
+ * The `kg-` classes are load-bearing — `assets/css/screen.css` styles the table, and the toggle
+ * card is the platform's accordion, kept out of `card_assets.exclude` for exactly this page.
+ */
+const compareTable = [
+	'<table>',
+	'<thead><tr><th>Benefit</th><th>Free</th><th>Basic</th><th>Pro</th></tr></thead>',
+	'<tbody>',
+	...COMPARE.map((row) => `<tr><td>${row.label}</td><td>${row.free}</td><td>${row.basic}</td><td>${row.pro}</td></tr>`),
+	'</tbody>',
+	'</table>',
+].join('');
+
+/*
+ * The attribution rides inside the quote rather than in a `<cite>`: Ghost's HTML-to-Lexical
+ * conversion keeps a blockquote and drops the cite element inside it, and losing the words is
+ * worse than losing the meta type they were set in.
+ */
+const quoteBlocks = QUOTES.map((quote) => `<blockquote>${quote.text} — ${quote.who}</blockquote>`).join('\n');
+
+const faqToggles = FAQS.map(
+	(faq) =>
+		'<div class="kg-card kg-toggle-card" data-kg-toggle-state="close">' +
+		`<div class="kg-toggle-heading"><h4 class="kg-toggle-heading-text">${faq.question}</h4></div>` +
+		`<div class="kg-toggle-content"><p>${faq.answer}</p></div>` +
+		'</div>',
+).join('\n');
+
+export const MEMBERSHIP_BODY = [
+	"<h2>What's included</h2>",
+	compareTable,
+	'<h2>From members</h2>',
+	quoteBlocks,
+	'<h2>Questions</h2>',
+	faqToggles,
+].join('\n');

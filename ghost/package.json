@@ -90,6 +90,15 @@
 				"default": "Editorial rows",
 				"description": "Layout for the tag, writer and recommendation directories"
 			},
+			"page_hero": {
+				"type": "select",
+				"options": [
+					"Centered statement",
+					"Split hero"
+				],
+				"default": "Centered statement",
+				"description": "Opener for the About and Membership pages, and for the error page"
+			},
 			"post_layout": {
 				"type": "select",
 				"options": [
@@ -99,6 +108,11 @@
 				"default": "Centered classic",
 				"group": "post",
 				"description": "A cover photo over centred titling, or a title page with a sticky side rail"
+			},
+			"featured_tier": {
+				"type": "text",
+				"default": "Pro",
+				"description": "Tier name that carries the accent panel and the \"Most popular\" chip"
 			},
 			"newsletter_heading": {
 				"type": "text",

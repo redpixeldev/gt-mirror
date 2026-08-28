@@ -1,0 +1,28 @@
+{{!-- A2, "split hero" on Membership: the headline beside the standfirst, ruled off below.
+
+	{{> "membership/hero-split" eyebrow=(t "Membership")}}     called from inside {{#post}}
+
+	eyebrow   the theme's word for what kind of Surface this is
+
+Unlike About's split hero this one carries no photograph — the design sets two columns of type
+and nothing else, which is also why it needs no `{{#if feature_image}}`. `items-end` is what puts
+the standfirst's last line on the headline's baseline. --}}
+{{#if @page.show_title_and_feature_image}}
+	<section
+		aria-labelledby="mem-h2"
+		class="border-border border-b">
+		<div class="container py-18">
+			<p class="font-meta text-meta text-accent tracking-[0.16em] uppercase">{{eyebrow}}</p>
+
+			<div class="mt-[22px] grid grid-cols-[repeat(auto-fit,minmax(min(300px,100%),1fr))] items-end gap-12">
+				<h1
+					id="mem-h2"
+					class="font-display tracking-display max-w-[18ch] text-[clamp(34px,4.8vw,58px)] leading-[1.03] font-medium text-balance">{{title}}</h1>
+
+				{{#if excerpt}}
+					<p class="text-lead text-muted max-w-[48ch] leading-[1.55] text-pretty">{{excerpt}}</p>
+				{{/if}}
+			</div>
+		</div>
+	</section>
+{{/if}}

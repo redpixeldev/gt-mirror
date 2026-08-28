@@ -1,0 +1,43 @@
+{{!-- "The masthead" — one card per writer, name over a post count and a place.
+
+	{{> "about/team"}}
+
+THE DESIGNED ROLE LINE IS NOT HERE. The design draws "Founding editor" under each name, and Ghost
+has no author-role field — a staff user carries a name, a bio, a location, a website and two
+social handles and nothing that means "what they do here". On this publication the role happens to
+be the first sentence of each bio, and Handlebars cannot take a sentence off a string. The card
+therefore carries the two facts Ghost does hold. Already recorded as a Concession in DECISIONS.md
+for the Authors Directory; the same one, on a second Surface.
+
+The guard and the ordering are the masthead's, for the reason partials/pages/authors.hbs sets out
+at length: every staff account is an "author" to Ghost, `count.posts` is not filterable on authors
+in Ghost 6, and ordering by it descending means the first row's count answers whether anybody has
+published at all. --}}
+{{#get "authors" include="count.posts" order="count.posts desc" limit="100" as |team|}}
+	{{#if team.[0].count.posts}}
+		<section
+			aria-labelledby="team"
+			class="container pt-20">
+			<h2
+				id="team"
+				class="font-ui text-muted border-border mb-6 border-b pb-3.5 text-xs font-semibold tracking-[0.16em] uppercase">{{t "The masthead"}}</h2>
+
+			<div class="grid grid-cols-[repeat(auto-fill,minmax(min(230px,100%),1fr))] gap-5">
+				{{#foreach team}}
+					{{#if count.posts}}
+						<a
+							href="{{url}}"
+							class="border-border hover:border-accent bg-surface text-text block rounded-md border p-[22px] no-underline">
+							<p class="font-display tracking-heading text-[19px] leading-[1.22] font-medium">{{name}}</p>
+
+							<p class="text-muted mt-2.5 font-mono text-[11px]">
+								{{~plural count.posts empty=(t "No posts") singular=(t "% post") plural=(t "% posts")~}}
+								{{#if location}}<span aria-hidden="true"> · </span>{{location}}{{/if}}
+							</p>
+						</a>
+					{{/if}}
+				{{/foreach}}
+			</div>
+		</section>
+	{{/if}}
+{{/get}}

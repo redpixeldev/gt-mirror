@@ -562,12 +562,30 @@ if (failures.length) {
  * seeded here.
  */
 const pages = [
-	{ slug: 'about', title: 'About', template: null, body: `<p>${data.navigation.SITE_TAGLINE}</p>` },
+	/*
+	 * About is the one standing Page with a body rather than a sentence, so it is also the one
+	 * that needs a custom excerpt: `{{excerpt}}` falls back to the body's opening, and this body
+	 * opens on "Why this exists" rather than on what the publication is.
+	 */
+	{
+		slug: 'about',
+		title: 'A publication for people who make publications',
+		template: null,
+		excerpt:
+			'Independent writing on media, craft, and the cost of attention — read in 74 countries, ' +
+			'funded entirely by its members.',
+		image: '/img/pexels-38048095.jpg',
+		image_alt: 'Vintage roll-top writing desk with papers and office supplies',
+		body: data.about.ABOUT_BODY,
+	},
 	{
 		slug: 'membership',
-		title: 'Membership',
+		title: 'Pay five writers, read everything',
 		template: null,
-		body: '<p>Free members get the archive. Paid members get the interviews.</p>',
+		excerpt:
+			'No advertising, no sponsorship, no affiliate links. The Quarry is funded by the people who ' +
+			'read it — and that is the whole business model.',
+		body: data.membership.MEMBERSHIP_BODY,
 	},
 	/*
 	 * The directory Pages carry the design's own title and lead sentence, because the theme reads
@@ -595,7 +613,9 @@ const pages = [
 		slug: 'recommendations',
 		title: 'Recommendations',
 		template: null,
-		body: '<p>Publications we read every week.</p>',
+		body:
+			`<p>${data.recommendations.RECOMMENDATION_TOTAL} publications we actually read. No affiliate ` +
+			`deals, no swaps — subscribe to any of them in one click.</p>`,
 	},
 	{ slug: 'sign-in', title: 'Sign in', template: null, body: '' },
 	{ slug: 'sign-up', title: 'Subscribe', template: null, body: '' },

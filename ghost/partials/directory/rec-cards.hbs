@@ -1,0 +1,90 @@
+{{!-- A2, "cover cards", on Recommendations: a card per publication, cover photo on top.
+
+	{{> "directory/rec-cards"}}     from partials/recommendations.hbs, in the helper's context
+
+See directory/rec-rows.hbs for what the two actions do, why `data-recommendation` is on every one
+of them, and what Portal's one-click subscribe is that this button is not.
+
+A recommendation with no cover keeps the 16:9 frame, for the same reason a tag card does: the
+cards in a row share a baseline, and one card starting at its title while its neighbours start at
+a photograph reads as a broken grid. `mt-auto` on the action row holds the buttons to the bottom
+of every card whatever the description's length, which is what makes the row of cards line up
+along two edges instead of one. --}}
+<section
+	id="recs"
+	aria-label="{{t "Recommended publications"}}"
+	class="border-border container border-t pt-14">
+	<div class="grid grid-cols-[repeat(auto-fill,minmax(min(330px,100%),1fr))] gap-x-9 gap-y-11">
+		{{#foreach recommendations}}
+			<article class="border-border bg-surface flex flex-col overflow-hidden rounded-md border">
+				{{#if featured_image}}
+					<img
+						src="{{img_url featured_image size="m"}}"
+						alt=""
+						loading="lazy"
+						decoding="async"
+						class="border-border block aspect-video w-full border-b object-cover">
+				{{else}}
+					<span
+						aria-hidden="true"
+						class="border-border bg-surface-2 block aspect-video w-full border-b"></span>
+				{{/if}}
+
+				<div class="flex flex-auto flex-col gap-3 p-6">
+					<div class="flex items-center gap-3">
+						{{#if favicon}}
+							<img
+								src="{{img_url favicon size="xs"}}"
+								alt=""
+								width="32"
+								height="32"
+								loading="lazy"
+								decoding="async"
+								class="border-border block h-8 w-8 flex-none rounded-sm border object-cover">
+						{{else}}
+							<span
+								aria-hidden="true"
+								class="border-border bg-surface-2 block h-8 w-8 flex-none rounded-sm border"></span>
+						{{/if}}
+
+						<div class="min-w-0">
+							<h2 class="font-display tracking-heading text-[21px] leading-[1.2] font-medium">
+								<a
+									href="{{this.url}}"
+									data-recommendation="{{id}}"
+									target="_blank"
+									rel="noopener"
+									class="text-text no-underline">{{title}}</a>
+							</h2>
+
+							<p class="text-muted mt-[5px] font-mono text-[11px]">{{readable_url url}}</p>
+						</div>
+					</div>
+
+					{{#if description}}
+						<p class="text-small text-muted leading-[1.62] text-pretty">{{description}}</p>
+					{{/if}}
+
+					<div class="mt-auto flex flex-wrap gap-2.5 pt-4">
+						{{#if one_click_subscribe}}
+							<a
+								href="{{this.url}}#/portal/signup"
+								data-recommendation="{{id}}"
+								target="_blank"
+								rel="noopener"
+								class="btn btn-primary font-ui rounded-sm border px-[18px] py-2.5 text-[13.5px] font-semibold no-underline">{{t "Subscribe"}}</a>
+						{{/if}}
+
+						<a
+							href="{{this.url}}"
+							data-recommendation="{{id}}"
+							target="_blank"
+							rel="noopener"
+							class="border-border text-text font-ui rounded-sm border px-[18px] py-2.5 text-[13.5px] font-semibold no-underline">{{t "Visit"}}
+							<span class="font-[system-ui,sans-serif]">&rarr;</span></a>
+					</div>
+				</div>
+			</article>
+		{{/foreach}}
+	</div>
+</section>

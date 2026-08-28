@@ -256,42 +256,84 @@
 		"out": "ghost-recommendations-01-light.png",
 		"height": 2701,
 		"width": 1568,
-		"group": "{}"
+		"group": "{\"directory_layout\":\"Editorial rows\"}"
 	},
 	{
 		"url": "http://localhost:2368/recommendations/?mode=dark",
 		"out": "ghost-recommendations-01-dark.png",
 		"height": 2701,
 		"width": 1568,
-		"group": "{}"
+		"group": "{\"directory_layout\":\"Editorial rows\"}"
+	},
+	{
+		"url": "http://localhost:2368/recommendations/?mode=light",
+		"out": "ghost-recommendations-02-light.png",
+		"height": 2515,
+		"width": 1568,
+		"group": "{\"directory_layout\":\"Cover cards\"}"
+	},
+	{
+		"url": "http://localhost:2368/recommendations/?mode=dark",
+		"out": "ghost-recommendations-02-dark.png",
+		"height": 2515,
+		"width": 1568,
+		"group": "{\"directory_layout\":\"Cover cards\"}"
 	},
 	{
 		"url": "http://localhost:2368/about/?mode=light",
 		"out": "ghost-about-01-light.png",
 		"height": 3364,
 		"width": 1568,
-		"group": "{}"
+		"group": "{\"page_hero\":\"Centered statement\"}"
 	},
 	{
 		"url": "http://localhost:2368/about/?mode=dark",
 		"out": "ghost-about-01-dark.png",
 		"height": 3364,
 		"width": 1568,
-		"group": "{}"
+		"group": "{\"page_hero\":\"Centered statement\"}"
+	},
+	{
+		"url": "http://localhost:2368/about/?mode=light",
+		"out": "ghost-about-02-light.png",
+		"height": 3592,
+		"width": 1568,
+		"group": "{\"page_hero\":\"Split hero\"}"
+	},
+	{
+		"url": "http://localhost:2368/about/?mode=dark",
+		"out": "ghost-about-02-dark.png",
+		"height": 3592,
+		"width": 1568,
+		"group": "{\"page_hero\":\"Split hero\"}"
 	},
 	{
 		"url": "http://localhost:2368/membership/?mode=light",
 		"out": "ghost-membership-01-light.png",
 		"height": 3671,
 		"width": 1568,
-		"group": "{}"
+		"group": "{\"page_hero\":\"Centered statement\"}"
 	},
 	{
 		"url": "http://localhost:2368/membership/?mode=dark",
 		"out": "ghost-membership-01-dark.png",
 		"height": 3671,
 		"width": 1568,
-		"group": "{}"
+		"group": "{\"page_hero\":\"Centered statement\"}"
+	},
+	{
+		"url": "http://localhost:2368/membership/?mode=light",
+		"out": "ghost-membership-02-light.png",
+		"height": 3779,
+		"width": 1568,
+		"group": "{\"page_hero\":\"Split hero\"}"
+	},
+	{
+		"url": "http://localhost:2368/membership/?mode=dark",
+		"out": "ghost-membership-02-dark.png",
+		"height": 3779,
+		"width": 1568,
+		"group": "{\"page_hero\":\"Split hero\"}"
 	},
 	{
 		"url": "http://localhost:2368/sign-in/?mode=light",

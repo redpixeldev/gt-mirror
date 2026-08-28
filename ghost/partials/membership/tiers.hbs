@@ -1,0 +1,160 @@
+{{!-- The plan cards, priced from the publication's live Tiers.
+
+	{{> "membership/tiers"}}                     A1's, under the centred statement
+	{{> "membership/tiers" padding="pt-14"}}     A2's, under the ruled-off split hero
+
+	padding   the section's top padding
+
+STALE PRICES ARE THE WORST FAILURE MODE IN THIS THEME, so nothing here is written down. Names,
+descriptions, benefits and both prices come from `{{#get "tiers"}}`, and every amount goes through
+`{{price}}` — `monthly_price` is an integer in the currency's smallest unit (800, not 8), and
+printing it raw would advertise a $800 membership.
+
+Both price sets are in the markup and Alpine swaps them, exactly as the design source does: the
+page stays static, and a reader with no JavaScript sees the monthly prices rather than an empty
+card. The Handlebars runs once, at render; `x-text` only chooses between two strings it already
+holds.
+
+WHAT THE DESIGN CLAIMS AND GHOST CANNOT. The source's yearly note reads "Two months free · billed
+annually" and its yearly pill reads "−17%". Both are arithmetic over two prices, Handlebars has
+none, and a theme that hardcoded either would print a discount that a publication with different
+prices does not offer. The note reads "Billed annually" and the pill carries no percentage.
+Recorded as a Concession in DECISIONS.md.
+
+`href` is a Portal deep link and works with JavaScript off only as far as Portal is loaded;
+`data-portal` is the attribute Portal binds to. The pair is what makes the button open the real
+signup for that tier and cadence rather than a page the theme invented.
+
+The free tier prints the theme's own word rather than a formatted zero: a free tier carries no
+currency in Ghost, and `{{price 0}}` with no currency returns a bare `0`. --}}
+{{#if @site.members_enabled}}
+	<section
+		id="tiers"
+		aria-labelledby="tiers-h"
+		class="container {{#if padding}}{{padding}}{{/if}}"
+		x-data="{ yearly: false }">
+		<h2
+			id="tiers-h"
+			class="sr-only">{{t "Plans"}}</h2>
+
+		{{!-- THE SWITCH FOLLOWS THE TIERS, NOT THE STRIPE FLAG. `@site.paid_members_enabled` is false
+		until Stripe is connected, and a publication that has written its plans but not yet plugged
+		in payments would lose the control that reveals its own yearly prices — measured on this
+		install, where three tiers exist and the flag is false. The condition that matters is
+		whether there is a second price to switch to, which is exactly "does a paid tier exist". --}}
+		{{#get "tiers" filter="type:paid" limit="1" as |paid|}}
+			{{#if paid}}
+				<div class="mb-9 flex justify-center">
+					<div
+						role="group"
+						aria-label="{{t "Billing period"}}"
+						class="border-border bg-surface-2 rounded-pill flex gap-0.5 border p-[3px]">
+						<button
+							type="button"
+							x-on:click="yearly = false"
+							x-bind:aria-pressed="(!yearly).toString()"
+							x-bind:class="yearly ? 'bg-transparent text-muted' : 'bg-text text-surface'"
+							class="rounded-pill font-ui cursor-pointer border-0 px-5 py-[9px] text-[13px] font-semibold">{{t "Monthly"}}</button>
+						<button
+							type="button"
+							x-on:click="yearly = true"
+							x-bind:aria-pressed="yearly.toString()"
+							x-bind:class="yearly ? 'bg-text text-surface' : 'bg-transparent text-muted'"
+							class="rounded-pill font-ui cursor-pointer border-0 px-5 py-[9px] text-[13px] font-semibold">{{t "Yearly"}}</button>
+					</div>
+				</div>
+			{{/if}}
+		{{/get}}
+
+		{{#get "tiers" include="monthly_price,yearly_price,benefits" limit="100" as |tiers|}}
+			{{#if tiers}}
+				<div class="grid grid-cols-[repeat(auto-fit,minmax(min(280px,100%),1fr))] items-stretch gap-6">
+					{{#foreach tiers}}
+						{{#match type "free"}}
+							<article class="border-border bg-surface flex flex-col rounded-md border p-8">
+								<div class="flex items-center gap-2.5">
+									<h3 class="font-display tracking-heading text-[22px] font-medium">{{name}}</h3>
+								</div>
+
+								<p class="mt-5 flex items-baseline gap-2">
+									<span class="font-display tracking-display text-[46px] leading-none font-medium">{{t "Free"}}</span>
+									<span class="font-meta text-meta tracking-meta text-muted uppercase">{{t "forever"}}</span>
+								</p>
+
+								<p class="text-muted mt-2.5 font-mono text-[11.5px]">{{t "No card required"}}</p>
+
+								{{#if description}}
+									<p class="text-small text-muted mt-[18px] leading-[1.6]">{{description}}</p>
+								{{/if}}
+
+								<ul class="mt-[22px] mb-auto flex list-none flex-col gap-[11px] p-0">
+									{{#each benefits}}
+										<li class="flex items-start gap-[11px]">
+											<span
+												aria-hidden="true"
+												class="text-accent flex-none font-mono text-xs leading-[1.6]">&check;</span>
+											<span class="text-small leading-[1.6]">{{this}}</span>
+										</li>
+									{{/each}}
+								</ul>
+
+								<a
+									href="#/portal/signup/free"
+									data-portal="signup/free"
+									class="btn border-text text-text hover:bg-text hover:text-surface font-ui mt-[26px] block rounded-sm border px-[22px] py-[13px] text-center text-[15px] font-semibold no-underline">{{t "Join free"}}</a>
+							</article>
+						{{else}}
+							<article
+								class="flex flex-col rounded-md border p-8 {{#match name @custom.featured_tier}}border-accent-border bg-accent-soft{{else}}border-border bg-surface{{/match}}">
+								<div class="flex items-center gap-2.5">
+									<h3 class="font-display tracking-heading text-[22px] font-medium">{{name}}</h3>
+
+									{{#match name @custom.featured_tier}}
+										<span
+											class="rounded-pill bg-accent text-on-accent px-[9px] py-[3px] font-mono text-[10px] tracking-[0.08em] uppercase">{{t "Most popular"}}</span>
+									{{/match}}
+								</div>
+
+								<p class="mt-5 flex items-baseline gap-2">
+									<span
+										class="font-display tracking-display text-[46px] leading-none font-medium"
+										x-text="yearly ? '{{price yearly_price currency=currency}}' : '{{price monthly_price currency=currency}}'">{{price monthly_price currency=currency}}</span>
+									<span
+										class="font-meta text-meta tracking-meta text-muted uppercase"
+										x-text="yearly ? '{{t "per year"}}' : '{{t "per month"}}'">{{t "per month"}}</span>
+								</p>
+
+								<p
+									class="text-muted mt-2.5 font-mono text-[11.5px]"
+									x-text="yearly ? '{{t "Billed annually"}}' : '{{t "Or {price} per year" price=(price yearly_price currency=currency)}}'">{{t "Or {price} per year" price=(price yearly_price currency=currency)}}</p>
+
+								{{#if description}}
+									<p class="text-small text-muted mt-[18px] leading-[1.6]">{{description}}</p>
+								{{/if}}
+
+								<ul class="mt-[22px] mb-auto flex list-none flex-col gap-[11px] p-0">
+									{{#each benefits}}
+										<li class="flex items-start gap-[11px]">
+											<span
+												aria-hidden="true"
+												class="text-accent flex-none font-mono text-xs leading-[1.6]">&check;</span>
+											<span class="text-small leading-[1.6]">{{this}}</span>
+										</li>
+									{{/each}}
+								</ul>
+
+								<a
+									href="#/portal/signup/{{id}}/monthly"
+									data-portal="signup/{{id}}/monthly"
+									x-bind:href="yearly ? '#/portal/signup/{{id}}/yearly' : '#/portal/signup/{{id}}/monthly'"
+									x-bind:data-portal="yearly ? 'signup/{{id}}/yearly' : 'signup/{{id}}/monthly'"
+									class="btn font-ui mt-[26px] block rounded-sm border px-[22px] py-[13px] text-center text-[15px] font-semibold no-underline {{#match name @custom.featured_tier}}btn-primary{{else}}border-text text-text hover:bg-text hover:text-surface{{/match}}"
+									x-text="yearly ? '{{t "Choose {tier} — {price}/year" tier=name price=(price yearly_price currency=currency)}}' : '{{t "Choose {tier} — {price}/month" tier=name price=(price monthly_price currency=currency)}}'">{{t "Choose {tier} — {price}/month" tier=name price=(price monthly_price currency=currency)}}</a>
+							</article>
+						{{/match}}
+					{{/foreach}}
+				</div>
+			{{/if}}
+		{{/get}}
+	</section>
+{{/if}}

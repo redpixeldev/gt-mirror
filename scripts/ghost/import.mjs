@@ -311,6 +311,13 @@ for (const page of fixture.pages) {
 		title: page.title,
 		slug: page.slug,
 		html: remoteHtml(page.body),
+		/* The standing Pages carry a one-sentence standfirst that is NOT the opening of the body:
+		 * a directory's lead describes the list below it, and About's describes the publication
+		 * while its body opens on "Why this exists". `{{excerpt}}` prefers custom_excerpt and only
+		 * falls back to the first 50 words, so the pages that need a distinct lead state one. */
+		custom_excerpt: page.excerpt ?? null,
+		feature_image: remote(page.image),
+		feature_image_alt: page.image_alt ?? null,
 		custom_template: page.template,
 		status: 'published',
 	};

@@ -1,0 +1,39 @@
+{{!-- A centred page opener: accent eyebrow, oversized headline, standfirst.
+
+	{{> "centered-intro" eyebrow=(t "About") headingId="a1-h"}}                       About's
+	{{> "centered-intro" eyebrow=(t "Membership") headingId="m1-h" padding="pt-22 pb-14"
+	    titleClass="max-w-[18ch] text-[clamp(36px,5vw,62px)]" titleSpacing="mt-6"
+	    descriptionClass="text-lead mt-[22px] max-w-[52ch] leading-[1.55]"}}          Membership's
+
+	eyebrow            the theme's word for what kind of Surface this is
+	headingId          the h1's id, so the section can be labelled by it
+	padding            section padding — 96/72 on About, 88/56 on Membership
+	titleClass         headline size and measure
+	titleSpacing       space above the headline — 26px on About, 24px on Membership
+	descriptionClass   standfirst face and measure — italic body on About, the lead size on Membership
+
+Called from inside {{#post}}, so the page is the context. Distinct from page-intro.hbs, which is
+the directories' left-aligned opener; this one is the statement the two standing Pages lead with,
+and the design draws them differently enough that one partial with six arguments would be less
+readable than two.
+
+Title and standfirst are the publication's, read off the page record — see page-intro.hbs for why
+the lead is `{{excerpt}}` and not `{{content}}`. The editor's per-page toggle owns the whole
+opener. --}}
+{{#if @page.show_title_and_feature_image}}
+	<section
+		aria-labelledby="{{headingId}}"
+		style="--container-max:1120px"
+		class="container text-center {{#if padding}}{{padding}}{{else}}pt-24 pb-18{{/if}}">
+		<p class="font-meta text-meta text-accent tracking-[0.16em] uppercase">{{eyebrow}}</p>
+
+		<h1
+			id="{{headingId}}"
+			class="font-display tracking-display mx-auto leading-[1.04] font-medium text-balance {{#if titleSpacing}}{{titleSpacing}}{{else}}mt-[26px]{{/if}} {{#if titleClass}}{{titleClass}}{{else}}max-w-[20ch] text-[clamp(38px,5.4vw,68px)]{{/if}}">{{title}}</h1>
+
+		{{#if excerpt}}
+			<p
+				class="text-muted mx-auto text-pretty {{#if descriptionClass}}{{descriptionClass}}{{else}}font-body mt-6 max-w-[54ch] text-[22px] leading-[1.5] italic{{/if}}">{{excerpt}}</p>
+		{{/if}}
+	</section>
+{{/if}}

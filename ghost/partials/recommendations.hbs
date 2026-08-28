@@ -1,0 +1,26 @@
+{{!-- The publication's own recommendations, in whichever Directory layout it picked.
+
+THIS FILE'S NAME IS A CONTRACT, NOT A CHOICE. `{{recommendations}}` renders through
+`templates.execute('recommendations', response, …)` (core/frontend/helpers/recommendations.js),
+which resolves a theme partial of exactly this name ahead of Ghost's own
+`core/frontend/helpers/tpl/recommendations.hbs`. Rename it and the platform's five-item list comes
+back.
+
+That is also why the layout picker is read HERE rather than in the template, which is the one
+place this theme breaks its own rule that no partial reads `@custom`. The helper owns the render
+and takes no arguments through to the partial, and `recommendations` is not a `{{#get}}` resource
+(RESOURCES in core/frontend/helpers/get.js lists posts, tags, pages, authors, tiers and
+newsletters and nothing else), so there is no way to query the data from a template and dispatch
+around it. The `@` frame survives — the helper builds its own with `createFrame(options.data)` —
+so `@custom` is readable from in here.
+
+The context is the API response, so the rows are `recommendations` and the guard is on that array.
+Ghost's own template guards the same way, and for the same reason every {{#get}} in this theme
+does: an empty result is not an error branch. --}}
+{{#if recommendations}}
+	{{#match @custom.directory_layout "Cover cards"}}
+		{{> "directory/rec-cards"}}
+	{{else}}
+		{{> "directory/rec-rows"}}
+	{{/match}}
+{{/if}}

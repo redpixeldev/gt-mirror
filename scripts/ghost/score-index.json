@@ -566,7 +566,9 @@
 		"surface": "page-recommendations",
 		"path": "/recommendations/",
 		"status": 200,
-		"settings": {},
+		"settings": {
+			"directory_layout": "Editorial rows"
+		},
 		"build": ".shots/ghost/ghost-recommendations-01-light.png",
 		"ref": "10-recommendations-A1-light.png",
 		"h": 2701,
@@ -579,7 +581,9 @@
 		"surface": "page-recommendations",
 		"path": "/recommendations/",
 		"status": 200,
-		"settings": {},
+		"settings": {
+			"directory_layout": "Editorial rows"
+		},
 		"build": ".shots/ghost/ghost-recommendations-01-dark.png",
 		"ref": "10-recommendations-A1-dark.png",
 		"h": 2701,
@@ -592,12 +596,13 @@
 		"surface": "page-recommendations",
 		"path": "/recommendations/",
 		"status": 200,
-		"settings": {},
+		"settings": {
+			"directory_layout": "Cover cards"
+		},
 		"build": ".shots/ghost/ghost-recommendations-02-light.png",
 		"ref": "10-recommendations-A2-light.png",
 		"h": 2515,
-		"w": 1568,
-		"skip": "no layout picker on Recommendations yet — the Standing Pages ticket adds one"
+		"w": 1568
 	},
 	{
 		"route": "recommendations-02",
@@ -606,12 +611,13 @@
 		"surface": "page-recommendations",
 		"path": "/recommendations/",
 		"status": 200,
-		"settings": {},
+		"settings": {
+			"directory_layout": "Cover cards"
+		},
 		"build": ".shots/ghost/ghost-recommendations-02-dark.png",
 		"ref": "10-recommendations-A2-dark.png",
 		"h": 2515,
-		"w": 1568,
-		"skip": "no layout picker on Recommendations yet — the Standing Pages ticket adds one"
+		"w": 1568
 	},
 	{
 		"route": "about-01",
@@ -620,7 +626,9 @@
 		"surface": "page-about",
 		"path": "/about/",
 		"status": 200,
-		"settings": {},
+		"settings": {
+			"page_hero": "Centered statement"
+		},
 		"build": ".shots/ghost/ghost-about-01-light.png",
 		"ref": "11-about-A1-light.png",
 		"h": 3364,
@@ -633,7 +641,9 @@
 		"surface": "page-about",
 		"path": "/about/",
 		"status": 200,
-		"settings": {},
+		"settings": {
+			"page_hero": "Centered statement"
+		},
 		"build": ".shots/ghost/ghost-about-01-dark.png",
 		"ref": "11-about-A1-dark.png",
 		"h": 3364,
@@ -646,12 +656,13 @@
 		"surface": "page-about",
 		"path": "/about/",
 		"status": 200,
-		"settings": {},
+		"settings": {
+			"page_hero": "Split hero"
+		},
 		"build": ".shots/ghost/ghost-about-02-light.png",
 		"ref": "11-about-A2-light.png",
 		"h": 3592,
-		"w": 1568,
-		"skip": "no layout picker on About yet — the Standing Pages ticket adds one"
+		"w": 1568
 	},
 	{
 		"route": "about-02",
@@ -660,12 +671,13 @@
 		"surface": "page-about",
 		"path": "/about/",
 		"status": 200,
-		"settings": {},
+		"settings": {
+			"page_hero": "Split hero"
+		},
 		"build": ".shots/ghost/ghost-about-02-dark.png",
 		"ref": "11-about-A2-dark.png",
 		"h": 3592,
-		"w": 1568,
-		"skip": "no layout picker on About yet — the Standing Pages ticket adds one"
+		"w": 1568
 	},
 	{
 		"route": "membership-01",
@@ -674,7 +686,9 @@
 		"surface": "page-membership",
 		"path": "/membership/",
 		"status": 200,
-		"settings": {},
+		"settings": {
+			"page_hero": "Centered statement"
+		},
 		"build": ".shots/ghost/ghost-membership-01-light.png",
 		"ref": "12-membership-A1-light.png",
 		"h": 3671,
@@ -687,7 +701,9 @@
 		"surface": "page-membership",
 		"path": "/membership/",
 		"status": 200,
-		"settings": {},
+		"settings": {
+			"page_hero": "Centered statement"
+		},
 		"build": ".shots/ghost/ghost-membership-01-dark.png",
 		"ref": "12-membership-A1-dark.png",
 		"h": 3671,
@@ -700,12 +716,13 @@
 		"surface": "page-membership",
 		"path": "/membership/",
 		"status": 200,
-		"settings": {},
+		"settings": {
+			"page_hero": "Split hero"
+		},
 		"build": ".shots/ghost/ghost-membership-02-light.png",
 		"ref": "12-membership-A2-light.png",
 		"h": 3779,
-		"w": 1568,
-		"skip": "no layout picker on Membership yet — the Standing Pages ticket adds one"
+		"w": 1568
 	},
 	{
 		"route": "membership-02",
@@ -714,12 +731,13 @@
 		"surface": "page-membership",
 		"path": "/membership/",
 		"status": 200,
-		"settings": {},
+		"settings": {
+			"page_hero": "Split hero"
+		},
 		"build": ".shots/ghost/ghost-membership-02-dark.png",
 		"ref": "12-membership-A2-dark.png",
 		"h": 3779,
-		"w": 1568,
-		"skip": "no layout picker on Membership yet — the Standing Pages ticket adds one"
+		"w": 1568
 	},
 	{
 		"route": "sign-in",

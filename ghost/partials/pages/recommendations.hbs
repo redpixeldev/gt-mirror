@@ -1,25 +1,28 @@
-{{!-- Recommendations.
+{{!-- Recommendations: the publications this one reads.
 
-The guard is not redundant defensiveness: the {{recommendations}} helper itself returns
-nothing when the feature is off (core/frontend/helpers/recommendations.js), so without the
-{{#if}} the heading above it would render over an empty section. Do not "simplify" it away.
-{{#if}}, not {{#match}} — {{#match}} is a comparison helper. --}}
+A Directory in the CONTEXT.md sense — it lists something other than posts — but the only one whose
+rows are neither tags nor authors, and the only one a `{{#get}}` cannot fetch. The list is drawn by
+partials/recommendations.hbs, which the `{{recommendations}}` helper resolves by name; the layout
+picker is read there rather than here, for the reason that file records.
+
+`limit="100"` because the helper's own default is **5** (`parseOptions` in
+core/frontend/helpers/recommendations.js), which would quietly truncate any publication that
+recommends more than five — the same number Portal asks for.
+
+THE GUARD IS NOT REDUNDANT. `{{recommendations}}` returns nothing at all when the feature is off,
+so without `{{#if @site.recommendations_enabled}}` the heading and the section's padding would
+render around an empty page. Do not "simplify" it away. `{{#if}}`, not `{{#match}}` —
+`{{#match}}` is a comparison helper. --}}
 {{#post}}
-	<div class="container py-16" data-surface="page-recommendations">
-		{{#if @page.show_title_and_feature_image}}
-			<header class="mb-12">
-				<h1 class="font-display text-h1 text-text tracking-tight">{{title}}</h1>
-			</header>
-		{{/if}}
+	{{> "page-intro" eyebrow=(t "What we read") headingId="rec-title" padding="pt-16 pb-14" measure="max-w-[60ch]"}}
 
-		{{#if content}}
-			<div class="mirror-content measure mb-12">{{content}}</div>
-		{{/if}}
-
-		{{#if @site.recommendations_enabled}}
-			{{recommendations}}
-		{{else}}
+	{{#if @site.recommendations_enabled}}
+		{{recommendations limit="100"}}
+	{{else}}
+		<section class="container pt-14">
 			<p class="font-body text-muted">{{t "Recommendations are turned off for this publication."}}</p>
-		{{/if}}
-	</div>
+		</section>
+	{{/if}}
+
+	{{> "newsletter" anchor="recs-newsletter" pt="pt-20"}}
 {{/post}}

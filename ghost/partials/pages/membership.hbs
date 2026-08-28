@@ -1,21 +1,59 @@
-{{!-- Membership. Shared by page-membership.hbs and custom-membership.hbs.
+{{!-- Membership: the Surface that sells.
 
-Tiers, prices and the comparison table arrive with the Standing Pages ticket, where the
-prices must come from the publication's live tiers: stale prices are the worst failure mode
-in the theme, and {{monthly_price}} renders an integer in the currency's smallest unit, so
-every price goes through the {{price}} helper. Nothing here renders a price yet, precisely
-so that no fixture copy can be mistaken for one. --}}
+Shared by page-membership.hbs and custom-membership.hbs. The layout picker is
+`@custom.page_hero`, the same select About reads, and it decides the opener and nothing else.
+
+THE PRICES ARE THE PUBLICATION'S, NEVER THE FIXTURE'S — see membership/tiers.hbs, which is the
+whole reason this Surface exists in the port at all.
+
+WHAT THE DESIGN DRAWS THAT GHOST HAS NO FIELD FOR. The comparison matrix, the member quotes and
+the FAQ are all editor content here rather than theme markup, and each for its own reason:
+
+  - The matrix is benefit × tier. Ghost stores `benefits` as a list PER TIER and Handlebars can
+    neither union three lists nor test membership in one, so the matrix cannot be derived from
+    what the platform holds. A publication writes it as a table and the theme styles it —
+    `.mirror-content table` in assets/css/screen.css — inside a scroll container, so the tier in
+    the last column is reachable at every width rather than cropped off the page.
+  - The quotes are testimonials. There is no member-quote resource, and a theme that invented
+    three would be putting words in a reader's mouth.
+  - The FAQ is a Koenig toggle card, which is Ghost's own accordion: real markup, the platform's
+    JS, and something a buyer can edit. `card_assets` keeps toggle's assets for exactly this.
+
+The order follows the rule the About page sets: prose the publication wrote is one `{{content}}`
+block, and the sections the theme derives bracket it rather than interrupting it. The design
+interleaves them; a Ghost page has one body. Recorded as a Concession in DECISIONS.md. --}}
 {{#post}}
-	<article class="{{post_class}} container py-16" data-surface="page-membership">
-		{{#if @page.show_title_and_feature_image}}
-			<header class="mx-auto mb-10 max-w-[720px] text-center">
-				<p class="font-meta text-muted text-[12px] uppercase">{{t "Membership"}}</p>
-				<h1 class="font-display text-h1 text-text mt-3 tracking-tight">{{title}}</h1>
-			</header>
-		{{/if}}
+	{{#match @custom.page_hero "Split hero"}}
+		{{> "membership/hero-split" eyebrow=(t "Membership")}}
+	{{else}}
+		{{> "centered-intro" eyebrow=(t "Membership") headingId="mem-h" padding="pt-22 pb-14" titleSpacing="mt-6" titleClass="max-w-[20ch] text-[clamp(36px,5.2vw,64px)]" descriptionClass="text-lead mt-[22px] max-w-[52ch] leading-[1.55]"}}
+	{{/match}}
 
-		<div class="mirror-content measure mx-auto">
-			{{content}}
-		</div>
-	</article>
+	{{#match @custom.page_hero "Split hero"}}
+		{{> "membership/tiers" padding="pt-14"}}
+	{{else}}
+		{{> "membership/tiers"}}
+	{{/match}}
+
+	{{#if html}}
+		<section
+			aria-label="{{t "What's included"}}"
+			style="--container-max:1120px"
+			class="container pt-20">
+			{{!-- THE MATRIX MUST NEVER CROP ITS LAST COLUMN, which is the tier being sold. A table
+			stops shrinking at its min-content width — four columns of benefit labels is roughly
+			400px — so below the stacking width it pushes the page wider than the viewport and takes
+			the rightmost tier off the edge. The reference build swaps the table for labelled cards
+			there; a theme cannot restructure HTML it did not write, so the block scrolls instead
+			and every column stays reachable. `overflow-x` makes `overflow-y` compute to `auto`, so
+			the 4px of block padding is what keeps a focus ring inside a toggle card from being
+			clipped — the same trick the featured strip uses, and the negative margin gives the
+			space back. --}}
+			<div class="mirror-content -my-1 overflow-x-auto py-1">{{content}}</div>
+		</section>
+	{{/if}}
+
+	{{> "membership/locked"}}
+
+	{{> "newsletter" anchor="membership-newsletter" pt="pt-20"}}
 {{/post}}

@@ -1,0 +1,47 @@
+{{!-- A2, "split hero": the statement beside the page's photograph, ruled off below.
+
+	{{> "about/hero-split" eyebrow=(t "About")}}     called from inside {{#post}}
+
+	eyebrow   the theme's word for what kind of Surface this is
+
+The photograph is the page's own feature image, which is the only picture a Ghost page carries
+and exactly what the editor's title-and-feature-image toggle turns off — so the toggle owns this
+hero whole, the same as the centred one.
+
+`auto-fit` rather than two fixed tracks: a page with no feature image collapses to a single
+column of statement instead of leaving half the row empty, and below 320px per track the two
+stack on their own without a breakpoint.
+
+NOT `loading="lazy"`. This is the Surface's largest image and the first thing on the page — its
+LCP element — so deferring it would defer the paint the page is measured by. `decoding="async"`
+stays because the design source carries it, and the reference build's own capture, which is this
+Surface's Floor, was taken with it. --}}
+{{#if @page.show_title_and_feature_image}}
+	<section
+		aria-labelledby="a2-h"
+		class="border-border border-b">
+		<div class="container py-20">
+			<div class="grid grid-cols-[repeat(auto-fit,minmax(min(320px,100%),1fr))] items-center gap-14">
+				<div>
+					<p class="font-meta text-meta text-accent tracking-[0.16em] uppercase">{{eyebrow}}</p>
+
+					<h1
+						id="a2-h"
+						class="font-display tracking-display mt-6 max-w-[18ch] text-[clamp(36px,4.8vw,58px)] leading-[1.04] font-medium text-balance">{{title}}</h1>
+
+					{{#if excerpt}}
+						<p class="text-lead text-muted mt-[22px] max-w-[46ch] leading-[1.55] text-pretty">{{excerpt}}</p>
+					{{/if}}
+				</div>
+
+				{{#if feature_image}}
+					<img
+						src="{{img_url feature_image size="xl"}}"
+						{{#if feature_image_alt}}alt="{{feature_image_alt}}"{{else}}alt=""{{/if}}
+						decoding="async"
+						class="border-border block aspect-[4/3] w-full rounded-md border object-cover">
+				{{/if}}
+			</div>
+		</div>
+	</section>
+{{/if}}

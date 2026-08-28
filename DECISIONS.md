@@ -2418,3 +2418,179 @@ says the remainder is the platform rather than the port.
 
 `authors-02` and `author-single-02` were `skip`ped in the Surface map until this ticket; the run's
 pending count drops from 12 to 8.
+
+## The standing Pages: About, Membership, Recommendations (2026-08)
+
+Three Surfaces with no date in the reading order, each in both Layouts and both Modes. About and
+Membership share a new `@custom.page_hero` (centred statement or split hero); Recommendations
+follows `@custom.directory_layout` with the other two directories.
+
+### One body, and the rule for what goes around it
+
+The design interleaves prose and derived data on both of the long Pages. About puts the masthead
+BETWEEN the mission statement and "Get in touch"; Membership puts the paywall teasers between the
+comparison matrix and the member quotes. A Ghost page has exactly one `{{content}}`, and no
+template can split it.
+
+So the rule, applied twice: **prose the publication wrote is one `{{content}}` block, and the
+sections the theme derives bracket it rather than interrupt it.** About renders intro → figures →
+body → masthead; Membership renders hero → tiers → body → paywall teasers. Each moves one designed
+section past the prose. Recorded as a Concession, and it is the same shape of answer as the Feed's
+"the theme names its own Surface" — where the platform has one slot, the theme decides an order
+and says so.
+
+### Nothing on the Membership Surface is written down
+
+Tier names, descriptions, benefits and both prices come from `{{#get "tiers"}}`, and every amount
+goes through `{{price}}` — `monthly_price` is an integer in the currency's smallest unit, so
+printing `{{monthly_price}}` raw would advertise an $800 membership. Both price sets are rendered
+and Alpine swaps them, exactly as the reference build does: the Handlebars runs once, and
+`x-text` only chooses between two strings already on the page, so a reader with no JavaScript sees
+the monthly prices rather than an empty card.
+
+**The billing switch follows the tiers, not the Stripe flag.** The first version guarded it with
+`{{#if @site.paid_members_enabled}}`, which is false until Stripe is connected — and this install
+has three real tiers with the flag false, so the control that reveals the yearly prices was
+missing from every capture. The condition that actually matters is whether there is a second price
+to switch to, which is `{{#get "tiers" filter="type:paid" limit="1"}}`. Worth **0.5 of a point**
+on all four Membership captures, and worth considerably more to a publication that has written its
+plans and not yet plugged in payments.
+
+The free tier prints the theme's word rather than a formatted zero: a free tier carries no currency
+in Ghost, and `{{price 0}}` without one returns a bare `0` (`core/frontend/helpers/price.js`).
+
+Two claims in the design are arithmetic the platform will not do. The yearly note reads "Two months
+free · billed annually" and the yearly pill reads "−17%", both of which compare two prices;
+Handlebars has no arithmetic, and hardcoding either would print a discount a publication with
+different prices does not offer. The note reads "Billed annually" and the pill carries no
+percentage. Concession.
+
+### The comparison matrix cannot be derived, so the publication writes it
+
+Ghost stores `benefits` as a list PER TIER. The design's matrix is benefit × tier, which needs the
+union of three lists and a membership test per cell; Handlebars can do neither. So the matrix is
+editor content, styled by the `.mirror-content` layer — and so are the member quotes, which are
+testimonials with no resource behind them, and the FAQ, which is Ghost's own **toggle card**: real
+markup, the platform's accordion JS, and something a buyer can edit. `card_assets` keeps toggle's
+assets for exactly this.
+
+The ticket's requirement is that the matrix never crops the tier being sold, and the reference
+build meets it by swapping the table for labelled cards below the stacking width. A theme cannot
+restructure HTML it did not write, so the block scrolls instead. Measured at four widths on the
+running install: at 320, 360, 480 and 768px the document itself never overflows
+(`scrollWidth === clientWidth`), and at 320px — the only width where the table stops shrinking —
+the wrapper is scrollable and the Pro column is reachable. `overflow-x` makes `overflow-y` compute
+to `auto`, so the wrapper carries 4px of block padding and a matching negative margin to keep a
+focus ring inside a toggle card from being clipped; the same fix the featured strip needed.
+
+### What the editor's HTML keeps and what it drops
+
+Measured through a real import, HTML → Lexical → HTML:
+
+| written                                              | rendered                                              |
+| :--------------------------------------------------- | :---------------------------------------------------- |
+| `<div class="kg-callout-card kg-callout-card-grey">` | kept, classes intact — the design's accent rail draws |
+| `<div class="kg-toggle-card">` × 5                   | kept, with Ghost's accordion JS                       |
+| `<table>`                                            | kept, bare, no wrapper element                        |
+| `<blockquote class="kg-blockquote-alt">`             | class dropped — a plain quote                         |
+| `<blockquote>…<cite>who</cite></blockquote>`         | the `<cite>` is dropped                               |
+
+Two of those changed the fixture rather than the theme. The pull quote loses the design's centred
+display treatment and becomes the rail quote, which is a Concession. The attributions now ride
+inside the quote after an em dash, because losing the words is worse than losing the meta type
+they were set in.
+
+### `{{this.url}}`, and a link that looked right and went nowhere
+
+Every recommendation linked to `/`. `url` is a registered Ghost helper and Handlebars resolves a
+bare mustache as a helper before it looks at the context, so `{{url}}` returned the URL of the
+page being rendered rather than the recommendation's own. What made it survive a scored run is
+that the row still LOOKED correct: the visible address is `{{readable_url url}}`, where `url` is a
+helper ARGUMENT and therefore a plain path lookup — so the text read `marginalpress.com` while the
+href read `/`. `{{this.url}}` forces the context lookup.
+
+Worth knowing beyond this Surface: any resource that carries a property sharing a helper's name —
+`url`, `title`, `content`, `excerpt`, `date`, `tags`, `authors`, `price` — needs `this.` when the
+property is what is wanted.
+
+### The recommendations partial is the one place a partial reads `@custom`
+
+`{{recommendations}}` renders through `templates.execute('recommendations', …)`
+(`core/frontend/helpers/recommendations.js`), which resolves a theme partial named exactly
+`recommendations` ahead of Ghost's own. The helper takes no arguments through to it, and
+`recommendations` is not a `{{#get}}` resource — `RESOURCES` in `core/frontend/helpers/get.js`
+lists posts, tags, pages, authors, tiers and newsletters and nothing else — so there is no way to
+query the rows from a template and dispatch around them. The layout picker is therefore read
+inside the partial, which is a documented exception to this theme's rule rather than a lapse of
+it. The `@` frame survives because the helper builds its own with `createFrame(options.data)`.
+
+Its default `limit` is **5** (`parseOptions`), which would have truncated this publication's nine
+silently; the call passes `limit="100"`, the same number Portal's own recommendation modal asks
+for.
+
+Both actions on a recommendation reach a real destination. "Visit" is the publication's URL;
+"Subscribe" is `{{this.url}}#/portal/signup`, which is safe precisely where `one_click_subscribe`
+is true, because Ghost sets that flag by asking the recommended URL whether it is a Ghost site
+with members enabled. Every one of them carries `data-recommendation="{{id}}"`, which is what
+Portal binds its click tracker to (`setupRecommendationButtons` in portal 2.71, posting to
+`/members/api/recommendations/{id}/clicked/`).
+
+WHAT ONE-CLICK SUBSCRIBE ACTUALLY IS. Inside Portal's own recommendation modal, a signed-in Member
+subscribes to a recommended publication without leaving the page — Portal holds their email and
+posts it for them. That flow lives in Portal's React bundle and a theme cannot invoke it, so this
+button opens the other publication's signup with the reader's email still to type. Concession.
+
+### The About figures are counted, not written
+
+The design hardcodes four numbers. An About page that still says 104 posts a year later is worse
+than no figure, so each is a `limit="1"` query read for its pagination total, and "publishing
+since" is the oldest post's year. The writer count is staff accounts rather than published
+writers, for the reason the Feed's masthead line already records: `count.posts` is not filterable
+on authors in Ghost 6.
+
+The About body is the one piece of design prose that exists twice — as Astro components with a
+utility class on every element, and as the editor HTML a Ghost page stores. There is no single
+representation that serves both, so the second copy lives in `src/data/about.ts` beside the
+figures it belongs with, rather than in the fixture builder, and `src/data` stays the only place
+the demo publication is written down. Membership's body needs no second copy at all: it is derived
+from `COMPARE`, `QUOTES` and `FAQS` in `src/data/membership.ts`.
+
+### `{{#if content}}` is always false
+
+The About and Membership bodies rendered as nothing on the first try. `content` is a HELPER, not a
+property — the page's HTML is on `html` — so `{{#if content}}` tests a key that does not exist and
+takes the inverse branch every time. `{{#if html}}` is the guard. It is the same class of mistake
+as `{{url}}` above, from the same cause, found in the same hour.
+
+### What the run reports
+
+All twelve captures, against the Floors recorded for the reference build:
+
+| route                | mode  | layout |     Ghost | Floor |       gap |
+| :------------------- | :---- | :----- | --------: | ----: | --------: |
+| `recommendations-01` | light | A1     | **98.02** | 98.38 |     −0.36 |
+| `recommendations-01` | dark  | A1     | **97.35** | 98.42 |     −1.07 |
+| `recommendations-02` | light | A2     | **96.01** | 96.39 |     −0.38 |
+| `recommendations-02` | dark  | A2     | **95.33** | 96.48 |     −1.15 |
+| `about-01`           | light | A1     | **96.74** | 98.02 |     −1.28 |
+| `about-01`           | dark  | A1     | **96.00** | 98.12 |     −2.12 |
+| `about-02`           | light | A2     | **96.57** | 93.84 | **+2.73** |
+| `about-02`           | dark  | A2     | **95.88** | 94.06 | **+1.82** |
+| `membership-01`      | light | A1     | **92.73** | 97.95 |     −5.22 |
+| `membership-01`      | dark  | A1     | **92.63** | 98.05 |     −5.42 |
+| `membership-02`      | light | A2     | **92.69** | 97.94 |     −5.25 |
+| `membership-02`      | dark  | A2     | **92.38** | 98.05 |     −5.67 |
+
+`recommendations-01` moved from **31.46** to **98.02**: it had been rendering Ghost's own five-item
+list against a nine-row design. The two `about-02` rows are the first captures in this port to
+score ABOVE their Floor — the reference build's own A2 About scores 93.84 against that PNG, and
+the port scores 96.57, because the split hero reads the page's feature image where the reference
+build hardcodes a different crop.
+
+Membership carries the whole cost of the three concessions above: one body block where the design
+interleaves two, an editor's table where the design draws a matrix it can restyle, and a subscribe
+band whose copy is the publication's two settings rather than the design's per-Surface wording.
+Post-for-post and price-for-price the Surface matches; the gap is structural and named.
+
+`recommendations-02`, `about-02` and `membership-02` were `skip`ped in the Surface map until this
+ticket; the run's pending count drops from 8 to 2.

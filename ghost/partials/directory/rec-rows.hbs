@@ -1,0 +1,97 @@
+{{!-- A1, "editorial rows", on Recommendations: a row per publication.
+
+	{{> "directory/rec-rows"}}      from partials/recommendations.hbs, in the helper's context
+
+BOTH ACTIONS REACH A REAL DESTINATION. In the reference build they are inert, because there is
+nothing on the other end of a fictional publication; here "Visit" is the recommendation's own URL
+and "Subscribe" is that publication's Portal signup.
+
+`#/portal/signup` is a safe suffix precisely where `one_click_subscribe` is true: Ghost sets that
+flag by asking the recommended URL whether it is a Ghost site with members enabled, so the button
+only appears where a Portal exists to open.
+
+WHAT ONE-CLICK SUBSCRIBE ACTUALLY IS, AND WHY THIS IS NOT IT. Inside Portal's own recommendation
+modal a signed-in Member subscribes to a recommended publication without leaving the page —
+Portal holds the member's email and posts it for them. That flow lives in Portal's React bundle
+and a theme has no way to invoke it, so the button here opens the other publication's signup
+instead, with the reader's email still to type. Recorded as a Concession in DECISIONS.md.
+
+`data-recommendation="{{id}}"` is what makes the click count: Portal binds a listener to every
+`[data-recommendation]` element on the page and posts to
+`/members/api/recommendations/{id}/clicked/` (`setupRecommendationButtons` in portal 2.71,
+`core/server/web/members/app.js` for the endpoint). Without the attribute the publication's own
+recommendation stats stay at zero and nothing else breaks — which is exactly the kind of silent
+loss worth a comment.
+
+`target="_blank" rel="noopener"` matches Ghost's own template: a recommendation points off the
+publication, and the reader is mid-visit here.
+
+`{{this.url}}` AND NOT `{{url}}`. `url` is a registered Ghost helper, and Handlebars resolves a
+bare mustache as a helper before it looks at the context — so `{{url}}` here returns the URL of
+the page being rendered, and every recommendation linked to `/`. It cost a scored run to see,
+because the row still looked right: the visible address is `{{readable_url url}}`, where `url` is
+a helper ARGUMENT and therefore a plain path lookup, so the text said `marginalpress.com` while
+the href said `/`. `this.` forces the context lookup. --}}
+<section
+	id="recs"
+	aria-label="{{t "Recommended publications"}}"
+	style="--container-max:1120px"
+	class="border-border container border-t">
+	{{#foreach recommendations}}
+		<article
+			class="border-border max-stack:grid-cols-[minmax(0,1fr)] max-stack:gap-5 grid grid-cols-[44px_minmax(0,1fr)_auto] items-start gap-7 border-b py-[34px]">
+			{{#if favicon}}
+				<img
+					src="{{img_url favicon size="xs"}}"
+					alt=""
+					width="44"
+					height="44"
+					loading="lazy"
+					decoding="async"
+					class="border-border block h-11 w-11 rounded-sm border object-cover">
+			{{else}}
+				<span
+					aria-hidden="true"
+					class="border-border bg-surface-2 block h-11 w-11 rounded-sm border"></span>
+			{{/if}}
+
+			<div>
+				<h2 class="font-display tracking-heading text-[28px] leading-[1.18] font-medium">
+					<a
+						href="{{this.url}}"
+						data-recommendation="{{id}}"
+						target="_blank"
+						rel="noopener"
+						class="text-text no-underline">{{title}}</a>
+				</h2>
+
+				<p class="text-muted mt-2 font-mono text-[11.5px]">{{readable_url url}}</p>
+
+				{{#if description}}
+					<p class="text-body text-muted mt-3 max-w-[60ch] leading-[1.62] text-pretty">{{description}}</p>
+				{{/if}}
+			</div>
+
+			<div class="max-stack:items-start max-stack:flex-row max-stack:flex-wrap flex flex-col items-end gap-2">
+				{{#if one_click_subscribe}}
+					<a
+						href="{{this.url}}#/portal/signup"
+						data-recommendation="{{id}}"
+						target="_blank"
+						rel="noopener"
+						class="btn btn-primary font-ui rounded-sm border px-[18px] py-2.5 text-[13.5px] font-semibold whitespace-nowrap no-underline">{{t "Subscribe"}}</a>
+				{{/if}}
+
+				<a
+					href="{{this.url}}"
+					data-recommendation="{{id}}"
+					target="_blank"
+					rel="noopener"
+					class="border-border text-text font-ui rounded-sm border px-[18px] py-2.5 text-[13.5px] font-semibold whitespace-nowrap no-underline">{{t "Visit"}}
+					{{!-- Archivo carries no arrow glyph; the design source falls through to system-ui, so
+					it is pinned rather than left to the fallback chain. --}}
+					<span class="font-[system-ui,sans-serif]">&rarr;</span></a>
+			</div>
+		</article>
+	{{/foreach}}
+</section>

@@ -1,0 +1,58 @@
+{{!-- "By the numbers" — a hairline-ruled row of figures about the publication.
+
+	{{> "about/stats"}}                     A1's, where the centred hero already provides the space
+	{{> "about/stats" padding="pt-14"}}     A2's, under the ruled-off split hero
+
+	padding   the section's top padding
+
+EVERY FIGURE IS COUNTED, NOT WRITTEN. The design source hardcodes four numbers; a publication's
+About page that says 104 posts a year after it said 104 posts is worse than no figure at all. Each
+one is a `limit="1"` query read for its pagination total — asking for one row answers "how many
+are there" without loading them — and the year is the oldest post's, so "publishing since" moves
+when the archive does.
+
+THE WRITER COUNT IS STAFF ACCOUNTS, NOT PUBLISHED WRITERS, the same as the Feed's masthead line:
+`count.posts` is not filterable on authors in Ghost 6, and Handlebars cannot count the rows a
+loop's own guard kept. On a publication with an unpublished staff account this figure reads one
+higher than the masthead below it. Recorded as a concession in DECISIONS.md.
+
+The 1px grid gap over a border-coloured background is what draws the dividers, so the cells sit on
+`--surface` rather than carrying borders of their own — one rule instead of four, and no doubled
+line where two cells meet. --}}
+<section
+	aria-label="{{t "By the numbers"}}"
+	class="container {{#if padding}}{{padding}}{{/if}}">
+	<dl
+		class="border-border bg-border grid grid-cols-[repeat(auto-fit,minmax(min(160px,100%),1fr))] gap-px overflow-hidden rounded-md border">
+		{{#get "posts" limit="1" as |rows posts|}}
+			<div class="bg-surface px-6 py-[26px]">
+				<dt class="text-muted font-mono text-[10.5px] tracking-[0.1em] uppercase">{{t "Posts published"}}</dt>
+				<dd class="font-display tracking-display mt-2.5 text-4xl font-medium">{{posts.total}}</dd>
+			</div>
+		{{/get}}
+
+		{{#get "authors" limit="1" as |rows writers|}}
+			<div class="bg-surface px-6 py-[26px]">
+				<dt class="text-muted font-mono text-[10.5px] tracking-[0.1em] uppercase">{{t "Writers"}}</dt>
+				<dd class="font-display tracking-display mt-2.5 text-4xl font-medium">{{writers.total}}</dd>
+			</div>
+		{{/get}}
+
+		{{#get "tags" limit="1" as |rows subjects|}}
+			<div class="bg-surface px-6 py-[26px]">
+				<dt class="text-muted font-mono text-[10.5px] tracking-[0.1em] uppercase">{{t "Subjects"}}</dt>
+				<dd class="font-display tracking-display mt-2.5 text-4xl font-medium">{{subjects.total}}</dd>
+			</div>
+		{{/get}}
+
+		{{#get "posts" order="published_at asc" limit="1" as |oldest|}}
+			{{#if oldest}}
+				<div class="bg-surface px-6 py-[26px]">
+					<dt class="text-muted font-mono text-[10.5px] tracking-[0.1em] uppercase">{{t "Publishing since"}}</dt>
+					<dd
+						class="font-display tracking-display mt-2.5 text-4xl font-medium">{{date oldest.[0].published_at format="YYYY"}}</dd>
+				</div>
+			{{/if}}
+		{{/get}}
+	</dl>
+</section>

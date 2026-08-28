@@ -1,17 +1,44 @@
-{{!-- About. Shared by page-about.hbs and custom-about.hbs so no markup is duplicated.
-The split hero, the stats grid and the masthead arrive with the Standing Pages ticket;
-the derived counts there come from {{#get}} block-param totals, not from a fixture. --}}
-{{#post}}
-	<article class="{{post_class}} container py-16" data-surface="page-about">
-		{{#if @page.show_title_and_feature_image}}
-			<header class="measure mx-auto mb-10">
-				<p class="font-meta text-muted text-[12px] uppercase">{{t "About"}}</p>
-				<h1 class="font-display text-h1 text-text mt-3 tracking-tight">{{title}}</h1>
-			</header>
-		{{/if}}
+{{!-- About: the publication explaining itself.
 
-		<div class="mirror-content measure mx-auto">
-			{{content}}
-		</div>
-	</article>
+Shared by page-about.hbs and custom-about.hbs so no markup is duplicated.
+
+The layout picker is `@custom.page_hero`, which decides the opener and nothing else: the figures,
+the body, the masthead and the subscribe band are the same below either hero. That is the whole of
+what the design changes between A1 and A2 here.
+
+THE BODY IS THE PAGE'S, AND SO IS THE CLOSING NOTE. The design puts the masthead BETWEEN two
+blocks of prose — the mission statement above it and "Get in touch" below — and a Ghost page has
+exactly one body. Splitting `{{content}}` is not something a template can do, so the rule this
+theme follows elsewhere applies here too: prose the publication wrote is `{{content}}`, data the
+theme derives is a section, and the derived sections bracket the prose rather than interrupting
+it. The masthead therefore follows the whole body, including the closing note. Recorded as a
+Concession in DECISIONS.md.
+
+`mirror-content` is the scoped layer in assets/css/screen.css that restates the design's article
+typography for HTML the theme did not write — which is what puts the markers back on the body's
+lists and the underline back under its contact link, both of which Preflight strips. --}}
+{{#post}}
+	{{#match @custom.page_hero "Split hero"}}
+		{{> "about/hero-split" eyebrow=(t "About")}}
+	{{else}}
+		{{> "centered-intro" eyebrow=(t "About") headingId="a1-h"}}
+	{{/match}}
+
+	{{#match @custom.page_hero "Split hero"}}
+		{{> "about/stats" padding="pt-14"}}
+	{{else}}
+		{{> "about/stats"}}
+	{{/match}}
+
+	{{#if html}}
+		<section
+			aria-label="{{t "About this publication"}}"
+			class="container pt-18">
+			<div class="mirror-content measure mx-auto">{{content}}</div>
+		</section>
+	{{/if}}
+
+	{{> "about/team"}}
+
+	{{> "newsletter" anchor="about-newsletter" pt="pt-20"}}
 {{/post}}

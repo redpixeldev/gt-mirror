@@ -120,26 +120,41 @@
 		"layout": "A2",
 		"settings": { "feed_layout": "Three-column grid" }
 	},
-	{ "route": "recommendations-01", "surface": "page-recommendations", "layout": "A1" },
+	{
+		"route": "recommendations-01",
+		"surface": "page-recommendations",
+		"layout": "A1",
+		"settings": { "directory_layout": "Editorial rows" }
+	},
 	{
 		"route": "recommendations-02",
 		"surface": "page-recommendations",
 		"layout": "A2",
-		"skip": "no layout picker on Recommendations yet — the Standing Pages ticket adds one"
+		"settings": { "directory_layout": "Cover cards" }
 	},
-	{ "route": "about-01", "surface": "page-about", "layout": "A1" },
+	{
+		"route": "about-01",
+		"surface": "page-about",
+		"layout": "A1",
+		"settings": { "page_hero": "Centered statement" }
+	},
 	{
 		"route": "about-02",
 		"surface": "page-about",
 		"layout": "A2",
-		"skip": "no layout picker on About yet — the Standing Pages ticket adds one"
+		"settings": { "page_hero": "Split hero" }
 	},
-	{ "route": "membership-01", "surface": "page-membership", "layout": "A1" },
+	{
+		"route": "membership-01",
+		"surface": "page-membership",
+		"layout": "A1",
+		"settings": { "page_hero": "Centered statement" }
+	},
 	{
 		"route": "membership-02",
 		"surface": "page-membership",
 		"layout": "A2",
-		"skip": "no layout picker on Membership yet — the Standing Pages ticket adds one"
+		"settings": { "page_hero": "Split hero" }
 	},
 	{
 		"route": "sign-in",

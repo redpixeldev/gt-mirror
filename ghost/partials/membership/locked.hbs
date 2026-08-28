@@ -1,0 +1,62 @@
+{{!-- "Behind the paywall right now" — three teasers for posts a free reader cannot finish.
+
+	{{> "membership/locked"}}
+
+The strongest argument a membership page has is the writing it is holding back, and every one of
+these is a real post: `filter="visibility:-public"` is the whole query, so the section shows what
+is genuinely gated today rather than three titles a template remembered.
+
+`visibility`, never the deprecated `page`/`status` pair — the same rule post/gate.hbs follows. The
+chip prints Ghost's own word for the level through tier-chip.hbs, so a post open to a named list
+of tiers prints the list rather than a word the theme invented.
+
+`{{#if locked}}` and not the get's `{{else}}`: get calls `options.inverse` only for an invalid
+resource or an API error, so a publication that gates nothing would otherwise render a heading, a
+rule and 24px of padding around an empty grid. --}}
+{{#get "posts" filter="visibility:-public" limit="3" include="tags,authors" as |locked|}}
+	{{#if locked}}
+		<section
+			aria-labelledby="locked-h"
+			class="container pt-20">
+			<h2
+				id="locked-h"
+				class="font-ui text-muted border-border mb-6 border-b pb-3.5 text-xs font-semibold tracking-[0.16em] uppercase">{{t "Behind the paywall right now"}}</h2>
+
+			<div class="grid grid-cols-[repeat(auto-fill,minmax(min(280px,100%),1fr))] gap-6">
+				{{#foreach locked}}
+					<article class="{{post_class}} border-border bg-surface flex flex-col overflow-hidden rounded-md border">
+						<a
+							href="{{url}}"
+							class="text-text flex h-full flex-col no-underline">
+							{{#if feature_image}}
+								<img
+									src="{{img_url feature_image size="m"}}"
+									{{#if feature_image_alt}}alt="{{feature_image_alt}}"{{else}}alt=""{{/if}}
+									loading="lazy"
+									decoding="async"
+									class="border-border block aspect-video w-full border-b object-cover">
+							{{/if}}
+
+							<div class="flex flex-auto flex-col gap-2.5 p-5">
+								<div class="flex items-center gap-2.5">
+									{{#primary_tag}}
+										<span class="font-meta text-meta tracking-meta text-accent uppercase">{{name}}</span>
+									{{/primary_tag}}
+
+									{{> "tier-chip"}}
+								</div>
+
+								<h3 class="font-display tracking-heading text-[19px] leading-[1.26] font-medium">{{title}}</h3>
+
+								<p class="font-meta text-meta tracking-meta text-muted mt-auto uppercase">
+									{{~#if authors}}{{> "byline"}}<span aria-hidden="true"> · </span>{{/if~}}
+									{{> "dateline"}}
+								</p>
+							</div>
+						</a>
+					</article>
+				{{/foreach}}
+			</div>
+		</section>
+	{{/if}}
+{{/get}}
