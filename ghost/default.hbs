@@ -30,23 +30,18 @@
 	the visitor's stored choice > the publication's default_appearance setting. --}}
 	<script>
 		(function () {
+			var stored;
 			try {
-				var forced = new URLSearchParams(window.location.search).get('mode');
-				var stored = window.localStorage.getItem('mirror-mode');
-				var fallback = '{{@custom.default_appearance}}';
-				var dark = forced
-					? forced === 'dark'
-					: stored
-						? stored === 'dark'
-						: fallback === 'Dark'
-							? true
-							: fallback === 'Light'
-								? false
-								: window.matchMedia('(prefers-color-scheme: dark)').matches;
-				document.documentElement.classList.toggle('dark', dark);
+				stored = window.localStorage.getItem('mirror-mode');
 			} catch (e) {
-				/* private mode or storage disabled — the Light default stands */
+				/* private mode or storage disabled — the setting stands */
 			}
+			var preference = new URLSearchParams(window.location.search).get('mode')
+				|| stored
+				|| '{{@custom.default_appearance}}'.toLowerCase();
+			document.documentElement.classList.toggle('dark', preference === 'system'
+				? window.matchMedia('(prefers-color-scheme: dark)').matches
+				: preference === 'dark');
 		})();
 	</script>
 

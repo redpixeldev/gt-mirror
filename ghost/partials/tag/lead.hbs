@@ -5,8 +5,8 @@
 	tagName   the subject, for the eyebrow — "Latest in Interviews"
 
 Only the A1 layout draws it, and only where the eyebrow is true: on page 2 of the archive the
-first row is not the latest anything, so tag/a1.hbs sends every row through archive/row.hbs
-there instead.
+first row is not the latest anything, so tag/a1.hbs sends every row through
+archive/list-row.hbs there instead.
 
 `aspect-video` and no `loading="lazy"`: this is the Surface's largest image and the first thing
 below the masthead, so it is the LCP element on every tag archive and must not be deferred. The

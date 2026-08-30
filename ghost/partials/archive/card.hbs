@@ -9,9 +9,10 @@
 	titleClass       headline size — 24px on the tag archive, 22px on the author's
 	excerptSpacing   space above the excerpt — 12px on the tag archive, 10px on the author's
 
-The card half of archive/row.hbs, and the same trade: on a tag archive the date leads and the
-writer signs off, on an author archive the tag leads and the date signs off. See that file for
-why the two Surfaces share one drawing.
+The Grid layout's row, shared by the tag archive and a writer's archive: on a tag archive the date
+leads and the writer signs off, on an author archive the tag leads and the date signs off, so one
+drawing serves both. Its List counterpart is `archive/list-row.hbs`, which takes no arguments at
+all — this one keeps its four because the design draws the two Surfaces' cards at different sizes.
 
 A post with no feature image starts at the eyebrow, which is what the Feed's grid and the
 related-reading strip already do — a placeholder panel in a post grid would be the theme

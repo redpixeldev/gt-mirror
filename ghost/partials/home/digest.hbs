@@ -3,12 +3,19 @@
 	{{> "home/digest" feed=feed}}
 
 The slices are the same shared query A1 reads, taken with {{#foreach}}'s 1-based inclusive
-`from`/`to`: position 1 is the masthead lead, 2–4 are the shortlist, 5–12 the grid.
+`from`/`to`: position 1 is the masthead lead, 2–5 are the shortlist, 6–14 the grid.
+
+FOUR IN THE SHORTLIST AND NINE IN THE GRID, so this layout draws all fourteen of the window. The
+design draws three and eight — twelve — and a layout that draws less than the window leaves the
+posts it skips on no page at all, which is the hole home/window.hbs records. The shortlist is a
+vertical list, so a fourth row costs the drawing nothing; the grid is three fixed tracks from
+`lg` for the same reason A1's is, and nine fills them — see home/latest.hbs for why the
+breakpoint is `lg` rather than `stack`.
 
 The rank is `@number`, which {{#foreach}} sets to the item's absolute position in the query
-rather than to its index within the slice — so the shortlist is numbered 02, 03, 04 as the design
-draws it, not 01, 02, 03. The zero-padding is a comparison rather than a helper: Handlebars has
-no string padding and Ghost ships none, and `< 10` is the whole rule. --}}
+rather than to its index within the slice — so the shortlist is numbered 02, 03, 04, 05 as the
+design numbers its own, not 01, 02, 03, 04. The zero-padding is a comparison rather than a
+helper: Handlebars has no string padding and Ghost ships none, and `< 10` is the whole rule. --}}
 <section
 	id="latest"
 	aria-labelledby="a2-latest"
@@ -18,7 +25,7 @@ no string padding and Ghost ships none, and `< 10` is the whole rule. --}}
 		class="font-ui text-muted mb-2 text-xs font-semibold tracking-[0.16em] uppercase">{{t "More from this week"}}</h2>
 
 	<div class="flex flex-col">
-		{{#foreach feed from="2" to="4"}}
+		{{#foreach feed from="2" to="5"}}
 			<article
 				class="{{post_class}} border-border max-stack:grid-cols-[40px_minmax(0,1fr)] max-stack:gap-4 grid grid-cols-[64px_minmax(0,1fr)_auto] items-baseline gap-7 border-t py-[30px]">
 				<span class="text-muted font-mono text-xs">{{#match @number "<" 10}}0{{/match}}{{@number}}</span>
@@ -47,9 +54,8 @@ no string padding and Ghost ships none, and `< 10` is the whole rule. --}}
 		{{> "tag-strip" wide=true}}
 	</div>
 
-	<div
-		class="border-border mt-11 grid grid-cols-[repeat(auto-fill,minmax(min(300px,100%),1fr))] gap-x-9 gap-y-10 border-t pt-11">
-		{{#foreach feed from="5" to="12"}}
+	<div class="border-border mt-11 grid grid-cols-1 gap-x-9 gap-y-10 border-t pt-11 lg:grid-cols-3">
+		{{#foreach feed from="6" to="14"}}
 			<article class="{{post_class}}">
 				<a
 					href="{{url}}"

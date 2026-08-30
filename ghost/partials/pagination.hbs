@@ -3,12 +3,20 @@ ships: `{{pagination}}` resolves the partial by that name and the theme's copy w
 
 	{{pagination pt="pt-14"}}    the homepage's, directly below the article grid
 	{{pagination pt="pt-12"}}    the Feed's, directly below the list or grid
+	{{pagination bare=true}}     inside a column that is already inside a `container`
 
-	pt    the section's top padding — the two Surfaces sit the control at different heights
+	pt      the section's top padding — the two Surfaces sit the control at different heights
+	bare    drop the `container`, keeping the control's own width and centring
 
 The wrapper is inside this partial rather than at the call site so a publication with one page
 of posts gets no empty band: there is nothing to move to, so neither the control nor its
 padding renders. The design source always draws it because its demo has exactly one page.
+
+`bare` exists for the writer's archive in the Grid layout, where the posts are the second track
+of a `280px + 1fr` grid: a page-level control centres on the PAGE, which puts it 100px left of
+the column it belongs to, under the rail. Nested `container`s do not compose — the inner one
+would re-pad and re-centre inside the column — so the class comes off rather than a second
+wrapper going on. The nav's own `justify-center` then centres it in whatever box it is given.
 
 WHICH NUMBERS APPEAR, AND WHY IT IS NOT THE DESIGN'S FIVE. Ghost's pagination context carries
 `page`, `pages`, `prev`, `next`, `total` and `limit`, and Handlebars has no arithmetic — Ghost
@@ -27,7 +35,7 @@ link to nowhere. --}}
 {{#match pages ">" 1}}
 	<section
 		aria-label="{{t "Pagination"}}"
-		class="container {{#if pt}}{{pt}}{{else}}pt-12{{/if}}">
+		class="{{#unless bare}}container {{/unless}}{{#if pt}}{{pt}}{{else}}pt-12{{/if}}">
 		<nav
 			aria-label="{{t "Pagination"}}"
 			class="flex flex-wrap items-center justify-center gap-2">

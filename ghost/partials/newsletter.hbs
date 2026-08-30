@@ -14,7 +14,12 @@ serve the footer's column — see partials/chrome/footer.hbs for what portal 2.7
 
 The copy is the publication's, from two theme settings rather than from this file, because a
 buyer changing the promise on their subscribe block should not have to edit a template. It
-renders only where members exist. --}}
+renders only where members exist.
+
+The heading is `text-accent-ink` — the accent mixed into the page's text colour, defined in
+assets/css/screen.css. The design sets this line in the same near-black it sets an article in,
+which is the one thing on the panel that does not belong to the accent it is tinted with. The ink
+is not the accent itself: at this size, in this face, the accent alone reads as a link. --}}
 {{#if @site.members_enabled}}
 	<section
 		{{#if anchor}}id="{{anchor}}"{{/if}}
@@ -27,7 +32,7 @@ renders only where members exist. --}}
 
 				<h2
 					id="newsletter-head"
-					class="font-display text-h2 tracking-heading mt-3.5 max-w-[24ch] leading-[1.15] font-medium text-balance">{{@custom.newsletter_heading}}</h2>
+					class="font-display text-h2 tracking-heading text-accent-ink mt-3.5 max-w-[24ch] leading-[1.15] font-medium text-balance">{{@custom.newsletter_heading}}</h2>
 
 				<p class="text-small text-muted-on-soft mt-3.5 max-w-[52ch] leading-[1.6]">{{@custom.newsletter_text}}</p>
 			</div>

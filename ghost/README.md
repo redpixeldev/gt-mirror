@@ -23,7 +23,7 @@ Everything below lives in **Settings → Design & branding**, under the theme's 
 | **Default appearance** | Light · Dark · System               | The mode a first-time visitor sees. Their own choice always wins.          |
 | **Dark mode logo**     | An image                            | Your logo, redrawn in light ink, for the dark Mode.                        |
 | **Homepage layout**    | Magazine cover · Editorial masthead | A cover story over a grid, or your masthead over a ranked list.            |
-| **Feed layout**        | Two-column list · Three-column grid | A wide row per post, or a grid of cards. Also the tag and writer archives. |
+| **Feed layout**        | List · Grid                         | A wide row per post, or a grid of cards. Also the tag and writer archives. |
 | **Directory layout**   | Editorial rows · Cover cards        | A row per subject, or a grid of cards with cover photos.                   |
 | **Post layout**        | Centered classic · Title page       | Cover photo over centred titling, or a title page with a sticky side rail. |
 | **Page hero**          | Centered statement · Split hero     | Opener for About and Membership, and for the error page.                   |
@@ -42,9 +42,8 @@ More settings arrive with the layouts they control; each one is documented here 
 - **Nothing on the front page is a list you maintain.** The cover story is simply your newest
   post, the strip is every post you marked **featured**, and the grid is what follows. Publishing
   moves all of them; there is no ordering to keep in step by hand.
-- **Feed layout** picks between the two designed archives. _Two-column list_ gives each post a
-  wide row with a thumbnail, an excerpt and the writer's face; _Three-column grid_ gives each one
-  a card.
+- **Feed layout** picks between the two designed archives. _List_ gives each post a wide row with
+  a thumbnail, an excerpt and the writer's face; _Grid_ gives each one a card.
 - **The tag row above the feed** shows your seven busiest subjects, with the number of posts under
   each, and every pill is a link to that subject's own archive. The one you are on is filled.
 - **How many posts a page holds** is `posts_per_page` in this theme, and it ships at 18. Ghost
@@ -76,9 +75,9 @@ More settings arrive with the layouts they control; each one is documented here 
 ### Subjects
 
 - **A tag's archive** — `/tag/{slug}/` — is your feed filtered to one subject, and it follows
-  **Feed layout**: _Two-column list_ gives it a lead story over compact rows, _Three-column
-  grid_ gives every post an equal card. The lead only appears on page 1, because on page 2 it
-  would not be the latest anything.
+  **Feed layout**: _List_ gives it a lead story over compact rows, _Grid_ gives every post an
+  equal card. The lead only appears on page 1, because on page 2 it would not be the latest
+  anything.
 - The archive's masthead prints the tag's **name**, its **description** and its **post count**,
   followed by the years it spans — read from the tag's oldest and newest posts, so a subject
   published in one year prints that year rather than a range of it to itself.
@@ -98,10 +97,10 @@ More settings arrive with the layouts they control; each one is documented here 
 
 ### Writers
 
-- **A writer's archive** — `/author/{slug}/` — follows **Feed layout** too: _Two-column list_
-  puts a centred profile above compact rows, _Three-column grid_ moves the profile into a rail
-  beside a grid of cards. The rail stops being sticky once the page stacks, so nothing scrolls
-  through the portrait on a phone.
+- **A writer's archive** — `/author/{slug}/` — follows **Feed layout** too: _List_ puts a centred
+  profile above compact rows, _Grid_ moves the profile into a rail beside a grid of cards. The
+  rail stops being sticky once the page stacks, so nothing scrolls through the portrait on a
+  phone.
 - **The masthead** is a page of your own — the demo calls it `/authors/`, and any page can use
   the layout by picking **Authors** in the page settings menu. It lists every writer who has
   published, most prolific first, and follows **Directory layout**.
@@ -159,9 +158,9 @@ More settings arrive with the layouts they control; each one is documented here 
   secondary menu to put it in the footer.
 - Below 1200px the header collapses to a menu button, and the panel it opens carries search,
   the whole menu and the subscribe button.
-- **Search is Ghost's own.** The ⌕ button opens the platform's search, and `⌘K` works on every
-  page except sign-in and sign-up, which carry no search control. Nothing about the search
-  index lives in this theme.
+- **Search is Ghost's own.** The ⌕ button in the header opens the platform's search on every page
+  except sign-in and sign-up, which carry no chrome at all, and `⌘K` works wherever the button
+  does. Nothing about the search index lives in this theme.
 - The header's button follows your membership settings: **Subscribe** normally, **Sign in**
   while signups are invite-only, **Account** for a signed-in member, and nothing at all if
   memberships are off.

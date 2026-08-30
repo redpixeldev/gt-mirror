@@ -30,8 +30,10 @@ const { post, href = postHref(post.locked), headingId = 'a1-lead' } = Astro.prop
 		</div>
 
 		{/* Text colours are literal white here, not theme tokens — the scrim is dark in both themes. */}
-		<div class='absolute inset-x-0 bottom-0 px-5 pb-14 md:px-8'>
-			<div class='mx-auto max-w-[var(--container-max,1240px)]'>
+		<div class='absolute inset-x-0 bottom-0 pb-14'>
+			{/* `container`, not a bare max-w: the utility's own padding-inline is what puts the
+			    titling on the same line as every section below the cover. */}
+			<div class='container'>
 				<div class='flex items-center gap-3.5'>
 					<a
 						href={href}

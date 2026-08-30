@@ -6,11 +6,16 @@ The same first row of the same query A1 leads with — the difference between th
 the drawing, never the data.
 
 The face is the writer's, at 32px, drawn by post/avatar.hbs so a publication whose writers
-uploaded photos gets photos here as it does everywhere else. --}}
+uploaded photos gets photos here as it does everywhere else.
+
+NO RULE UNDER IT. The design closes this block with a border, which lands 24px above the rule
+home/digest.hbs already draws over its own heading — two hairlines, one gap apart, neither
+separating anything the other does not. The section keeps its bottom margin, so the spacing is
+unchanged. --}}
 {{#foreach feed limit="1"}}
 	<section
 		aria-labelledby="a2-lead"
-		class="border-border container border-b pt-20 text-center">
+		class="container pt-20 text-center">
 		<p class="font-meta text-meta text-muted tracking-[0.16em] uppercase">
 			{{~#primary_tag}}{{name}}<span aria-hidden="true"> · </span>{{/primary_tag~}}
 			{{date format="DD MMM YYYY"}}

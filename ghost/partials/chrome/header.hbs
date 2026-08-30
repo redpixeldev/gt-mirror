@@ -1,4 +1,4 @@
-{{!-- The bar every Surface wears, in the three shapes the design draws.
+{{!-- The bar every Surface wears, in the two shapes this theme draws.
 
 Which shape a Surface gets is named at the call site, in the template, because the shape is a
 property of the Surface and the Surface is the template — see the route map in DECISIONS.md.
@@ -6,22 +6,25 @@ It is not sniffed from the render context: a Surface's context depends on the bu
 routes.yaml (this install's Feed reports `archive`, a bare install's reports `index`) and an
 error page reports no context at all, so context is the one thing that cannot name a Surface.
 
-	{{> "chrome/header"}}                 the listing bar: nav, search, Mode, Subscribe
-	{{> "chrome/header" compact=true}}    the reading bar: shorter, no search control
+	{{> "chrome/header"}}                 the site bar: mark, nav, search, Mode, Subscribe
 	{{> "chrome/header" auth=true}}       the members bar: mark, a way back, Mode
+
+ONE BAR ON EVERY READING SURFACE, WHICH IS A DIVERGENCE. The design draws two: this one on the
+homepage and the Feed, and a "reading bar" — 2px smaller in both the mark and the wordmark, and
+with no ⌕ — on the post, the archives, the Pages and the error Surfaces. Read one page at a time
+that reads as a missing search control rather than as a quieter chrome, and the publication's only
+visible way into search existed on two Surfaces out of twenty-seven. The `compact` parameter is
+gone rather than defaulted, so there is no second shape to drift.
 
 Order inside the bar is fixed by the design: mark · nav · search · Mode · Subscribe · menu.
 
 Search hands off to Ghost. The platform ships its own search — index, popup, keyboard — and
 sodo-search binds to any element carrying `data-ghost-search`, so the design's ⌕ button is
-that element and this theme writes no search code at all. Two measured details decide where
-the attribute goes (sodo-search 1.8, `getCustomTriggerButtons`/`addKeyboardShortcuts`):
-
-- the ⌘K shortcut is registered *only* if the page carries at least one trigger, so a
-  Surface with no visible search control still needs one in its markup;
-- the overlay below the nav breakpoint carries a trigger of its own, and it is in the DOM on
-  every Surface even when the viewport is wide enough to hide it. That is what keeps ⌘K live
-  on the reading bar, where the design draws no ⌕ at all.
+that element and this theme writes no search code at all. Two measured details from sodo-search
+1.8 (`getCustomTriggerButtons`/`addKeyboardShortcuts`) are why the attribute is on a real
+control rather than on something hidden: the ⌘K shortcut is registered only if the page carries
+at least one trigger, and the below-breakpoint overlay carries one of its own on every Surface.
+With the ⌕ now everywhere, the shortcut and the button agree everywhere too.
 
 The Mode switch renders once, here, on every shape. The reference build learned that the
 hard way: a floating toggle placed per page turned into 22 copies. --}}
@@ -36,7 +39,7 @@ hard way: a floating toggle placed per page turned into 22 copies. --}}
 
 	<div
 		{{#unless auth}}x-ref="bar"{{/unless}}
-		class="container flex flex-wrap items-center gap-y-4 {{#if auth}}gap-x-6 py-[18px]{{else}}gap-x-[30px] {{#if compact}}py-5{{else}}py-[22px]{{/if}}{{/if}}">
+		class="container flex flex-wrap items-center gap-y-4 {{#if auth}}gap-x-6 py-[18px]{{else}}gap-x-[30px] py-[22px]{{/if}}">
 
 		{{#if auth}}
 			{{> "chrome/wordmark" wrapper="mr-auto" logoHeight="h-4" titleSize="text-[22px]"}}
@@ -48,27 +51,34 @@ hard way: a floating toggle placed per page turned into 22 copies. --}}
 			{{> "chrome/mode-toggle"}}
 		{{else}}
 			{{!-- Below the nav breakpoint the nav is gone, so the mark takes over pushing the
-			remaining controls to the right edge. Both branches spell their classes out: a class
-			assembled at render time is a class Tailwind's scanner never sees in the source. --}}
-			{{#if compact}}
-				{{> "chrome/wordmark" wrapper="max-nav:mr-auto" logoHeight="h-[17px]" titleSize="text-[24px]"}}
-			{{else}}
-				{{> "chrome/wordmark" wrapper="max-nav:mr-auto" logoHeight="h-[19px]" titleSize="text-[26px]"}}
-			{{/if}}
+			remaining controls to the right edge. --}}
+			{{> "chrome/wordmark" wrapper="max-nav:mr-auto" logoHeight="h-[19px]" titleSize="text-[26px]"}}
 
 			<nav
 				aria-label="{{t "Main navigation"}}"
 				class="nav:flex mr-auto hidden flex-wrap items-center gap-[22px]">{{navigation variant="bar"}}</nav>
 
-			{{#unless compact}}
-				<button
-					type="button"
-					aria-label="{{t "Search"}}"
-					data-ghost-search
-					class="btn border-border text-text hover:bg-surface-2 rounded-pill max-nav:hidden grid size-9 shrink-0 cursor-pointer place-items-center border bg-transparent font-mono text-sm">
-					<span aria-hidden="true">⌕</span>
-				</button>
-			{{/unless}}
+			{{!-- An inline SVG rather than the ⌕ glyph: U+2315 draws at roughly half its em
+			box, so inside a 36px pill it reads as a speck, and how big a speck depends on
+			whichever mono font the visitor's system resolves. 18px of `currentColor` is the
+			same mark in both Modes at every font stack. --}}
+			<button
+				type="button"
+				aria-label="{{t "Search"}}"
+				data-ghost-search
+				class="btn border-border text-text hover:bg-surface-2 rounded-pill max-nav:hidden grid size-9 shrink-0 cursor-pointer place-items-center border bg-transparent">
+				<svg
+					aria-hidden="true"
+					viewBox="0 0 24 24"
+					fill="none"
+					stroke="currentColor"
+					stroke-width="1.9"
+					stroke-linecap="round"
+					class="block size-[18px]">
+					<circle cx="10.5" cy="10.5" r="6.5"></circle>
+					<line x1="15.4" y1="15.4" x2="20" y2="20"></line>
+				</svg>
+			</button>
 
 			{{> "chrome/mode-toggle"}}
 

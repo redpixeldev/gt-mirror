@@ -93,7 +93,7 @@
 		"path": "/archive/",
 		"status": 200,
 		"settings": {
-			"feed_layout": "Two-column list"
+			"feed_layout": "List"
 		},
 		"build": ".shots/ghost/ghost-blog-01-light.png",
 		"ref": "03-blog-A1-light.png",
@@ -108,7 +108,7 @@
 		"path": "/archive/",
 		"status": 200,
 		"settings": {
-			"feed_layout": "Two-column list"
+			"feed_layout": "List"
 		},
 		"build": ".shots/ghost/ghost-blog-01-dark.png",
 		"ref": "03-blog-A1-dark.png",
@@ -123,7 +123,7 @@
 		"path": "/archive/",
 		"status": 200,
 		"settings": {
-			"feed_layout": "Three-column grid"
+			"feed_layout": "Grid"
 		},
 		"build": ".shots/ghost/ghost-blog-02-light.png",
 		"ref": "03-blog-A2-light.png",
@@ -138,7 +138,7 @@
 		"path": "/archive/",
 		"status": 200,
 		"settings": {
-			"feed_layout": "Three-column grid"
+			"feed_layout": "Grid"
 		},
 		"build": ".shots/ghost/ghost-blog-02-dark.png",
 		"ref": "03-blog-A2-dark.png",
@@ -393,7 +393,7 @@
 		"path": "/tag/interviews/",
 		"status": 200,
 		"settings": {
-			"feed_layout": "Two-column list"
+			"feed_layout": "List"
 		},
 		"build": ".shots/ghost/ghost-tags-single-01-light.png",
 		"ref": "07-tag-archive-A1-light.png",
@@ -408,7 +408,7 @@
 		"path": "/tag/interviews/",
 		"status": 200,
 		"settings": {
-			"feed_layout": "Two-column list"
+			"feed_layout": "List"
 		},
 		"build": ".shots/ghost/ghost-tags-single-01-dark.png",
 		"ref": "07-tag-archive-A1-dark.png",
@@ -423,7 +423,7 @@
 		"path": "/tag/interviews/",
 		"status": 200,
 		"settings": {
-			"feed_layout": "Three-column grid"
+			"feed_layout": "Grid"
 		},
 		"build": ".shots/ghost/ghost-tags-single-02-light.png",
 		"ref": "07-tag-archive-A2-light.png",
@@ -438,7 +438,7 @@
 		"path": "/tag/interviews/",
 		"status": 200,
 		"settings": {
-			"feed_layout": "Three-column grid"
+			"feed_layout": "Grid"
 		},
 		"build": ".shots/ghost/ghost-tags-single-02-dark.png",
 		"ref": "07-tag-archive-A2-dark.png",
@@ -513,7 +513,7 @@
 		"path": "/author/marisol-ade/",
 		"status": 200,
 		"settings": {
-			"feed_layout": "Two-column list"
+			"feed_layout": "List"
 		},
 		"build": ".shots/ghost/ghost-author-single-01-light.png",
 		"ref": "09-author-A1-light.png",
@@ -528,7 +528,7 @@
 		"path": "/author/marisol-ade/",
 		"status": 200,
 		"settings": {
-			"feed_layout": "Two-column list"
+			"feed_layout": "List"
 		},
 		"build": ".shots/ghost/ghost-author-single-01-dark.png",
 		"ref": "09-author-A1-dark.png",
@@ -543,7 +543,7 @@
 		"path": "/author/marisol-ade/",
 		"status": 200,
 		"settings": {
-			"feed_layout": "Three-column grid"
+			"feed_layout": "Grid"
 		},
 		"build": ".shots/ghost/ghost-author-single-02-light.png",
 		"ref": "09-author-A2-light.png",
@@ -558,7 +558,7 @@
 		"path": "/author/marisol-ade/",
 		"status": 200,
 		"settings": {
-			"feed_layout": "Three-column grid"
+			"feed_layout": "Grid"
 		},
 		"build": ".shots/ghost/ghost-author-single-02-dark.png",
 		"ref": "09-author-A2-dark.png",

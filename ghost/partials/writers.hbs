@@ -8,19 +8,24 @@
 
 Ten at most, ordered by post count. The design draws every writer because its demo publication
 has five; a real masthead has no bound, and the Authors Directory is the Surface that lists all
-of them. The grid auto-fills, so any number between one and ten fills its rows.
+of them. The grid auto-fills, so any number between two and ten fills its rows.
 
 The face is post/avatar.hbs, the same drawing the reading Surface uses: a writer who uploaded a
 photo gets the photo, and the tinted initial is the fallback. The design draws a two-letter
 monogram everywhere; that gap is one concession, recorded once, and not re-decided here.
 
-A STAFF ACCOUNT IS NOT YET A WRITER. Every staff user is an "author" to Ghost, so an owner or
-an editor who has not published renders as a chip reading "No posts" — on this install that was
-a sixth chip beside the design's five. The guard is in the loop rather than in the query
-because count.posts is NOT filterable on authors in Ghost 6: `filter="count.posts:>0"` returns
-an empty set and `filter="posts.count:>0"` fails the query outright. Ordering by count.posts
-descending means the first row carries the highest count, so testing that one is enough to know
-whether anybody has published at all — the same shape partials/pages/authors.hbs uses.
+A STAFF ACCOUNT IS NOT YET A WRITER, AND ONE WRITER IS NOT A MASTHEAD. Every staff user is an
+"author" to Ghost, so an owner or an editor who has not published renders as a chip reading "No
+posts" — on this install that was a sixth chip beside the design's five. And a publication with a
+single writer has no masthead to draw: one chip under the word "Writers" states what every byline
+on the page already said, so the whole section is withheld until there are two.
+
+Both tests are `writers.[N].count.posts` rather than a filter or a count, because count.posts is
+NOT filterable on authors in Ghost 6: `filter="count.posts:>0"` returns an empty set and
+`filter="posts.count:>0"` fails the query outright, and Handlebars cannot compare a total to 2.
+Ordering by count.posts descending is what makes an index enough: the SECOND row carries the
+second-highest count, so if it has published then at least two writers have. The per-chip guard in
+the loop stays — it is what drops the seventh staff account from a strip of six writers.
 
 `../anchor` and `../headingId`, not the bare names: {{#get}} renders its block with the query's
 response as the context, so a partial argument passed to THIS partial is one frame up from inside
@@ -28,7 +33,7 @@ the block. Read bare they are undefined and the section ships `id=""` and an `ar
 pointing at nothing — a region landmark with no accessible name, and the anchor a link on the same
 page is supposed to reach. --}}
 {{#get "authors" include="count.posts" order="count.posts desc" limit="10" as |writers|}}
-	{{#if writers.[0].count.posts}}
+	{{#if writers.[1].count.posts}}
 		<section
 			id="{{../anchor}}"
 			aria-labelledby="{{../headingId}}"

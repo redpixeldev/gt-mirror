@@ -34,15 +34,27 @@ async function html(path) {
 /*
  * Read off the feed's own pagination rather than the API: pagination.total is what the theme's
  * templates and the About page's derived counts actually see.
+ *
+ * BOTH PATTERNS HERE USED TO BE WRITTEN AGAINST MARKUP THIS THEME DOES NOT EMIT, so the check
+ * counted zero posts across zero pages and failed with a number that looked like a broken import:
+ *
+ *   - "Page 1 of 6" is Casper's pagination. This theme draws numbered pills, and the elided
+ *     control always renders the LAST page as a link (`1 2 … 6`), so the highest
+ *     `/archive/page/N/` in the document IS the page count. One page renders no such link, hence
+ *     the floor of 1.
+ *   - `<article class="post` assumed the class sits on the same line as the tag. Prettier breaks
+ *     a multi-attribute tag across lines, so the class is on the NEXT one. Counting `<article`
+ *     alone is enough: on this Surface every article is a post, and the assertion is the total.
  */
 const feed = await html('/archive/');
-const pages = Number(feed.match(/Page 1 of (\d+)/)?.[1] ?? 0);
+const pageLinks = [...feed.matchAll(/\/archive\/page\/(\d+)\//g)].map((match) => Number(match[1]));
+const pages = Math.max(1, ...pageLinks);
 const perPage = 18;
 
 let counted = 0;
 for (let page = 1; page <= pages; page += 1) {
 	const body = page === 1 ? feed : await html(`/archive/page/${page}/`);
-	counted += (body.match(/<article class="post/g) ?? []).length;
+	counted += (body.match(/<article\b/g) ?? []).length;
 }
 
 if (counted !== fixture.posts.length) {
@@ -55,23 +67,34 @@ note(`posts      ${counted} across ${pages} pages of ${perPage}`);
 const tagsPage = await html('/tags/');
 const authorsPage = await html('/authors/');
 /**
- * Directory rows, parsed one <li> at a time.
+ * Directory rows, parsed one `<article>` at a time.
  *
  * Not one regex over the whole page: the header's site-title link carries the identical class list
  * to a directory row's link (`font-display text-h3 text-text tracking-tight no-underline`), so a
  * document-wide pattern pairs the logo with the first count it finds and silently shifts every row
  * after it. That failure looked like missing tags rather than a broken parser.
+ *
+ * `<article>` IS THE ROW BOUNDARY IN ALL FOUR DRAWINGS. This used to split on `<li `, which no
+ * directory partial has ever emitted — so both directories parsed as zero rows and the run failed
+ * with "renders 0 rows" whichever layout was set. Each Surface has two (`@custom.directory_layout`
+ * picks editorial rows or cover cards) and the four markups agree on exactly three things: the row
+ * is an `<article>`, the name is the row's only `<h2>`, and the count is the first `font-meta`
+ * element in it. Those three are what this reads, so a class rename in the drawing cannot quietly
+ * turn the assertion off.
  */
 function directoryCounts(page, kind) {
 	const counts = new Map();
-	for (const row of page.split('<li ').slice(1)) {
+	for (const row of page.split('<article').slice(1)) {
 		if (!row.includes(`/${kind}/`)) {
 			continue;
 		}
-		const name = row.match(/<a\s+href="[^"]*"[^>]*>([^<]+)<\/a>/)?.[1];
-		const count = row.match(/<span class="font-meta[^"]*">\s*(\d+|No)\s*posts?\s*<\/span>/)?.[1];
+		const name = row
+			.match(/<h2[^>]*>([\s\S]*?)<\/h2>/)?.[1]
+			.replace(/<[^>]*>/g, '')
+			.trim();
+		const count = row.match(/class="[^"]*font-meta[^"]*"[^>]*>\s*(\d+|No)\s+posts?\b/)?.[1];
 		if (name && count !== undefined) {
-			counts.set(name.trim(), count === 'No' ? 0 : Number(count));
+			counts.set(name, count === 'No' ? 0 : Number(count));
 		}
 	}
 	return counts;

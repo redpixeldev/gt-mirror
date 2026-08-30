@@ -15,20 +15,21 @@ routing layer, from `posts_per_page` in this theme's package.json. Nothing here 
 `taxonomies` in a publication's routes.yaml takes a permalink and no limit, so the author archive
 holds whatever the Feed holds. --}}
 
-{{> "chrome/header" compact=true}}
+{{> "chrome/header"}}
 
 <main
 	id="main"
 	class="grow"
 	data-surface="author">
 
-	{{#match @custom.feed_layout "Three-column grid"}}
+	{{!-- The Grid layout paginates inside its own column — see partials/author/a2.hbs. --}}
+	{{#match @custom.feed_layout "Grid"}}
 		{{> "author/a2"}}
 	{{else}}
 		{{> "author/a1"}}
-	{{/match}}
 
-	{{pagination pt="pt-13"}}
+		{{pagination pt="pt-13"}}
+	{{/match}}
 
 	{{> "newsletter" anchor="author-newsletter" pt="pt-20"}}
 

@@ -60,6 +60,51 @@
 }
 
 /*
+ * The accent's two tints and its ink, computed from the accent rather than transcribed beside it.
+ *
+ * `--mirror-accent-soft` fills the newsletter panel, the members hero and the subscribe button's
+ * loading state; `--mirror-accent-border` draws their hairline; `--mirror-accent-ink` sets the
+ * newsletter heading. In the design source the first two are literal hexes beside the accent and
+ * the third does not exist — the heading is set in the page's text colour. Literal is right for a
+ * build whose accent is a constant, and wrong here: `default.hbs` already publishes
+ * `--mirror-accent: {{@site.accent_color}}`, so on Ghost the accent is the publication's and the
+ * one colour a buyer is expected to change. A pinned cream beside a red brand is a panel that no
+ * longer belongs to the thing it is advertising — which is exactly what this install rendered.
+ *
+ * So each value is the accent laid over what it sits on: the tints over the surface, the ink into
+ * the text colour. `oklab` rather than `srgb` because a mix in gamma space greys as it lightens,
+ * which is the cast these tints exist to avoid. The tints take one percentage per Mode — a warm
+ * near-white and a warm near-black are not the same distance from their page — and the ink takes
+ * one for both, because `--mirror-text` already differs by Mode.
+ *
+ * Measured with the DESIGN's accent (#a8580c), so a publication that keeps it keeps the drawing:
+ * soft is 3.4/255 from the design's cream in Light and 4.7 in Dark, border 5.7 and 1.7 — under 2%
+ * on a fill and a hairline. The visible difference is hue: a tint of that accent lands at 55° in
+ * oklch and the cream the design hand-picked sits at 71°, a touch yellower. That is the change,
+ * not a cost of it: the drawing's cream is a function of nothing, and this tint is a function of
+ * the brand.
+ *
+ * The ink is 45% of the accent, not the accent: at the design face's h2 size the accent alone
+ * measures 6.6:1 on the panel and reads as a link, where the mix measures 9.9:1 in Light and
+ * 11.7:1 in Dark and reads as a heading that knows what publication it is on.
+ */
+:root {
+	--mirror-accent-soft: color-mix(in oklab, var(--mirror-accent) 7%, var(--mirror-surface));
+	--mirror-accent-border: color-mix(in oklab, var(--mirror-accent) 24%, var(--mirror-surface));
+	--mirror-accent-ink: color-mix(in oklab, var(--mirror-accent) 45%, var(--mirror-text));
+}
+
+.dark {
+	--mirror-accent-soft: color-mix(in oklab, var(--mirror-accent) 2%, var(--mirror-surface));
+	--mirror-accent-border: color-mix(in oklab, var(--mirror-accent) 23%, var(--mirror-surface));
+}
+
+/* The one token this theme adds to the design's palette, mapped the way main.css maps the rest. */
+@theme {
+	--color-accent-ink: var(--mirror-accent-ink);
+}
+
+/*
  * The featured strip's track.
  *
  * The reference build drives this strip with Swiper, which translates a wrapper inside an

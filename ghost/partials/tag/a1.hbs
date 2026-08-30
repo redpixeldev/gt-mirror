@@ -1,34 +1,35 @@
-{{!-- A1, "two-column list", on a tag archive: the newest post as a lead, the rest as rows.
+{{!-- A1, "List", on a tag archive: the newest post as a lead, the rest as the shared row.
 
 	{{> "tag/a1" tagName=tag.name}}
 
 	tagName   the subject, for the lead's eyebrow
 
 The tag archive shares the Feed's `feed_layout` setting because a buyer picking "a wide row per
-post" means it everywhere posts are listed. It does not share the Feed's markup: the design draws
-a lead story here and none there, and the row is the compact one with the thumbnail on the right.
+post" means it everywhere posts are listed — AND IT NOW SHARES THE ROW. The design drew a compact
+row here with a 132px thumbnail on the right and the Feed's wide row on the Feed; one setting
+drawing two rows is a difference a publication cannot account for, so `archive/list-row.hbs` is
+the row on both. The lead story is still this Surface's own.
 
 THE LEAD IS PAGE 1 ONLY. Its eyebrow says "Latest in Interviews", which is true of the newest
 post in the tag and of nothing on page 2. Rather than print a lie or drop the eyebrow, later
 pages run every post through the same row as the rest — the archive narrows to a list once the
 reader has left the front of it, which is also what the reader asked for by paging.
 
-The 1120px column is the design's, and `--container-max` is what every `container` reads. The
-masthead, the pagination and the tag strip around it stay at page width. --}}
+PAGE WIDTH, not the design's 1120px column: the masthead, the tag strip and the pagination around
+this list are all at page width, and the row it draws is the Feed's, which is too. --}}
 <section
 	id="posts"
 	aria-label="{{t "Posts"}}"
-	style="--container-max:1120px"
 	class="container pt-2">
 	{{#foreach posts}}
 		{{#if @first}}
 			{{#match ../pagination.page 1}}
 				{{> "tag/lead" tagName=../tagName}}
 			{{else}}
-				{{> "archive/row"}}
+				{{> "archive/list-row"}}
 			{{/match}}
 		{{else}}
-			{{> "archive/row"}}
+			{{> "archive/list-row"}}
 		{{/if}}
 	{{else}}
 		<p class="font-body text-muted py-11">{{t "Nothing filed under this tag yet."}}</p>

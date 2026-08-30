@@ -1,16 +1,22 @@
-{{!-- A1, "two-column list", on an author archive: the centred profile over compact rows.
+{{!-- A1, "List", on an author archive: the centred profile over the shared row.
 
 	{{> "author/a1"}}
 
 The author archive shares the Feed's `feed_layout` setting for the same reason the tag archive
-does: a buyer picking "a wide row per post" meant it wherever posts are listed.
+does: a buyer picking "a wide row per post" meant it wherever posts are listed. It now shares the
+ROW too — `archive/list-row.hbs`, the Feed's — rather than the compact row the design drew here.
+One setting that draws three different rows is three drawings a publication cannot choose between.
 
-The row is archive/row.hbs with `tagEyebrow` on — every post here is by the same writer, so the
-subject leads and the date signs off, where a tag archive does the reverse. The two sizes are the
-design's: a 25px headline and 30px of row padding against the tag archive's 26 and 32.
+That row carries the writer's face and name on every post, which on this Surface is the same face
+and the same name each time. The repetition is the price of one row everywhere, and it is the
+cheaper side of the trade: the compact row's whole reason for existing was to reorder two meta
+facts.
 
 No lead story on this Surface in either layout. The design draws one on the tag archive and none
-here, and a writer's page is a body of work rather than a front page. --}}
+here, and a writer's page is a body of work rather than a front page.
+
+PAGE WIDTH, not the design's 1120px column, so the rows are the Feed's rows exactly. The profile
+above them keeps its own narrower measure — see author/header.hbs. --}}
 {{#with author}}
 	{{> "author/header" total=../pagination.total}}
 {{/with}}
@@ -18,10 +24,9 @@ here, and a writer's page is a body of work rather than a front page. --}}
 <section
 	id="posts"
 	aria-label="{{t "Posts"}}"
-	style="--container-max:1120px"
 	class="border-border container border-t">
 	{{#foreach posts}}
-		{{> "archive/row" tagEyebrow=true titleClass="text-[25px] leading-[1.2]" padding="py-[30px]"}}
+		{{> "archive/list-row"}}
 	{{else}}
 		<p class="font-body text-muted py-11">{{t "No posts by this writer yet."}}</p>
 	{{/foreach}}

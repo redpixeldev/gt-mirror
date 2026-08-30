@@ -75,10 +75,10 @@
 			"feed_layout": {
 				"type": "select",
 				"options": [
-					"Two-column list",
-					"Three-column grid"
+					"List",
+					"Grid"
 				],
-				"default": "Two-column list",
+				"default": "List",
 				"description": "A wide row per post with a thumbnail beside it, or a three-column grid of cards"
 			},
 			"directory_layout": {
@@ -88,7 +88,7 @@
 					"Cover cards"
 				],
 				"default": "Editorial rows",
-				"description": "Layout for the tag, writer and recommendation directories"
+				"description": "Layout for the tags (/tags/), writers (/authors/) and recommendation directories"
 			},
 			"page_hero": {
 				"type": "select",

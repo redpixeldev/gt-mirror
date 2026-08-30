@@ -22,13 +22,13 @@
 		"route": "blog-01",
 		"surface": "feed",
 		"layout": "A1",
-		"settings": { "feed_layout": "Two-column list" }
+		"settings": { "feed_layout": "List" }
 	},
 	{
 		"route": "blog-02",
 		"surface": "feed",
 		"layout": "A2",
-		"settings": { "feed_layout": "Three-column grid" }
+		"settings": { "feed_layout": "Grid" }
 	},
 	{
 		"route": "post-01",
@@ -92,13 +92,13 @@
 		"route": "tags-single-01",
 		"surface": "tag",
 		"layout": "A1",
-		"settings": { "feed_layout": "Two-column list" }
+		"settings": { "feed_layout": "List" }
 	},
 	{
 		"route": "tags-single-02",
 		"surface": "tag",
 		"layout": "A2",
-		"settings": { "feed_layout": "Three-column grid" }
+		"settings": { "feed_layout": "Grid" }
 	},
 	{
 		"route": "authors-01",
@@ -116,13 +116,13 @@
 		"route": "author-single-01",
 		"surface": "author",
 		"layout": "A1",
-		"settings": { "feed_layout": "Two-column list" }
+		"settings": { "feed_layout": "List" }
 	},
 	{
 		"route": "author-single-02",
 		"surface": "author",
 		"layout": "A2",
-		"settings": { "feed_layout": "Three-column grid" }
+		"settings": { "feed_layout": "Grid" }
 	},
 	{
 		"route": "recommendations-01",

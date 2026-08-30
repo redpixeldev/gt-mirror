@@ -9,7 +9,20 @@ term, so a chain of exclusions would turn the most-requested URL on the site int
 per-visitor query. Positions cannot collide, so no exclusion is needed.
 
 Position 1 is the cover, so this section starts at 2: the lead story, rows 3–5 beside it, and
-6–12 in the grid. --}}
+6–14 in the grid.
+
+THE GRID IS THREE TRACKS, NOT `auto-fill`, AND NINE CARDS. Auto-fill derives the track count from
+the width — four at this page's 1256px content box — while the slice is a fixed length, so seven
+cards drew 4 + 3 and left an empty cell at the end of the second row. Nine over a fixed three
+fills every row wherever the grid has three tracks, and one track divides nine as cleanly.
+
+`lg`, not `stack`, is where the three tracks start, and the number is the audit's: a card's
+paragraph has to clear 250px (`scripts/verify/probe-audit.js`), and three tracks plus two 36px
+gaps inside a 768px viewport leave 211px each — eight NARROW failures, measured. At 1024px the
+card is 296px. Between the two the grid is one column, because 9 divides by 3 and by 1 and by
+nothing else that fits a page. The design source has the ragged row instead
+(`homepage-01.astro` slices seven into an `auto-fill` grid); this is a divergence, recorded in
+DECISIONS.md. --}}
 <section
 	id="latest"
 	aria-labelledby="a1-latest"
@@ -85,8 +98,8 @@ Position 1 is the cover, so this section starts at 2: the lead story, rows 3–5
 		</div>
 	</div>
 
-	<div class="mt-14 grid grid-cols-[repeat(auto-fill,minmax(min(280px,100%),1fr))] gap-9">
-		{{#foreach feed from="6" to="12"}}
+	<div class="mt-14 grid grid-cols-1 gap-9 lg:grid-cols-3">
+		{{#foreach feed from="6" to="14"}}
 			<article class="{{post_class}}">
 				<a
 					href="{{url}}"

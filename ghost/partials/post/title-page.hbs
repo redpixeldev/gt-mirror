@@ -5,6 +5,14 @@ extent and the grid below starts clean. The two-column strip is the standfirst b
 description list of the two marginals the design shows — who wrote it and how long it runs —
 and it re-flows to one column on its own, from `auto-fit`, without a breakpoint.
 
+The marginals end at the page's right edge rather than starting at their own column's left one:
+`sm:justify-end`, conditional twice because both conditions are real. With no standfirst
+`auto-fit` collapses the empty track and the list is the row's only item, so ending it would
+strand the pair across the full width; below `sm` the strip is stacked, and a right-aligned pair
+of labels under a left-aligned paragraph reads as a mistake. Two columns first fit at 592px of
+viewport (2 × 260 + the 32px gap + the container's 40px of padding), so `sm` is always inside the
+two-column regime and never fires against a stacked strip.
+
 `{{reading_time}}` is computed by Ghost from word count and image count on every render and
 is stored nowhere, so "12 min read" is whatever the body implies, never a field. --}}
 <div class="border-border border-b">
@@ -23,7 +31,7 @@ is stored nowhere, so "12 min read" is whatever the body implies, never a field.
 				<p class="font-body text-muted max-w-[46ch] text-[21px] leading-[1.5] text-pretty">{{custom_excerpt}}</p>
 			{{/if}}
 
-			<dl class="flex flex-wrap gap-10 self-start">
+			<dl class="flex flex-wrap gap-10 self-start{{#if custom_excerpt}} sm:justify-end{{/if}}">
 				{{#if authors}}
 					<div>
 						<dt class="text-muted font-mono text-[10.5px] tracking-[0.1em] uppercase">{{t "Written by"}}</dt>

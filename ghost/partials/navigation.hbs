@@ -17,12 +17,16 @@ Two consequences of that merge are worth knowing before adding a call:
 2. The name has to be one no Ghost context uses. `title` would silently overwrite a post's
    title for the rest of the render, which is why the column heading is `heading`. --}}
 
+{{!-- The current item's marker is an absolute `::after`, not a `border-b-2 pb-[3px]`: a border
+makes that one item 5px taller than its neighbours, and in the bar's `items-center` row that
+lifts its label off the line the rest of the menu sits on. A pseudo-element costs no layout, so
+every label stays on one line whether or not it is current. --}}
 {{#match variant "bar"}}
 	{{#foreach navigation}}
 		<a
 			href="{{url}}"
 			{{#if current}}aria-current="page"{{/if}}
-			class="font-ui text-[15px] no-underline {{#if current}}border-accent text-text border-b-2 pb-[3px]{{else}}text-muted hover:text-text{{/if}}">{{> "chrome/nav-label" iconSize="h-[15px]"}}</a>
+			class="font-ui relative text-[15px] no-underline {{#if current}}text-text after:bg-accent after:absolute after:inset-x-0 after:-bottom-[5px] after:h-[2px]{{else}}text-muted hover:text-text{{/if}}">{{> "chrome/nav-label" iconSize="h-[15px]"}}</a>
 	{{/foreach}}
 {{/match}}
 

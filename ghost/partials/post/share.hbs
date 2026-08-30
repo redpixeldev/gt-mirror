@@ -1,10 +1,11 @@
 {{!-- Share actions, in the two shapes the design draws them.
 
-	{{> "post/share"}}              the row that closes the article: copy, email, Bluesky
+	{{> "post/share"}}              the row that closes the article: copy, email, Bluesky, X
 	{{> "post/share" rail=true}}    the rail's pair: copy, email
 
-The design draws three buttons and gives them nothing to do. Here they do the thing they are
-labelled with, because a button that looks live and is dead is worse than no button:
+The design draws three buttons and gives them nothing to do, and the row ships with a fourth. Here
+each does the thing it is labelled with, because a button that looks live and is dead is worse
+than no button:
 
   - Copy link asks the clipboard, and swaps its own label for a moment. It needs script, so it
 	is the only one that is a <button> — and it carries `x-cloak`, so with scripting off it is
@@ -12,9 +13,17 @@ labelled with, because a button that looks live and is dead is worse than no but
 	round. `navigator.clipboard` is also unavailable over plain http on a non-localhost origin,
 	and the catch in `postShare` is what keeps the label honest there. `aria-live` on the button
 	is what carries the label change to a reader who cannot see it.
-  - Email and Bluesky are links, because they are navigations. {{encode}} is Ghost's own URL
+  - Email, Bluesky and X are links, because they are navigations. {{encode}} is Ghost's own URL
 	encoder and {{url absolute="true"}} the canonical address of this post — a relative one
-	would arrive in someone's inbox pointing at nothing.
+	would arrive in someone's inbox pointing at nothing. Bluesky's compose intent takes one
+	`text`, so the address goes inside it; X's takes `text` and `url` separately, and passing the
+	address as its own parameter is what makes the card unfurl.
+
+Each control carries the mark of the thing it does, from `partials/share-icon.hbs`, and keeps its
+word: an icon-only share row asks a reader to recognise four glyphs, and one of them is a chain
+that means four different things across the web. `inline-flex` on every control is what the mark
+costs in markup — a <button> and an <a> are inline boxes, so the mark would sit on the text
+baseline and drag the line box around with it otherwise.
 
 Both shapes carry their own button sizing rather than sharing a variable: the sizes are
 literal in the source because the class scanner only ever sees what is written here. --}}
@@ -30,7 +39,8 @@ literal in the source because the class scanner only ever sees what is written h
 				x-cloak
 				aria-live="polite"
 				x-on:click="copy()"
-				class="btn border-border bg-surface font-ui text-text hover:bg-surface-2 cursor-pointer rounded-sm border px-3 py-2 text-[12.5px] font-semibold">
+				class="btn border-border bg-surface font-ui text-text hover:bg-surface-2 inline-flex cursor-pointer items-center gap-2 rounded-sm border px-3 py-2 text-[12.5px] font-semibold">
+				{{> "share-icon" mark="link" size="size-[14px]"}}
 				<span x-show="!copied">{{t "Copy link"}}</span>
 				<span
 					x-show="copied"
@@ -39,7 +49,7 @@ literal in the source because the class scanner only ever sees what is written h
 
 			<a
 				href="mailto:?subject={{encode title}}&amp;body={{url absolute="true"}}"
-				class="btn border-border bg-surface font-ui text-text hover:bg-surface-2 rounded-sm border px-3 py-2 text-[12.5px] font-semibold no-underline">{{t "Email"}}</a>
+				class="btn border-border bg-surface font-ui text-text hover:bg-surface-2 inline-flex items-center gap-2 rounded-sm border px-3 py-2 text-[12.5px] font-semibold no-underline">{{> "share-icon" mark="mail" size="size-[14px]"}}<span>{{t "Email"}}</span></a>
 		</div>
 	</div>
 {{else}}
@@ -53,7 +63,8 @@ literal in the source because the class scanner only ever sees what is written h
 			x-cloak
 			aria-live="polite"
 			x-on:click="copy()"
-			class="btn border-border bg-surface font-ui text-text hover:bg-surface-2 cursor-pointer rounded-sm border px-[15px] py-[9px] text-[13px] font-semibold">
+			class="btn border-border bg-surface font-ui text-text hover:bg-surface-2 inline-flex cursor-pointer items-center gap-2 rounded-sm border px-[15px] py-[9px] text-[13px] font-semibold">
+			{{> "share-icon" mark="link"}}
 			<span x-show="!copied">{{t "Copy link"}}</span>
 			<span
 				x-show="copied"
@@ -62,12 +73,18 @@ literal in the source because the class scanner only ever sees what is written h
 
 		<a
 			href="mailto:?subject={{encode title}}&amp;body={{url absolute="true"}}"
-			class="btn border-border bg-surface font-ui text-text hover:bg-surface-2 rounded-sm border px-[15px] py-[9px] text-[13px] font-semibold no-underline">{{t "Email"}}</a>
+			class="btn border-border bg-surface font-ui text-text hover:bg-surface-2 inline-flex items-center gap-2 rounded-sm border px-[15px] py-[9px] text-[13px] font-semibold no-underline">{{> "share-icon" mark="mail"}}<span>{{t "Email"}}</span></a>
 
 		<a
 			href="https://bsky.app/intent/compose?text={{encode title}}%20{{url absolute="true"}}"
 			target="_blank"
 			rel="noopener"
-			class="btn border-border bg-surface font-ui text-text hover:bg-surface-2 rounded-sm border px-[15px] py-[9px] text-[13px] font-semibold no-underline">{{t "Bluesky"}}</a>
+			class="btn border-border bg-surface font-ui text-text hover:bg-surface-2 inline-flex items-center gap-2 rounded-sm border px-[15px] py-[9px] text-[13px] font-semibold no-underline">{{> "share-icon" mark="bluesky"}}<span>{{t "Bluesky"}}</span></a>
+
+		<a
+			href="https://x.com/intent/post?text={{encode title}}&amp;url={{url absolute="true"}}"
+			target="_blank"
+			rel="noopener"
+			class="btn border-border bg-surface font-ui text-text hover:bg-surface-2 inline-flex items-center gap-2 rounded-sm border px-[15px] py-[9px] text-[13px] font-semibold no-underline">{{> "share-icon" mark="x"}}<span>{{t "X/Twitter"}}</span></a>
 	</div>
 {{/if}}

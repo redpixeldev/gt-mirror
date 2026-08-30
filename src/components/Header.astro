@@ -68,7 +68,19 @@ const hasNote = Astro.slots.has('note');
 const Wrapper = isSite ? 'header' : 'nav';
 const Subscribe = subscribeHref ? 'a' : 'button';
 
-const linkClass = 'font-ui text-[15px] no-underline';
+const linkClass = 'font-ui relative text-[15px] no-underline';
+
+/*
+ * The active marker is a pseudo-element, not a `border-b-2 pb-[3px]`: a border makes the
+ * current item 5px taller than its neighbours, and in an `items-center` row that lifts its
+ * label off the line the rest of the menu sits on. Drawn as an absolute `::after` it costs
+ * no layout, so every label stays on one line whether or not it is current.
+ *
+ * No `content` utility: every `after:` utility Tailwind emits already carries
+ * `content: var(--tw-content)`, whose default is `""`. `after:content-['']` is not a class
+ * v4 compiles at all — an empty arbitrary value — so writing it would be a silent no-op.
+ */
+const activeMarker = 'text-text after:bg-accent after:absolute after:inset-x-0 after:-bottom-[5px] after:h-[2px]';
 
 /** Trailing `.html` appears in the built output but not in dev. */
 const path = Astro.url.pathname.replace(/\.html$/, '').replace(/\/$/, '') || '/';
@@ -137,7 +149,7 @@ const path = Astro.url.pathname.replace(/\.html$/, '').replace(/\/$/, '') || '/'
 									aria-current={link.current ? 'page' : undefined}
 									class:list={[
 										linkClass,
-										link.current ? 'border-accent text-text border-b-2 pb-[3px]' : 'text-muted hover:text-text',
+										link.current ? activeMarker : 'text-muted hover:text-text',
 									]}>
 									{link.label}
 								</a>
@@ -157,12 +169,33 @@ const path = Astro.url.pathname.replace(/\.html$/, '').replace(/\/$/, '') || '/'
 							x-show={variant === 'site' ? '!open' : undefined}
 							x-on:click={variant === 'site' ? 'openSearch()' : undefined}
 							class:list={[
-								'btn border-border text-text hover:bg-surface-2 rounded-pill grid size-9 shrink-0 cursor-pointer place-items-center border bg-transparent font-mono',
-								isSite ? 'text-sm' : 'text-[13px]',
+								'btn border-border text-text hover:bg-surface-2 rounded-pill grid size-9 shrink-0 cursor-pointer place-items-center border bg-transparent',
 								/* The overlay carries its own field below the nav breakpoint. */
 								variant === 'site' && 'max-nav:hidden',
 							]}>
-							<span aria-hidden='true'>⌕</span>
+							{/* An SVG, not the ⌕ glyph: U+2315 draws at about half its em box, so in a
+							    36px pill it reads as a speck whose size depends on the visitor's mono
+							    font. `currentColor` keeps it correct in both themes. */}
+							<svg
+								aria-hidden='true'
+								viewBox='0 0 24 24'
+								fill='none'
+								stroke='currentColor'
+								stroke-width='1.9'
+								stroke-linecap='round'
+								class:list={['block', isSite ? 'size-[18px]' : 'size-4']}>
+								<circle
+									cx='10.5'
+									cy='10.5'
+									r='6.5'
+								/>
+								<line
+									x1='15.4'
+									y1='15.4'
+									x2='20'
+									y2='20'
+								/>
+							</svg>
 						</button>
 					)}
 

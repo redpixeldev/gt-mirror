@@ -46,28 +46,28 @@
 		"out": "ghost-blog-01-light.png",
 		"height": 7061,
 		"width": 1568,
-		"group": "{\"feed_layout\":\"Two-column list\"}"
+		"group": "{\"feed_layout\":\"List\"}"
 	},
 	{
 		"url": "http://localhost:2368/archive/?mode=dark",
 		"out": "ghost-blog-01-dark.png",
 		"height": 7061,
 		"width": 1568,
-		"group": "{\"feed_layout\":\"Two-column list\"}"
+		"group": "{\"feed_layout\":\"List\"}"
 	},
 	{
 		"url": "http://localhost:2368/archive/?mode=light",
 		"out": "ghost-blog-02-light.png",
 		"height": 4530,
 		"width": 1568,
-		"group": "{\"feed_layout\":\"Three-column grid\"}"
+		"group": "{\"feed_layout\":\"Grid\"}"
 	},
 	{
 		"url": "http://localhost:2368/archive/?mode=dark",
 		"out": "ghost-blog-02-dark.png",
 		"height": 4530,
 		"width": 1568,
-		"group": "{\"feed_layout\":\"Three-column grid\"}"
+		"group": "{\"feed_layout\":\"Grid\"}"
 	},
 	{
 		"url": "http://localhost:2368/against-the-infinite-feed/?mode=light",
@@ -186,28 +186,28 @@
 		"out": "ghost-tags-single-01-light.png",
 		"height": 4253,
 		"width": 1568,
-		"group": "{\"feed_layout\":\"Two-column list\"}"
+		"group": "{\"feed_layout\":\"List\"}"
 	},
 	{
 		"url": "http://localhost:2368/tag/interviews/?mode=dark",
 		"out": "ghost-tags-single-01-dark.png",
 		"height": 4253,
 		"width": 1568,
-		"group": "{\"feed_layout\":\"Two-column list\"}"
+		"group": "{\"feed_layout\":\"List\"}"
 	},
 	{
 		"url": "http://localhost:2368/tag/interviews/?mode=light",
 		"out": "ghost-tags-single-02-light.png",
 		"height": 3376,
 		"width": 1568,
-		"group": "{\"feed_layout\":\"Three-column grid\"}"
+		"group": "{\"feed_layout\":\"Grid\"}"
 	},
 	{
 		"url": "http://localhost:2368/tag/interviews/?mode=dark",
 		"out": "ghost-tags-single-02-dark.png",
 		"height": 3376,
 		"width": 1568,
-		"group": "{\"feed_layout\":\"Three-column grid\"}"
+		"group": "{\"feed_layout\":\"Grid\"}"
 	},
 	{
 		"url": "http://localhost:2368/authors/?mode=light",
@@ -242,28 +242,28 @@
 		"out": "ghost-author-single-01-light.png",
 		"height": 3693,
 		"width": 1568,
-		"group": "{\"feed_layout\":\"Two-column list\"}"
+		"group": "{\"feed_layout\":\"List\"}"
 	},
 	{
 		"url": "http://localhost:2368/author/marisol-ade/?mode=dark",
 		"out": "ghost-author-single-01-dark.png",
 		"height": 3693,
 		"width": 1568,
-		"group": "{\"feed_layout\":\"Two-column list\"}"
+		"group": "{\"feed_layout\":\"List\"}"
 	},
 	{
 		"url": "http://localhost:2368/author/marisol-ade/?mode=light",
 		"out": "ghost-author-single-02-light.png",
 		"height": 2658,
 		"width": 1568,
-		"group": "{\"feed_layout\":\"Three-column grid\"}"
+		"group": "{\"feed_layout\":\"Grid\"}"
 	},
 	{
 		"url": "http://localhost:2368/author/marisol-ade/?mode=dark",
 		"out": "ghost-author-single-02-dark.png",
 		"height": 2658,
 		"width": 1568,
-		"group": "{\"feed_layout\":\"Three-column grid\"}"
+		"group": "{\"feed_layout\":\"Grid\"}"
 	},
 	{
 		"url": "http://localhost:2368/recommendations/?mode=light",

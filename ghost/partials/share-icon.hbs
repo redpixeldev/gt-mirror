@@ -1,0 +1,77 @@
+{{!-- The mark inside one share control, and nothing else.
+
+	{{> "share-icon" mark="link"}}       copy link
+	{{> "share-icon" mark="mail"}}       email
+	{{> "share-icon" mark="bluesky"}}    Bluesky
+	{{> "share-icon" mark="x"}}          X
+	{{> "share-icon" mark="link" size="size-4"}}
+
+	mark   which mark to draw; an unknown name draws nothing rather than a placeholder
+	size   size utility for the artwork; each mark carries its own default
+
+Every mark is inline SVG of `currentColor`, so it inherits the button's colour in both Modes and
+through the hover transition without a second declaration anywhere — the same reason the header's
+search control draws its glass rather than setting a text glyph. No icon font, no sprite, no
+request: four marks are smaller than the HTTP round trip that would fetch them.
+
+`aria-hidden` on all four, and no `<title>`: each sits beside its own visible label inside the
+same control, so a reader that announced the mark would announce "Email email".
+
+The two generic marks are stroked to the same recipe as the search glass (1.9 at 24 units, round
+caps and joins) because they are this theme's drawing. The two service marks are the SERVICES'
+own artwork, filled: a brand mark redrawn at a stroke weight that suits us is a brand mark
+rendered wrong, and in a share row it is the one thing a reader identifies by shape rather than by
+reading it. Both default two pixels smaller than the stroked pair, because a filled glyph reads
+heavier at the same box — and Bluesky's box is not square, so its butterfly takes a height and
+lets the width follow. --}}
+{{#match mark "link"}}
+	<svg
+		aria-hidden="true"
+		viewBox="0 0 24 24"
+		fill="none"
+		stroke="currentColor"
+		stroke-width="1.9"
+		stroke-linecap="round"
+		class="block {{#if size}}{{size}}{{else}}size-[15px]{{/if}}">
+		<path d="M14 7.5h3.25a4.5 4.5 0 0 1 0 9H14"></path>
+		<path d="M10 16.5H6.75a4.5 4.5 0 0 1 0-9H10"></path>
+		<line x1="8.25" y1="12" x2="15.75" y2="12"></line>
+	</svg>
+{{/match}}
+
+{{#match mark "mail"}}
+	<svg
+		aria-hidden="true"
+		viewBox="0 0 24 24"
+		fill="none"
+		stroke="currentColor"
+		stroke-width="1.9"
+		stroke-linecap="round"
+		stroke-linejoin="round"
+		class="block {{#if size}}{{size}}{{else}}size-[15px]{{/if}}">
+		<rect x="2.75" y="5" width="18.5" height="14" rx="2.25"></rect>
+		<path d="m3.5 6.75 8.5 6.25 8.5-6.25"></path>
+	</svg>
+{{/match}}
+
+{{#match mark "bluesky"}}
+	<svg
+		aria-hidden="true"
+		viewBox="0 0 568 501"
+		fill="currentColor"
+		class="block w-auto {{#if size}}{{size}}{{else}}h-[13px]{{/if}}">
+		<path
+			d="M123.121 33.664C188.241 82.553 258.281 181.68 284 234.873c25.719-53.192 95.759-152.32 160.879-201.209C491.866-1.611 568-28.906 568 57.947c0 17.346-9.945 145.713-15.778 166.555-20.275 72.453-94.155 90.933-159.875 79.748C507.222 323.8 536.444 388.62 473.333 453.441c-119.86 123.121-172.272-30.855-185.702-70.276-2.462-7.227-3.614-10.608-3.631-7.733-.017-2.875-1.169.506-3.631 7.733-13.43 39.421-65.842 193.397-185.702 70.276-63.111-64.821-33.89-129.641 80.986-149.191-65.72 11.185-139.6-7.295-159.875-79.748C9.945 203.66 0 75.293 0 57.947 0-28.906 76.135-1.611 123.121 33.664Z"></path>
+	</svg>
+{{/match}}
+
+{{#match mark "x"}}
+	<svg
+		aria-hidden="true"
+		viewBox="0 0 24 24"
+		fill="currentColor"
+		class="block {{#if size}}{{size}}{{else}}size-[13px]{{/if}}">
+		<path
+			d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"></path>
+	</svg>
+{{/match}}

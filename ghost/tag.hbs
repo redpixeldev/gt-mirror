@@ -15,7 +15,7 @@ rather than to nothing, and no partial below reads @custom.
 routing layer, from `posts_per_page` in this theme's package.json or from `limit:` on the route
 in the publication's routes.yaml. Nothing here decides it. --}}
 
-{{> "chrome/header" compact=true}}
+{{> "chrome/header"}}
 
 <main
 	id="main"
@@ -26,7 +26,7 @@ in the publication's routes.yaml. Nothing here decides it. --}}
 		{{> "tag/header" total=../pagination.total}}
 	{{/tag}}
 
-	{{#match @custom.feed_layout "Three-column grid"}}
+	{{#match @custom.feed_layout "Grid"}}
 		{{> "tag/a2"}}
 	{{else}}
 		{{> "tag/a1" tagName=tag.name}}

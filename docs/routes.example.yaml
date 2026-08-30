@@ -37,9 +37,15 @@
 collections:
   /:
     permalink: /{slug}/
+    # The page size is the homepage's editorial window, and the two have to agree: home.hbs
+    # draws fourteen posts (partials/home/window.hbs), so a page holding eighteen would leave
+    # posts 15–18 of every page on no page at all — measured on a 104-post publication as 36
+    # posts reachable only through the Feed, a tag or a writer. `limit:` here overrides
+    # `posts_per_page`, which stays 18 for /archive/ and the archives.
+    limit: 14
     # No `template:` — Ghost renders home.hbs on `/` and index.hbs on /page/2/ onwards, which
     # is the cover on page 1 and the Feed layout beyond it. Naming a template here would put
-    # the cover, and its fixed twelve most recent posts, on every page.
+    # the cover, and its fixed fourteen most recent posts, on every page.
 
 routes:
   /archive/:

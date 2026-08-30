@@ -67,10 +67,8 @@ const archiveState = `{
 		<ArchiveFilterBar tags={ARCHIVE_TAGS} />
 		<ArchiveEmptyState />
 
-		{/* The list runs to a 1120px measure; everything around it stays page-width. */}
-		<div style='--container-max:1120px'>
-			<ArchiveList posts={ARCHIVE_POSTS} />
-		</div>
+		{/* The list runs to the page width, so rows line up with the masthead and filter bar. */}
+		<ArchiveList posts={ARCHIVE_POSTS} />
 
 		<section
 			aria-label='Pagination'

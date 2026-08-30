@@ -15,7 +15,20 @@ than a crumb that does not move. The span inherits the nav's colour, so the draw
 Recorded as a Concession in DECISIONS.md.
 
 A tag with no description renders the count alone: `auto-fit` collapses the empty column instead
-of leaving a gap where the sentence would have been. --}}
+of leaving a gap where the sentence would have been.
+
+The count sits on the description's FIRST BASELINE (`items-baseline` on the row, rather than
+`self-start` on the count). The two texts set at 21px/1.5 and 12.5px, so aligning their boxes'
+tops left the count riding about 8px high of the sentence it annotates. Baseline alignment is
+per grid ROW, so it does nothing once the columns stack — which is the behaviour wanted there,
+and the reason it is not a breakpoint.
+
+It also ENDS at the page's right edge rather than starting at its column's left one, the same
+correction the Post's title page carries and conditional for the same two reasons: with no
+description `auto-fit` collapses the empty track and the count is the row's only item, so ending
+it would strand it across the full width; stacked, a right-aligned line under a left-aligned
+paragraph reads as a mistake. Two columns first fit at exactly 640px of viewport (2 × 280 + the
+40px gap + the container's 40px of padding), which is `sm`. --}}
 <section
 	aria-labelledby="tag-name"
 	class="container pt-18 pb-16">
@@ -32,12 +45,12 @@ of leaving a gap where the sentence would have been. --}}
 		class="font-display tracking-display mt-6 text-[clamp(40px,6vw,80px)] leading-[1.02] font-medium">{{name}}</h1>
 
 	<div
-		class="border-border mt-8 grid grid-cols-[repeat(auto-fit,minmax(min(280px,100%),1fr))] gap-10 border-t pt-[26px]">
+		class="border-border mt-8 grid grid-cols-[repeat(auto-fit,minmax(min(280px,100%),1fr))] items-baseline gap-10 border-t pt-[26px]">
 		{{#if description}}
 			<p class="font-body text-muted max-w-[52ch] text-[21px] leading-[1.5] text-pretty">{{description}}</p>
 		{{/if}}
 
-		<p class="font-meta text-meta tracking-meta text-muted self-start uppercase">
+		<p class="font-meta text-meta tracking-meta text-muted uppercase{{#if description}} sm:justify-self-end{{/if}}">
 			{{~plural total empty=(t "No posts") singular=(t "% post") plural=(t "% posts")~}}
 			<span aria-hidden="true"> · </span>
 			{{~> "tag/range" slug=slug~}}

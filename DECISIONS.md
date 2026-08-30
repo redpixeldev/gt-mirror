@@ -2952,3 +2952,279 @@ scroll on purpose and say so in the markup with `data-scroll-intent`: the featur
 has prev/next buttons above it, and the benefit matrix, which scrolls so its last column is
 reachable rather than cropped. The audit reports both every run. An exception that is invisible is
 an exception that becomes the rule.
+
+## Post-ship refinements, and the rule they share (2026-08)
+
+Requested after the theme shipped, against the running install rather than against a PNG. Every
+one is a **deliberate divergence from the design source**: `src/` is the evidence the port is
+scored against and it does not move, so the reference build still draws the old thing and the
+identity gap on the Post, tag, author, homepage and Feed rows now carries all of them on top of
+the Concessions already recorded. They are listed here because a divergence nobody wrote down is a
+defect the next review "fixes".
+
+The rule most of them share, and the reason they are one section: **a theme is a function of the
+publication, and each replaces a constant with the value it should have been reading.**
+
+### Two rows were aligned by box and are now aligned by baseline
+
+The tag masthead sets its description at 21px/1.5 beside a count at 12.5px, and the contents list
+sets a mono number at 11px beside a heading at 13.5px. Both aligned the TOPS of those boxes —
+`self-start` on the count, the flex default in the list — which put the smaller text a third of a
+line high of the line it annotates. `items-baseline` on the row is the whole fix in both places.
+
+Two properties of baseline alignment make it the right one rather than a nudge: it is per grid ROW,
+so the tag masthead's stacked shape at 420px is untouched and no breakpoint is involved; and a
+description or a heading that wraps aligns on its FIRST baseline, which is the line the annotation
+belongs to. A `pt-[8px]` would have been a constant that is wrong at every other type size.
+
+### The Post's marginals end at the page edge
+
+"Written by" and "Length" began at their column's left edge, which on a 1568px page left 420px of
+air between the last word and the rule above it. `sm:justify-end` moves the pair to the page's
+right edge, and it is conditional twice because both conditions are real: with no standfirst
+`auto-fit` collapses the empty track and the list is the row's only item, so ending it would strand
+the pair across the full width; below `sm` the strip is stacked, and a right-aligned pair of labels
+under a left-aligned paragraph reads as a mistake. Two columns first fit at 592px of viewport
+(2 × 260 + the 32px gap + the container's 40px of padding), so `sm` is always inside the
+two-column regime. Measured at 700px: `flex-end`, flush to the container. At 400px: `normal`.
+
+### The share row carries marks, and a fourth service
+
+`partials/share-icon.hbs` is new and draws four: a chain, an envelope, Bluesky's butterfly and X's
+monogram. The two generic marks are stroked to the search glass's recipe (1.9 at 24 units, round
+caps) because they are this theme's drawing; the two service marks are the services' own artwork,
+filled, because a brand mark redrawn at a weight that suits us is a brand mark rendered wrong. All
+four are `currentColor`, so they inherit the control's colour in both Modes and through its hover
+transition with no second declaration — and no icon font, sprite or request exists.
+
+Every control keeps its word beside its mark. An icon-only share row asks a reader to recognise
+four glyphs, one of which is a chain that means four different things across the web.
+
+The fourth service is X, labelled "X/Twitter" — the platform renamed itself and its users did not,
+so the label carries both. Its intent URL takes `text` and `url` as separate parameters, which is
+what makes the card unfurl; Bluesky's compose intent takes one `text`, so the address goes inside
+it. The rail's pair stays copy and email: it is 260px wide and it is not the page's share row.
+
+### The accent's tints are computed from the accent
+
+`--mirror-accent-soft` and `--mirror-accent-border` were literal hexes transcribed from the design
+beside `--mirror-accent`. `default.hbs` has always published `--mirror-accent:
+{{@site.accent_color}}`, so on Ghost the accent is the PUBLICATION's — and this install's is
+`#bc2406`, a red, against a cream tint hand-picked for the design's `#a8580c` brown. The newsletter
+panel was advertising a brand it did not belong to, in a colour nothing on the page could explain.
+
+Both tints are now `color-mix(in oklab, var(--mirror-accent) N%, var(--mirror-surface))` —
+`oklab` because a mix in gamma space greys as it lightens, which is the cast a warm tint exists to
+avoid, and one percentage per Mode because a warm near-white and a warm near-black are not the same
+distance from their page. Fitted against the DESIGN's accent so a publication that keeps it keeps
+the drawing: soft 3.4/255 from the design's cream in Light and 4.7 in Dark, border 5.7 and 1.7.
+The remaining difference is hue — a tint of that accent lands at 55° in oklch where the design's
+cream sits at 71° — and that is the change rather than a cost of it.
+
+### The newsletter heading is the accent's ink
+
+The one refinement the design has no equivalent for: its heading is the same near-black an article
+is set in, which on a tinted panel is the only element that does not belong to the accent tinting
+it. `--mirror-accent-ink` is 45% of the accent mixed into `--mirror-text`, declared once because
+`--mirror-text` already differs by Mode, and mapped to a Tailwind colour through the theme's own
+`@theme` block — the single token this theme adds to the design's palette.
+
+45%, not the accent: at this size and face the accent alone measures 6.6:1 on the panel and reads
+as a link, where the mix measures 9.9:1 in Light and 11.7:1 in Dark.
+
+### The masthead strip needs two writers, not one
+
+`partials/writers.hbs` rendered whenever the busiest author had published — a guard against a
+staff account that has not. One writer passes that test and draws a section headed "Writers" with
+a single chip in it, which states what every byline on the Surface already said. The strip is a
+masthead, and a masthead of one is a byline.
+
+The test is `{{#if writers.[1].count.posts}}`: `count.posts` is NOT filterable on authors in Ghost
+6 (`filter="count.posts:>0"` returns an empty set, `filter="posts.count:>0"` fails the query) and
+Handlebars cannot compare a total to 2, so an index is the whole mechanism — the query orders by
+`count.posts desc`, so if the SECOND row has published then at least two writers have. The
+per-chip guard inside the loop stays: it is what drops an unpublished seventh account from a strip
+of six.
+
+Proven both ways on the running install: with the query's `limit` at 10 the homepage and the Feed
+each render their strip; with it temporarily at 1 — one author in the response — neither Surface
+emits the section, the heading or a chip. The strip appears on two Surfaces from one partial, so
+both were checked.
+
+### The Feed layout's options are named List and Grid
+
+They read "Two-column list" and "Three-column grid", which describe the drawing at one viewport
+width and are wrong at every other: the grid is one column on a phone. The option string IS the
+stored value, so the rename moved together — `config.custom` in `ghost/package.json`, the three
+`{{#match @custom.feed_layout "Grid"}}` branches in `index.hbs`, `tag.hbs` and `author.hbs`,
+`ghost/README.md`, and `scripts/ghost/surfaces.json`, from which `pnpm ghost:jobs` regenerated
+`jobs.json` and `score-index.json`.
+
+**A schema change needs the theme reactivated, and it resets any value that is no longer an
+option.** Measured: with the new `package.json` on disk, `PUT /custom_theme_settings/` answered
+**422 — "Allowed values: Two-column list, Three-column grid"**, because Ghost caches
+`config.custom` from activation. `PUT /themes/mirror/activate/` re-reads it with no restart — and
+the install's stored `Three-column grid` fell back to the new default. An option rename is not a
+migration: expect the same reset wherever the zip is installed next.
+
+`directory_layout`'s description now names the two URLs it governs — `Layout for the tags
+(/tags/), writers (/authors/) and recommendation directories`, 80 characters against the 100 Ghost
+truncates.
+
+### The directories are page width, and every rule is on one box
+
+`directory/tag-rows.hbs` and `directory/author-rows.hbs` carried the design's
+`--container-max:1120px`, which started the list 90px inside the intro heading its own Surface —
+two pages on one page. The override is gone from both.
+
+The second half was a bug the width exposed: a **border draws on the border box**, so `border-t`
+on the `container` spanned 1320px while every row's `border-b`, on an `article` inside that
+container's 32px padding, spanned 1256px. The list opened with a rule wider at both ends than the
+rules under it. The top rule moved to an inner wrapper that shares the rows' box, and a negative
+margin would not have done it — the rule belongs to the `article`, and `-mx-2` on the `<a>` inside
+moves text, never the border it sits under. Measured on both Surfaces: heading, top rule and every
+row now 396→1652 at a 2048px viewport, identically.
+
+The tag masthead's count line takes the same treatment as the Post's marginals —
+`sm:justify-self-end`, conditional on a description existing — so it ends at the page's right edge
+instead of at its column's left one. Two columns first fit at exactly 640px there (2 × 280 + the
+40px gap + 40px of padding), which is `sm`.
+
+### One List row for every list
+
+`@custom.feed_layout` is a single setting governing three Surfaces, and it drew two different
+rows: the Feed's wide row with a 300px thumbnail on the left, and `archive/row.hbs` — a compact
+row with a 132px thumbnail on the right — on the tag and author archives. One setting drawing two
+rows is a difference a publication cannot account for.
+
+The Feed's row is now `partials/archive/list-row.hbs`, drawn by `feed/a1.hbs`, `tag/a1.hbs` and
+`author/a1.hbs`. `archive/row.hbs` had no other callers and is **deleted**, not deprecated; its
+two docstring references (`archive/card.hbs`, `tag/lead.hbs`) were corrected in the same pass. The
+tag archive keeps its own page-1 lead, and both archives dropped their 1120px override so the rows
+are the Feed's rows exactly — verified at `300px 920px` in a 1256px row on all three Surfaces.
+
+The row prints the writer's face and name on every post, which on a writer's archive is the same
+face every time. That repetition is the price of one drawing, and it is the cheaper side of the
+trade: reordering two meta facts was the compact row's entire reason to exist.
+
+### The navbar label is data, so it was changed in the data
+
+"Subjects" became "Topics" in Ghost's `navigation` setting through `PUT /settings/` — the menu is
+the publication's, not the theme's, and no template names it. `scripts/ghost/fixture.json` carries
+the same label so a re-import does not undo it. The About page's counted "Subjects" stat and
+README's "Subjects" section are theme copy, not the menu, and were left alone.
+
+### Two checks in ghost:verify had never matched this theme's markup
+
+`pnpm ghost:verify` failed the moment it was next run, and neither cause was a fixture problem:
+
+- `directoryCounts()` split the page on `<li `, which **no directory partial has ever emitted**.
+  Both directories parsed as zero rows in either layout. It now splits on `<article`, and reads
+  the name from the row's only `<h2>` and the count from its first `font-meta` element — the three
+  things all four directory drawings agree on.
+- The feed count read `Page 1 of N` (Casper's pagination; this theme draws numbered pills) and
+  `<article class="post` (prettier puts the class on the next line). It now takes the page count
+  from the highest `/archive/page/N/` in the elided control — which always renders the last page —
+  and counts `<article` alone.
+
+Both were harness bugs that reported as content failures: "tag directory renders 0 rows" and "feed
+lists 0 posts". After the fix: **104 posts across 6 pages, 14/14 tags, 5/5 authors, 35/35 reading
+labels byte-identical.**
+
+### The writer's archive paginates inside its own column
+
+In the Grid layout that Surface is a `280px + 1fr` grid — the profile as a rail, the cards beside
+it — and the pagination was called at page level, so it centred on the PAGE: 176px left of the
+cards it pages through, sitting under the rail. `partials/pagination.hbs` gained a `bare`
+parameter that drops its `container`, `author/a2.hbs` calls it inside the posts column, and
+`author.hbs` calls it only on the List branch. Nested `container`s do not compose — an inner one
+re-pads and re-centres inside the column — so the class comes off rather than a second wrapper
+going on, and the control's own `justify-center` centres it in whatever box it is handed.
+
+Measured on `/author/erin-laurier/` at a 2048px viewport: the control now spans **748→1652,
+centre 1200**, identical to the card grid, where the page's centre is 1024. The List layout is
+untouched (rows are page width, so page-centred already agrees), and so is the tag archive in both
+layouts — it has no rail.
+
+### One bar on every Surface, search included
+
+The design draws two: a listing bar with a ⌕ on the homepage and the Feed, and a "reading bar" 2px
+smaller in both the mark and the wordmark and with no search control, on the post, both archives,
+every Page and the error Surfaces. Read one page at a time the difference does not say "quieter
+chrome", it says "the search button is missing" — and the publication's only visible way into
+search existed on 2 Surfaces out of 27, on a platform that ships the search.
+
+So `compact` is **deleted**, not defaulted: `chrome/header.hbs` now draws the site bar and the
+members bar, and seventeen templates dropped the argument. The auth Surfaces keep their own bar —
+mark, a way back, Mode, no nav — because that one is about what a member in a flow should not be
+offered, not about how loud the chrome is.
+
+This is the largest single divergence in this section: it moves the header on every reading Surface
+the reference PNGs contain. Measured: header height **83px and a 26px wordmark on `/`, `/archive/`,
+`/tags/`, `/authors/`, `/about/`, `/membership/`, `/recommendations/`, the tag archive, the author
+archive, a post and a 404**, with two `data-ghost-search` triggers on each (the bar's control and
+the below-breakpoint overlay's); `/sign-in/` stays at 69px with a 22px wordmark and no trigger.
+
+### The homepage drew twelve posts out of a page of eighteen
+
+Found while answering "why is this grid missing an item". `home/window.hbs` queried
+`limit="12"`, and the `/` collection paginated at `posts_per_page` — 18. So page 1 drew posts
+1–12 and `/page/2/` opened at post **19**. Proven against the running install by slug, in
+publication order: #12 `letter-from-a-shrinking-city-desk` closed page 1, #13
+`setting-a-house-scale` and #18 `writing-for-the-second-read` appeared on neither page, #19
+`the-reporter-who-stopped-chasing-scoops` opened page 2. Six posts per page, 36 of 104 on this
+publication, reachable only through the Feed, a tag or a writer.
+
+The window and the page have to be one number. `docs/routes.example.yaml` now sets **`limit: 14`**
+on the `/` collection and the window queries 14 — 14 rather than 12 because the grid needed nine
+cards (below), and 14 rather than 18 because the drawing is the constraint and `posts_per_page`
+stays 18 for the Feed and the archives. Re-measured after the change: page 1 draws positions
+**1–14**, page 2 draws **15–28**. Contiguous.
+
+**Both layouts draw all fourteen**, which is the other half of the fix: A1 takes 1 for the cover,
+2 for the lead, 3–5 for the rows and 6–14 for the grid; A2 takes 1 for the masthead, **2–5** for
+the shortlist — four rows where the design draws three — and 6–14 for the grid. A layout that
+draws less than the window re-opens the same hole on its own Surface, and a shortlist is a
+vertical list, so a fourth row costs the drawing nothing.
+
+### The homepage grid is three fixed tracks and nine cards
+
+The reported symptom: an empty cell at the end of the second row. The cause is a fixed slice
+meeting a width-derived track count — seven cards into
+`repeat(auto-fill,minmax(min(280px,100%),1fr))` with `gap-9`, which at the 1256px content box
+resolves to `⌊1292/316⌋ = 4` tracks, so 4 + 3. The design source does exactly the same
+(`homepage-01.astro` slices `ALL_POSTS.slice(5, 12)`), so the reference PNG has the hole too. No
+item count fills both 3 and 4 tracks except 12.
+
+So the track count is fixed rather than the slice trimmed: `grid-cols-1 lg:grid-cols-3` with nine
+cards, on both layouts. Nine divides by 3 and by 1 and by nothing else that fits a page, so there
+is no ragged row at any width.
+
+**`lg`, not `stack`, and the audit is why.** Three tracks inside a 768px viewport leave 211px per
+card, and `scripts/verify/probe-audit.js` requires a paragraph to clear 250px — the first attempt
+at `stack:grid-cols-3` failed the audit with **eight NARROW findings at @768px**, all of them card
+excerpts at 211px. At `lg` the card is 296px and the run is back to **324 checks, zero failures**.
+Between 768 and 1024 the grid is one column, which is the price of nine cards and a clean row.
+
+### The A2 masthead loses its rule
+
+The design closes it with a `border-b`, which lands 24px above the rule `home/digest.hbs` already
+draws over "More from this week" — two hairlines one gap apart, neither separating anything the
+other does not. The border is gone; the section's bottom margin is untouched, so nothing moved.
+
+### What was verified, and what was not
+
+`gscan --fatal` clean; `pnpm ghost:i18n` in sync with the new `X/Twitter` key; `pnpm ghost:audit`
+324 checks over 11 settings groups, zero failures; `pnpm ghost:verify` green on every invariant;
+`pnpm ghost:smoke` 13/13. Every block was read off the running install in both Modes and in both
+Layouts of the Post, the archives and the homepage — the rail contents list and the inline one, the
+title page and the centred classic, the List row and the Grid card, the magazine cover and the
+editorial masthead — with `post_layout`, `feed_layout` and `homepage_layout` flipped through the
+Admin API each time. `docs/routes.example.yaml` was pushed to the install with
+`pnpm ghost:routes:apply`, so the `/` collection there holds 14.
+
+**No score run was made, and after the chrome change one is owed.** These move pixels on every
+Surface the reference PNGs contain: the header on all of them, and the rows on the Post, tag,
+author, homepage and Feed. The numbers recorded under Ship are the numbers for the theme as it
+shipped, so they now describe a theme that no longer exists. A re-score belongs to whoever next
+runs the gate, with this section as the reason every row moved.

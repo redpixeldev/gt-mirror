@@ -1,0 +1,69 @@
+{{!-- The List row: one wide row per post, thumbnail beside the headline block.
+
+	{{> "archive/list-row"}}    called from inside {{#foreach posts}}, so the post is the context
+
+ONE ROW FOR EVERY LIST. `@custom.feed_layout` is a single setting that governs the Feed, the tag
+archive and a writer's archive, so the three now draw the same row: a buyer who picks _List_ picks
+this row wherever posts are listed. The design drew two — this one on the Feed and a compact row
+with a 132px thumbnail on the right for the two archives — and that difference is not something a
+publication can see the reason for.
+
+`minmax(0,1fr)`, not a bare `1fr`: bare `1fr` means `minmax(auto,1fr)`, whose floor is the
+column's min-content width, so a long headline would push the row wider than the page instead of
+wrapping. Below `stack` the thumbnail moves above the text.
+
+The excerpt keeps its own `max-w-[62ch]` measure: the row is full-width, the prose inside it is
+not, because a 900px line of body copy is a line nobody finishes.
+
+The thumbnail's link is hidden from assistive technology and taken out of the tab order — the
+headline right beside it goes to the same place, so exposing both would make a screen reader
+announce every post twice.
+
+On a writer's archive every row carries the same face and the same name. That repetition is the
+cost of one row everywhere, and it is paid deliberately: the alternative is a second drawing whose
+only difference is which meta fact leads, which is what this partial replaced. --}}
+<article
+	class="{{post_class}} border-border max-stack:grid-cols-[minmax(0,1fr)] max-stack:gap-5 grid grid-cols-[300px_minmax(0,1fr)] items-start gap-9 border-b py-11">
+	{{#if feature_image}}
+		<a
+			href="{{url}}"
+			tabindex="-1"
+			aria-hidden="true"
+			class="block">
+			<img
+				src="{{img_url feature_image size="m"}}"
+				alt=""
+				loading="lazy"
+				decoding="async"
+				class="border-border block aspect-[4/3] w-full rounded-md border object-cover">
+		</a>
+	{{/if}}
+
+	<div>
+		<div class="flex items-center gap-3">
+			{{#primary_tag}}
+				<span class="font-meta text-meta tracking-meta text-accent uppercase">{{name}}</span>
+			{{/primary_tag}}
+
+			{{> "tier-chip"}}
+		</div>
+
+		<h2 class="font-display tracking-heading mt-3 text-[30px] leading-[1.18] font-medium text-balance">
+			<a
+				href="{{url}}"
+				class="text-text hover:text-accent no-underline">{{title}}</a>
+		</h2>
+
+		<p class="text-body text-muted mt-3.5 max-w-[62ch] leading-[1.6] text-pretty">{{excerpt}}</p>
+
+		<div class="mt-5 flex items-center gap-3">
+			{{#primary_author}}
+				{{> "post/avatar" size="size-[30px]" textSize="text-xs"}}
+			{{/primary_author}}
+
+			{{> "byline-links" linkClass="font-ui text-text text-[13.5px] font-semibold no-underline"}}
+
+			<span class="font-meta text-meta tracking-meta text-muted uppercase">{{> "dateline"}}</span>
+		</div>
+	</div>
+</article>

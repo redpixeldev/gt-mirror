@@ -16,7 +16,12 @@ level of a long essay stops being navigation.
 
 The numbers are the position in the list, not part of the heading, so they are generated
 here. The ids are Ghost's: its renderer slugifies every heading and de-duplicates collisions
-with a numeric suffix, so the anchors are the platform's own and survive an export. --}}
+with a numeric suffix, so the anchors are the platform's own and survive an export.
+
+Each row is `items-baseline` rather than the flex default: the number sets in mono at 11px and
+the heading in the UI face at 13.5px or 14px, so aligning the tops of their boxes sat the number
+above the line it numbers. A heading that wraps aligns on its first line, which is the one the
+number belongs to. --}}
 
 {{#match variant "inline"}}
 	<details
@@ -32,7 +37,7 @@ with a numeric suffix, so the anchors are the platform's own and survive an expo
 			<template
 				x-for="item in items"
 				x-bind:key="item.id">
-				<li class="flex gap-3">
+				<li class="flex items-baseline gap-3">
 					<span
 						class="text-muted font-mono text-[11px]"
 						x-text="item.num"></span>
@@ -61,7 +66,7 @@ with a numeric suffix, so the anchors are the platform's own and survive an expo
 			<template
 				x-for="item in items"
 				x-bind:key="item.id">
-				<li class="flex gap-2.5">
+				<li class="flex items-baseline gap-2.5">
 					<span
 						class="text-muted font-mono text-[11px]"
 						x-text="item.num"></span>
