@@ -62,7 +62,60 @@ reports no context at all. See partials/chrome/header.hbs. --}}
 
 	{{{body}}}
 
+	{{!-- The code block's language strip.
+
+	assets/js/main.js clones this once per code block that declares a language and writes the
+	language into the empty span. It lives here, in the template, because the two labels are strings
+	a visitor reads and every one of those goes through {{t}} — a partial cannot hold them, because
+	the block they belong to arrives inside {{content}} as opaque HTML.
+
+	Both keys are lower case, unlike "Copied" on the share button, because the design sets this one
+	in lower case and a text-transform is the wrong tool for a translated string.
+
+	Nothing here renders on its own: a <template> is inert, so a visitor with scripting off gets no
+	strip rather than a dead one. --}}
+	<template id="mirror-code-strip">
+		<div class="mirror-code-bar">
+			<span class="mirror-code-lang"></span>
+			<button
+				type="button"
+				class="mirror-code-copy"
+				aria-live="polite"
+				data-copy="{{t "copy"}}"
+				data-copied="{{t "copied"}}">{{t "copy"}}</button>
+		</div>
+	</template>
+
 	<script src="{{asset "built/main.js"}}"></script>
+
+	{{!-- Syntax highlighting, for the code blocks that declare a language.
+
+	Fetched only when the document holds one. Twelve of this theme's Surfaces never carry code, and
+	this is the one asset that can be skipped on them outright: no code block, no request. On a post
+	that has one, a reader gets 14 KB of highlighter plus only the grammars its languages need.
+
+	The import is dynamic on purpose. {{asset}} keeps the ?v= content hash and resolves under a
+	subdirectory install, and microlighter loads each grammar with a template-literal import that
+	resolves against ITS OWN url — which is exactly what a bundler would break, silently, because
+	the loader answers a 404 grammar with `null` and no highlighting. See
+	scripts/ghost/copy-microlighter.mjs.
+
+	`selector` scopes the scan to the content layer, which is the same set assets/js/main.js dresses
+	with a strip — the platform's own UI (search, Portal, comments) is nobody's code specimen.
+
+	The aliases are the ones a Ghost author is likely to type into the editor's language field that
+	microlighter does not already know: `diff`, whose grammar is named git-diff, and Handlebars,
+	which has no grammar and reads acceptably as HTML. A language with no grammar at all is not an
+	error — the block keeps its strip and stays one colour, which is what the design draws anyway. --}}
+	<script type="module">
+		if (document.querySelector('.mirror-content pre > code[class*="language-"]')) {
+			const { highlightAll } = await import('{{asset "built/microlighter/index.js"}}');
+			await highlightAll({
+				selector: '.mirror-content pre > code',
+				languageAliases: { diff: 'git-diff', hbs: 'html', handlebars: 'html' },
+			});
+		}
+	</script>
 
 	{{ghost_foot}}
 

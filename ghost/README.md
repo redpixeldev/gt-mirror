@@ -71,6 +71,15 @@ More settings arrive with the layouts they control; each one is documented here 
   platform's layout with MIRROR's colours. Two exceptions the design draws itself: a callout
   gets an accent rail rather than a filled block, and a pull quote is set centred in the
   display face.
+- **A code block that names its language gets the design's strip.** Type the language into the
+  editor's code card — `json`, `javascript`, `css`, `bash`, `python`, `sql`, `yaml`, `diff` and 30
+  more — and MIRROR prints it in a header above the code with a **copy** button beside it, then
+  colours the code in the publication's own palette rather than an editor's: stone, with your
+  accent on keywords, in both light and dark. Leave the language empty and the block stays exactly
+  as the design draws it — one colour, no strip. A language nobody has a grammar for still gets its
+  strip; only the colour is missing.
+- **Nothing loads on a page with no code.** The highlighter is fetched by the page that needs it,
+  and each language's grammar only when a block on that page is written in it.
 
 ### Subjects
 

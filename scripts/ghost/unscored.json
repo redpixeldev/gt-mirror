@@ -1,0 +1,11 @@
+[
+	{
+		"path": "/styleguide/",
+		"out": "ghost-style-guide",
+		"surface": "page-styleguide",
+		"height": 29200,
+		"width": 1568,
+		"why": "The style guide: every element and Platform card a Ghost editor can emit, in every variant it can emit them in. There is no reference PNG to score it against and there should not be — the drawing has no audio player, no embed and no footnotes, and the sheet it does draw is scored separately at /design-tokens/. So this row is captured in both Modes so the platform's own light-only card CSS cannot hide in one of them, swept by the responsive audit at every width, and never scored.",
+		"why_out": "`ghost-styleguide-*.png` belongs to the scored row above, whose route is still the drawing's. Two jobs writing one filename means one of them is never really captured."
+	}
+]

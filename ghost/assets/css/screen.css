@@ -92,6 +92,14 @@
 	--mirror-accent-soft: color-mix(in oklab, var(--mirror-accent) 7%, var(--mirror-surface));
 	--mirror-accent-border: color-mix(in oklab, var(--mirror-accent) 24%, var(--mirror-surface));
 	--mirror-accent-ink: color-mix(in oklab, var(--mirror-accent) 45%, var(--mirror-text));
+
+	/*
+	 * The highlight's fill, mixed like the tints above but over the PAGE rather than a panel: a
+	 * <mark> happens in running text. 22% takes one value for both Modes where the tints needed
+	 * two — measured, it lands at 1.35:1 against the Light page and 1.40:1 against the Dark one,
+	 * with the body's ink at 12.35:1 and 12.10:1 on top of it.
+	 */
+	--mirror-highlight: color-mix(in oklab, var(--mirror-accent) 22%, var(--mirror-bg));
 }
 
 .dark {
@@ -237,6 +245,18 @@
 	@apply text-body leading-body mt-5 text-pretty;
 }
 
+/*
+ * The article's h1. The design's scale has one (46px) and this layer never had a rule for it,
+ * because `page.hbs` and the post hero set the TITLE's h1 in the template — so a heading the
+ * EDITOR emitted, `# ` in a markdown card or H1 in Lexical, fell through to the UA's 2em bold in
+ * the body face. Nothing else would have caught it: the rendered page loads this stylesheet and
+ * `public/cards.min.css`, and the one file in Ghost that styles a bare element, `ghost.min.css`,
+ * is not served to the frontend.
+ */
+.mirror-content h1 {
+	@apply font-display text-h1 tracking-heading mt-14 leading-[1.15] font-medium;
+}
+
 .mirror-content h2 {
 	@apply font-display text-h2 tracking-heading mt-14 leading-[1.2] font-medium;
 }
@@ -282,6 +302,83 @@
 }
 
 /*
+ * The one accent control Ghost gives NO ink, which the rule above then breaks.
+ *
+ * `cards.manifest.json`'s cta bundle sets `a.kg-cta-button.kg-style-accent { background-color:
+ * var(--ghost-accent-color) }` and no `color` at all — `calltoaction-renderer.js` writes
+ * `style="color: ${buttonTextColor}"` inline instead. So a CTA whose author never touched the text
+ * colour, or one pasted as markup, inherits the article's link colour: the accent, on the accent.
+ * Measured on the style guide, where two of the three CTA buttons rendered with no visible label.
+ *
+ * `#fff` and not a token, because #fff is Ghost's OWN pairing for every other accent control in the
+ * set — the button card's `kg-btn-accent`, the product card's buy button, the signup card's submit.
+ * The theme's job here is to stop the article's link rule leaking into a filled button, not to
+ * relitigate what colour sits on the publication's accent. An inline style from the editor still
+ * wins, which is the point: the author's choice is untouched and only the absence is covered.
+ */
+.mirror-content a.kg-cta-button {
+	@apply no-underline;
+
+	color: #fff;
+}
+
+/*
+ * Inline code inside a card whose ink the AUTHOR owns.
+ *
+ * The header and signup cards carry `style="color: …"` on every text element, written by the
+ * renderer out of the editor's own fields, and the accent callout carries Ghost's `color: #fff`. A
+ * code chip with a fixed pale fill and the theme's own dark ink is unreadable in all three the
+ * moment the author picks white text — measured on the style guide's split header, where
+ * `kg-swapped` rendered as white on a near-white chip in Light.
+ *
+ * So the chip is derived from whatever ink it finds itself in rather than stated: 16% of
+ * `currentColor` is a fill on either side of the contrast, and `color: inherit` keeps the author's
+ * choice for the code as well as the prose around it.
+ */
+.mirror-content :is(.kg-header-card, .kg-signup-card, .kg-callout-card-accent) code {
+	background: color-mix(in oklab, currentColor 16%, transparent);
+	color: inherit;
+}
+
+/*
+ * The highlight. `==text==` in a markdown card — markdown-it-mark ships inside
+ * @tryghost/kg-markdown-html-renderer — and Lexical's own highlight button both emit a bare
+ * <mark>, which reaches no stylesheet at all: cards.min.css styles the inside of cards, and
+ * Ghost's `mark{background:#ff0;color:#000}` lives in ghost.min.css, which the frontend never
+ * loads. So a highlight rendered at the UA default, in both Modes, in a theme of stone neutrals.
+ *
+ * `accent-soft` was the obvious fill and is wrong for this: at 7% it measures 3.4/255 from the
+ * page, which is a tint under a panel, not a mark on a word. The token above is the same idiom at
+ * 22%.
+ */
+.mirror-content mark {
+	@apply rounded-[3px] px-1 py-0.5;
+	background: var(--mirror-highlight);
+	color: var(--mirror-text);
+}
+
+/*
+ * `~sub~` and `^sup^` arrive from the same renderer (markdown-it-sub, markdown-it-sup) and reach
+ * the same nowhere. The UA's own `font-size: smaller` is 0.83em, which is large enough at the body
+ * size to open the line it sits in; this is normalize's fix, which is what ghost.min.css would
+ * have supplied.
+ */
+.mirror-content :is(sub, sup) {
+	position: relative;
+	font-size: 0.75em;
+	line-height: 0;
+	vertical-align: baseline;
+}
+
+.mirror-content sub {
+	bottom: -0.25em;
+}
+
+.mirror-content sup {
+	top: -0.5em;
+}
+
+/*
  * Ghost emits a quote as `<blockquote>text</blockquote>` — no inner paragraph — so the type is
  * set on the element and the paragraph rule is overridden for the case where an author wrote
  * one anyway.
@@ -320,9 +417,15 @@
 }
 
 /*
- * The design's code specimen carries a header strip naming the language. Ghost emits
- * `<pre><code class="language-json">` and nothing to hang a strip on, so the surface, the
- * scrollbar and the type are ported and the strip is not. Concession, recorded.
+ * The design's code specimen carries a header strip naming the language, and Ghost emits
+ * `<pre><code class="language-json">` — so wherever the author named a language, the language is
+ * there to read. assets/js/main.js reads it, wraps the block in the shell below and draws the
+ * strip; the surface and the border move out to the shell so the strip and the code sit in one
+ * rounded panel, and the pre gives them up.
+ *
+ * WHAT REMAINS A CONCESSION is the block that names NOTHING. There is no language to print, no
+ * sniffing that would be honest at 13.5px, and the design's own specimen is exactly that block —
+ * so it keeps the surface, the scrollbar and the type, and no strip. Recorded.
  */
 .mirror-content pre {
 	@apply border-code-border bg-code-bg text-code-fg sg-scroll mt-11 overflow-x-auto rounded-md border px-4 py-[18px] font-mono text-[13.5px] leading-[1.7];
@@ -330,6 +433,138 @@
 
 .mirror-content pre code {
 	@apply border-0 bg-transparent p-0 text-[length:inherit];
+}
+
+.mirror-content .mirror-code {
+	@apply border-code-border bg-code-bg mt-11 overflow-hidden rounded-md border;
+}
+
+/* 0,2,1 — it has to outrank `.mirror-content pre` above, which is 0,1,1. */
+.mirror-content .mirror-code > pre {
+	@apply mt-0 rounded-none border-0;
+}
+
+/* Ghost's captioned form is `figure.kg-code-card > pre + figcaption`, so the shell lands inside
+ * the figure and the figure keeps the margin the card layer already gives it. */
+.mirror-content .kg-code-card > .mirror-code {
+	@apply mt-0;
+}
+
+.mirror-content .mirror-code-bar {
+	@apply border-code-border flex items-center justify-between border-b px-4 py-2.5;
+}
+
+.mirror-content .mirror-code-lang {
+	@apply text-code-muted font-mono text-[11px] tracking-[0.08em] uppercase;
+}
+
+/* The design draws the word `copy` here as a label. It is a button, because a word that looks
+ * like a control and is not one is the worse of the two deviations — DECISIONS.md. */
+.mirror-content .mirror-code-copy {
+	@apply text-code-muted hover:text-text font-mono text-[11px] transition-colors;
+}
+
+/*
+ * ── The Syntax palette ────────────────────────────────────────────────────────────────
+ *
+ * The design draws code in ONE colour, so none of this is transcribed from it: it is an
+ * Extension, and it renders only where the design drew nothing — inside a block whose author
+ * named a language. See docs/adr/0001-mirror-authors-its-own-syntax-palette.md.
+ *
+ * Four hues and two neutrals, because `::highlight()` accepts colour and decoration only —
+ * font-style and font-weight do not apply to it, so every distinction has to be carried by hue.
+ * Three of the six come from tokens the design already fixed (muted, accent-strong, danger);
+ * `operator` is the code colour mixed back into its own surface, the way accent-soft is mixed;
+ * and exactly two raw values are new, one pair per Mode, for strings and for types.
+ *
+ * Measured on the code surface (#f6f4f0 Light, #1b1815 Dark), in oklab for the mix: the quietest
+ * of the six is `comment` at 5.4:1 Light and 6.9:1 Dark, and nothing here is below it. That is
+ * why `comment` is the body's muted and not code-muted, which measures 3.5:1 on this surface —
+ * code-muted sets the strip's LABEL, at 11px on a 4.5:1-exempt UI string, not running text.
+ *
+ * A token category with no rule here inherits the code colour, which is the design's drawing —
+ * so a grammar that scopes something this palette does not name renders plain, never wrong.
+ */
+:root {
+	--mirror-syntax-string: #4a6117;
+	--mirror-syntax-type: #45508f;
+}
+
+.dark {
+	--mirror-syntax-string: #9dbb6a;
+	--mirror-syntax-type: #a3b0e8;
+}
+
+.mirror-content {
+	--syntax-comment: var(--color-muted);
+	--syntax-operator: color-mix(in oklab, var(--color-code-fg) 70%, var(--color-code-bg));
+	--syntax-keyword: var(--color-accent-strong);
+	--syntax-string: var(--mirror-syntax-string);
+	--syntax-constant: var(--color-danger);
+	--syntax-type: var(--mirror-syntax-type);
+}
+
+/*
+ * Scoped to the content layer so the ranges microlighter registers are the only ones these rules
+ * can paint, and written out rather than grouped: `:is()` does not accept a pseudo-element.
+ * The registry names are microlighter's own (dist/themes/*.css).
+ *
+ * `pnpm ghost:css` PRINTS 33 WARNINGS FOR THIS SECTION AND THAT IS EXPECTED. Tailwind minifies
+ * with Lightning CSS, which does not know `::highlight()` yet and reports "not recognized as a
+ * valid pseudo-element" once per selector. It emits every rule unchanged — verified in
+ * assets/built/screen.css — splitting each selector list into one rule per selector, which is if
+ * anything safer: a browser that rejects the pseudo-element drops that rule alone instead of the
+ * whole list. Nothing to fix here, and `@supports selector(::highlight(x))` only halves the count.
+ */
+.mirror-content ::highlight(comment),
+.mirror-content ::highlight(quote) {
+	color: var(--syntax-comment);
+}
+
+.mirror-content ::highlight(operator),
+.mirror-content ::highlight(punctuation) {
+	color: var(--syntax-operator);
+}
+
+.mirror-content ::highlight(keyword),
+.mirror-content ::highlight(storage),
+.mirror-content ::highlight(at-rule),
+.mirror-content ::highlight(doctype),
+.mirror-content ::highlight(important),
+.mirror-content ::highlight(section),
+.mirror-content ::highlight(tag) {
+	color: var(--syntax-keyword);
+}
+
+.mirror-content ::highlight(string),
+.mirror-content ::highlight(regexp),
+.mirror-content ::highlight(attribute-value),
+.mirror-content ::highlight(link),
+.mirror-content ::highlight(raw),
+.mirror-content ::highlight(inserted) {
+	color: var(--syntax-string);
+}
+
+.mirror-content ::highlight(numeric),
+.mirror-content ::highlight(boolean),
+.mirror-content ::highlight(constant),
+.mirror-content ::highlight(symbol),
+.mirror-content ::highlight(character-entity),
+.mirror-content ::highlight(anchor),
+.mirror-content ::highlight(entity),
+.mirror-content ::highlight(deleted) {
+	color: var(--syntax-constant);
+}
+
+.mirror-content ::highlight(function),
+.mirror-content ::highlight(decorator),
+.mirror-content ::highlight(animation),
+.mirror-content ::highlight(type),
+.mirror-content ::highlight(support),
+.mirror-content ::highlight(selector),
+.mirror-content ::highlight(variable),
+.mirror-content ::highlight(interpolation) {
+	color: var(--syntax-type);
 }
 
 /*
@@ -363,21 +598,82 @@
 /*
  * The design's callout: an accent rail in place of Ghost's filled block.
  *
- * The rail, the padding and the radius only — the BACKGROUND stays Ghost's, because the colour
- * is the author's choice in the editor and `.kg-callout-card-accent` carries `color: #fff` in
- * the same declaration that sets its background. Overriding one and not the other put white
- * text on a near-white panel. The editor's default is grey, which is the design's own tint.
+ * The rail, the padding and the radius only — the BACKGROUND stays Ghost's, and Ghost's is right:
+ * all nine tints are TRANSLUCENT (`--callout-grey` is `#7c8b9a21`, blue `#21ace81f`, red
+ * `#d12e2e1c`) so every one of them sits over the page in either Mode without a rule from here.
+ * Only the grey and the white are replaced, and only because those two are the design's own tint
+ * and the editor's default.
+ *
+ * THE RAIL FOLLOWS THE AUTHOR'S COLOUR. An author who picks "blue" has said what the note is, and
+ * a blue panel with an amber rail is the theme arguing with them. So each variant carries its own
+ * hue at full strength — the same seven hues Ghost tints the panel with, which is why no value here
+ * is invented. `--mirror-callout-rail` is the one property the variants set, and the shared rule
+ * below reads it: nine variants, nine one-line declarations, one place that knows what a rail is.
+ *
+ * The accent variant is Ghost's exception in both directions: it fills with
+ * `var(--ghost-accent-color)` and sets `color: #fff` in the same declaration, so its rail cannot be
+ * the accent (invisible on itself) and its ink is not ours to claim — overriding one and not the
+ * other is what put white text on a near-white panel the first time. The rail darkens the fill
+ * instead, which reads on the accent in both Modes.
  */
 .mirror-content .kg-callout-card {
-	@apply border-border border-l-accent gap-4 rounded-sm border border-l-[3px] px-[22px] py-5 shadow-none;
+	@apply gap-4 rounded-sm border px-[22px] py-5 shadow-none;
+
+	border-color: var(--color-border);
+	border-left: 3px solid var(--mirror-callout-rail, var(--color-accent));
 }
 
 .mirror-content :is(.kg-callout-card-grey, .kg-callout-card-white) {
 	@apply bg-surface-2;
 }
 
+.mirror-content .kg-callout-card-blue {
+	--mirror-callout-rail: #21ace8;
+}
+
+.mirror-content .kg-callout-card-green {
+	--mirror-callout-rail: #34b743;
+}
+
+.mirror-content .kg-callout-card-yellow {
+	--mirror-callout-rail: #f0a50f;
+}
+
+.mirror-content .kg-callout-card-red {
+	--mirror-callout-rail: #d12e2e;
+}
+
+.mirror-content .kg-callout-card-pink {
+	--mirror-callout-rail: #e147ae;
+}
+
+.mirror-content .kg-callout-card-purple {
+	--mirror-callout-rail: #8755ec;
+}
+
+.mirror-content .kg-callout-card-accent {
+	--mirror-callout-rail: color-mix(in oklab, #000 30%, var(--color-accent));
+}
+
 .mirror-content .kg-callout-card div.kg-callout-text {
 	@apply text-small leading-[1.6];
+}
+
+/*
+ * The toggle card. Ghost's own geometry is a 4px radius and a hairline it draws as an inset shadow,
+ * which is one step tighter than every other panel in this theme; the heading is its `font-weight:
+ * 700` at 1.15em in the body face, where a heading in a MIRROR article steps to the UI face by h4.
+ * Ghost's chevron and its animation stay — `cards.min.js` is what opens the card, and the theme has
+ * no business owning half of a disclosure it does not drive.
+ */
+.mirror-content .kg-toggle-card {
+	@apply border-border rounded-sm border px-[22px] py-5;
+
+	box-shadow: none;
+}
+
+.mirror-content .kg-toggle-card h4.kg-toggle-heading-text {
+	@apply font-ui text-text text-[17px] leading-[1.35] font-semibold;
 }
 
 /* The design's pull quote: display face, centred, no rail. */
@@ -395,6 +691,225 @@
 
 .mirror-content th {
 	@apply font-meta text-meta tracking-meta text-muted uppercase;
+}
+
+/*
+ * A table's scroll shell. Ghost emits a BARE <table> — there is no `kg-table` class anywhere in
+ * 6.60 — and a table stops shrinking at its min-content width, so a ten-column table in a Post
+ * pushes the whole page wider than the viewport. `partials/pages/membership.hbs` already solves
+ * that for the benefit matrix by setting `overflow-x-auto` on the content div itself, which a Post
+ * cannot copy: it would clip `bleed-wide`, and a Post is the one Surface where a wide image
+ * occurs. So `assets/js/main.js` wraps each table the way it already wraps a `pre`, and the
+ * wrapper takes the margin the table gives up.
+ *
+ * 0,2,1 on the reset, because it has to outrank `.mirror-content table` above at 0,1,1.
+ */
+.mirror-content .mirror-table {
+	@apply sg-scroll mt-11 overflow-x-auto;
+}
+
+.mirror-content .mirror-table > table {
+	@apply mt-0;
+}
+
+/*
+ * Embeds. `.kg-embed-card` is in NO Ghost bundle — `cards.manifest.json` ships sixteen and embed
+ * is not one of them — so the iframe renders at whatever size the oEmbed provider returned, and
+ * YouTube's own html says `width="200" height="113"`: a 200px video in a 617px measure.
+ *
+ * The ratio is scoped to `[allowfullscreen]` rather than set on every iframe, because a video
+ * player carries that attribute and the iframe X's widget writes does not — forcing 16:9 onto a
+ * rendered tweet crops it.
+ *
+ * The blockquote rule is the state BEFORE that widget runs, or forever if it is blocked: an X
+ * embed arrives as `<blockquote class="twitter-tweet">` plus a script, and the article's own quote
+ * rule paints it as an accent-railed italic pull quote in the meantime.
+ */
+.mirror-content .kg-embed-card {
+	@apply flex flex-col items-center;
+}
+
+.mirror-content .kg-embed-card iframe {
+	@apply w-full max-w-full;
+}
+
+.mirror-content .kg-embed-card iframe[allowfullscreen] {
+	aspect-ratio: 16 / 9;
+	height: auto;
+}
+
+.mirror-content .kg-embed-card blockquote {
+	@apply mt-0 border-0 p-0 text-[length:inherit] leading-[inherit] not-italic;
+}
+
+/*
+ * Footnotes. markdown-it-footnote@4 ships in the same renderer, so `[^1]` produces a reference,
+ * an `<hr class="footnotes-sep">` and a `<section class="footnotes">` around an ordered list —
+ * five classes, none of which Ghost styles. The separator is an `hr` and the list is an `ol`, so
+ * both already have the article's own rule; what is added is the reference's link (an underlined
+ * `[1]` at 0.75em reads as damage), the section's quieter type, and the way back.
+ */
+.mirror-content .footnote-ref a {
+	@apply no-underline;
+}
+
+.mirror-content .footnotes {
+	@apply text-small text-muted mt-11 block;
+}
+
+/*
+ * 0,2,1, and the `ol` is the reason it has to be: the list carries the article's own
+ * `.mirror-content :is(ul, ol)` rule at 0,1,1, which re-states `text-body` and would otherwise put
+ * the footnotes back at reading size inside a section set one step down.
+ */
+.mirror-content .footnotes :is(ol, ul, p) {
+	@apply text-[length:inherit] leading-[1.6];
+}
+
+.mirror-content .footnote-backref {
+	@apply ml-1 no-underline;
+}
+
+/*
+ * ── Platform card colour ──────────────────────────────────────────────────────────────
+ *
+ * Ghost ships CSS for sixteen Platform cards and `prefers-color-scheme` appears ZERO times across
+ * all of them. Five hardcode a light palette outright, which in this theme's dark Mode is a white
+ * panel with near-black ink in the middle of a near-black page. Geometry stays the platform's —
+ * DECISIONS.md — and the colour is claimed here, governed by whether the design draws the card:
+ * docs/adr/0002-platform-card-colour-is-split-by-the-drawing.md.
+ *
+ * WHAT IS DELIBERATELY NOT CLAIMED, so a later reader does not "finish" the list. Ghost pairs
+ * `var(--ghost-accent-color)` with `color:#fff` on every accent control (button card, product's
+ * buy, signup's submit) and that stays Ghost's, for the same reason the callout's background does:
+ * the accent is the publication's, `default.hbs` publishes it in one `:root` for both Modes, and
+ * claiming the ink without the fill is what put white text on a near-white panel last time.
+ * `kg-video-card`'s twenty-six `#fff` values sit in a control bar painted over `#00000080` on top
+ * of the video and are correct in both Modes. `kg-header-card`'s backgrounds and inks are written
+ * INLINE by the renderer out of the author's own editor fields, so a Mode has no say in them by
+ * construction — and v1's `kg-style-light` (`#fafafa`, dark ink) is an author asking for a light
+ * panel, which is not a bug to fix in dark Mode. Ghost's nine callout tints and the CTA's
+ * `rgba(124,139,154,.2)` dividers are translucent, so they need nothing. The transistor card's
+ * placeholder is already `color-mix(in srgb, currentColor …)`.
+ *
+ * Every description, metadata and rating rule Ghost writes uses `currentColor` with an opacity, so
+ * claiming the container's `color` carries all of them — the product card's five rating stars are
+ * `fill: currentColor` at 15% and 100%, and get their colour from the container rule below. That is
+ * why this section is seven rules and not thirty.
+ */
+
+/*
+ * The design draws this card (Styleguide §07): the page surface, a hairline, and its own muted
+ * steps for description and source. 0,4,0 — Ghost's `.kg-bookmark-card a.kg-bookmark-container`
+ * is 0,3,0 in the later stylesheet.
+ */
+.mirror-content .kg-bookmark-card a.kg-bookmark-container {
+	background: var(--color-surface);
+	color: var(--color-text);
+	border-color: var(--color-border);
+}
+
+/* Also drawn. Ghost draws the hairline as an inset shadow rather than a border, so the override
+ * has to replace the shadow it inherits, not a border-color. */
+.mirror-content .kg-product-card-container {
+	background: var(--color-surface);
+	color: var(--color-text);
+	box-shadow: inset 0 0 0 1px var(--color-border);
+}
+
+/* The design draws no player, no file and no signup panel, so the three below are an Extension:
+ * the platform's geometry with this theme's tokens dropped in, and nothing transcribed. */
+.mirror-content .kg-audio-card {
+	background: var(--color-surface-2);
+	color: var(--color-text);
+	box-shadow: inset 0 0 0 1px var(--color-border);
+}
+
+.mirror-content .kg-audio-time {
+	color: var(--color-muted);
+}
+
+.mirror-content .kg-file-card a.kg-file-card-container {
+	background: var(--color-surface-2);
+	color: var(--color-text);
+	border-color: var(--color-border);
+}
+
+/*
+ * The signup card's own field row. The input needs both halves: Ghost sets its background to #fff
+ * and leaves the text to inherit, so in the dark Mode a visitor types near-white on white.
+ */
+.mirror-content :is(.kg-signup-card-fields, .kg-signup-card-input) {
+	background: var(--color-surface);
+	color: var(--color-text);
+	border-color: var(--color-border);
+}
+
+.mirror-content .kg-signup-card-form.error .kg-signup-card-fields {
+	border-color: var(--color-danger);
+	box-shadow: inset 0 0 0 1px var(--color-danger);
+}
+
+/*
+ * The NFT card, which is NOT deprecated in the sense that word was used here before.
+ *
+ * There is no NFT node in `@tryghost/kg-default-nodes`, so the Lexical editor cannot make a new one
+ * and the Ghost 6 card menu does not offer it. But `@tryghost/kg-default-cards` still renders one —
+ * `build/esm/cards/embed/nft.js` — which is the path every MOBILEDOC post takes, and a publication
+ * migrating onto this theme can arrive with years of them. Its three inks are `#222` and `#ababab`
+ * on a container with no background at all, so in dark Mode it was near-black text on a near-black
+ * page: the one failure mode worse than a white slab, because there is nothing to see at all.
+ *
+ * Claimed as an Extension, like the player and the file card: this theme's tokens in the platform's
+ * geometry. The card also carries `kg-embed-card`, so the embed rules above already centre it.
+ */
+.mirror-content .kg-nft-card a.kg-nft-card-container {
+	background: var(--color-surface);
+	color: var(--color-text);
+	box-shadow: inset 0 0 0 1px var(--color-border);
+}
+
+.mirror-content
+	:is(.kg-nft-card h4.kg-nft-title, .kg-nft-card .kg-nft-creator span, .kg-nft-card p.kg-nft-description) {
+	color: var(--color-text);
+}
+
+.mirror-content .kg-nft-card .kg-nft-creator {
+	color: var(--color-muted);
+}
+
+/*
+ * A header card over a photograph: the one place the "colour is the author's" rule leaves a hole.
+ *
+ * Ghost renders the background image as an absolutely-positioned `img` inside a `picture` and adds
+ * NOTHING between it and the text — no scrim, no gradient, no shadow. The author picks the ink in
+ * the editor, which is the right place for it, but no single ink is legible over an arbitrary
+ * photograph: white sits on the sky and vanishes on it two hundred pixels later. Measured on the
+ * style guide, where a white heading over a glass façade was unreadable in BOTH Modes — this is not
+ * a dark-Mode bug, it is a bug the design's own light page has too.
+ *
+ * So the theme adds contrast without touching colour: a dark scrim between the image and the text,
+ * darker at the foot where a caption or a button lands. That is the same bargain the Post's cover
+ * hero already makes, and it leaves the author's choice of ink meaning what they chose.
+ *
+ * `:has(> picture)` and not `:has(picture)`: the SPLIT layout puts its picture INSIDE
+ * `kg-header-card-content`, beside the text rather than behind it, and a scrim over a two-column
+ * band would tint the half that is already the author's flat colour.
+ *
+ * `position: relative` on the content is what makes the order deterministic. The scrim is the
+ * content's own `::before`, so it paints above the image (positioned, later in the tree) and below
+ * the content's text (generated content comes first among its siblings) without a z-index anywhere.
+ */
+.mirror-content .kg-header-card:has(> picture) .kg-header-card-content {
+	position: relative;
+}
+
+.mirror-content .kg-header-card:has(> picture) .kg-header-card-content::before {
+	content: '';
+	position: absolute;
+	inset: 0;
+	background: linear-gradient(to bottom, #0000005c, #000000a3);
+	pointer-events: none;
 }
 
 /*

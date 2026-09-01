@@ -329,10 +329,17 @@
 	}
 }
 
+/*
+ * The thin scrollbar the code blocks, the wide tables and the style guide's contents rail share.
+ * Both axes are sized: WebKit reads `height` for a horizontal scrollbar and `width` for a vertical
+ * one, so a utility that states only one leaves the other at the platform default — which is how a
+ * 15px system scrollbar ended up next to a 6px one on the same page.
+ */
 @utility sg-scroll {
 	scrollbar-width: thin;
 
 	&::-webkit-scrollbar {
+		width: 6px;
 		height: 6px;
 	}
 

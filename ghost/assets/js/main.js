@@ -95,27 +95,57 @@ document.addEventListener('alpine:init', () => {
 	 * (the A1 disclosure, the A2 rail) mount this same component, and only one of them exists on
 	 * any page.
 	 *
-	 * h2 only, matching the design's own contents list. The ids are Ghost's — its renderer
-	 * slugifies every heading and suffixes collisions — and a heading without one is skipped
-	 * rather than given a generated anchor: an id this script invents would not survive the
-	 * reader sharing the link with anyone whose page rendered a different body.
+	 * DEPTH IS AN ARGUMENT, AND THE DEFAULT IS THE DESIGN'S. A Post lists h2 only, because the
+	 * drawing's own contents list does: it names the four chapter headings and skips the h3 under
+	 * one of them, and a list that mirrors every level of a long essay stops being navigation. That
+	 * is a drawn Surface and it is scored, so the default cannot change. The style guide is not
+	 * drawn and is twenty-three sections of which most have variants, so it mounts `postToc(3)` and
+	 * gets the second level nested under the first. One component, one rule, stated per Surface.
+	 *
+	 * The ids are Ghost's — its renderer slugifies every heading and suffixes collisions — and a
+	 * heading without one is skipped rather than given a generated anchor: an id this script
+	 * invents would not survive the reader sharing the link with anyone whose page rendered a
+	 * different body.
 	 *
 	 * `active` is which section the reader has reached, by the same rule the design source used:
 	 * the last heading whose top has passed 160px. The scroll handler coalesces into one frame,
 	 * but the first pass runs directly — a headless renderer taking a screenshot never fires
 	 * requestAnimationFrame, and the list would ship with nothing marked.
 	 */
-	Alpine.data('postToc', () => ({
+	Alpine.data('postToc', (depth = 2) => ({
 		items: [],
 		active: '',
 
 		init() {
-			const headings = document.querySelectorAll('.mirror-content h2[id]');
-			this.items = [...headings].map((heading, i) => ({
-				id: heading.id,
-				label: heading.textContent.trim(),
-				num: String(i + 1).padStart(2, '0'),
-			}));
+			/*
+			 * DIRECT CHILDREN ONLY. A card can contain a heading with an id of its own — the header
+			 * card's h2 gets one from `slugify(nodeData.header)`, and a sign-up card's does too — and
+			 * a descendant selector puts "A section header" in the contents list as though it were a
+			 * chapter of the article. Ghost's content is a flat sequence of elements, so the
+			 * article's own headings are exactly the ones at depth 1.
+			 */
+			const level = depth > 2 ? ':is(h2, h3)' : 'h2';
+			const selector = `.mirror-content > ${level}[id]`;
+			const flat = [];
+			let n = 0;
+
+			/* A child needs a parent to nest under. An h3 that arrives before any h2 — an author
+			 * can write one, and the second level of a page that never opened a first is exactly
+			 * the case a silent `undefined.children.push` would swallow — is promoted and numbered
+			 * rather than dropped. */
+			for (const heading of document.querySelectorAll(selector)) {
+				const item = { id: heading.id, label: heading.textContent.trim(), children: [] };
+				const parent = this.items[this.items.length - 1];
+
+				if (heading.tagName === 'H3' && parent) {
+					parent.children.push(item);
+				} else {
+					n += 1;
+					item.num = String(n).padStart(2, '0');
+					this.items.push(item);
+				}
+				flat.push(item);
+			}
 
 			if (!this.items.length) return;
 
@@ -123,7 +153,10 @@ document.addEventListener('alpine:init', () => {
 			const sync = () => {
 				frame = 0;
 				let reached = '';
-				for (const item of this.items) {
+				/* Every heading in the list, not only the numbered ones: the reader is inside the
+				 * subsection they can see, and marking its parent instead would put the highlight
+				 * on a heading that has already scrolled away. */
+				for (const item of flat) {
 					const heading = document.getElementById(item.id);
 					if (heading && heading.getBoundingClientRect().top <= 160) reached = item.id;
 				}
@@ -281,6 +314,115 @@ document.addEventListener('click', (event) => {
 	const behavior = window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth';
 
 	track.scrollBy({ left: button.hasAttribute('data-featured-prev') ? -step : step, behavior });
+});
+
+/*
+ * The code block's language strip.
+ *
+ * The design draws a header above the code naming its language, with the word `copy` on the right.
+ * Ghost emits `<pre><code class="language-json">`, so the language is in the document whenever the
+ * author named one — this reads it and wraps the block in the shell assets/css/screen.css styles.
+ * A block that names NO language is left alone: that is the Concession the stylesheet records, and
+ * it is what keeps the design's own specimen, which names nothing, exactly as it was measured.
+ *
+ * The two labels come from the <template> in default.hbs rather than from here, because a string a
+ * visitor reads has to pass through {{t}} — the same rule partials/post/share.hbs follows. And
+ * because the strip is built by script, a visitor with scripting off gets no strip rather than a
+ * dead one, which is what `x-cloak` buys that partial the long way round.
+ *
+ * This runs before the highlighter (that module is `type="module"`, so it is deferred past this
+ * file), which is the order the shell wants: microlighter registers ranges over the text nodes
+ * inside <code>, and moving the <pre> afterwards would leave them anchored to the same nodes but
+ * force a second style resolution for nothing.
+ */
+const CODE_SHELL = 'mirror-code';
+const LANGUAGE_PREFIX = 'language-';
+
+const template = document.getElementById('mirror-code-strip');
+
+for (const code of template
+	? document.querySelectorAll(`.mirror-content pre > code[class*="${LANGUAGE_PREFIX}"]`)
+	: []) {
+	const language = [...code.classList].find((name) => name.startsWith(LANGUAGE_PREFIX))?.slice(LANGUAGE_PREFIX.length);
+	const pre = code.parentElement;
+	if (!language || pre.parentElement?.classList.contains(CODE_SHELL)) continue;
+
+	const shell = document.createElement('div');
+	shell.className = CODE_SHELL;
+	pre.replaceWith(shell);
+	shell.append(template.content.cloneNode(true), pre);
+	shell.querySelector('.mirror-code-lang').textContent = language;
+
+	/* The design's specimen is focusable: it is a scroll container, and a scroll container a
+	 * keyboard cannot reach is a cropped page. src/components/cards/CodeCard.astro does the same. */
+	pre.tabIndex = 0;
+}
+
+/*
+ * A TABLE'S SCROLL SHELL, the same move one paragraph up.
+ *
+ * Ghost emits a bare <table> — no `kg-table` class exists anywhere in 6.60 — and a table stops
+ * shrinking at its min-content width, so a wide one in a Post pushes the page past the viewport
+ * and takes its last column off the edge. `partials/pages/membership.hbs` fixes that for the
+ * benefit matrix by scrolling the whole content div, which a Post cannot do: `bleed-wide` breaks
+ * the measure on purpose there, and an ancestor with `overflow-x` would clip it.
+ *
+ * So the shell goes around the table alone. No <template> and no strings: unlike the code strip
+ * this element carries nothing a visitor reads, so it needs no {{t}} and can be built here. A
+ * visitor with scripting off keeps today's behaviour, which is the platform's.
+ */
+const TABLE_SHELL = 'mirror-table';
+
+for (const table of document.querySelectorAll('.mirror-content table')) {
+	/*
+	 * A Surface that has already declared its own scroll container keeps it: Membership scrolls the
+	 * whole matrix block (`data-scroll-intent` in partials/pages/membership.hbs) because the
+	 * cropped column there is the tier being sold. Nesting a second scroll box inside it would put
+	 * two scrollbars around one table and move a scored Surface for nothing.
+	 */
+	if (table.closest('[data-scroll-intent]') || table.parentElement?.classList.contains(TABLE_SHELL)) continue;
+
+	const shell = document.createElement('div');
+	shell.className = TABLE_SHELL;
+	/* The audit's own convention: anything that scrolls on purpose says why, so an exception cannot
+	 * quietly become the rule (scripts/verify/probe-audit.js). Same wording as membership.hbs. */
+	shell.dataset.scrollIntent = 'a wide table, reachable instead of cropped';
+	table.replaceWith(shell);
+	shell.append(table);
+
+	/* A scroll container a keyboard cannot reach is a cropped page — the reason the <pre> above
+	 * takes a tabIndex, and the reason membership.hbs leaves block padding for the focus ring. */
+	shell.tabIndex = 0;
+}
+
+/*
+ * Copy, from the strip.
+ *
+ * `textContent` is the whole of it because the highlighter paints with the CSS Custom Highlight
+ * API and adds no markup — the code in the DOM is the code the author wrote, so what is copied is
+ * what is shown. The label is only swapped after the write resolves, for the reason postShare
+ * states: navigator.clipboard is undefined on an insecure origin and the permission can be
+ * refused, and a label that claims a copy that did not happen is worse than no label.
+ */
+const copyTimers = new Map();
+
+document.addEventListener('click', async (event) => {
+	const button = event.target.closest?.('.mirror-code-copy');
+	const code = button?.closest(`.${CODE_SHELL}`)?.querySelector('pre > code');
+	if (!code) return;
+
+	try {
+		await navigator.clipboard.writeText(code.textContent);
+	} catch {
+		return;
+	}
+
+	button.textContent = button.dataset.copied;
+	clearTimeout(copyTimers.get(button));
+	copyTimers.set(
+		button,
+		setTimeout(() => (button.textContent = button.dataset.copy), 2000),
+	);
 });
 
 window.Alpine = Alpine;

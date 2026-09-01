@@ -30,6 +30,7 @@ import { join } from 'node:path';
 import { api, base } from './admin.mjs';
 
 const INDEX = 'scripts/ghost/score-index.json';
+const UNSCORED = 'scripts/ghost/unscored.json';
 const RULES = 'scripts/verify/probe-audit.js';
 const ASTRO_PROBE = 'public/probe-mobile.html';
 
@@ -228,6 +229,21 @@ async function main() {
 		const paths = groups.get(key) ?? new Set();
 		paths.add(row.path);
 		groups.set(key, paths);
+	}
+
+	/*
+	 * The unscored Surfaces are swept as well, in the empty settings group.
+	 *
+	 * `score-index.json` cannot hold them — every row there is keyed to a reference PNG — but a
+	 * Page whose whole content is the platform's own cards is the LAST one to leave out of a width
+	 * sweep: an audio player, an embed and a ten-column table are precisely the things that break
+	 * at 320px, and none of them appear anywhere else in the fixture. `scripts/ghost/unscored.json`
+	 * is the same list `build-jobs.mjs` captures from, so the two cannot drift.
+	 */
+	for (const row of JSON.parse(readFileSync(UNSCORED, 'utf8'))) {
+		const paths = groups.get('{}') ?? new Set();
+		paths.add(row.path);
+		groups.set('{}', paths);
 	}
 
 	const source = readFileSync(RULES, 'utf8');

@@ -57,6 +57,9 @@ importers:
       gscan:
         specifier: ^6.4.2
         version: 6.4.2(@opentelemetry/core@2.10.0(@opentelemetry/api@1.9.1))
+      microlighter:
+        specifier: 2.1.0
+        version: 2.1.0
       prettier:
         specifier: ^3.8.4
         version: 3.8.4
@@ -3152,6 +3155,10 @@ packages:
   meriyah@6.1.4:
     resolution: {integrity: sha512-Sz8FzjzI0kN13GK/6MVEsVzMZEPvOhnmmI1lU5+/1cGOiK3QUahntrNNtdVeihrO7t9JpoH75iMNXg6R6uWflQ==}
     engines: {node: '>=18.0.0'}
+
+  microlighter@2.1.0:
+    resolution: {integrity: sha512-lngSOqDbT7IuNV1OekRp0zRCOlhVEuSdQdbEZbkXfmQPYpeIArk5wyrUQTvBmeCqiy/ZDW/RLmbopI74JBnCIg==}
+    engines: {node: '>=18'}
 
   micromark-util-character@2.1.1:
     resolution: {integrity: sha512-wv8tdUTJ3thSFFFJKtpYKOYiGP2+v96Hvk4Tu8KpCAsTMs6yi+nVmGh1syvSCsaxz45J6Jbw+9DD6g97+NV67Q==}
@@ -7460,6 +7467,8 @@ snapshots:
   merge-descriptors@2.0.0: {}
 
   meriyah@6.1.4: {}
+
+  microlighter@2.1.0: {}
 
   micromark-util-character@2.1.1:
     dependencies:

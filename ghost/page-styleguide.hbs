@@ -1,0 +1,95 @@
+{{!< default}}
+
+{{!-- THE STYLE GUIDE: one Page holding every element a Ghost editor can emit, in every variant it
+can emit it in.
+
+WHAT THIS IS FOR. A buyer evaluating a theme asks one question a screenshot cannot answer: what
+happens to MY content in it. Ghost's editor emits nineteen card types, and a card is not one thing —
+a callout has nine colours, a header card four backgrounds and four widths, a CTA two layouts and a
+sponsor label. A theme that styles the four cards its design happened to draw looks finished until
+the first author reaches for a fifth. So this Page renders all of them, labelled, with the reasoning
+next to each: what the element is, what this theme does about it, and where it does deliberately
+nothing.
+
+WHY IT IS EDITOR CONTENT AND NOT A TEMPLATE. Everything below the masthead arrives through
+{{content}}, which means every specimen on this Page is a real Lexical node that survived a real
+import — the same path a buyer's own writing takes. A template drawing card markup by hand would
+specimen the markup this theme's author BELIEVES Ghost emits, which is the one thing a style guide
+must not do. Where the importer refuses a card (a player with no source, a bare <mark>) the fixture
+states it through an html card and says so; see scripts/ghost/build-fixture.mjs.
+
+The design's own Specimen sheet — colour swatches, the type scale, the spacing ramp — cannot be
+expressed as editor content and is a different job besides: it is what the drawing draws, and it is
+scored against it. That lives at /design-tokens/ (page-design-tokens.hbs).
+
+THE RAIL IS THE THEME'S OWN, and it is here because the page is twenty-five sections long. `post/toc`
+is the partial the Post Surface already mounts; the only thing stated differently is `depth="3"`,
+which nests the named variants under their card. It sits on the right rather than A2's left because a
+style guide is read against its contents, not through them — the reader arrives knowing which card
+they came for. Below `stack` the grid collapses, the rail goes static, and the list lands above the
+article, which is the only place a contents list is useful on a phone.
+
+`items-start` is what makes the rail sticky at all: grid items stretch by default, and
+`position: sticky` on a box as tall as the article has nothing to scroll within.
+
+AND A STICKY BOX TALLER THAN THE VIEWPORT SCROLLS NOTHING. Seventy-one rows is roughly 1,700px, so
+the last third of the contents list was simply unreachable: it sat below the fold of a pinned
+element, and the page scrolling past it did not move it. `max-h` plus `overflow-y-auto` gives the
+rail its own scroll, and `sg-scroll` is the same thin scrollbar the code blocks and wide tables use,
+so a second scrollbar does not announce itself as a new kind of thing. 160px is the 120px offset plus
+the same clearance underneath. `pr-3` keeps the scrollbar off the labels. --}}
+
+{{> "chrome/header"}}
+
+<main id="main" class="grow">
+	{{#post}}
+		<article
+			class="{{post_class}} container pb-35"
+			data-surface="page-styleguide">
+
+			{{!-- The masthead reads the Page's own copy, the way every standing Page in this theme
+			does: the h1 is {{title}} and the lede is {{excerpt}}. --}}
+			<header class="border-border border-b pt-22 pb-14">
+				<h1 class="font-display text-h1 tracking-display max-w-[26ch] leading-[1.06] font-medium text-balance">{{title}}</h1>
+
+				{{#if excerpt}}
+					<p class="text-lead text-muted mt-7 max-w-[62ch] leading-[1.55] text-pretty">{{excerpt}}</p>
+				{{/if}}
+			</header>
+
+			<div
+				class="stack:grid-cols-[minmax(0,1fr)_232px] stack:gap-[72px] grid grid-cols-[minmax(0,1fr)] items-start gap-10 pt-14">
+				<aside
+					aria-label="{{t "Style guide contents"}}"
+					class="max-stack:hidden stack:sticky stack:top-[120px] stack:col-start-2 stack:max-h-[calc(100dvh-160px)] stack:overflow-y-auto sg-scroll stack:pr-3">
+					{{> "post/toc" variant="rail" depth="3"}}
+				</aside>
+
+				<div class="measure stack:col-start-1 stack:row-start-1 min-w-0">
+					{{!-- The phone's contents list, and the reason there are two. The rail's list is
+					1,984px tall: laid out flat above the article it is a screenful of links before
+					the first word, which is the case the responsive rule about collapsing a second
+					column to a disclosure exists for. So below `stack` the rail is display:none and
+					this closed disclosure takes its place — the same partial, the same component,
+					the shape the A1 Post layout already ships. Only one is ever rendered.
+
+					It sits OUTSIDE `.mirror-content` on purpose: the article's own list rule
+					(`.mirror-content :is(ul, ol)`) would put reading-size type and prose margins
+					back on a navigation list that has already been set, and `postToc` reads the
+					headings out of `.mirror-content` — a contents list living inside the thing it
+					indexes is one refactor away from indexing itself. --}}
+					<div class="stack:hidden">
+						{{> "post/toc" variant="inline" depth="3" collapsed=true}}
+					</div>
+
+					<div class="mirror-content">
+						{{content}}
+					</div>
+				</div>
+			</div>
+
+		</article>
+	{{/post}}
+</main>
+
+{{> "chrome/footer"}}

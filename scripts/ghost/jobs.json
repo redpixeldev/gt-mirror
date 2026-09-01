@@ -1,13 +1,13 @@
 [
 	{
-		"url": "http://localhost:2368/styleguide/?mode=light",
+		"url": "http://localhost:2368/design-tokens/?mode=light",
 		"out": "ghost-styleguide-light.png",
 		"height": 7568,
 		"width": 1568,
 		"group": "{}"
 	},
 	{
-		"url": "http://localhost:2368/styleguide/?mode=dark",
+		"url": "http://localhost:2368/design-tokens/?mode=dark",
 		"out": "ghost-styleguide-dark.png",
 		"height": 7568,
 		"width": 1568,
@@ -376,5 +376,21 @@
 		"height": 928,
 		"width": 1568,
 		"group": "{}"
+	},
+	{
+		"url": "http://localhost:2368/styleguide/?mode=light",
+		"out": "ghost-style-guide-light.png",
+		"height": 29200,
+		"width": 1568,
+		"group": "{}",
+		"scored": false
+	},
+	{
+		"url": "http://localhost:2368/styleguide/?mode=dark",
+		"out": "ghost-style-guide-dark.png",
+		"height": 29200,
+		"width": 1568,
+		"group": "{}",
+		"scored": false
 	}
 ]

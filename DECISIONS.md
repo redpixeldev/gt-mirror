@@ -3228,3 +3228,624 @@ Surface the reference PNGs contain: the header on all of them, and the rows on t
 author, homepage and Feed. The numbers recorded under Ship are the numbers for the theme as it
 shipped, so they now describe a theme that no longer exists. A re-score belongs to whoever next
 runs the gate, with this section as the reason every row moved.
+
+## Syntax highlighting: the first Extension, and the specimen that costs nothing (2026-08)
+
+The theme now colours the code inside a block whose author named a language, and draws the design's
+header strip above it. The design draws code in ONE colour, so none of this is transcribed from it —
+which is a kind of divergence this log had no word for. `CONTEXT.md` now has two: a **Concession**
+renders LESS than the design because the platform emits no structure to hang it on; an
+**Extension** renders something the design does not draw at all, and may only do so where the
+design drew nothing. The rule that makes an Extension safe is the whole of its definition: it may
+never move a **Floor**.
+
+### The Concession was recorded with the wrong reason
+
+Under Post it says: "A code block has no language strip. The design draws a header naming the
+language above the code; Ghost emits `<pre><code class="language-json">` with nothing to hang a
+strip on." The second half was never true — the language is right there in the class. What was true
+is that the theme ran no script over content, and that is a choice, not a constraint. Now that
+`assets/js/main.js` reads the class, the strip is back wherever a language was named, with the
+language on the left and `copy` on the right, exactly as `src/components/cards/CodeCard.astro`
+draws it.
+
+What remains a Concession is the block that names NOTHING: there is nothing to print, sniffing a
+language would be a guess rendered as a fact, and **the design's own specimen is exactly that
+block**. So it keeps the surface, the scrollbar and the type, and no strip.
+
+**The word `copy` is a button here, not a label.** The design draws it as neither — it is drawn
+text — and shipping text that looks like a control and is not one is the worse of the two
+deviations. `en.json` gains two keys, `copy` and `copied`, in lower case beside the existing
+sentence-case `Copied` the share row uses, because the design sets this strip in lower case and
+`text-transform` is the wrong tool to point at a translated string. The label is swapped only after
+the clipboard write RESOLVES, for the same reason `postShare` does it that way — and measured: a
+synthetic `button.click()` has no user activation, `writeText` rejects, and the label correctly does
+not lie. A real click sets `copied`, copies all six lines of the JSON block verbatim, and restores
+after two seconds.
+
+### Why the library is copied into the build and not bundled
+
+`microlighter` 2.1.0, vendored by `pnpm ghost:vendor` into `assets/built/microlighter/`: three
+modules (13.8 KB) and 37 grammars (64 KB). It cannot go through `pnpm ghost:js`. Its loader reads
+`import(`./grammars/${language}.js`)`, a template literal esbuild cannot resolve — bundled, that
+specifier survives into `built/main.js`, resolves against `built/`, and every grammar 404s. The
+loader answers a failed import with `null`, so the page renders unhighlighted with nothing in the
+console: a silent failure, which is the only kind worth a build step to avoid.
+
+The call site is a guarded inline module in `default.hbs`, not a `<script src>`: `if
+(document.querySelector('.mirror-content pre > code[class*="language-"]'))` then
+`import('{{asset "built/microlighter/index.js"}}')`. **Measured on the running install: the
+styleguide, the scored Post and the homepage fetch nothing at all** — `performance` reports zero
+microlighter resources and `CSS.highlights.size` is 0 on each. The specimen post fetches the
+highlighter and only the grammars its languages need. `{{asset}}` keeps the `?v=` hash and the
+subdirectory prefix; the grammars resolve relative to the module, which is exactly what a bundler
+would have broken.
+
+Two aliases are passed in, for the words a Ghost author is likely to type that the library does not
+know: `diff` (its grammar is `git-diff`) and `hbs`/`handlebars` (no grammar; HTML reads acceptably).
+
+### The Syntax palette is the theme's own
+
+Recorded as `docs/adr/0001-mirror-authors-its-own-syntax-palette.md` — the first ADR in this repo.
+Short version: importing one of microlighter's ten palettes would install a second colour authority
+beside `src/styles/main.css`, and every one of them carries
+`[data-syntax-theme=…] pre:has(code){background-color;color}` at 0,1,2, which outranks
+`.mirror-content pre` at 0,1,1 and repaints the code surface the design fixed.
+
+`::highlight()` accepts colour and decoration only — **font-style and font-weight do not apply to
+it** — so every distinction is carried by hue. Four hues and two neutrals: `comment` is the body's
+muted, `operator` is the code colour mixed 70% back into its own surface in oklab, `keyword` is
+`accent-strong`, `constant` is `danger`, and exactly two raw values are new, one pair per Mode, for
+strings (`#4a6117` / `#9dbb6a`) and types (`#45508f` / `#a3b0e8`). On the code surface the quietest
+of the six measures **5.4:1 in Light and 6.9:1 in Dark**. `code-muted` was the obvious choice for
+comments and is not used: it measures 3.5:1 there, which is fine for the strip's 11px label and not
+for running text. A category this palette does not name inherits the code colour — the design's own
+drawing — so a grammar that scopes something new renders plain, never wrong.
+
+**`pnpm ghost:css` now prints 33 warnings and that is expected.** Lightning CSS, which Tailwind
+minifies with, does not know `::highlight()` and reports it once per selector. It emits every rule
+unchanged, splitting each selector list into one rule per selector — which is if anything safer,
+since a browser that rejects the pseudo-element drops that rule alone. `@supports
+selector(::highlight(x))` only halves the count and buys nothing.
+
+### The specimen post inherits a slot rather than taking one
+
+`Reading code at the measure` — 14 code blocks, 13 declared languages, one unlabelled block, one
+captioned card, one language nobody ships a grammar for. It is the first post in this publication
+that is not transcribed design content.
+
+The first attempt added it as a 105th post and bumped Iben Falk to 11 and Craft to 19. That is
+wrong, and the reason is worth keeping: **those counts live in `src/data/authors.ts` and
+`src/data/tags.ts`, which the Astro reference build renders too.** Editing them moves `/tags/` and
+`/authors/` on BOTH artifacts — up to sixteen Astro captures with recorded floors in
+`baseline-scores.json`, plus eight of Ghost's — so a test post would have moved the floors of the
+thing the floors are measured against. The second attempt kept 104 but offered the post to
+`assign()`, which was also wrong and measurably so: it took a Craft slot, which re-ran the greedy
+filler-primary allocation (67 tags, 44 feature images), it landed mid-way through the secondary-tag
+candidate list, and it dropped the filler count, which is the stride denominator, moving 67 dates by
+up to 29 days. Page 1 of `/tag/interviews/` — a scored capture — changed at positions 15 to 18.
+
+What works is inheritance. `build-fixture.mjs` runs the joint assignment untouched, and the LAST
+filler slot is then rendered as the specimen instead of as generated prose, keeping that slot's
+author and its full tag set verbatim. Nothing competes for anything: the slot was already counted.
+Measured against the previous `fixture.json`, over the 103 posts the two share: **zero differences
+in `html`, `published_at`, `tags`, `feature_image`, `title` and `expected_minutes`**; `authors`,
+`tags` and `pages` byte-identical; and page 1 of `/tag/interviews/`, `/author/marisol-ade/` and
+`/archive/` identical, slug for slug, in order. Exactly one post is gone —
+`paper-and-what-replaced-it-4`, the last filler index — and `ghost:import --prune` is what removes
+it from an install that already had it.
+
+Two consequences of inheriting rather than choosing:
+
+- **Its tag is `Books`, and that is not editorial intent.** Whatever the assignment put in that slot
+  is what the specimen is filed under. Choosing `Craft` instead would mean swapping a tag with
+  another post, and the cheapest correct thing was to take the slot as it stood.
+- **It is dated 2019-11-14, the oldest post in the archive.** Outside the filler span on purpose, so
+  it is the last row of the last page and enters no homepage window, no feed page 1 and no archive
+  page 1. It is safe as an input to nothing: the stride is still measured from the designed posts
+  only, and the slot it took over is still counted.
+
+The branch draws nothing from `random()`. It is the last element of the map, so the draws the
+generated post would have made there have no post after them to shift — that ordering is the whole
+reason it is safe, and the same guard anywhere else in the sequence would rewrite every body below
+it.
+
+### What was verified
+
+`gscan --fatal` clean. `pnpm ghost:i18n` in sync at 163 keys over 112 templates. `pnpm ghost:audit`
+**324 checks over 11 settings groups, 0 failures** — the same figure as before this ticket, and the
+strip adds no scroll container: at 320px the document does not overflow, the strip does not overflow
+its bar, and the `<pre>` is still the thing that scrolls. `pnpm ghost:verify` green on every
+invariant (104 posts across 6 pages, 14/14 tags, 5/5 authors, 35/35 reading labels, 12 gated).
+`pnpm ghost:smoke` 13/13.
+
+Read off the running install in both Modes and in both post Layouts: 13 strips and one bare block,
+21 live highlight registries, the captioned card's strip inside `figure.kg-code-card` and above the
+`<pre>` rather than above the caption, the COBOL block with its strip and no colour, and `<pre
+tabindex="0">` on every dressed block so a scroll container stays keyboard reachable. All 13
+languages survive Ghost's HTML → Lexical → render round trip, the captioned figure included.
+
+**No score run was made, and none is owed.** No existing selector changed, the new rules match only
+markup that did not exist before, and the two elements added to `default.hbs` are an inert
+`<template>` and a module script. Measured rather than argued: on `/styleguide/` — the one scored
+Surface that contains a code block — there are 0 shells, 0 highlight registries and 0 microlighter
+requests, because its specimen names no language.
+
+## The Card audit, and the colour Ghost never wrote (2026-08)
+
+The reference for this ticket was somebody else's sheet — `aspect.priority.vision/style-guide/`, a
+Ghost 6.43 theme's own styleguide — read against `/styleguide/` on this install. That page rendered
+ten primitives and **zero** Koenig cards: h2, p, h3, blockquote, ul, ol, hr, `pre`, one captioned
+image and one paragraph of inline formats. Twenty-four elements were missing, and they were not one
+kind of missing.
+
+### What Ghost styles, restated with the manifest open
+
+`core/frontend/public/cards.manifest.json` in 6.60 ships CSS for sixteen cards: audio, blockquote,
+bookmark, button, callout, collection, cta, file, gallery, header, nft, product, signup, toggle,
+transistor, video. Two facts about that set decided the whole ticket.
+
+**`prefers-color-scheme` appears zero times across all sixteen.** Five hardcode a light palette:
+`.kg-audio-card` (`background:#fff; color:#222`, time `#ababab`), `.kg-bookmark-card
+a.kg-bookmark-container` (`#fff`, 0,3,0), `.kg-file-card a.kg-file-card-container` (`#fff`/`#222`,
+0,3,0), `.kg-product-card-container` (`#fff`/`#222` with an inset hairline), and
+`.kg-signup-card-fields`/`-input` (`#fff`, border `#e6e6e6`). In this theme's dark Mode each of
+those is a white panel with near-black ink on a near-black page. Three more read as broken and are
+not: `kg-video-card`'s twenty-six `#fff` values sit in a control bar painted over `#00000080` on top
+of the video, `kg-header-card`'s `kg-style-*` are the author's choice in the editor, and
+`kg-nft-card` is deprecated in the Ghost 6 editor.
+
+**`kg-embed-card` is in no bundle at all.** So an embed renders at whatever size the provider
+returned, and YouTube's own oEmbed html says `width="200" height="113"` — a 200px video in a 617px
+measure.
+
+### The line the fix is drawn along
+
+The Concession recorded earlier in this log — bookmark, product, gallery, toggle, header and signup
+keep Ghost's geometry — was argued about geometry and quietly carried the colour with it. Geometry
+is still the platform's. Colour is now the theme's, governed by whether the design draws the card:
+`docs/adr/0002-platform-card-colour-is-split-by-the-drawing.md`, with **Platform card**,
+**Specimen**, **Styleguide** and **Card audit** added to `CONTEXT.md`.
+
+The design's own sheet draws bookmark, gallery, button, toggle and product in §07 and draws no
+audio, video, file, signup, header or embed. So bookmark and product take the design's surface, ink
+and hairline in both Modes — a Concession reduced, scored on `/styleguide/` — and audio, file and
+signup take a token remap only, an Extension that lives on the Card audit where no Floor exists to
+move. Six rules, not thirty, because every description, metadata and rating rule Ghost writes uses
+`currentColor` with an opacity: claiming the container's `color` carries all of them.
+
+What is deliberately **not** claimed is the ink on an accent control. Ghost pairs
+`var(--ghost-accent-color)` with `color:#fff` on the button card, the product's buy and the signup's
+submit, and `default.hbs` publishes the publication's accent in one `:root` for both Modes — so
+substituting this theme's per-Mode `--mirror-on-accent` there would repaint the ink of a fill it
+does not own. That is the callout's lesson, which put white text on a near-white panel.
+
+### Six elements had reached no stylesheet at all
+
+Not the platform's fault and not the design's: nothing in the chain styled them. The rendered page
+loads exactly two stylesheets, `assets/built/screen.css` and `public/cards.min.css` —
+`ghost.min.css`, the one file in Ghost that styles a bare element, is never served to the frontend.
+
+| element                 | what it did before                    | why it reaches the theme                                                  |
+| :---------------------- | :------------------------------------ | :------------------------------------------------------------------------ |
+| an editor's `h1`        | the UA's 2em bold in the body face    | `page.hbs` sets the TITLE's h1; a `# ` in the body is a different element |
+| `<mark>`                | `#ff0` on `#000`, both Modes          | `markdown-it-mark`, and Lexical's own highlight button                    |
+| `<sub>` / `<sup>`       | the UA's `font-size: smaller`, 0.83em | `markdown-it-sub`, `markdown-it-sup`                                      |
+| footnotes, five classes | unstyled, list back at body size      | `markdown-it-footnote@4`                                                  |
+| an embed's iframe       | 200px wide                            | no Ghost bundle covers `.kg-embed-card`                                   |
+| a wide table            | pushed the page past the viewport     | Ghost emits a bare `<table>`; no `kg-table` class exists in 6.60          |
+
+The highlight's fill is the accent over the PAGE at 22%, not over a panel — a `<mark>` happens in
+running text — and one percentage serves both Modes where the other tints needed two: measured,
+1.35:1 against the Light page and 1.40:1 against the Dark one, with the body's ink at 12.35:1 and
+12.10:1 on top. `accent-soft` was the obvious candidate and is 7%, which is 3.4/255 from the page.
+
+### The table's shell, and why it is JavaScript
+
+`partials/pages/membership.hbs` already solved a cropped table by putting `overflow-x-auto` on the
+content div itself. A Post cannot copy that: `bleed-wide` breaks the measure there on purpose, and
+an ancestor with `overflow-x` clips it. So `assets/js/main.js` wraps each table in a `.mirror-table`
+shell exactly as it already wraps a `pre` in `.mirror-code`, and the shell takes the margin the
+table gives up. Two guards, both learned from the run: the shell carries
+`data-scroll-intent="a wide table, reachable instead of cropped"`, because the audit reports an
+undeclared scroll container as `SCROLLHIDE` — it did, seven times, before the attribute — and a
+table already inside a `[data-scroll-intent]` ancestor is skipped, so Membership keeps its own
+container and its scored capture does not move.
+
+### What the importer keeps, measured rather than assumed
+
+`import.mjs` posts every body with `?source=html`, and that converter has a parser per card type
+which **drops what it cannot build** rather than falling back to an html card. Read off three import
+cycles:
+
+| survives whole                                                                                                                                                 | dropped or stripped                                                                                                         |
+| :------------------------------------------------------------------------------------------------------------------------------------------------------------- | :-------------------------------------------------------------------------------------------------------------------------- |
+| bookmark, button, callout, code, cta, file, header, image (incl. `kg-width-*`), product, toggle, table (as an html card), `sub`/`sup`, `h1`–`h6`, nested lists | gallery, audio and video with no `src`, signup, a bare `<mark>`, `kg-blockquote-alt`, `<cite>`, every footnote class and id |
+
+The same converter honours the editor's own `<!--kg-card-begin: html-->` markers — that is how the
+ten-column table arrived verbatim — so a `htmlCard()` helper in `build-fixture.mjs` states the eight
+things the parsers refuse. That is not a workaround for the theme: an html card is what a buyer
+pasting markup gets, and what a Specimen needs is the class names the CSS is written against.
+A card that a real editor node CAN carry uses one, because that is the closer test.
+
+Two fixture details worth keeping. The players carry no `src` — their chrome is what the colour
+rules touch — and the video card still needed `style="padding-bottom: 56.25%"` on its container,
+because `cards.min.css` sets `.kg-video-container { height: 0 }` and the EDITOR supplies the ratio
+inline: without it the card rendered as its caption alone, measured twice, once with `width`/`height`
+attributes on the `<video>` that changed nothing. And the X embed is the blockquote WITHOUT
+`widgets.js`, which is exactly the state the theme's new `.kg-embed-card blockquote` reset is for.
+
+### The two Pages now have two jobs
+
+`/styleguide/` holds the drawing's §07 and nothing else: h2/h3/h4, body with an inline code chip, a
+nested unordered list, a quote with its attribution, the pull quote, a code card naming `css`, a
+regular and a wide image, bookmark, gallery, button, callout, toggle and product. The ordered list
+moved off it, because the drawing has no specimen for one. Its content grew from 1,955px of ink to
+4,607px.
+
+`/card-audit/` holds everything the drawing has no opinion about, in both Modes, and it is written
+the way the sheet this ticket was read against writes: an intro, then one `h2` per element type with
+a sentence saying what the element is and what the theme does about it, `h3` under the two that have
+variants (Embeds → YouTube, X; Images → full width). Unlabelled specimens were the first draft and
+the wrong one — a page whose whole purpose is telling a buyer which card they are looking at cannot
+leave that to be inferred from a caption. The Styleguide stays unlabelled for the opposite reason:
+it is scored against the drawing, and the drawing's own labels live inside its specimens
+(`Code card · the strip names the language`, `Wide card — the measure plus one step either side`,
+`Toggle card — does the theme support memberships?`), which the fixture carries verbatim.
+
+`scripts/ghost/unscored.json` is its own list, because `score-index.json` cannot hold it —
+`build-jobs.mjs` keys every row there to a reference PNG out of `baseline-index.json`, and there is
+no drawing of an audio player to key to. `build-jobs.mjs` appends its captures (both Modes, 1568 ×
+8960, the height measured off the render: content ends at 8,562px and the foot at 8,927px) and
+`audit.mjs` adds its path to the empty settings group, so the width sweep covers it. One list, two
+consumers, nothing to drift.
+
+### What was verified
+
+`gscan --fatal` clean. `pnpm ghost:i18n` in sync at 163 keys over 112 templates. `pnpm ghost:audit`
+**336 checks over 11 settings groups, 0 failures, 16 declared scroll containers** — 324 as before
+plus twelve for the Card audit's own widths, and at 320px the audio player, the signup panel, the
+header card, both embeds and the full-width image overflow nothing. `pnpm ghost:verify` green on
+every invariant. `pnpm ghost:smoke` 13/13. `prettier --check` clean on every touched `.md`, `.js`,
+`.mjs` and `.json` — and on no `.hbs`, for the reason recorded above.
+
+Read off the captures rather than argued, sampling the modal fill of the reading column in the dark
+Mode: the audio card at `#231f1b` (surface-2), the file card at `#231f1b`, the signup field row at
+`#1b1815` (surface), the cta card at `#242525` (Ghost's own translucent grey, untouched and correct)
+— where every one of the first three was `#fff` before. The bookmark and product panels on
+`/styleguide/` read as surface with a hairline in both Modes, the `<mark>` as a warm slab with the
+body's ink, the YouTube frame at the full measure in 16:9, the X blockquote as plain text with no
+rail, and the ten-column table clipped at the measure with its own scrollbar instead of widening the
+page.
+
+## The Styleguide gets a template, and its first honest number (2026-08)
+
+`/styleguide/` rendered §07 of a seven-section drawing. Measured against the design's own markup
+(`.originals/MIRROR Styleguide A1.dc.html`, rendered locally at 1568px): the sheet is 7,457px of
+ink, its masthead and §01–06 occupy **3,480px of that, 47%**, and none of it existed on the Ghost
+page. The Surface was being scored against a document whose first half it did not draw.
+
+### Why a template, and what it may state
+
+A Page body cannot express a colour swatch, a labelled type scale, a spacing ramp, a nav bar or a
+post card: those are the theme's own tokens and partials. Ghost resolves `page-{slug}.hbs` before
+`page.hbs`, which is how the five standing Pages already work, so `ghost/page-styleguide.hbs` draws
+§01–06 and leaves §07 as `{{content}}`. The split is the point — everything above §07 is the theme
+documenting itself, everything below is a body a buyer can edit.
+
+Nothing in it is transcribed from the drawing's inline styles. Every chip paints from
+`var(--mirror-*)` and every specimen is set with the utilities the reference build uses, so the
+sheet cannot drift from `src/styles/main.css` without src/ changing first. Three values are read
+from the publication instead, because on Ghost they belong to the buyer:
+
+- the accent's caption is `{{@site.accent_color}}`, one value for both Modes, because that is what
+  `default.hbs` publishes into `:root`;
+- the four font names are resolved from the cascade by a six-line inline script, because a buyer can
+  pick a heading and a body font in admin and a hardcoded "Newsreader" would be a lie the moment
+  they do. It immediately earned itself: the Mono cell reads **`ui-monospace`**, not the drawing's
+  "IBM Plex Mono", because this theme ships no mono webfont. The drawing names a face the theme does
+  not carry, and the sheet now says so out loud;
+- §05's menu is `{{navigation variant="bar"}}` and §06's cards are `{{#get}}` over real records —
+  a specimen built from invented data stops being a specimen the moment a buyer edits anything.
+
+§05 is deliberately NOT a second `{{> "chrome/header"}}`: that partial owns `x-data="siteMenu"`, the
+skip link and the search trigger sodo-search binds ⌘K to, and two of them on one page would give
+Alpine two drawers and the shortcut two triggers. The panel borrows `chrome/wordmark` and the
+navigation partial only. §06's pagination sits inside its own `{{#get "posts" limit="4" page="2"}}`,
+because `{{pagination}}` reports the pagination of the query it stands in — outside one it would
+read this Page's context, which has a single page and renders nothing.
+
+The container is 1240px on this Surface alone, via `--container-max` on the article. That is the
+drawing's own width for the sheet, and the case that token was written for.
+
+The hex captions are literal strings, swapped by Mode, exactly as
+`src/components/styleguide/SwatchCard.astro` states them: a hex here is the value being documented,
+not a colour that can be re-derived. And no specimen label goes through `{{t}}` — `--surface-2`,
+`display · 66px` and "Long-form copy sits at this size" are specimen text in the sense the glossary
+gives Demo content, the words being the thing demonstrated. The page's chrome is partials, and every
+string in those is translated as usual. One key was added: `Specimen menu`, for §05's `aria-label`.
+
+### §07 is now the drawing's own copy, verbatim
+
+Same specimens as before, different sentences: "Body copy is the product…", "Links inside prose stay
+in the accent colour with a 1px underline offset by 3px…", "Wide card — measure + 2×88px.", the
+callout's full two sentences, the toggle's full answer. The drawing's unordered list is FLAT — its
+third item only names nesting — so the fixture's nested item came out, and the code specimen's
+invented caption came off because the drawing has none. Identity is measured in 100px bands, and a
+sentence of a different length wraps onto a different number of lines, which drags every band below
+it out of register.
+
+The Page's title is now the drawing's masthead line and its excerpt the drawing's description,
+because the template reads `{{title}}` and `{{excerpt}}` the way every standing Page here does. The
+menu label is `src/data/navigation.ts` and still reads "Styleguide".
+
+### The number
+
+Scored against the drawing's own render, both Modes, at the reference height:
+
+|                      | vs the drawing | note                                                      |
+| :------------------- | :------------- | :-------------------------------------------------------- |
+| light                | **85.38%**     | sheet 7,592px tall against the drawing's 7,548            |
+| dark                 | **84.18%**     | the same                                                  |
+| first run, portraits | 82.16 / 81.89  | before the specimen shapes were fixed — see below         |
+| before this ticket   | 98.36%         | 146–2,101px of a 7,568px frame, blank agreeing with blank |
+
+The 98.36 was never a measurement of anything. The floor of 98.54 is the design source's own
+self-score against the PNG export and does not move; when that export is back on disk,
+`pnpm ghost:score --only styleguide` should report about 85 against it, because the export and this
+render are 98.5% the same document.
+
+**THE SPECIMEN'S SHAPE IS PART OF THE SPECIMEN.** The first scored run came in at 82.16, and three
+quarters of what was missing turned out to be my own choice of photographs rather than anything the
+theme does. The drawing draws the regular image as a 3:2 panel, the wide one as 21:9 and a gallery
+slide as 4:3; the fixture had picked portraits — `pexels-38048095` is 1200×2132, so at the 617px
+measure that one figure rendered **1,096px tall against the drawing's 411px** and pushed the whole
+sheet **1,178px past the reference frame**, which meant everything below the first photograph was
+being scored against the wrong content with the aligner saturated at ±40px. Swapping to the
+fixture's landscape images — 3:2 at the measure, 16:9 at the wide step, 3:2 and 4:3 for the slides —
+brought the sheet to 7,592px against the drawing's 7,548 and the score to 85.38 / 84.18.
+
+**One accessibility defect fell out of that measurement.** The wide card's `alt` read "A quarry face
+in low morning light" over `pexels-733872`, which is a portrait of a woman — alt text that describes
+the wrong picture is the one kind worse than none. Every `alt` on both Pages was checked against the
+actual image and rewritten.
+
+**What the residual is now.** Through §01–06 the mismatch runs 3–15%. It saturates near 40–48% in
+three places, and none of them is a rule this theme could change:
+
+- the **gallery**: Ghost renders a static grid where the drawing renders a Swiper carousel showing
+  one 4:3 slide at nearly the wide measure. No arrangement of four static images is that shape — a
+  2×2 grid is ~450px taller, a single row of four is ~450px shorter — so the register slips here and
+  costs the bands below it;
+- the **button card**: the drawing draws an accent-soft panel with a title and a line of copy around
+  its button; Ghost's button card is the button;
+- **photographs against hatch**: every image the drawing draws is a hatched placeholder panel, and a
+  field of photographic tone cannot match a light hatch at any tolerance.
+
+The reference build hits the drawing on all three because it draws the same placeholders and the
+same panels. A Ghost page renders an author's actual pictures inside the platform's actual cards,
+which is the difference between a drawing and a publication rather than a defect to fix.
+
+### Two operational traps, both found the hard way
+
+**A new template needs the theme reactivated.** Ghost reads its template list when the theme is
+activated, not per request, so `/styleguide/` kept rendering through `page.hbs` after
+`page-styleguide.hbs` landed — the file existed, the page ignored it, and nothing logged.
+`PUT /ghost/api/admin/themes/mirror/activate/` re-scans it in place; the symlinked dev theme needs
+no re-upload.
+
+**Two `pnpm ghost:dev` watchers were running at once**, both writing `assets/built/screen.css`. They
+raced and left an 8,240-byte stylesheet — the whole theme's CSS is 73,275 — and the capture that
+followed came out completely unstyled in BOTH Modes, byte-identical, which is precisely the failure
+`shoot.py`'s double-capture check cannot see: two passes of the same broken page agree. `pnpm
+ghost:css` restored it. Worth knowing before trusting any capture: an unstyled page is grey at
+(5,5), where this theme is `#ffffff` in Light and `#12100e` in Dark.
+
+### What is owed
+
+**The official comparison still needs the design export.** `prep.json` points at
+`~/Downloads/GHOST THEME MARKUP/MIRROR VARIATION A` for the reference PNGs and that directory is
+empty on this machine, so `pnpm ghost:score` has nothing to run against. What was measured instead
+is the drawing's own markup, rendered here from `.originals/*.dc.html` — the document those PNGs
+were exported from, and 98.5% the same by the floor's own definition. So the 85.38 / 84.18 above is
+the number to expect, not a stand-in for an unknown one. Re-run `pnpm verify:prep` and
+`pnpm ghost:score --only styleguide` when the export is back on disk and record what it says; the
+noise floor of 98.54 is the design source's self-score and does not move.
+
+**A defect found on the way past, not fixed here.** `default.hbs` writes `:root { --mirror-accent:
+{{@site.accent_color}} }` in an inline `<style>` AFTER the stylesheet link, and `:root` and `.dark`
+are both 0,1,0 — so on Ghost the later inline rule wins in both Modes and the accent never flips,
+while `--mirror-on-accent` still flips to its dark value `#1c1207`. On the design's own accent that
+is **3.57:1**, below 4.5:1, on every `text-on-accent` control in the dark Mode. It needs its own
+decision — publish the accent per Mode, or stop flipping the ink on Ghost — and it is not this
+ticket's to take.
+
+## The Style guide, and the four defects only an exhaustive page could find (2026-08)
+
+### What changed, and why the names swapped
+
+`/styleguide/` is now a **normal content Page** — a title, a lede, twenty-five labelled sections and
+a contents rail — holding every element and **Platform card** a Ghost editor can emit, in every
+variant it can emit it in. The design's own Specimen sheet, which was at that URL for exactly one
+ticket, moved to `/design-tokens/`.
+
+The names swapped because they were answering the wrong questions under the wrong labels. A buyer
+opening "Style guide" is asking what happens to THEIR writing in this theme; that is a page of the
+platform's cards, not a page of the theme's tokens. The drawn sheet is still the thing worth scoring
+against the drawing, so it kept its route name (`styleguide` in `surfaces.json`, because
+`01-styleguide-variantA-*.png` is a picture of it) and changed only its path. The old **Card audit**
+is gone: it existed to hold what the drawing omitted, which is a division that only makes sense from
+inside this port. CONTEXT.md records both terms and the second resolution.
+
+### What decided the contents
+
+Not the drawing, and not memory. Ghost's own renderers:
+
+| Question                    | Read from                                                      |
+| :-------------------------- | :------------------------------------------------------------- |
+| Which cards exist           | `kg-default-nodes/build/esm/nodes` — nineteen node directories |
+| Which variant classes exist | each renderer's `getCardClasses` / template literal            |
+| Which variants Ghost styles | the sixteen bundles in `cards.manifest.json`                   |
+| What a card's markup IS     | the `*-renderer.js` for that node                              |
+
+That was worth doing rather than assuming, because reading it corrected four specimens that had been
+on the old pages for a whole ticket — markup Ghost **cannot emit**:
+
+- `figure.kg-code-card` around an uncaptioned code block. `codeblock-renderer.js` builds that figure
+  inside `if (node.caption)` and returns a bare `<pre>` otherwise. The drawing's specimen has no
+  caption, so the sheet was scored against a wrapper that never ships.
+- `kg-file-card-medium`. Ghost's CSS still carries it; `file-renderer.js` emits neither size class.
+- `kg-size-small` on a `kg-v2` header card. Sizes are v1 vocabulary; v2 has widths.
+- `kg-bookmark-publisher` holding the publisher. Ghost puts the publisher's text in
+  `kg-bookmark-author` and says why in a comment: "the classes are reversed for theme
+  backwards-compatibility."
+
+Also corrected: an accent callout's `#fff` ink, the toggle's chevron (an empty button was a specimen
+of a disclosure whose state nobody can see), the audio card's second thumbnail element, and the
+`<p>` inside `kg-blockquote-alt` that the aside transformer actually writes.
+
+The design tokens sheet re-scored after those corrections: **85.39% light, 84.18% dark**, which is
+where it was. Honest markup cost nothing.
+
+### Five defects, and none of them was visible on any other Surface
+
+This is the argument for the page existing. Four were found by looking at it; the fifth only by clicking.
+
+**1. A header card over a photograph was unreadable — in BOTH Modes.** Ghost renders the background
+image as an absolutely-positioned `img` and puts nothing between it and the text. The author picks
+the ink in the editor, which is the right place for it, but no single ink survives an arbitrary
+photograph: white sat on the sky and vanished on the building two hundred pixels later. Fixed with a
+scrim on the content's own `::before` — contrast added without touching a colour the author owns.
+`:has(> picture)` scopes it away from the split layout, whose image sits beside the text rather than
+behind it.
+
+**2. A CTA button rendered with no label at all.** `cards.manifest.json`'s cta bundle sets
+`background-color` on `a.kg-cta-button.kg-style-accent` and **no `color`** —
+`calltoaction-renderer.js` writes `style="color: …"` inline instead. So a CTA card pasted as markup,
+or one whose author never touched the text colour, inherits `.mirror-content a`: the accent, on the
+accent. The theme now states `#fff`, which is not an invented value — it is Ghost's own pairing on
+`kg-btn-accent`, the product card's buy button and the signup card's submit. An inline style from the
+editor still wins, so only the ABSENCE is covered.
+
+**3. Inline code inside a card whose ink the author owns.** The header and signup cards carry
+`style="color: …"` on every text element; the accent callout carries Ghost's `#fff`. A code chip with
+a fixed pale fill and the theme's dark ink is unreadable in all three the moment the author picks
+white. The chip is now derived from `currentColor` at 16% with `color: inherit`, so it works on either
+side of the contrast.
+
+**4. A contents list taller than the viewport scrolls nothing.** Seventy-one rows is 1,984px against
+a 740px sticky window: the last third of the rail was simply unreachable. `max-h` plus
+`overflow-y-auto` and the theme's own `sg-scroll` fixed it — and `sg-scroll` turned out to set only
+`height` on `::-webkit-scrollbar`, which is the horizontal axis, so a vertical scrollbar fell back to
+the 15px system one. Both axes are sized now, in `src/styles/main.css`, for every user of that
+utility.
+
+**5. Ghost's own card script was dying, and the specimen that killed it was four sections away.**
+The toggle card would not open. `cards.min.js` was being served and the toggle handler was inside
+it, so the fault looked like the theme's. It was not, and it was not Ghost's either — it was the
+fixture's, and the mechanism is worth knowing before writing any card markup by hand:
+
+`cards.min.js` is ONE file of concatenated IIFEs, one per card type present on the page. Its audio
+chunk opens with eleven unguarded `querySelector` calls and then calls `.addEventListener` on each
+result. The audio specimen here was missing `kg-audio-pause-icon` and `kg-audio-unmute-icon` —
+`audio-renderer.js` emits both, one of them carrying `kg-audio-hide` — so the chunk threw
+`TypeError: Cannot read properties of null` at the top level of the script, which aborts **every
+chunk after it in the same file**. The toggle chunk is chunk 20. So did the video player and the
+gallery's flex sizing, silently, on a page that otherwise looked finished.
+
+Caught by clicking the thing rather than looking at it: `data-kg-toggle-state` stayed `close` after
+a real bubbling `MouseEvent`, and `Runtime.exceptionThrown` named the offset in Ghost's bundle. Both
+players now carry every element their renderer emits. The lesson generalises past this page — a
+hand-written card that abbreviates the platform's markup does not merely look wrong, it can take the
+platform's own behaviour down with it, at a distance, with no error a reader would ever see.
+
+### The contents rail, and why `depth` is an argument
+
+`postToc` now collects h3 as well as h2 and nests them — but only when asked. `postToc(3)` is the
+style guide; the default stays 2 because the design's own contents list names four chapter headings
+and skips the h3 under one of them, and a Post is a scored Surface. One component, one rule, stated
+per Surface rather than branched inside.
+
+Two smaller findings fell out of building it:
+
+- **The selector had to become `.mirror-content > …`.** A header card's h2 gets an id from
+  `slugify(nodeData.header)`, so a descendant selector listed "A section header" in the contents as
+  though it were a chapter of the article. Ghost's content is a flat sequence of elements, so the
+  article's own headings are exactly the ones at depth 1. That was a latent bug on every Post with a
+  header or signup card, not only here.
+- **On a phone the rail becomes the disclosure.** 1,984px of links above the first word is the wall
+  the responsive rule about collapsing a second column exists to prevent, so below `stack` the rail is
+  `display: none` and `post/toc variant="inline" collapsed=true` takes its place. Same partial, same
+  component; the shape A1 already ships, closed instead of open. It sits outside `.mirror-content`
+  because the article's own `:is(ul, ol)` rule would put reading-size type back on a navigation list —
+  and because a contents list living inside the thing it indexes is one refactor away from indexing
+  itself.
+
+### The capture that cannot come out the same twice
+
+`shoot.py` captures every job twice and fails the run unless the pair is within a stated jitter
+bound. The style guide failed it, reproducibly, and the cause is worth writing down because it looks
+exactly like the bug that check was built to catch:
+
+Ghost serves an image card with `srcset` of `w600`, `w1000` and the original, and its resizer rounds
+each variant independently. `pexels-7319071` is 1200×800 and its `w600` is 600×400 — both 1.5 — but
+its **`w1000` is 1000×667, which is 1.49925**. The declared `width`/`height` give layout one ratio
+and the decoded candidate gives it another, so the first figure settles 0.2px taller or shorter
+depending on which file finished first, and every band below it shifts a whole row. Measured three
+times through CDP: 411.875px, then 411.672px, then 411.672px, at an identical column width of
+616.516px, with `document.fonts.status === "loaded"` and zero incomplete images in all three.
+
+No stylesheet can pin a height the browser recomputes on decode. So the guard was scoped rather than
+loosened: a job may declare `"scored": false`, and for those the difference is REPORTED as `DRIFT`
+instead of failing. Every scored capture keeps the full bound — which still holds: the design tokens
+sheet came out identical twice on the same runs. A page nothing is measured against cannot fail a
+measurement.
+
+`build-jobs.mjs` also gained a collision check on capture filenames, because the two Surfaces met in
+that namespace: the scored route is still called `styleguide` while `/styleguide/` is now the other
+page, and two jobs writing one filename is not a warning in the output — it is one row silently never
+captured and a stale PNG scored in its place.
+
+### What is on the page, and what is deliberately not
+
+Twenty-five sections: headings (six levels, and the h2 and h3 among them are real headings that
+appear in the rail, which is the rule demonstrating itself), links, text formatting (emphasis, inline
+code, highlighting, sub/sup), lists, dividers, quotes, tables, code blocks, buttons, callouts (all
+nine colours plus the emoji-less form), toggles, bookmarks, images, galleries, audio, video, files,
+products, header cards, sign-up cards, calls to action, embeds, footnotes.
+
+Four card types are named on the page and not specimened, each with its reason: the **collection**
+card renders posts the platform picks at render time; the **transistor** card needs a podcast host
+and already draws with `color-mix(in srgb, currentColor …)`; the **paywall** card emits an HTML
+comment and nothing else; the **email** and **email CTA** cards are dropped from the web version by
+the renderer itself.
+
+One card changed status. The **NFT card is not deprecated** in the sense recorded here previously.
+There is no NFT node in `kg-default-nodes`, so the Lexical editor cannot make one — but
+`kg-default-cards/build/esm/cards/embed/nft.js` still renders it, which is the path every
+**mobiledoc** post takes, and a publication migrating onto this theme can arrive with years of them.
+Its inks are `#222` and `#ababab` on a container with no background at all: in dark Mode, near-black
+text on a near-black page, which is the one failure worse than a white slab because there is nothing
+to see. Claimed as an **Extension**, and specimened.
+
+### Callout colour, corrected
+
+The earlier note here said Ghost's callout tints were a light-only palette. They are not: all nine
+are **translucent** (`#7c8b9a21` grey, `#21ace81f` blue, `#d12e2e1c` red), so they sit over the page
+in either Mode with no rule from the theme. Only grey and white are replaced, because those two are
+the design's own tint and the editor's default.
+
+What the theme adds is the rail, and the rail now follows the author's colour: an author who picked
+blue has said what kind of note it is, and a blue panel with an amber rail is the theme arguing with
+them. Each variant sets `--mirror-callout-rail` to the same hue Ghost tints the panel with — nine
+one-line declarations, no invented values, one shared rule that knows what a rail is. The accent
+variant is Ghost's exception in both directions: it fills with the accent and sets `#fff` in the same
+declaration, so its rail darkens the fill rather than repeating it.
+
+### The harness after all of it
+
+`gscan --fatal` ✓ · `ghost:i18n` 165 keys across 114 templates · `ghost:audit` 336 checks, 0
+failures, 18 declared scroll containers · `ghost:verify` green · `ghost:smoke` 15/15 (the two
+Specimen Surfaces are routes now, so a broken template fails the smoke test rather than waiting for
+someone to look) · `prettier --check` clean on every touched `.md`/`.css`/`.js`/`.mjs`/`.json`, none
+on `.hbs` · both Modes read at 320, 390, 768, 1024 and 1568px with no horizontal overflow.

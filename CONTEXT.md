@@ -39,6 +39,16 @@ A place where the theme deliberately renders something other than the design, be
 emits no structure to hang the design on.
 _Avoid_: bug, regression, TODO
 
+**Extension**:
+A place where the theme renders something the design does not draw, because the platform emits
+structure the design never anticipated.
+_Avoid_: feature, enhancement, concession (a **Concession** renders less than the design; an
+Extension renders more)
+
+**Syntax palette**:
+The colour set applied to the tokens inside a code block.
+_Avoid_: syntax theme, code theme (theme is the shipped artifact)
+
 ### The publication
 
 **Post**:
@@ -46,6 +56,10 @@ A dated article by one or more **Authors**, carrying one primary **Tag** and an 
 
 **Page**:
 A standing content record with no date in the reading order — About, Membership, the directories.
+
+**Platform card**:
+A Koenig block from the editor's card set — sixteen of which Ghost ships its own CSS for.
+_Avoid_: card (unqualified it also names the design's post and author components), kg-card
 
 **Feed**:
 The paginated list of every **Post** in reverse-chronological order.
@@ -75,6 +89,22 @@ _Avoid_: prototype, mockup (it is measured, and it is not thrown away)
 The invented publication the design was drawn with — 5 **Authors**, 14 **Tags**, 104 **Posts**.
 Distinct from **Chrome copy**, which is the theme's own wording.
 
+**Specimen**:
+A rendered instance of one element or **Platform card**, present to be looked at rather than read.
+_Avoid_: example, sample, demo (**Demo content** is the invented publication)
+
+**Design tokens sheet**:
+The one **Specimen** sheet the design draws — colour swatches, the type scale, the spacing ramp,
+the controls, and one rendered article — and the Surface the theme is scored against. Published at
+`/design-tokens/`.
+_Avoid_: styleguide (that is now the exhaustive Surface), specimen sheet (any page of **Specimens**
+is that; only this one is drawn)
+
+**Style guide**:
+The unscored Surface that renders every **Platform card** and every editor-emitted element, in
+every variant the editor can produce, in both **Modes**. Published at `/styleguide/`.
+_Avoid_: card audit (its earlier name, when it held only what the drawing omitted), card gallery
+
 **Pixel identity**:
 The percentage of pixels matching the design source at a fixed capture width, per Surface per
 **Mode**.
@@ -92,6 +122,15 @@ The **Pixel identity** a Surface has already achieved and may not fall below.
   **Tier** — never by its **Layout**.
 - A **Directory** lists **Tags** or **Authors**; a **Feed** lists **Posts**. Both paginate.
 - **Demo content** exists so **Pixel identity** is measurable; **Chrome copy** ships with the theme.
+- An **Extension** renders only where the design drew nothing, so it may never move a **Floor**.
+- A **Syntax palette** has one set of colours per **Mode**, like every other colour in the theme.
+- A **Platform card** the design draws may have its colour claimed as a **Concession** reduced,
+  which can move a **Floor**; one the design draws nothing for may be claimed only as an
+  **Extension**.
+- The **Design tokens sheet** holds only **Specimens** the design draws, so it is scored; the
+  **Style guide** holds every card the editor can emit, so it cannot be — and the two are separate
+  Surfaces because they answer different questions: what the drawing says, and what the platform
+  can produce.
 
 ## Example dialogue
 
@@ -102,6 +141,19 @@ The **Pixel identity** a Surface has already achieved and may not fall below.
 > **Dev:** "And the tags page and the tag archive — same **Surface**?"
 > **Designer:** "Different. The tags page is a **Directory**: it lists **Tags**. The tag archive is a
 > **Feed** filtered to one **Tag**. They only look similar in A2 because both use cards."
+>
+> **Dev:** "Syntax colour in a code block — is that a **Concession**, since the design draws none?"
+> **Designer:** "The other way round. A **Concession** is where we render less than the drawing
+> because the platform gives us nothing to hang it on. Colour in code is an **Extension**: the
+> drawing has no opinion, so we may add one — but only inside a block that names a language, which
+> the drawing's own specimen does not. That is what keeps it off every **Floor**."
+>
+> **Dev:** "Ghost's bookmark card is a white panel in the dark **Mode**. Is that the recorded
+> **Concession**?"
+> **Designer:** "Only its geometry is. The design draws that card in both **Modes**, so its colour
+> is ours to claim and the **Design tokens sheet** scores it. The audio card is the other way round
+> — the design draws no player at all, so colour there is an **Extension**, and it is specimened on
+> the **Style guide** where no **Floor** can be moved."
 
 ## Flagged ambiguities
 
@@ -113,3 +165,15 @@ The **Pixel identity** a Surface has already achieved and may not fall below.
 - "theme" was used for light/dark — resolved: that is **Mode**; theme means the shipped artifact.
 - "paywalled" read as a Layout in the Astro route names (`/post-01-paywalled`) — resolved: it is the
   **Gate** state of a **Post**.
+- microlighter's "theme" (`data-syntax-theme`) named the same thing as the shipped artifact —
+  resolved: it is a **Syntax palette**.
+- "card" named both a Koenig block and a design component (post card, author card) — resolved: the
+  editor's block is a **Platform card**.
+- "styleguide" named both the design's drawn sheet and any page of **Specimens** — resolved twice.
+  First: the drawn one was the **Styleguide** and the exhaustive one the **Card audit**. That put the
+  buyer's question ("what will my editor's cards look like") under the more obscure name, so the
+  names now follow the reader: the exhaustive Surface is the **Style guide** at `/styleguide/`, and
+  the drawn sheet is the **Design tokens sheet** at `/design-tokens/`.
+- "Concession" was stretched to cover Ghost's light-only card CSS, which hid a defect behind a
+  deliberate choice — resolved: the platform's geometry is a **Concession**; the platform's colour
+  in a **Mode** the platform never drew is a bug.

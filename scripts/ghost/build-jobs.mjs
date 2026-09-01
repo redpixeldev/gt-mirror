@@ -26,6 +26,7 @@ const SURFACES = 'scripts/ghost/surfaces.json';
 const ROUTES = 'scripts/ghost/routes.json';
 const FIXTURE = 'scripts/ghost/fixture.json';
 const REFERENCE_INDEX = 'scripts/verify/baseline-index.json';
+const UNSCORED = 'scripts/ghost/unscored.json';
 const OUT_INDEX = 'scripts/ghost/score-index.json';
 const OUT_JOBS = 'scripts/ghost/jobs.json';
 const SHOTS = '.shots/ghost';
@@ -136,6 +137,53 @@ for (const entry of surfaces) {
 				group: JSON.stringify(row.settings),
 			});
 		}
+	}
+}
+
+/*
+ * THE UNSCORED ROWS.
+ *
+ * A Surface that exists to be looked at rather than compared cannot enter the index above: every
+ * row there is keyed to a reference PNG out of `baseline-index.json`, and the style guide has none —
+ * the design draws no audio player, no embed and no footnotes, which is exactly why that Page
+ * exists. Inventing a baseline row to carry it would put a fabricated Floor in the file that holds
+ * the real ones.
+ *
+ * So these rows are captured and never scored. They state their own height and width, because
+ * there is no reference to read either from, and they are appended to the jobs with the empty
+ * settings group so a Layout picker never has to know about them.
+ *
+ * `out` is overridable because a capture name is derived from the PATH here and from the ROUTE
+ * above, and the two namespaces met: the drawing's sheet is still the `styleguide` route while
+ * /styleguide/ is now this Page. The collision check below is what makes that safe to get wrong —
+ * two jobs writing one filename is not a warning in the output, it is one row silently never
+ * captured and a stale PNG scored in its place.
+ */
+for (const row of read(UNSCORED)) {
+	for (const mode of modes) {
+		jobs.push({
+			url: `${base}${row.path}?mode=${mode}`,
+			out: `${row.out ?? `ghost-${row.path.replace(/^\/|\/$/g, '')}`}-${mode}.png`,
+			height: row.height,
+			width: row.width,
+			group: JSON.stringify({}),
+			/* `shoot.py` fails a run on any capture that does not come out the same twice. These
+			 * rows say they are not scored so that check reports instead of failing: the style
+			 * guide's own images move it by a fraction of a pixel between passes, because Ghost's
+			 * srcset variants round to different aspect ratios — the note in shoot.py has the
+			 * measurement. A page nothing is measured against cannot fail a measurement. */
+			scored: false,
+		});
+	}
+}
+
+const seen = new Map();
+for (const job of jobs) {
+	const first = seen.get(job.out);
+	if (first) {
+		problems.push(`two captures write ${job.out}: ${first} and ${job.url}`);
+	} else {
+		seen.set(job.out, job.url);
 	}
 }
 

@@ -1,0 +1,619 @@
+{{!< default}}
+
+{{!-- THE SPECIMEN SHEET, ported from the design's own styleguide.
+
+Ghost resolves a page as page-{slug}.hbs first, so the Page slugged `design-tokens` gets this
+template and no admin step — the same resolution the five standing Pages already rely on.
+
+WHY THIS IS NOT /styleguide/. It was, for one ticket. The design's sheet has seven sections and
+only the last of them is editor content: colour swatches, a labelled type scale, a spacing ramp,
+the nav bar and a post card are the THEME'S own tokens and partials, and nothing an author can type
+in Ghost admin produces them. That makes this sheet the right thing to score against the drawing
+and the wrong thing to call a style guide — a buyer opening "Style guide" wants to know what their
+editor can emit and what it will look like, which is a Page of Platform cards and lives at
+/styleguide/ (see page-styleguide.hbs). So the two jobs got two Surfaces: the drawing's specimen
+sheet is published here, still scored against `01-styleguide-variantA-*.png`, and §07 stays
+`{{content}}` so the cards a reader sees below are real editor nodes rather than markup this file
+invented.
+
+WHERE THE VALUES COME FROM. Every colour, size, radius and shadow is a token — the swatch chips
+paint from `var(--mirror-*)` and the specimens are set with the same utilities the reference build
+uses, so this sheet cannot drift from `src/styles/main.css` without src/ changing first. Three
+things are read from the publication instead, because on Ghost they belong to the buyer and not to
+the drawing: the accent's hex is `{{@site.accent_color}}`, the four font names are resolved from
+the cascade by the inline script at the foot (a buyer can pick a heading and body font in admin,
+and a hardcoded "Newsreader" would be a lie the moment they do), and the nav bar is the real menu.
+
+THE HEX CAPTIONS ARE LITERAL, and that is the reference build's own decision, not a shortcut: a hex
+string here is content — the value being documented — rather than a colour that could be
+re-derived, so `src/components/styleguide/SwatchCard.astro` states both and swaps them by Mode.
+This file states the same pairs, with the accent's replaced by the publication's own.
+
+THE SPECIMEN LABELS DO NOT GO THROUGH {{t}}. `--surface-2`, `display · 66px` and "Long-form copy
+sits at this size" are specimen text in the sense the glossary gives Demo content: the words are
+the thing being demonstrated. Chrome on this page — the bar, the foot, the skip link — is partials,
+and every string in those is translated as usual.
+
+The page container is 1240px rather than the theme's 1320px. That is the drawing's own width for
+this sheet and only this sheet, which is the case `--container-max` exists to serve (see the note
+in assets/css/screen.css). --}}
+
+{{> "chrome/header"}}
+
+<main id="main" class="grow">
+	{{#post}}
+		<article
+			class="{{post_class}} container pb-35"
+			data-surface="page-design-tokens"
+			style="--container-max: 1240px">
+
+			{{!-- ── The masthead ─────────────────────────────────────────────────────────────
+			The h1 is the Page's own title and the lede its excerpt, the way every standing Page
+			in this theme reads its own copy. The eyebrow names the shipped direction, which is a
+			property of the theme rather than of the publication. --}}
+			<section class="border-border border-b pt-22 pb-16">
+				<p class="text-accent mb-6 font-mono text-xs tracking-[0.1em] uppercase">Variant A — Editorial</p>
+
+				{{!-- Steps down to the h1 size on phones: 66px overflows a 320px screen. --}}
+				<h1
+					class="font-display text-h1 tracking-display sm:text-display max-w-[22ch] leading-[1.04] font-medium">{{title}}</h1>
+
+				{{#if excerpt}}
+					<p class="text-lead text-muted mt-7 max-w-[62ch] leading-[1.55] text-pretty">{{excerpt}}</p>
+				{{/if}}
+
+				<dl
+					class="border-border bg-border mt-12 grid grid-cols-[repeat(auto-fit,minmax(min(180px,100%),1fr))] gap-px overflow-hidden rounded-md border">
+					<div class="bg-surface px-5 py-[18px]">
+						<dt class="text-muted font-mono text-[11px] tracking-[0.08em] uppercase">Display</dt>
+						<dd
+							class="font-display mt-1.5 ml-0 text-[17px]"
+							data-family></dd>
+					</div>
+					<div class="bg-surface px-5 py-[18px]">
+						<dt class="text-muted font-mono text-[11px] tracking-[0.08em] uppercase">Body</dt>
+						<dd
+							class="font-body mt-1.5 ml-0 text-[17px]"
+							data-family></dd>
+					</div>
+					<div class="bg-surface px-5 py-[18px]">
+						<dt class="text-muted font-mono text-[11px] tracking-[0.08em] uppercase">UI / meta</dt>
+						<dd
+							class="font-ui mt-1.5 ml-0 text-[17px]"
+							data-family></dd>
+					</div>
+					<div class="bg-surface px-5 py-[18px]">
+						<dt class="text-muted font-mono text-[11px] tracking-[0.08em] uppercase">Mono</dt>
+						<dd
+							class="mt-1.5 ml-0 font-mono text-[15px]"
+							data-family></dd>
+					</div>
+				</dl>
+			</section>
+
+			{{!-- ── 01 — Color tokens ────────────────────────────────────────────────────────
+			The chip paints from the live variable, so it follows the Mode and the buyer's accent
+			with no second source. Only the caption is a string. --}}
+			<section class="pt-18">
+				<h2 class="font-ui text-muted mb-8 text-[13px] font-semibold tracking-[0.14em] uppercase">01 — Color tokens</h2>
+
+				<div class="grid grid-cols-[repeat(auto-fill,minmax(min(184px,100%),1fr))] gap-4">
+					<div class="border-border bg-surface overflow-hidden rounded-md border">
+						<div
+							class="border-border h-22 border-b"
+							style="background: var(--mirror-bg)"></div>
+						<div class="px-3.5 py-3">
+							<p class="font-mono text-xs">--bg</p>
+							<p class="text-muted mt-[5px] font-mono text-[11px]">
+								<span class="dark:hidden">#FAF9F7</span>
+								<span class="hidden dark:inline">#12100E</span>
+							</p>
+							<p class="font-ui text-muted mt-2 text-[11px]">page canvas</p>
+						</div>
+					</div>
+
+					<div class="border-border bg-surface overflow-hidden rounded-md border">
+						<div
+							class="border-border h-22 border-b"
+							style="background: var(--mirror-surface)"></div>
+						<div class="px-3.5 py-3">
+							<p class="font-mono text-xs">--surface</p>
+							<p class="text-muted mt-[5px] font-mono text-[11px]">
+								<span class="dark:hidden">#FFFFFF</span>
+								<span class="hidden dark:inline">#1B1815</span>
+							</p>
+							<p class="font-ui text-muted mt-2 text-[11px]">cards, header</p>
+						</div>
+					</div>
+
+					<div class="border-border bg-surface overflow-hidden rounded-md border">
+						<div
+							class="border-border h-22 border-b"
+							style="background: var(--mirror-surface-2)"></div>
+						<div class="px-3.5 py-3">
+							<p class="font-mono text-xs">--surface-2</p>
+							<p class="text-muted mt-[5px] font-mono text-[11px]">
+								<span class="dark:hidden">#F3F1ED</span>
+								<span class="hidden dark:inline">#231F1B</span>
+							</p>
+							<p class="font-ui text-muted mt-2 text-[11px]">subtle fills</p>
+						</div>
+					</div>
+
+					<div class="border-border bg-surface overflow-hidden rounded-md border">
+						<div
+							class="border-border h-22 border-b"
+							style="background: var(--mirror-text)"></div>
+						<div class="px-3.5 py-3">
+							<p class="font-mono text-xs">--text</p>
+							<p class="text-muted mt-[5px] font-mono text-[11px]">
+								<span class="dark:hidden">#1C1917</span>
+								<span class="hidden dark:inline">#F5F2EC</span>
+							</p>
+							<p class="font-ui text-muted mt-2 text-[11px]">body + headings</p>
+						</div>
+					</div>
+
+					<div class="border-border bg-surface overflow-hidden rounded-md border">
+						<div
+							class="border-border h-22 border-b"
+							style="background: var(--mirror-muted)"></div>
+						<div class="px-3.5 py-3">
+							<p class="font-mono text-xs">--muted</p>
+							<p class="text-muted mt-[5px] font-mono text-[11px]">
+								<span class="dark:hidden">#6B625C</span>
+								<span class="hidden dark:inline">#A8A09A</span>
+							</p>
+							<p class="font-ui text-muted mt-2 text-[11px]">meta, captions</p>
+						</div>
+					</div>
+
+					<div class="border-border bg-surface overflow-hidden rounded-md border">
+						<div
+							class="border-border h-22 border-b"
+							style="background: var(--mirror-border)"></div>
+						<div class="px-3.5 py-3">
+							<p class="font-mono text-xs">--border</p>
+							<p class="text-muted mt-[5px] font-mono text-[11px]">
+								<span class="dark:hidden">#E4E0D9</span>
+								<span class="hidden dark:inline">#302B26</span>
+							</p>
+							<p class="font-ui text-muted mt-2 text-[11px]">hairlines</p>
+						</div>
+					</div>
+
+					{{!-- The one swatch whose value is the publication's rather than the drawing's:
+					`default.hbs` publishes `{{@site.accent_color}}` into `--mirror-accent`, so the
+					caption prints what the buyer chose in admin. One value, both Modes, because
+					that inline `:root` is what the cascade resolves in either. --}}
+					<div class="border-border bg-surface overflow-hidden rounded-md border">
+						<div
+							class="border-border h-22 border-b"
+							style="background: var(--mirror-accent)"></div>
+						<div class="px-3.5 py-3">
+							<p class="font-mono text-xs">--accent</p>
+							<p class="text-muted mt-[5px] font-mono text-[11px]">{{@site.accent_color}}</p>
+							<p class="font-ui text-muted mt-2 text-[11px]">links, CTA</p>
+						</div>
+					</div>
+
+					<div class="border-border bg-surface overflow-hidden rounded-md border">
+						<div
+							class="border-border h-22 border-b"
+							style="background: var(--mirror-accent-soft)"></div>
+						<div class="px-3.5 py-3">
+							<p class="font-mono text-xs">--accent-soft</p>
+							<p class="text-muted mt-[5px] font-mono text-[11px]">
+								<span class="dark:hidden">mixed from the accent</span>
+								<span class="hidden dark:inline">mixed from the accent</span>
+							</p>
+							<p class="font-ui text-muted mt-2 text-[11px]">tinted blocks</p>
+						</div>
+					</div>
+				</div>
+
+				<p class="text-muted mt-5 font-mono text-xs">
+					Every pair above meets WCAG 2.2 AA — body text ≥ 7:1, muted text ≥ 4.6:1, accent-on-bg ≥ 4.5:1, in both
+					modes.
+				</p>
+			</section>
+
+			{{!-- ── 02 — Type scale ──────────────────────────────────────────────────────────
+			Each row is the token doing its own job. Stacks below `sm`, where a 140px label column
+			leaves nothing for the specimen. --}}
+			<section class="pt-18">
+				<h2 class="font-ui text-muted mb-8 text-[13px] font-semibold tracking-[0.14em] uppercase">02 — Type scale</h2>
+
+				<div class="border-border bg-surface overflow-hidden rounded-md border">
+					<div
+						class="border-border grid grid-cols-1 items-baseline gap-2 border-b px-5 py-[22px] sm:grid-cols-[140px_minmax(0,1fr)] sm:gap-6 sm:px-6">
+						<span class="text-muted font-mono text-[11px]">display · 66px</span>
+						<span class="font-display text-display tracking-display leading-[1.05] font-medium">Reflect the writing</span>
+					</div>
+
+					<div
+						class="border-border grid grid-cols-1 items-baseline gap-2 border-b px-5 py-[22px] sm:grid-cols-[140px_minmax(0,1fr)] sm:gap-6 sm:px-6">
+						<span class="text-muted font-mono text-[11px]">h1 · 46px</span>
+						<span class="font-display text-h1 tracking-display leading-[1.1] font-medium">A theme for serious publishers</span>
+					</div>
+
+					<div
+						class="border-border grid grid-cols-1 items-baseline gap-2 border-b px-5 py-[22px] sm:grid-cols-[140px_minmax(0,1fr)] sm:gap-6 sm:px-6">
+						<span class="text-muted font-mono text-[11px]">h2 · 33px</span>
+						<span class="font-display text-h2 tracking-heading leading-[1.2] font-medium">Section heading</span>
+					</div>
+
+					<div
+						class="border-border grid grid-cols-1 items-baseline gap-2 border-b px-5 py-[22px] sm:grid-cols-[140px_minmax(0,1fr)] sm:gap-6 sm:px-6">
+						<span class="text-muted font-mono text-[11px]">h3 · 25px</span>
+						<span class="font-display text-h3 leading-[1.28] font-medium">Subsection heading</span>
+					</div>
+
+					<div
+						class="border-border grid grid-cols-1 items-baseline gap-2 border-b px-5 py-[22px] sm:grid-cols-[140px_minmax(0,1fr)] sm:gap-6 sm:px-6">
+						<span class="text-muted font-mono text-[11px]">h4 · 19px</span>
+						<span class="font-ui text-h4 leading-[1.35] font-semibold">Minor heading</span>
+					</div>
+
+					<div
+						class="border-border grid grid-cols-1 items-baseline gap-2 border-b px-5 py-[22px] sm:grid-cols-[140px_minmax(0,1fr)] sm:gap-6 sm:px-6">
+						<span class="text-muted font-mono text-[11px]">body · 19px</span>
+						<span class="text-body leading-body">
+							Long-form copy sits at this size and rides a 68ch measure for comfortable reading.
+						</span>
+					</div>
+
+					<div
+						class="border-border grid grid-cols-1 items-baseline gap-2 border-b px-5 py-[22px] sm:grid-cols-[140px_minmax(0,1fr)] sm:gap-6 sm:px-6">
+						<span class="text-muted font-mono text-[11px]">small · 16px</span>
+						<span class="font-ui text-small text-muted leading-[1.5]">Captions, form help, footer links</span>
+					</div>
+
+					<div
+						class="grid grid-cols-1 items-baseline gap-2 px-5 py-[22px] sm:grid-cols-[140px_minmax(0,1fr)] sm:gap-6 sm:px-6">
+						<span class="text-muted font-mono text-[11px]">meta · 12.5px</span>
+						<span class="font-meta text-meta tracking-meta text-muted uppercase">Author · 12 Mar 2026 · 7 min read</span>
+					</div>
+				</div>
+			</section>
+
+			{{!-- ── 03 — Spacing, radius, shadow ─────────────────────────────────────────────
+			The bars carry an inline width because the width IS the specimen: 24px has to be 24px
+			whatever the utility scale says. Radius and elevation are the theme's own utilities, so
+			what renders is what every card on every Surface gets. --}}
+			<section class="pt-18">
+				<h2 class="font-ui text-muted mb-8 text-[13px] font-semibold tracking-[0.14em] uppercase">
+					03 — Spacing, radius, shadow
+				</h2>
+
+				<div class="grid grid-cols-[repeat(auto-fit,minmax(min(280px,100%),1fr))] gap-4">
+					<div class="border-border bg-surface rounded-md border p-6">
+						<p class="text-muted mb-[18px] font-mono text-[11px] tracking-[0.08em] uppercase">Spacing · 4px base</p>
+						<div class="flex flex-col gap-2.5">
+							<div class="flex items-center gap-3">
+								<span class="text-muted w-[38px] font-mono text-[11px]">4</span>
+								<span
+									class="bg-accent h-2.5"
+									style="width: 4px"></span>
+							</div>
+							<div class="flex items-center gap-3">
+								<span class="text-muted w-[38px] font-mono text-[11px]">8</span>
+								<span
+									class="bg-accent h-2.5"
+									style="width: 8px"></span>
+							</div>
+							<div class="flex items-center gap-3">
+								<span class="text-muted w-[38px] font-mono text-[11px]">12</span>
+								<span
+									class="bg-accent h-2.5"
+									style="width: 12px"></span>
+							</div>
+							<div class="flex items-center gap-3">
+								<span class="text-muted w-[38px] font-mono text-[11px]">16</span>
+								<span
+									class="bg-accent h-2.5"
+									style="width: 16px"></span>
+							</div>
+							<div class="flex items-center gap-3">
+								<span class="text-muted w-[38px] font-mono text-[11px]">24</span>
+								<span
+									class="bg-accent h-2.5"
+									style="width: 24px"></span>
+							</div>
+							<div class="flex items-center gap-3">
+								<span class="text-muted w-[38px] font-mono text-[11px]">32</span>
+								<span
+									class="bg-accent h-2.5"
+									style="width: 32px"></span>
+							</div>
+							<div class="flex items-center gap-3">
+								<span class="text-muted w-[38px] font-mono text-[11px]">48</span>
+								<span
+									class="bg-accent h-2.5"
+									style="width: 48px"></span>
+							</div>
+							<div class="flex items-center gap-3">
+								<span class="text-muted w-[38px] font-mono text-[11px]">72</span>
+								<span
+									class="bg-accent h-2.5"
+									style="width: 72px"></span>
+							</div>
+							<div class="flex items-center gap-3">
+								<span class="text-muted w-[38px] font-mono text-[11px]">112</span>
+								<span
+									class="bg-accent h-2.5"
+									style="width: 112px"></span>
+							</div>
+						</div>
+					</div>
+
+					<div class="border-border bg-surface rounded-md border p-6">
+						<p class="text-muted mb-[18px] font-mono text-[11px] tracking-[0.08em] uppercase">Radius · 6 / 10 / 18</p>
+						<div class="flex flex-wrap items-end gap-3.5">
+							<div>
+								<div class="border-border bg-surface-2 h-16 w-16 rounded-sm border"></div>
+								<p class="text-muted mt-2 font-mono text-[11px]">sm</p>
+							</div>
+							<div>
+								<div class="border-border bg-surface-2 h-16 w-16 rounded-md border"></div>
+								<p class="text-muted mt-2 font-mono text-[11px]">md</p>
+							</div>
+							<div>
+								<div class="border-border bg-surface-2 h-16 w-16 rounded-lg border"></div>
+								<p class="text-muted mt-2 font-mono text-[11px]">lg</p>
+							</div>
+							<div>
+								<div class="border-border bg-surface-2 rounded-pill h-9 w-16 border"></div>
+								<p class="text-muted mt-2 font-mono text-[11px]">pill</p>
+							</div>
+						</div>
+					</div>
+
+					<div class="border-border bg-surface rounded-md border p-6">
+						<p class="text-muted mb-[18px] font-mono text-[11px] tracking-[0.08em] uppercase">Elevation</p>
+						<div class="flex flex-wrap gap-4">
+							<div>
+								<div class="border-border bg-surface h-14 w-[76px] rounded-md border shadow-sm"></div>
+								<p class="text-muted mt-2.5 font-mono text-[11px]">sm</p>
+							</div>
+							<div>
+								<div class="border-border bg-surface h-14 w-[76px] rounded-md border shadow-md"></div>
+								<p class="text-muted mt-2.5 font-mono text-[11px]">md</p>
+							</div>
+							<div>
+								<div class="border-border bg-surface h-14 w-[76px] rounded-md border shadow-lg"></div>
+								<p class="text-muted mt-2.5 font-mono text-[11px]">lg</p>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			{{!-- ── 04 — Buttons, tags, forms ────────────────────────────────────────────────
+			Every control here is the class list a real one carries: the Subscribe in the bar above
+			is the same `btn btn-primary`, and the pills are `tag-pill`'s two states drawn as the
+			archives draw them. The input is inert on purpose — it has no `data-members-*`, so
+			Portal never binds it and a visitor cannot post a specimen. --}}
+			<section class="pt-18">
+				<h2 class="font-ui text-muted mb-8 text-[13px] font-semibold tracking-[0.14em] uppercase">
+					04 — Buttons, tags, forms
+				</h2>
+
+				<div class="grid grid-cols-[repeat(auto-fit,minmax(min(300px,100%),1fr))] gap-4">
+					<div class="border-border bg-surface rounded-md border p-7">
+						<p class="text-muted mb-5 font-mono text-[11px] tracking-[0.08em] uppercase">Buttons</p>
+
+						<div class="flex flex-wrap items-center gap-3">
+							<button
+								type="button"
+								class="btn btn-primary font-ui cursor-pointer rounded-sm px-[22px] py-3 text-[15px] font-semibold">
+								Subscribe
+							</button>
+							<button
+								type="button"
+								class="btn border-text font-ui text-text hover:bg-text hover:text-surface cursor-pointer rounded-sm border bg-transparent px-[22px] py-3 text-[15px] font-semibold">
+								Read more
+							</button>
+							<button
+								type="button"
+								class="btn font-ui text-accent hover:bg-surface-2 cursor-pointer rounded-sm border border-transparent bg-transparent px-3.5 py-3 text-[15px] font-semibold">
+								Sign in →
+							</button>
+						</div>
+
+						<div class="mt-4 flex flex-wrap items-center gap-3">
+							<button
+								type="button"
+								class="btn btn-primary font-ui cursor-pointer rounded-sm px-4 py-2 text-[13px] font-semibold">
+								Small
+							</button>
+							<button
+								type="button"
+								disabled
+								class="border-border bg-surface-2 font-ui text-muted cursor-not-allowed rounded-sm border px-[22px] py-3 text-[15px] font-semibold">
+								Disabled
+							</button>
+						</div>
+					</div>
+
+					<div class="border-border bg-surface rounded-md border p-7">
+						<p class="text-muted mb-5 font-mono text-[11px] tracking-[0.08em] uppercase">Tags &amp; pills</p>
+
+						<div class="flex flex-wrap gap-2.5">
+							<span class="font-meta text-meta tracking-meta bg-accent-soft text-accent-strong rounded-pill px-3.5 py-1.5 uppercase">
+								Essays
+							</span>
+							<span class="font-meta text-meta tracking-meta border-border text-muted rounded-pill border px-3.5 py-1.5 uppercase">
+								Interviews
+							</span>
+							<span class="font-meta text-meta tracking-meta bg-text text-surface rounded-pill px-3.5 py-1.5 uppercase">
+								Members only
+							</span>
+							<span class="border-border bg-surface-2 text-muted rounded-sm border px-3 py-1.5 font-mono text-xs">#field-notes</span>
+						</div>
+
+						<div class="mt-[18px] flex flex-wrap gap-2.5">
+							<span class="bg-accent font-ui text-on-accent rounded-sm px-[11px] py-[5px] text-xs font-semibold">New</span>
+							<span class="border-border font-ui text-muted rounded-sm border px-[11px] py-[5px] text-xs font-semibold">Draft</span>
+						</div>
+					</div>
+
+					<div class="border-border bg-surface rounded-md border p-7">
+						<p class="text-muted mb-5 font-mono text-[11px] tracking-[0.08em] uppercase">Inputs</p>
+
+						<label
+							for="sg-email"
+							class="font-ui mb-2 block text-[13px] font-semibold">Email address</label>
+						<input
+							id="sg-email"
+							type="email"
+							placeholder="you@publication.com"
+							autocomplete="email"
+							aria-describedby="sg-email-help sg-email-error"
+							class="border-border bg-bg font-ui text-text w-full rounded-sm border px-3.5 py-3 text-[15px]">
+						<p
+							id="sg-email-help"
+							class="font-ui text-muted mt-2 text-[13px]">Help text explains the field.</p>
+						<p
+							id="sg-email-error"
+							class="font-ui text-danger mt-3.5 text-[13px]">Error state — enter a valid address.</p>
+					</div>
+				</div>
+			</section>
+
+			{{!-- ── 05 — Nav header ──────────────────────────────────────────────────────────
+			The real menu, from `{{navigation}}`, inside a panel: the drawing shows the bar as a
+			specimen, and a specimen built from hardcoded links would stop being one the moment a
+			buyer edits their menu. The `current` marker is live too — whichever item is this page
+			carries `aria-current` here exactly as it does in the bar above.
+
+			The bar above is the same partial doing its real job; this panel is deliberately not
+			`{{> "chrome/header"}}` again, because that partial owns `x-data="siteMenu"`, a skip
+			link and the search trigger's id-free but singular contract with sodo-search. Two of
+			them on one page would give the ⌘K shortcut two triggers and Alpine two drawers. --}}
+			<section class="pt-18">
+				<h2 class="font-ui text-muted mb-8 text-[13px] font-semibold tracking-[0.14em] uppercase">05 — Nav header</h2>
+
+				<div class="border-border bg-surface overflow-hidden rounded-md border">
+					<div class="flex flex-wrap items-center gap-x-[30px] gap-y-4 px-5 py-[22px] md:px-7">
+						{{> "chrome/wordmark" wrapper="mr-auto" logoHeight="h-5" titleSize="text-2xl"}}
+
+						<nav
+							aria-label="{{t "Specimen menu"}}"
+							class="max-nav:hidden flex flex-wrap items-center gap-[22px]">{{navigation variant="bar"}}</nav>
+
+						<span class="btn btn-primary font-ui max-nav:hidden rounded-sm px-[18px] py-2.5 text-sm font-semibold">Subscribe</span>
+					</div>
+
+					<div class="bg-surface-2 border-border flex items-center gap-[18px] border-t px-5 py-3 md:px-7">
+						<span class="text-muted font-mono text-[11px] tracking-[0.08em] uppercase">
+							Mobile: hamburger → Alpine <code class="font-mono">x-data</code> drawer,
+							<code class="font-mono">aria-expanded</code> bound, focus trapped, Esc closes.
+						</span>
+					</div>
+				</div>
+			</section>
+
+			{{!-- ── 06 — Post card, author card, newsletter, pagination ──────────────────────
+			Four specimens, three of them the theme's own partials driven by real records — a card
+			that renders invented data is not a specimen of anything a buyer will see.
+
+			The pagination control is inside its own `{{#get}}` on purpose: `{{pagination}}`
+			reports the pagination of the query it sits in, so a page-2 query of the real archive
+			gives the control real numbers to draw. Outside a get it would read this Page's own
+			context, which has one page and therefore renders nothing.
+
+			TWO DEVIATIONS FROM THE DRAWING, both because a partial owns its own shape. The
+			drawing sets all four in one 3-up row; the newsletter band is `container`-scoped and
+			nested containers do not compose, so it takes its own full-width row below. And the
+			author card is written out here rather than lifted from `directory/author-cards`,
+			which is a whole `<section>` with its own heading and query — the portrait, however,
+			is that Surface's partial, so a face renders the same way it does everywhere. --}}
+			<section class="pt-18">
+				<h2 class="font-ui text-muted mb-8 text-[13px] font-semibold tracking-[0.14em] uppercase">
+					06 — Post card, author card, newsletter, pagination
+				</h2>
+
+				<div class="grid grid-cols-[repeat(auto-fit,minmax(min(320px,100%),1fr))] gap-6">
+					{{#get "posts" limit="1" include="authors,tags" order="published_at desc" as |specimen|}}
+						{{#if specimen}}
+							{{#foreach specimen}}
+								{{> "archive/card" tagEyebrow=true}}
+							{{/foreach}}
+						{{/if}}
+					{{/get}}
+
+					<div class="flex flex-col gap-6">
+						{{#get "authors" limit="1" include="count.posts" as |writer|}}
+							{{#if writer}}
+								{{#foreach writer}}
+									<article class="border-border bg-surface rounded-md border p-[26px] text-center">
+										{{> "authors/portrait" size="h-[72px] w-[72px]" px="72" textSize="text-[22px]" extra="mx-auto"}}
+
+										<h3 class="font-display mt-4 text-[22px] font-medium">{{name}}</h3>
+
+										<p class="font-meta text-meta tracking-meta text-muted mt-2 uppercase">
+											{{~plural count.posts empty=(t "No posts") singular=(t "% post") plural=(t "% posts")~}}
+										</p>
+
+										{{#if bio}}
+											<p class="text-small text-muted mt-3.5 leading-[1.6]">{{bio}}</p>
+										{{/if}}
+
+										<div class="mt-[18px] flex justify-center gap-2.5">
+											<a
+												href="{{url}}"
+												class="btn border-border font-ui text-text hover:bg-surface-2 rounded-sm border px-4 py-[9px] text-[13px] font-semibold no-underline">{{t "All posts"}}</a>
+											<a
+												href="#newsletter-specimen"
+												class="btn btn-primary font-ui rounded-sm px-4 py-[9px] text-[13px] font-semibold no-underline">{{t "Follow"}}</a>
+										</div>
+									</article>
+								{{/foreach}}
+							{{/if}}
+						{{/get}}
+
+						{{#get "posts" limit="4" page="2"}}
+							{{pagination bare=true pt="pt-0"}}
+						{{/get}}
+					</div>
+				</div>
+
+				{{> "newsletter" anchor="newsletter-specimen" pt="pt-6"}}
+			</section>
+
+			{{!-- ── 07 — Rendered post content ───────────────────────────────────────────────
+			The editor's own output, styled by the `.mirror-content` layer. Everything above this
+			line is the theme documenting itself; everything below it is a Page body a buyer can
+			edit, which is why the card set is a fixture rather than markup in this file. --}}
+			<section class="pt-18">
+				<h2 class="font-ui text-muted mb-3 text-[13px] font-semibold tracking-[0.14em] uppercase">
+					07 — Rendered post content
+				</h2>
+				<p class="text-muted mb-10 font-mono text-xs">
+					Measure locked to 68ch. Ghost card types below map 1:1 to the editor's card set.
+				</p>
+
+				<div class="mirror-content measure mx-auto">
+					{{content}}
+				</div>
+			</section>
+		</article>
+	{{/post}}
+</main>
+
+{{!-- The four font names, read from the cascade rather than written down.
+
+Ghost lets a buyer pick a heading and a body font in admin, which arrive as `--gh-font-heading` and
+`--gh-font-body` and are resolved through the fallbacks in assets/css/screen.css. A hardcoded
+"Newsreader" would be wrong the moment someone changes it, and there is no Handlebars expression for
+"the family this element resolved to" — so the one thing this sheet cannot state, it asks the
+browser for. With scripting off the four cells are empty and the specimens still show the faces,
+which is the honest failure. --}}
+<script>
+	for (const cell of document.querySelectorAll('[data-family]')) {
+		cell.textContent = getComputedStyle(cell).fontFamily.split(',')[0].replace(/["']/g, '');
+	}
+</script>
+
+{{> "chrome/footer"}}

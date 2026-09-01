@@ -1,10 +1,10 @@
 [
 	{
 		"route": "styleguide",
-		"surface": "page",
+		"surface": "page-design-tokens",
 		"layout": "",
-		"path": "/styleguide/",
-		"why": "A fixture page with no page-styleguide.hbs, so it renders through the page.hbs fallback"
+		"path": "/design-tokens/",
+		"why": "The design's own Specimen sheet, drawn by page-design-tokens.hbs. The route keeps the drawing's name because that is what 01-styleguide-variantA-*.png is a picture of; the PATH moved when /styleguide/ became the Page that shows a buyer every card their editor can emit"
 	},
 	{
 		"route": "homepage-01",

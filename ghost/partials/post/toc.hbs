@@ -1,7 +1,8 @@
 {{!-- The table of contents, in the two shapes the design draws it.
 
-	{{> "post/toc" variant="inline"}}   A1's open disclosure above the article
-	{{> "post/toc" variant="rail"}}     A2's list at the top of the sticky rail
+	{{> "post/toc" variant="inline"}}            A1's open disclosure above the article
+	{{> "post/toc" variant="rail"}}              A2's list at the top of the sticky rail
+	{{> "post/toc" variant="rail" depth="3"}}    the same rail with subsections nested
 
 THE LIST IS BUILT FROM THE ARTICLE, NOT FROM A FIXTURE. Ghost has no table-of-contents helper
 and a template cannot read inside {{content}}, so `postToc` (assets/js/main.js) walks the
@@ -10,43 +11,77 @@ a missing helper — it is the only construction that stays true when an author 
 there is no second list to update, and a post whose body has no headings renders no block at
 all rather than an empty box.
 
-Which headings count is a design decision: h2 only. The design's own contents lists the four
-chapter headings and skips the h3 under one of them, and a contents list that mirrors every
-level of a long essay stops being navigation.
+Which headings count is a design decision, and `depth` is where it is stated. A Post lists h2
+only: the design's own contents lists the four chapter headings and skips the h3 under one of
+them, and a contents list that mirrors every level of a long essay stops being navigation. The
+style guide passes `depth="3"` because it is twenty-three sections of which most have named
+variants, and a reader looking for the wide image card should not have to guess it is under
+Images. Nothing else may pass it without a reason of that kind.
 
 The numbers are the position in the list, not part of the heading, so they are generated
-here. The ids are Ghost's: its renderer slugifies every heading and de-duplicates collisions
+here — and only the top level takes one. A second numbering system at 11px in mono ("01.3")
+is smaller than the thing it clarifies; the indent already says which parent a row belongs to.
+The ids are Ghost's: its renderer slugifies every heading and de-duplicates collisions
 with a numeric suffix, so the anchors are the platform's own and survive an export.
 
 Each row is `items-baseline` rather than the flex default: the number sets in mono at 11px and
 the heading in the UI face at 13.5px or 14px, so aligning the tops of their boxes sat the number
 above the line it numbers. A heading that wraps aligns on its first line, which is the one the
-number belongs to. --}}
+number belongs to.
+
+`role="list"` because `list-none` removes the marker, and a list with no marker stops being
+announced as a list in Safari. --}}
 
 {{#match variant "inline"}}
+	{{!-- Open by default, because A1's design draws it open. `collapsed=true` is for the caller with
+	a list long enough that an open disclosure IS the wall it was meant to avoid — the style guide's
+	seventy rows are 1,984px, which on a phone is a screenful of links before the first word. --}}
 	<details
-		open
-		x-data="postToc"
+		{{#unless collapsed}}open{{/unless}}
+		x-data="postToc({{#if depth}}{{depth}}{{else}}2{{/if}})"
 		x-show="items.length"
 		x-cloak
 		class="border-border bg-surface mb-11 rounded-sm border">
 		<summary
 			class="font-ui text-muted cursor-pointer px-[18px] py-3.5 text-[13px] font-semibold tracking-[0.06em] uppercase">{{t "On this page"}}</summary>
 
-		<ol class="m-0 flex list-none flex-col gap-2.5 px-[18px] pb-[18px]">
+		<ol
+			role="list"
+			class="m-0 flex list-none flex-col gap-2.5 px-[18px] pb-[18px]">
 			<template
 				x-for="item in items"
 				x-bind:key="item.id">
-				<li class="flex items-baseline gap-3">
-					<span
-						class="text-muted font-mono text-[11px]"
-						x-text="item.num"></span>
-					<a
-						x-bind:href="'#' + item.id"
-						x-bind:aria-current="item.id === active ? 'true' : null"
-						x-bind:class="item.id === active ? 'text-accent font-semibold' : 'text-muted'"
-						class="font-ui text-sm no-underline"
-						x-text="item.label"></a>
+				<li class="flex flex-col gap-2.5">
+					<div class="flex items-baseline gap-3">
+						<span
+							class="text-muted font-mono text-[11px]"
+							x-text="item.num"></span>
+						<a
+							x-bind:href="'#' + item.id"
+							x-bind:aria-current="item.id === active ? 'true' : null"
+							x-bind:class="item.id === active ? 'text-accent font-semibold' : 'text-muted'"
+							class="font-ui text-sm no-underline"
+							x-text="item.label"></a>
+					</div>
+
+					<template x-if="item.children.length">
+						<ol
+							role="list"
+							class="m-0 flex list-none flex-col gap-2 pl-[26px]">
+							<template
+								x-for="child in item.children"
+								x-bind:key="child.id">
+								<li>
+									<a
+										x-bind:href="'#' + child.id"
+										x-bind:aria-current="child.id === active ? 'true' : null"
+										x-bind:class="child.id === active ? 'text-accent font-semibold' : 'text-muted'"
+										class="font-ui text-[13px] no-underline"
+										x-text="child.label"></a>
+								</li>
+							</template>
+						</ol>
+					</template>
 				</li>
 			</template>
 		</ol>
@@ -55,27 +90,50 @@ number belongs to. --}}
 
 {{#match variant "rail"}}
 	<nav
-		x-data="postToc"
+		x-data="postToc({{#if depth}}{{depth}}{{else}}2{{/if}})"
 		x-show="items.length"
 		x-cloak
 		aria-label="{{t "On this page"}}"
 		class="border-border border-b pb-5">
 		<p class="text-muted mb-3.5 font-mono text-[10.5px] tracking-[0.1em] uppercase">{{t "On this page"}}</p>
 
-		<ol class="m-0 flex list-none flex-col gap-[11px] p-0">
+		<ol
+			role="list"
+			class="m-0 flex list-none flex-col gap-[11px] p-0">
 			<template
 				x-for="item in items"
 				x-bind:key="item.id">
-				<li class="flex items-baseline gap-2.5">
-					<span
-						class="text-muted font-mono text-[11px]"
-						x-text="item.num"></span>
-					<a
-						x-bind:href="'#' + item.id"
-						x-bind:aria-current="item.id === active ? 'true' : null"
-						x-bind:class="item.id === active ? 'text-accent font-semibold' : 'text-muted'"
-						class="font-ui text-[13.5px] leading-[1.4] no-underline"
-						x-text="item.label"></a>
+				<li class="flex flex-col gap-[11px]">
+					<div class="flex items-baseline gap-2.5">
+						<span
+							class="text-muted font-mono text-[11px]"
+							x-text="item.num"></span>
+						<a
+							x-bind:href="'#' + item.id"
+							x-bind:aria-current="item.id === active ? 'true' : null"
+							x-bind:class="item.id === active ? 'text-accent font-semibold' : 'text-muted'"
+							class="font-ui text-[13.5px] leading-[1.4] no-underline"
+							x-text="item.label"></a>
+					</div>
+
+					<template x-if="item.children.length">
+						<ol
+							role="list"
+							class="m-0 flex list-none flex-col gap-2 pl-[23px]">
+							<template
+								x-for="child in item.children"
+								x-bind:key="child.id">
+								<li>
+									<a
+										x-bind:href="'#' + child.id"
+										x-bind:aria-current="child.id === active ? 'true' : null"
+										x-bind:class="child.id === active ? 'text-accent font-semibold' : 'text-muted'"
+										class="font-ui text-[12.5px] leading-[1.4] no-underline"
+										x-text="child.label"></a>
+								</li>
+							</template>
+						</ol>
+					</template>
 				</li>
 			</template>
 		</ol>

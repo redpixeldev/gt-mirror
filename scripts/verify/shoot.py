@@ -239,27 +239,49 @@ earlier in this port.
 
 So the bound is stated rather than implied: at most two levels on any channel, and at most one
 pixel in twenty thousand. A capture outside it is unstable and fails the run.
+
+ONE CLASS OF PAGE IS REPORTED RATHER THAN FAILED, and a job says so itself with `"scored": false`.
+The reason is Ghost's own responsive images, measured on the style guide: an image card is served
+`srcset` with `w600`, `w1000` and the original, and the platform's resizer ROUNDS each variant
+independently — `pexels-7319071` is 1200x800 and 600x400, both 1.5, but its `w1000` is 1000x667,
+which is 1.49925. The declared `width`/`height` give the layout one ratio and the decoded candidate
+gives it another, so the first figure on the page settles 0.2px taller or shorter depending on which
+file finished first, and every band below it shifts a whole row. That is a property of the platform's
+image pipeline, not of a template: no rule in a stylesheet can pin a height the browser recomputes
+on decode.
+
+A page in that state is unfit to SCORE and perfectly fit to look at, which is exactly what an
+unscored Surface is for. So the guard keeps its full strength everywhere a number is produced, the
+measurement is still printed for every capture, and an unscored specimen page does not fail a run
+over a rounding difference in somebody else's JPEG resizer.
 """
 MAX_JITTER_DELTA = 2
 MAX_JITTER_FRACTION = 1 / 20_000
 
 
 def compare(repeats: list[dict]) -> int:
-    """Fail the run on any capture that did not come out the same twice, within the jitter bound."""
+    """Fail the run on any scored capture that did not come out the same twice, within the bound."""
     unstable = []
+    drifted = []
     for job in repeats:
         first, second = job['first'], job['out']
         measured = jitter(first, second)
-        if measured is None:
-            unstable.append((job, None))
-            continue
-        touched, worst = measured
-        pixels = job.get('width', 0) * job.get('height', 0)
-        allowed = max(1, int(pixels * MAX_JITTER_FRACTION)) if pixels else 0
-        if worst <= MAX_JITTER_DELTA and touched <= allowed:
-            os.remove(second)
-        else:
-            unstable.append((job, measured))
+        touched, worst = measured if measured else (None, None)
+        if measured is not None:
+            pixels = job.get('width', 0) * job.get('height', 0)
+            allowed = max(1, int(pixels * MAX_JITTER_FRACTION)) if pixels else 0
+            if worst <= MAX_JITTER_DELTA and touched <= allowed:
+                os.remove(second)
+                continue
+        (drifted if job.get('scored') is False else unstable).append((job, measured))
+
+    for job, measured in drifted:
+        detail = 'not comparable' if measured is None else f'{measured[0]} px, delta {measured[1]}'
+        print(f'DRIFT    {job["first"]} != {job["out"]}  ({detail})  <- {job["url"]}  [unscored]')
+        # The pair is reported, not kept: there is nothing to diff a drifted unscored capture
+        # against, and a leftover .repeat.png is one more 7MB file per run.
+        if os.path.exists(job['out']):
+            os.remove(job['out'])
 
     for job, measured in unstable:
         detail = 'not comparable' if measured is None else f'{measured[0]} px, delta {measured[1]}'

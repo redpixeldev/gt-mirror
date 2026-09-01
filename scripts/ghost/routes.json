@@ -6,17 +6,11 @@
 	{
 		"path": "/against-the-infinite-feed/",
 		"expect": "data-surface=\"post\"",
-		"absent": [
-			"data-gate=",
-			"class=\"gh-post-upgrade-cta"
-		]
+		"absent": ["data-gate=", "class=\"gh-post-upgrade-cta"]
 	},
 	{
 		"path": "/what-editors-owe-their-readers-now/",
-		"expect": [
-			"data-surface=\"post\"",
-			"data-gate=\"paid\""
-		],
+		"expect": ["data-surface=\"post\"", "data-gate=\"paid\""],
 		"absent": "class=\"gh-post-upgrade-cta"
 	},
 	{
@@ -58,5 +52,13 @@
 	{
 		"path": "/archive/",
 		"expect": "data-surface=\"feed\""
+	},
+	{
+		"path": "/styleguide/",
+		"expect": "data-surface=\"page-styleguide\""
+	},
+	{
+		"path": "/design-tokens/",
+		"expect": "data-surface=\"page-design-tokens\""
 	}
 ]
