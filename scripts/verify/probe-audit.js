@@ -105,5 +105,30 @@ function audit(doc, W) {
       note(intent ? 'DECLARED ' + intent + ' ' + where : 'SCROLLHIDE ' + where);
     }
   });
+
+  // AN ORPHAN: a navigation or list landmark holding nothing.
+  //
+  // Its own pass, because the loop above cannot see it. That loop returns early on a zero-sized
+  // box, and an empty <nav> or <ul> is exactly that — so the whole class of chrome-drawn-for-
+  // content-that-is-not-there is invisible to every rule in it. See docs/adr/0003.
+  //
+  // Narrow on purpose. A landmark counts as empty only when it has NO link, NO list item and no
+  // text of its own, so a breadcrumb whose crumb is a <span> passes and a decorative <div> can
+  // never trip it.
+  //
+  // THE CASE THIS RULE HAS TO GET RIGHT IS post/toc.hbs. Its <ol> is real markup whose only child
+  // is an <template x-for> — so at parse time it has no <li>, no <a> and no text, which is exactly
+  // the shape hunted here. What saves it is not the template: it is checkVisibility(). On a post
+  // WITH headings Alpine fills the list and it has <li>s; on a post without, the enclosing
+  // <details>/<nav> carries x-show="items.length" and x-cloak, so the <ol> inherits an ancestor's
+  // display:none and is skipped. A box test would not do — an empty <nav> that genuinely renders
+  // has a zero-sized box too, which is why the loop above cannot see it. Both Day-one post
+  // Surfaces are audited with and without headings so this stays proven rather than assumed.
+  doc.querySelectorAll('nav, ul, ol').forEach((el) => {
+    if (!el.checkVisibility()) return;
+    if (el.querySelector('a, li')) return;
+    if ((el.textContent || '').trim()) return;
+    note('EMPTYNAV ' + el.tagName.toLowerCase() + '.' + (el.className||'').toString().split(' ').slice(0,3).join('.') + (el.getAttribute('aria-label') ? ' [' + el.getAttribute('aria-label') + ']' : ''));
+  });
   return bad;
 }

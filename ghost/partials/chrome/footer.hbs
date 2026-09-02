@@ -28,9 +28,15 @@ mode — and neither belongs on a shipped page. The platform attribution takes t
 		<div class="container flex flex-wrap items-center justify-between gap-4 py-6">
 			<span class="text-muted font-mono text-[11.5px]">&copy; {{date format="YYYY"}} {{@site.title}}</span>
 
-			<nav
-				aria-label="{{t "Secondary navigation"}}"
-				class="flex flex-wrap gap-5">{{navigation type="secondary" variant="row"}}</nav>
+			{{!-- Ghost's navigation helper returns an empty string for an empty menu
+			(core/frontend/helpers/navigation.js), so the partial never runs and the column
+			variant needs no guard of its own — but this wrapper is the theme's, and without
+			the guard an emptied secondary menu leaves a labelled landmark holding nothing. --}}
+			{{#if @site.secondary_navigation}}
+				<nav
+					aria-label="{{t "Secondary navigation"}}"
+					class="flex flex-wrap gap-5">{{navigation type="secondary" variant="row"}}</nav>
+			{{/if}}
 
 			<span class="text-muted font-mono text-[11.5px]">
 				<a

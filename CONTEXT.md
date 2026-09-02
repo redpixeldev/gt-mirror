@@ -45,6 +45,11 @@ structure the design never anticipated.
 _Avoid_: feature, enhancement, concession (a **Concession** renders less than the design; an
 Extension renders more)
 
+**Orphan**:
+A heading, landmark or band the theme draws for content the publication does not have.
+_Avoid_: empty state (that is the deliberate copy shown _instead_ of a band), hole (a pagination
+gap), concession (an Orphan is a defect, not a deliberate reduction)
+
 **Syntax palette**:
 The colour set applied to the tokens inside a code block.
 _Avoid_: syntax theme, code theme (theme is the shipped artifact)
@@ -89,6 +94,11 @@ _Avoid_: prototype, mockup (it is measured, and it is not thrown away)
 The invented publication the design was drawn with — 5 **Authors**, 14 **Tags**, 104 **Posts**.
 Distinct from **Chrome copy**, which is the theme's own wording.
 
+**Day-one publication**:
+The one-**Author**, seven-**Post**, image-free, **Tag**-free publication on Ghost's own default
+configuration — what a buyer has before configuring anything.
+_Avoid_: bare (that is Ghost's default routing), minimal content, starter content
+
 **Specimen**:
 A rendered instance of one element or **Platform card**, present to be looked at rather than read.
 _Avoid_: example, sample, demo (**Demo content** is the invented publication)
@@ -131,6 +141,10 @@ The **Pixel identity** a Surface has already achieved and may not fall below.
   **Style guide** holds every card the editor can emit, so it cannot be — and the two are separate
   Surfaces because they answer different questions: what the drawing says, and what the platform
   can produce.
+- A **Day-one publication** has no **Pixel identity** and therefore no **Floor**: the design source
+  was drawn with **Demo content**, so an absence has nothing to be scored against.
+- An **Orphan** is what a **Day-one publication** is run to find, and it is always a defect — the
+  design drew content in that place, and the theme drew the chrome without it.
 
 ## Example dialogue
 
@@ -177,3 +191,6 @@ The **Pixel identity** a Surface has already achieved and may not fall below.
 - "Concession" was stretched to cover Ghost's light-only card CSS, which hid a defect behind a
   deliberate choice — resolved: the platform's geometry is a **Concession**; the platform's colour
   in a **Mode** the platform never drew is a bug.
+- "bare" named Ghost's default routing in the harness (`--bare`, `routes-bare.json`) and was
+  reached for again to mean "a publication with almost nothing in it" — resolved: the routing is
+  **bare**, the publication is the **Day-one publication**, and the two vary independently.

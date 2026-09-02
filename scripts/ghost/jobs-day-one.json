@@ -1,0 +1,242 @@
+[
+	{
+		"url": "http://localhost:2369/?mode=light",
+		"out": "day-one-home-01-light.png",
+		"height": 6000,
+		"width": 1568,
+		"scored": false,
+		"group": "{\"homepage_layout\":\"Magazine cover\"}"
+	},
+	{
+		"url": "http://localhost:2369/?mode=dark",
+		"out": "day-one-home-01-dark.png",
+		"height": 6000,
+		"width": 1568,
+		"scored": false,
+		"group": "{\"homepage_layout\":\"Magazine cover\"}"
+	},
+	{
+		"url": "http://localhost:2369/?mode=light",
+		"out": "day-one-home-02-light.png",
+		"height": 6000,
+		"width": 1568,
+		"scored": false,
+		"group": "{\"homepage_layout\":\"Editorial masthead\"}"
+	},
+	{
+		"url": "http://localhost:2369/?mode=dark",
+		"out": "day-one-home-02-dark.png",
+		"height": 6000,
+		"width": 1568,
+		"scored": false,
+		"group": "{\"homepage_layout\":\"Editorial masthead\"}"
+	},
+	{
+		"url": "http://localhost:2369/archive/?mode=light",
+		"out": "day-one-feed-01-light.png",
+		"height": 6000,
+		"width": 1568,
+		"scored": false,
+		"group": "{\"feed_layout\":\"List\"}"
+	},
+	{
+		"url": "http://localhost:2369/archive/?mode=dark",
+		"out": "day-one-feed-01-dark.png",
+		"height": 6000,
+		"width": 1568,
+		"scored": false,
+		"group": "{\"feed_layout\":\"List\"}"
+	},
+	{
+		"url": "http://localhost:2369/archive/?mode=light",
+		"out": "day-one-feed-02-light.png",
+		"height": 6000,
+		"width": 1568,
+		"scored": false,
+		"group": "{\"feed_layout\":\"Grid\"}"
+	},
+	{
+		"url": "http://localhost:2369/archive/?mode=dark",
+		"out": "day-one-feed-02-dark.png",
+		"height": 6000,
+		"width": 1568,
+		"scored": false,
+		"group": "{\"feed_layout\":\"Grid\"}"
+	},
+	{
+		"url": "http://localhost:2369/why-i-am-not-going-to-write-about-the-industry/?mode=light",
+		"out": "day-one-post-01-light.png",
+		"height": 6000,
+		"width": 1568,
+		"scored": false,
+		"group": "{\"post_layout\":\"Centered classic\"}"
+	},
+	{
+		"url": "http://localhost:2369/why-i-am-not-going-to-write-about-the-industry/?mode=dark",
+		"out": "day-one-post-01-dark.png",
+		"height": 6000,
+		"width": 1568,
+		"scored": false,
+		"group": "{\"post_layout\":\"Centered classic\"}"
+	},
+	{
+		"url": "http://localhost:2369/why-i-am-not-going-to-write-about-the-industry/?mode=light",
+		"out": "day-one-post-02-light.png",
+		"height": 6000,
+		"width": 1568,
+		"scored": false,
+		"group": "{\"post_layout\":\"Title page\"}"
+	},
+	{
+		"url": "http://localhost:2369/why-i-am-not-going-to-write-about-the-industry/?mode=dark",
+		"out": "day-one-post-02-dark.png",
+		"height": 6000,
+		"width": 1568,
+		"scored": false,
+		"group": "{\"post_layout\":\"Title page\"}"
+	},
+	{
+		"url": "http://localhost:2369/the-long-slow-work-of-building-an-archive-from-nothing/?mode=light",
+		"out": "day-one-post-long-01-light.png",
+		"height": 6000,
+		"width": 1568,
+		"scored": false,
+		"group": "{\"post_layout\":\"Centered classic\"}"
+	},
+	{
+		"url": "http://localhost:2369/the-long-slow-work-of-building-an-archive-from-nothing/?mode=dark",
+		"out": "day-one-post-long-01-dark.png",
+		"height": 6000,
+		"width": 1568,
+		"scored": false,
+		"group": "{\"post_layout\":\"Centered classic\"}"
+	},
+	{
+		"url": "http://localhost:2369/the-long-slow-work-of-building-an-archive-from-nothing/?mode=light",
+		"out": "day-one-post-long-02-light.png",
+		"height": 6000,
+		"width": 1568,
+		"scored": false,
+		"group": "{\"post_layout\":\"Title page\"}"
+	},
+	{
+		"url": "http://localhost:2369/the-long-slow-work-of-building-an-archive-from-nothing/?mode=dark",
+		"out": "day-one-post-long-02-dark.png",
+		"height": 6000,
+		"width": 1568,
+		"scored": false,
+		"group": "{\"post_layout\":\"Title page\"}"
+	},
+	{
+		"url": "http://localhost:2369/what-i-mean-by-attention/?mode=light",
+		"out": "day-one-post-toc-01-light.png",
+		"height": 6000,
+		"width": 1568,
+		"scored": false,
+		"group": "{\"post_layout\":\"Centered classic\"}"
+	},
+	{
+		"url": "http://localhost:2369/what-i-mean-by-attention/?mode=dark",
+		"out": "day-one-post-toc-01-dark.png",
+		"height": 6000,
+		"width": 1568,
+		"scored": false,
+		"group": "{\"post_layout\":\"Centered classic\"}"
+	},
+	{
+		"url": "http://localhost:2369/what-i-mean-by-attention/?mode=light",
+		"out": "day-one-post-toc-02-light.png",
+		"height": 6000,
+		"width": 1568,
+		"scored": false,
+		"group": "{\"post_layout\":\"Title page\"}"
+	},
+	{
+		"url": "http://localhost:2369/what-i-mean-by-attention/?mode=dark",
+		"out": "day-one-post-toc-02-dark.png",
+		"height": 6000,
+		"width": 1568,
+		"scored": false,
+		"group": "{\"post_layout\":\"Title page\"}"
+	},
+	{
+		"url": "http://localhost:2369/about/?mode=light",
+		"out": "day-one-about-01-light.png",
+		"height": 6000,
+		"width": 1568,
+		"scored": false,
+		"group": "{\"page_hero\":\"Centered statement\"}"
+	},
+	{
+		"url": "http://localhost:2369/about/?mode=dark",
+		"out": "day-one-about-01-dark.png",
+		"height": 6000,
+		"width": 1568,
+		"scored": false,
+		"group": "{\"page_hero\":\"Centered statement\"}"
+	},
+	{
+		"url": "http://localhost:2369/about/?mode=light",
+		"out": "day-one-about-02-light.png",
+		"height": 6000,
+		"width": 1568,
+		"scored": false,
+		"group": "{\"page_hero\":\"Split hero\"}"
+	},
+	{
+		"url": "http://localhost:2369/about/?mode=dark",
+		"out": "day-one-about-02-dark.png",
+		"height": 6000,
+		"width": 1568,
+		"scored": false,
+		"group": "{\"page_hero\":\"Split hero\"}"
+	},
+	{
+		"url": "http://localhost:2369/author/nadia-okonjo/?mode=light",
+		"out": "day-one-author-01-light.png",
+		"height": 6000,
+		"width": 1568,
+		"scored": false,
+		"group": "{}"
+	},
+	{
+		"url": "http://localhost:2369/author/nadia-okonjo/?mode=dark",
+		"out": "day-one-author-01-dark.png",
+		"height": 6000,
+		"width": 1568,
+		"scored": false,
+		"group": "{}"
+	},
+	{
+		"url": "http://localhost:2369/no-such-url-day-one/?mode=light",
+		"out": "day-one-error-01-light.png",
+		"height": 6000,
+		"width": 1568,
+		"scored": false,
+		"group": "{\"page_hero\":\"Centered statement\"}"
+	},
+	{
+		"url": "http://localhost:2369/no-such-url-day-one/?mode=dark",
+		"out": "day-one-error-01-dark.png",
+		"height": 6000,
+		"width": 1568,
+		"scored": false,
+		"group": "{\"page_hero\":\"Centered statement\"}"
+	},
+	{
+		"url": "http://localhost:2369/no-such-url-day-one/?mode=light",
+		"out": "day-one-error-02-light.png",
+		"height": 6000,
+		"width": 1568,
+		"scored": false,
+		"group": "{\"page_hero\":\"Split hero\"}"
+	},
+	{
+		"url": "http://localhost:2369/no-such-url-day-one/?mode=dark",
+		"out": "day-one-error-02-dark.png",
+		"height": 6000,
+		"width": 1568,
+		"scored": false,
+		"group": "{\"page_hero\":\"Split hero\"}"
+	}
+]

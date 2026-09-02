@@ -1,7 +1,9 @@
 /*
- * Apply scripts/ghost/fixture.json to a Ghost install.
+ * Apply a fixture to a Ghost install.
  *
  *   node --env-file=.env scripts/ghost/import.mjs
+ *   GHOST_URL=http://localhost:2369 GHOST_SESSION_FILE=.ghost-session-day-one.json \
+ *     node --env-file=.env scripts/ghost/import.mjs --fixture scripts/ghost/fixture-day-one.json
  *
  * Idempotent, keyed on a natural identifier per record type — slug for posts, pages and tags,
  * email for users, url for recommendations, name for tiers. A second run updates rather than
@@ -20,12 +22,39 @@
  * the two check scripts share.
  */
 import { readFileSync, writeFileSync, existsSync, statSync, openAsBlob } from 'node:fs';
-import { basename, extname } from 'node:path';
+import { basename, extname, resolve } from 'node:path';
 
 import { api, base, ownerSession } from './admin.mjs';
 
-const FIXTURE = 'scripts/ghost/fixture.json';
-const IMAGE_MAP = 'scripts/ghost/uploaded-images.json';
+/*
+ * WHICH FIXTURE, AND WHERE ITS IMAGE MAP LIVES. `--fixture` applies a different publication to
+ * whatever GHOST_URL points at — the Day-one publication is the second caller, and it runs against
+ * its own Ghost rather than the install the score run measures.
+ *
+ * The map of uploaded images is per fixture AND therefore per install, because it caches the URLs
+ * one Ghost gave back and a second Ghost would answer with different ones. The default fixture
+ * keeps the original filename deliberately: renaming it would look harmless and would re-upload
+ * 4.4 MB of photographs, which Ghost stores as `-1` duplicates rather than recognising.
+ *
+ * BOTH CHECKS BELOW GUARD THAT SAME RE-UPLOAD, reached by spelling rather than by renaming.
+ * `resolve()` and not string equality, because `--fixture ./scripts/ghost/fixture.json` names the
+ * default fixture and would otherwise derive a map that does not exist. And the derived name has to
+ * differ from the fixture it is derived from: `.replace(/\.json$/…)` is a no-op on a path with the
+ * extension left off, and the import writes the map back — over the fixture it had just read.
+ */
+const DEFAULT_FIXTURE = 'scripts/ghost/fixture.json';
+const flag = process.argv.indexOf('--fixture');
+if (flag >= 0 && !process.argv[flag + 1]) {
+	throw new Error('--fixture needs a path');
+}
+const FIXTURE = flag < 0 ? DEFAULT_FIXTURE : process.argv[flag + 1];
+const IMAGE_MAP =
+	resolve(FIXTURE) === resolve(DEFAULT_FIXTURE)
+		? 'scripts/ghost/uploaded-images.json'
+		: FIXTURE.replace(/\.json$/, '-images.json');
+if (resolve(IMAGE_MAP) === resolve(FIXTURE)) {
+	throw new Error(`--fixture ${FIXTURE} must end in .json; the image map is derived from it and would overwrite it`);
+}
 const SUPPORTED_VERSION = 2;
 
 /** A GET that treats 404 as "not there yet" rather than as a failure. */
@@ -176,10 +205,23 @@ log(`images  ${uploaded} uploaded, ${reused} already present (${(bytes / 1048576
  * Imported users land with status "locked" — they cannot sign in until they reset a password,
  * which is correct for demo authors and does not affect authorship or their archive Surface.
  * The importer sets only the basics, so the bio, location, links and portrait are applied after.
+ *
+ * AN AUTHOR MAY BE THE OWNER INSTEAD. `"owner": true` on a fixture author means "whoever this
+ * install's owner is" — the Day-one publication is one solo writer, and that writer is the person
+ * who ran setup. It cannot be expressed as an email, because the owner's address is chosen at
+ * install time and a fixture that named one would either fail or, worse, create a SECOND staff
+ * account beside the owner and make the About page's writer count read 2 on a one-writer blog.
  */
-const existingUsers = await api('GET', '/users/?limit=all');
+const existingUsers = await api('GET', '/users/?limit=all&include=roles');
 const byEmail = new Map(existingUsers.users.map((u) => [u.email, u]));
-const missing = fixture.authors.filter((a) => !byEmail.has(a.email));
+
+const ownerUser = existingUsers.users.find((u) => u.roles?.some((role) => role.name === 'Owner'));
+if (fixture.authors.some((a) => a.owner) && !ownerUser) {
+	throw new Error('the fixture claims an author is the owner, but this install reports no Owner role');
+}
+const addressOf = (author) => (author.owner ? ownerUser.email : author.email);
+
+const missing = fixture.authors.filter((a) => !a.owner && !byEmail.has(a.email));
 
 if (missing.length) {
 	const payload = {
@@ -213,9 +255,9 @@ const userByEmail = new Map(afterUsers.users.map((u) => [u.email, u]));
 
 let authorsUpdated = 0;
 for (const author of fixture.authors) {
-	const user = userByEmail.get(author.email);
+	const user = userByEmail.get(addressOf(author));
 	if (!user) {
-		throw new Error(`user ${author.email} was not created by the import.`);
+		throw new Error(`user ${addressOf(author)} was not created by the import.`);
 	}
 	await api('PUT', `/users/${user.id}/`, {
 		users: [
@@ -268,7 +310,7 @@ log(`tags    ${tagsCreated} created, ${tagsUpdated} updated`);
  * Relations go by natural key — authors by email, tags by name, first tag becoming primary_tag —
  * which the Admin API resolves. That keeps the fixture free of this install's ids.
  */
-const authorEmail = new Map(fixture.authors.map((a) => [a.name, a.email]));
+const authorEmail = new Map(fixture.authors.map((a) => [a.name, addressOf(a)]));
 
 let postsCreated = 0;
 let postsUpdated = 0;
@@ -337,30 +379,62 @@ log(`pages   ${pagesCreated} created, ${pagesUpdated} updated`);
 /* ── 6. site settings ─────────────────────────────────────────────────────────────────── */
 
 /*
- * These are not decoration. portal_button:false stops Ghost injecting a floating button into the
- * bottom-right of every scored screenshot; accent_color is what the theme's one chromatic token
- * reads; and navigation has to be real data, because the theme renders the publication's menu
- * rather than a hardcoded list.
+ * ONLY THE KEYS THE FIXTURE STATES. These are not decoration: portal_button:false stops Ghost
+ * injecting a floating button into the bottom-right of every scored screenshot; accent_color is
+ * what the theme's one chromatic token reads; and navigation has to be real data, because the
+ * theme renders the publication's menu rather than a hardcoded list.
+ *
+ * The list is derived rather than literal so a fixture can leave a setting ALONE. The Day-one
+ * publication states four — title, description and both menus, which is what Ghost's own setup
+ * wizard asks for plus the two the theme renders chrome from — and everything else keeps the
+ * platform's default. That includes `accent_color`, whose default is `#FF1A75`: an unbranded
+ * publication renders the theme's one chromatic token HOT PINK, not amber, which is a finding
+ * rather than a thing to correct here. Enumerating the fourteen keys instead would force that
+ * fixture to hard-code Ghost's defaults for the other ten, pinning them to whatever this Ghost
+ * version happens to default to today.
+ *
+ * Three keys need a value shaped for the API rather than for the fixture: the two image paths go
+ * through the upload map, and Ghost stores the menus as JSON strings.
  */
 const site = fixture.site;
-const settings = [
-	{ key: 'title', value: site.title },
-	{ key: 'description', value: site.description },
-	{ key: 'accent_color', value: site.accent_color },
-	{ key: 'icon', value: remote(site.icon) },
-	{ key: 'logo', value: remote(site.logo) },
-	{ key: 'portal_button', value: site.portal_button },
-	{ key: 'comments_enabled', value: site.comments_enabled },
-	{ key: 'recommendations_enabled', value: site.recommendations_enabled },
-	{ key: 'members_signup_access', value: site.members_signup_access },
-	{ key: 'portal_plans', value: JSON.stringify(site.portal_plans) },
-	{ key: 'locale', value: site.locale },
-	{ key: 'timezone', value: site.timezone },
-	{ key: 'navigation', value: JSON.stringify(site.navigation) },
-	{ key: 'secondary_navigation', value: JSON.stringify(site.secondary_navigation) },
-];
+const SHAPE = {
+	icon: remote,
+	logo: remote,
+	portal_plans: JSON.stringify,
+	navigation: JSON.stringify,
+	secondary_navigation: JSON.stringify,
+};
+const settings = Object.entries(site).map(([key, value]) => ({
+	key,
+	value: SHAPE[key] ? SHAPE[key](value) : value,
+}));
 await api('PUT', '/settings/', { settings });
-log(`settings ${settings.length} applied (accent ${site.accent_color}, portal_button ${site.portal_button})`);
+
+/*
+ * READ BACK THE KEYS, because the endpoint FILTERS rather than rejects: Ghost accepts a payload
+ * containing a key it does not recognise with a 200 and silently drops it (the same trap score.mjs
+ * records for its own capture settings). While the fourteen keys were a literal array in this file
+ * a typo was impossible to introduce without a reviewer seeing it; now they come out of a JSON
+ * fixture, so the spelling has to be checked against what Ghost knows. `accent_color` and
+ * `portal_button` are the two every scored reference PNG was drawn with, which is what makes a
+ * silent drop expensive.
+ *
+ * THE KEY, NOT THE VALUE. A dropped key is absent from the settings list entirely, so presence is
+ * the exact test for the failure this guards — and comparing values would fail on a correct write:
+ * Ghost NORMALISES some of them. Measured here: `icon` is stored as a resized derivative, so a
+ * write of `…/2026/08/icon-home.png` reads back as `…/size/w256h256/2026/08/icon-home.png`. That is
+ * the platform doing its job, and a check that called it a mismatch would have to grow an exemption
+ * list per key, which is the kind of thing that rots into being switched off.
+ */
+const known = new Set((await api('GET', '/settings/')).settings.map((entry) => entry.key));
+const unknown = settings.map((s) => s.key).filter((key) => !known.has(key));
+if (unknown.length) {
+	throw new Error(
+		`Ghost does not recognise these setting key(s) and dropped them with a 200: ${unknown.join(', ')} — ` +
+			`check the spelling in ${FIXTURE}'s site block`,
+	);
+}
+log(`settings ${settings.length} applied, keys read back (${settings.map((s) => s.key).join(', ')})`);
 
 /* ── 7. tiers ─────────────────────────────────────────────────────────────────────────── */
 
@@ -477,9 +551,13 @@ if (process.argv.includes('--prune')) {
 	 * tier the fixture does not own is deactivated and hidden instead. A fresh install auto-creates
 	 * one paid tier named after the site ("MIRROR", $5/$50, no copy), which would otherwise render
 	 * as a fourth column on the Membership Surface beside the design's three.
+	 *
+	 * A fixture that states NO tiers has no opinion about them, and the platform's own tier is part
+	 * of what it is testing: the Day-one publication keeps Ghost's auto-created paid tier exactly
+	 * as a buyer would have it. Absence of a claim is not a claim of absence.
 	 */
 	const keepTiers = new Set(fixture.tiers.map((t) => t.name.toLowerCase()));
-	const allTiers = await api('GET', '/tiers/?limit=all');
+	const allTiers = fixture.tiers.length ? await api('GET', '/tiers/?limit=all') : { tiers: [] };
 	for (const tier of allTiers.tiers) {
 		if (tier.type === 'free' || keepTiers.has(tier.name.toLowerCase()) || !tier.active) {
 			continue;

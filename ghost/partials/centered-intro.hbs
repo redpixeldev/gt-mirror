@@ -17,9 +17,16 @@ the directories' left-aligned opener; this one is the statement the two standing
 and the design draws them differently enough that one partial with six arguments would be less
 readable than two.
 
-Title and standfirst are the publication's, read off the page record — see page-intro.hbs for why
-the lead is `{{excerpt}}` and not `{{content}}`. The editor's per-page toggle owns the whole
-opener. --}}
+THE STANDFIRST IS `custom_excerpt`, NOT `{{excerpt}}`. Ghost's `excerpt` falls back to the first
+fifty words of the body when no custom excerpt exists, which is the right answer on a card and the
+wrong one here: both Surfaces that call this partial print `{{content}}` below it, so the fallback
+sets the opening of the page in 22px italic, truncated mid-sentence, directly above the same words.
+Measured on the Day-one publication, whose About page is three paragraphs and no custom excerpt.
+`{{#if excerpt}}` could not catch it — the fallback makes excerpt always truthy. The post Surfaces
+already read `custom_excerpt` for the same reason (post/hero.hbs, post/title-page.hbs); the
+directories keep the fallback deliberately, because a Directory never prints its body at all —
+see page-intro.hbs. The editor's per-page toggle owns the whole opener.
+--}}
 {{#if @page.show_title_and_feature_image}}
 	<section
 		aria-labelledby="{{headingId}}"
@@ -31,9 +38,9 @@ opener. --}}
 			id="{{headingId}}"
 			class="font-display tracking-display mx-auto leading-[1.04] font-medium text-balance {{#if titleSpacing}}{{titleSpacing}}{{else}}mt-[26px]{{/if}} {{#if titleClass}}{{titleClass}}{{else}}max-w-[20ch] text-[clamp(38px,5.4vw,68px)]{{/if}}">{{title}}</h1>
 
-		{{#if excerpt}}
+		{{#if custom_excerpt}}
 			<p
-				class="text-muted mx-auto text-pretty {{#if descriptionClass}}{{descriptionClass}}{{else}}font-body mt-6 max-w-[54ch] text-[22px] leading-[1.5] italic{{/if}}">{{excerpt}}</p>
+				class="text-muted mx-auto text-pretty {{#if descriptionClass}}{{descriptionClass}}{{else}}font-body mt-6 max-w-[54ch] text-[22px] leading-[1.5] italic{{/if}}">{{custom_excerpt}}</p>
 		{{/if}}
 	</section>
 {{/if}}

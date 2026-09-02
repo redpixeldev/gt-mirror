@@ -29,8 +29,11 @@ Surface's Floor, was taken with it. --}}
 						id="a2-h"
 						class="font-display tracking-display mt-6 max-w-[18ch] text-[clamp(36px,4.8vw,58px)] leading-[1.04] font-medium text-balance">{{title}}</h1>
 
-					{{#if excerpt}}
-						<p class="text-lead text-muted mt-[22px] max-w-[46ch] leading-[1.55] text-pretty">{{excerpt}}</p>
+					{{!-- `custom_excerpt`, not `{{excerpt}}`, because this Surface prints `{{content}}`
+					below and Ghost's excerpt falls back to the opening of that body — see
+					centered-intro.hbs for the measurement. --}}
+					{{#if custom_excerpt}}
+						<p class="text-lead text-muted mt-[22px] max-w-[46ch] leading-[1.55] text-pretty">{{custom_excerpt}}</p>
 					{{/if}}
 				</div>
 

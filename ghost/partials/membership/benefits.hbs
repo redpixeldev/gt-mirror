@@ -1,0 +1,29 @@
+{{!-- One Tier's benefit list, in a Tier's own context.
+
+	{{> "membership/benefits"}}
+
+GUARDED, BECAUSE A TIER WITH NO BENEFITS IS NOT HYPOTHETICAL. Ghost auto-creates one paid tier
+named after the site, with no description and no benefits at all, so a publication that has never
+edited it would otherwise draw an empty bordered list in the middle of a price column. ADR 0003.
+
+The caller owns the button below this list and has to take the auto margin when the list is gone:
+`mb-auto` here is what pushes that button to the bottom of the column, so tiers.hbs writes
+`{{#if benefits}}mt-[26px]{{else}}mt-auto{{/if}}` on it. The two are mutually exclusive on purpose —
+both set `margin-top`, and which utility wins is decided by the compiled sheet rather than by the
+order they appear in a class string.
+
+Its own partial because the free column and the paid column draw the identical list, and the second
+copy used to carry nothing but "guarded exactly as the free column above, and for the same
+reason" — which is a comment admitting the duplication rather than removing it. --}}
+{{#if benefits}}
+	<ul class="mt-[22px] mb-auto flex list-none flex-col gap-[11px] p-0">
+		{{#foreach benefits}}
+			<li class="flex items-start gap-[11px]">
+				<span
+					aria-hidden="true"
+					class="text-accent flex-none font-mono text-xs leading-[1.6]">&check;</span>
+				<span class="text-small leading-[1.6]">{{this}}</span>
+			</li>
+		{{/foreach}}
+	</ul>
+{{/if}}

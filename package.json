@@ -43,7 +43,16 @@
 		"ghost:access": "node --env-file=.env scripts/ghost/check-access.mjs",
 		"ghost:jobs": "node scripts/ghost/build-jobs.mjs",
 		"ghost:shots": ".venv/bin/python3 scripts/verify/shoot.py --jobs scripts/ghost/jobs.json --out-dir .shots/ghost",
-		"ghost:score": "node --env-file=.env scripts/ghost/score.mjs"
+		"ghost:score": "node --env-file=.env scripts/ghost/score.mjs",
+		"day-one:fixture": "GHOST_URL=http://localhost:2369 node scripts/ghost/build-day-one.mjs",
+		"day-one:import": "GHOST_URL=http://localhost:2369 GHOST_SESSION_FILE=.ghost-session-day-one.json node --env-file=.env scripts/ghost/import.mjs --fixture scripts/ghost/fixture-day-one.json --prune",
+		"day-one:routes": "GHOST_URL=http://localhost:2369 GHOST_SESSION_FILE=.ghost-session-day-one.json node --env-file=.env scripts/ghost/upload-routes.mjs --small",
+		"day-one:routes:bare": "GHOST_URL=http://localhost:2369 GHOST_SESSION_FILE=.ghost-session-day-one.json node --env-file=.env scripts/ghost/upload-routes.mjs --bare",
+		"day-one:smoke": ".venv/bin/python3 scripts/verify/smoke.py --base http://localhost:2369 --routes scripts/ghost/routes-day-one.json",
+		"day-one:smoke:bare": ".venv/bin/python3 scripts/verify/smoke.py --base http://localhost:2369 --routes scripts/ghost/routes-day-one-bare.json",
+		"day-one:audit": "GHOST_URL=http://localhost:2369 GHOST_SESSION_FILE=.ghost-session-day-one.json node --env-file=.env scripts/ghost/audit.mjs --surfaces scripts/ghost/audit-day-one.json",
+		"day-one:shots": "GHOST_URL=http://localhost:2369 GHOST_SESSION_FILE=.ghost-session-day-one.json node --env-file=.env scripts/ghost/shoot-day-one.mjs",
+		"day-one": "pnpm day-one:fixture && pnpm day-one:routes:bare && pnpm day-one:smoke:bare && pnpm day-one:routes && pnpm day-one:smoke && pnpm day-one:audit"
 	},
 	"dependencies": {
 		"@tailwindcss/forms": "^0.5.11",

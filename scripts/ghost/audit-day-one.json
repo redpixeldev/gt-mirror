@@ -1,0 +1,90 @@
+[
+	{
+		"path": "/",
+		"settings": {
+			"homepage_layout": "Magazine cover"
+		}
+	},
+	{
+		"path": "/",
+		"settings": {
+			"homepage_layout": "Editorial masthead"
+		}
+	},
+	{
+		"path": "/archive/",
+		"settings": {
+			"feed_layout": "List"
+		}
+	},
+	{
+		"path": "/archive/",
+		"settings": {
+			"feed_layout": "Grid"
+		}
+	},
+	{
+		"path": "/why-i-am-not-going-to-write-about-the-industry/",
+		"settings": {
+			"post_layout": "Centered classic"
+		}
+	},
+	{
+		"path": "/why-i-am-not-going-to-write-about-the-industry/",
+		"settings": {
+			"post_layout": "Title page"
+		}
+	},
+	{
+		"path": "/the-long-slow-work-of-building-an-archive-from-nothing/",
+		"settings": {
+			"post_layout": "Centered classic"
+		}
+	},
+	{
+		"path": "/the-long-slow-work-of-building-an-archive-from-nothing/",
+		"settings": {
+			"post_layout": "Title page"
+		}
+	},
+	{
+		"path": "/what-i-mean-by-attention/",
+		"settings": {
+			"post_layout": "Centered classic"
+		}
+	},
+	{
+		"path": "/what-i-mean-by-attention/",
+		"settings": {
+			"post_layout": "Title page"
+		}
+	},
+	{
+		"path": "/about/",
+		"settings": {
+			"page_hero": "Centered statement"
+		}
+	},
+	{
+		"path": "/about/",
+		"settings": {
+			"page_hero": "Split hero"
+		}
+	},
+	{
+		"path": "/author/nadia-okonjo/",
+		"settings": {}
+	},
+	{
+		"path": "/no-such-url-day-one/",
+		"settings": {
+			"page_hero": "Centered statement"
+		}
+	},
+	{
+		"path": "/no-such-url-day-one/",
+		"settings": {
+			"page_hero": "Split hero"
+		}
+	}
+]

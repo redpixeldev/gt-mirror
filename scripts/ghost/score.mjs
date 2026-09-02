@@ -41,6 +41,7 @@ import { join } from 'node:path';
 import { homedir } from 'node:os';
 
 import { api, base, request } from './admin.mjs';
+import { applyThemeSettings, restoreThemeSettings } from './theme-settings.mjs';
 
 const PYTHON = '.venv/bin/python3';
 const INDEX = 'scripts/ghost/score-index.json';
@@ -117,7 +118,7 @@ const python = (args) => run(PYTHON, args);
 
 /* ── settings, and putting them back ─────────────────────────────────────────────────── */
 
-const restore = { settings: {}, theme: {} };
+const restore = { settings: {} };
 
 /**
  * Force the publication's own settings, remembering what they were.
@@ -154,54 +155,28 @@ async function applySettings(values) {
 	console.log(`settings   ${changes.map(([key, value]) => `${key}=${JSON.stringify(value)}`).join(', ')}`);
 }
 
-async function applyThemeSettings(values) {
-	const entries = Object.entries(values);
-	if (!entries.length) {
-		return;
-	}
-	const before = await api('GET', '/custom_theme_settings/');
-	const current = Object.fromEntries(before.custom_theme_settings.map((entry) => [entry.key, entry.value]));
-	for (const [key] of entries) {
-		if (!(key in current)) {
-			throw new Error(`the theme declares no @custom.${key}, so this run cannot select that Layout`);
-		}
-		if (!(key in restore.theme)) {
-			restore.theme[key] = current[key];
-		}
-	}
-	const after = await api('PUT', '/custom_theme_settings/', {
-		custom_theme_settings: entries.map(([key, value]) => ({ key, value })),
-	});
-	const written = Object.fromEntries(after.custom_theme_settings.map((entry) => [entry.key, entry.value]));
-	for (const [key, value] of entries) {
-		if (written[key] !== value) {
-			throw new Error(`${key} came back as ${JSON.stringify(written[key])}, not ${JSON.stringify(value)}`);
-		}
-	}
-}
+/* The theme's own settings are driven by ./theme-settings.mjs, shared with the width audit and the
+ * Day-one capture. The publication's settings above stay here: only this run forces them, because
+ * only this run is comparing against reference PNGs that were drawn with Portal's button off. */
 
 /**
- * Put every forced value back.
+ * Put every forced value back, the theme's through the shared module and the publication's here.
  *
  * Each write is independent and none of them may throw: this runs in a `finally`, where a throw
  * would replace the failure that brought the run here, and a half-restore would leave the live
  * publication mutated by a harness whose whole promise is that it does not.
  */
 async function restoreSettings() {
-	const failures = [];
-	const put = async (path, key, entries) => {
-		if (!entries.length) {
-			return;
-		}
+	const failures = await restoreThemeSettings();
+	const entries = Object.entries(restore.settings);
+	if (entries.length) {
 		try {
-			await api('PUT', path, { [key]: entries.map(([name, value]) => ({ key: name, value })) });
+			await api('PUT', '/settings/', { settings: entries.map(([name, value]) => ({ key: name, value })) });
 			console.log(`restored   ${entries.map(([name]) => name).join(', ')}`);
 		} catch (error) {
 			failures.push(`${entries.map(([name]) => name).join(', ')}: ${error.message}`);
 		}
-	};
-	await put('/custom_theme_settings/', 'custom_theme_settings', Object.entries(restore.theme));
-	await put('/settings/', 'settings', Object.entries(restore.settings));
+	}
 	for (const failure of failures) {
 		console.error(`NOT RESTORED ${failure} — put it back in Ghost admin before the next run`);
 	}

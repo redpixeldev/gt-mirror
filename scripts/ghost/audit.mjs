@@ -2,6 +2,8 @@
  * The responsive audit, pointed at the Ghost theme.
  *
  *   node --env-file=.env scripts/ghost/audit.mjs
+ *   GHOST_URL=http://localhost:2369 GHOST_SESSION_FILE=.ghost-session-day-one.json \
+ *     node --env-file=.env scripts/ghost/audit.mjs --surfaces scripts/ghost/audit-day-one.json
  *
  * Every Surface the theme draws, at twelve widths, in every Layout the publication can pick —
  * against the reference build's own rules, run unchanged. "No rule silently disabled" is the whole
@@ -12,6 +14,12 @@
  * covers all of them; here `/tags/` is one URL that renders two drawings depending on
  * `directory_layout`. The pass structure is therefore the score run's: group the Surfaces by the
  * settings they need, apply each group, audit the URLs it covers, and put the settings back.
+ *
+ * `--surfaces <path>` AUDITS A DIFFERENT PUBLICATION. The default set is derived from the score
+ * index and the unscored list, both of which are keyed to the demo publication; a file passed here
+ * is a plain list of `{path, settings}` rows and nothing is regenerated. The Day-one publication is
+ * the second caller, and its list comes from the same generator that invents its post slugs, so the
+ * two cannot drift.
  *
  * WHY CDP AND NOT A HEADLESS SCREENSHOT. The audit has to run JavaScript in the page and read a
  * value back, which `--dump-dom` cannot do without `--virtual-time-budget`, and virtual time makes
@@ -27,12 +35,19 @@ import { existsSync, mkdtempSync, readFileSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
-import { api, base } from './admin.mjs';
+import { base } from './admin.mjs';
+import { applyThemeSettings, restoreThemeSettings } from './theme-settings.mjs';
 
 const INDEX = 'scripts/ghost/score-index.json';
 const UNSCORED = 'scripts/ghost/unscored.json';
 const RULES = 'scripts/verify/probe-audit.js';
 const ASTRO_PROBE = 'public/probe-mobile.html';
+
+const flag = process.argv.indexOf('--surfaces');
+if (flag >= 0 && !process.argv[flag + 1]) {
+	throw new Error('--surfaces needs a path');
+}
+const SURFACES = flag < 0 ? null : process.argv[flag + 1];
 
 /* The design's own breakpoints, and one pixel either side of each — a rule that only breaks at
  * exactly the width it turns on is the one nobody finds by resizing a window. */
@@ -166,48 +181,6 @@ async function connect(endpoint) {
 	};
 }
 
-/* ── settings, and putting them back ─────────────────────────────────────────────────── */
-
-const restore = {};
-
-async function applyThemeSettings(values) {
-	const entries = Object.entries(values);
-	if (!entries.length) {
-		return;
-	}
-	const current = await api('GET', '/custom_theme_settings/');
-	const known = new Map(current.custom_theme_settings.map((setting) => [setting.key, setting.value]));
-	for (const [key, value] of entries) {
-		if (!known.has(key)) {
-			throw new Error(`the theme declares no @custom.${key}, so this run cannot select that Layout`);
-		}
-		if (!(key in restore)) {
-			restore[key] = known.get(key);
-		}
-		if (known.get(key) === value) {
-			continue;
-		}
-		const written = await api('PUT', '/custom_theme_settings/', {
-			custom_theme_settings: [{ key, value }],
-		});
-		const applied = written.custom_theme_settings.find((setting) => setting.key === key)?.value;
-		if (applied !== value) {
-			throw new Error(`@custom.${key} read back as ${JSON.stringify(applied)}, not ${JSON.stringify(value)}`);
-		}
-	}
-}
-
-async function restoreThemeSettings() {
-	const entries = Object.entries(restore);
-	if (!entries.length) {
-		return;
-	}
-	await api('PUT', '/custom_theme_settings/', {
-		custom_theme_settings: entries.map(([key, value]) => ({ key, value })),
-	});
-	console.log(`restored   ${entries.map(([key]) => key).join(', ')}`);
-}
-
 /* ── the run ─────────────────────────────────────────────────────────────────────────── */
 
 async function main() {
@@ -220,30 +193,41 @@ async function main() {
 		);
 	}
 
-	spawnSync('node', ['scripts/ghost/build-jobs.mjs'], { stdio: 'inherit' });
-
-	const index = JSON.parse(readFileSync(INDEX, 'utf8')).filter((row) => !row.skip && row.path);
 	const groups = new Map();
-	for (const row of index) {
-		const key = JSON.stringify(row.settings ?? {});
+	const add = (settings, path) => {
+		const key = JSON.stringify(settings ?? {});
 		const paths = groups.get(key) ?? new Set();
-		paths.add(row.path);
+		paths.add(path);
 		groups.set(key, paths);
-	}
+	};
 
-	/*
-	 * The unscored Surfaces are swept as well, in the empty settings group.
-	 *
-	 * `score-index.json` cannot hold them — every row there is keyed to a reference PNG — but a
-	 * Page whose whole content is the platform's own cards is the LAST one to leave out of a width
-	 * sweep: an audio player, an embed and a ten-column table are precisely the things that break
-	 * at 320px, and none of them appear anywhere else in the fixture. `scripts/ghost/unscored.json`
-	 * is the same list `build-jobs.mjs` captures from, so the two cannot drift.
-	 */
-	for (const row of JSON.parse(readFileSync(UNSCORED, 'utf8'))) {
-		const paths = groups.get('{}') ?? new Set();
-		paths.add(row.path);
-		groups.set('{}', paths);
+	if (SURFACES) {
+		/* A plain list of rows, already keyed to whichever publication is running. Nothing is
+		 * regenerated: build-jobs.mjs reconciles the demo fixture against the design's reference
+		 * PNGs, and a publication with no reference PNGs has nothing for it to reconcile. */
+		for (const row of JSON.parse(readFileSync(SURFACES, 'utf8'))) {
+			add(row.settings, row.path);
+		}
+	} else {
+		spawnSync('node', ['scripts/ghost/build-jobs.mjs'], { stdio: 'inherit' });
+
+		for (const row of JSON.parse(readFileSync(INDEX, 'utf8')).filter((row) => !row.skip && row.path)) {
+			add(row.settings, row.path);
+		}
+
+		/*
+		 * The unscored Surfaces are swept as well, in the empty settings group.
+		 *
+		 * `score-index.json` cannot hold them — every row there is keyed to a reference PNG — but a
+		 * Page whose whole content is the platform's own cards is the LAST one to leave out of a
+		 * width sweep: an audio player, an embed and a ten-column table are precisely the things
+		 * that break at 320px, and none of them appear anywhere else in the fixture.
+		 * `scripts/ghost/unscored.json` is the same list `build-jobs.mjs` captures from, so the two
+		 * cannot drift.
+		 */
+		for (const row of JSON.parse(readFileSync(UNSCORED, 'utf8'))) {
+			add({}, row.path);
+		}
 	}
 
 	const source = readFileSync(RULES, 'utf8');
@@ -306,7 +290,9 @@ async function main() {
 		child.kill();
 		await gone;
 		rmSync(profile, { recursive: true, force: true });
-		await restoreThemeSettings();
+		for (const failure of await restoreThemeSettings()) {
+			console.error(`NOT RESTORED ${failure} — put it back in Ghost admin before the next run`);
+		}
 	}
 
 	for (const note of declared) {

@@ -50,13 +50,20 @@ hard way: a floating toggle placed per page turned into 22 copies. --}}
 
 			{{> "chrome/mode-toggle"}}
 		{{else}}
-			{{!-- Below the nav breakpoint the nav is gone, so the mark takes over pushing the
-			remaining controls to the right edge. --}}
-			{{> "chrome/wordmark" wrapper="max-nav:mr-auto" logoHeight="h-[19px]" titleSize="text-[26px]"}}
+			{{!-- Below the nav breakpoint the nav is gone and the mark takes over pushing the
+			controls to the right edge. A publication that has emptied its primary menu is in that
+			state at EVERY width, so this branch drops the landmark (ADR 0003) and hands `mr-auto`
+			to the mark outright. Two calls rather than one with a computed wrapper, because
+			Handlebars takes no block helper inside a hash argument. --}}
+			{{#if @site.navigation}}
+				{{> "chrome/wordmark" wrapper="max-nav:mr-auto" logoHeight="h-[19px]" titleSize="text-[26px]"}}
 
-			<nav
-				aria-label="{{t "Main navigation"}}"
-				class="nav:flex mr-auto hidden flex-wrap items-center gap-[22px]">{{navigation variant="bar"}}</nav>
+				<nav
+					aria-label="{{t "Main navigation"}}"
+					class="nav:flex mr-auto hidden flex-wrap items-center gap-[22px]">{{navigation variant="bar"}}</nav>
+			{{else}}
+				{{> "chrome/wordmark" wrapper="mr-auto" logoHeight="h-[19px]" titleSize="text-[26px]"}}
+			{{/if}}
 
 			{{!-- An inline SVG rather than the ⌕ glyph: U+2315 draws at roughly half its em
 			box, so inside a 36px pill it reads as a speck, and how big a speck depends on

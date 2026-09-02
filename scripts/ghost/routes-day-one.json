@@ -1,0 +1,133 @@
+[
+	{
+		"path": "/",
+		"expect": "data-surface=\"home\"",
+		"min_bytes": 6000
+	},
+	{
+		"path": "/the-long-slow-work-of-building-an-archive-from-nothing/",
+		"expect": "data-surface=\"post\"",
+		"absent": [
+			"data-gate=",
+			"class=\"gh-post-upgrade-cta"
+		],
+		"min_bytes": 6000
+	},
+	{
+		"path": "/on-keeping-a-list/",
+		"expect": "data-surface=\"post\"",
+		"absent": [
+			"data-gate=",
+			"class=\"gh-post-upgrade-cta"
+		],
+		"min_bytes": 6000
+	},
+	{
+		"path": "/what-i-mean-by-attention/",
+		"expect": "data-surface=\"post\"",
+		"absent": [
+			"data-gate=",
+			"class=\"gh-post-upgrade-cta"
+		],
+		"min_bytes": 6000
+	},
+	{
+		"path": "/two-sentences-on-revision/",
+		"expect": "data-surface=\"post\"",
+		"absent": [
+			"data-gate=",
+			"class=\"gh-post-upgrade-cta"
+		],
+		"min_bytes": 6000
+	},
+	{
+		"path": "/a-note-on-borrowed-authority/",
+		"expect": "data-surface=\"post\"",
+		"absent": [
+			"data-gate=",
+			"class=\"gh-post-upgrade-cta"
+		],
+		"min_bytes": 6000
+	},
+	{
+		"path": "/the-setup-for-anyone-curious/",
+		"expect": "data-surface=\"post\"",
+		"absent": [
+			"data-gate=",
+			"class=\"gh-post-upgrade-cta"
+		],
+		"min_bytes": 6000
+	},
+	{
+		"path": "/why-i-am-not-going-to-write-about-the-industry/",
+		"expect": "data-surface=\"post\"",
+		"absent": [
+			"data-gate=",
+			"class=\"gh-post-upgrade-cta"
+		],
+		"min_bytes": 6000
+	},
+	{
+		"path": "/about/",
+		"expect": "data-surface=\"page-about\"",
+		"min_bytes": 6000
+	},
+	{
+		"path": "/author/nadia-okonjo/",
+		"expect": "data-surface=\"author\"",
+		"min_bytes": 6000
+	},
+	{
+		"path": "/archive/",
+		"expect": "data-surface=\"feed\"",
+		"min_bytes": 6000
+	},
+	{
+		"path": "/tags/",
+		"status": 404,
+		"expect": "data-surface=\"error-404\"",
+		"min_bytes": 4000
+	},
+	{
+		"path": "/authors/",
+		"status": 404,
+		"expect": "data-surface=\"error-404\"",
+		"min_bytes": 4000
+	},
+	{
+		"path": "/membership/",
+		"status": 404,
+		"expect": "data-surface=\"error-404\"",
+		"min_bytes": 4000
+	},
+	{
+		"path": "/recommendations/",
+		"status": 404,
+		"expect": "data-surface=\"error-404\"",
+		"min_bytes": 4000
+	},
+	{
+		"path": "/sign-in/",
+		"status": 404,
+		"expect": "data-surface=\"error-404\"",
+		"min_bytes": 4000
+	},
+	{
+		"path": "/sign-up/",
+		"status": 404,
+		"expect": "data-surface=\"error-404\"",
+		"min_bytes": 4000
+	},
+	{
+		"path": "/tag/essays/",
+		"status": 404,
+		"expect": "data-surface=\"error-404\"",
+		"min_bytes": 4000
+	},
+	{
+		"path": "/page/2/",
+		"status": 404,
+		"expect": "data-surface=\"error-404\"",
+		"min_bytes": 4000
+	}
+]

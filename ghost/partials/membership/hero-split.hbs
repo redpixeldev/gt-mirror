@@ -19,8 +19,11 @@ the standfirst's last line on the headline's baseline. --}}
 					id="mem-h2"
 					class="font-display tracking-display max-w-[18ch] text-[clamp(34px,4.8vw,58px)] leading-[1.03] font-medium text-balance">{{title}}</h1>
 
-				{{#if excerpt}}
-					<p class="text-lead text-muted max-w-[48ch] leading-[1.55] text-pretty">{{excerpt}}</p>
+				{{!-- `custom_excerpt`, not `{{excerpt}}` — same reason as About's opener: the
+				Membership Surface prints `{{content}}` too, so the fifty-word fallback would set the
+				body's own opening above it. See centered-intro.hbs. --}}
+				{{#if custom_excerpt}}
+					<p class="text-lead text-muted max-w-[48ch] leading-[1.55] text-pretty">{{custom_excerpt}}</p>
 				{{/if}}
 			</div>
 		</div>

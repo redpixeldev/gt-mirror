@@ -5,8 +5,10 @@ dist/
 # generated theme assets — the zip is a release artifact, not a commit
 ghost/assets/built/
 
-# install-specific: maps the design's /img/ paths to one Ghost's uploaded URLs
+# install-specific: maps the design's /img/ paths to one Ghost's uploaded URLs. The Day-one
+# publication has no images, so its map is always empty.
 scripts/ghost/uploaded-images.json
+scripts/ghost/fixture-day-one-images.json
 
 # generated types
 .astro/
@@ -27,8 +29,9 @@ pnpm-debug.log*
 .env
 .env.production
 
-# the cached Ghost owner session; a credential, and per-install
+# the cached Ghost owner session; a credential, and per-install — one per Ghost
 .ghost-session.json
+.ghost-session-day-one.json
 
 # macOS-specific files
 .DS_Store

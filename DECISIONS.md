@@ -3849,3 +3849,157 @@ failures, 18 declared scroll containers · `ghost:verify` green · `ghost:smoke`
 Specimen Surfaces are routes now, so a broken template fails the smoke test rather than waiting for
 someone to look) · `prettier --check` clean on every touched `.md`/`.css`/`.js`/`.mjs`/`.json`, none
 on `.hbs` · both Modes read at 320, 390, 768, 1024 and 1568px with no horizontal overflow.
+
+## The Day-one publication: what the theme does with almost nothing (2026-09)
+
+MIRROR was drawn against **Demo content** — 104 Posts, 14 Tags, 5 Authors, a photograph on
+everything. A buyer's blog on its first day has none of that, and that is the only configuration in
+which the theme's absence paths render at all: the text wordmark, both initial-monogram portraits,
+and every band that has no content to hold. None of them had ever been looked at, because the demo
+publication structurally cannot produce them.
+
+So there is now a second publication in the harness. **Day-one publication** and **Orphan** are in
+CONTEXT.md; the treatment rule is `docs/adr/0003-the-theme-omits-chrome-it-has-no-content-for.md`.
+
+### What it is, and where
+
+One Author — the Ghost **owner**, no portrait, no bio — seven Posts, no Tags, no images anywhere, one
+About page of three paragraphs, and Ghost's own configuration except the four settings its setup
+wizard asks for. It runs on its own Ghost: `~/ghost-mirror/config.day-one.json`, port 2369, its own
+sqlite file and content directory, the theme symlinked in. Started from the same tree with
+`NODE_ENV=day-one`.
+
+A second install rather than a second fixture in the first one, for two reasons that are not
+preferences. `import.mjs --prune` deliberately never deletes staff users, so **one Author is
+unreachable** in the demo install without breaking that rule. And importing Day-one content there
+would inherit the demo's fourteen written settings and its routes.yaml — which is most of what the
+run is supposed to test.
+
+`scripts/ghost/build-day-one.mjs` owns five outputs: the fixture, both route lists, the capture
+matrix and the audit's path list. All five need the post slugs, and a hand-kept list of them beside a
+generator that invents them is a drift waiting to happen — `--posts 5` has to change all five at
+once or the smoke run asserts a URL that no longer exists.
+
+Which the first version proved by getting it wrong twice. It picked the heading-free post by
+sniffing the body for `<h2>` — and the long-titled post has no headings either, so it matched first
+and four capture files pointed at one URL, two of them named after a post nobody photographed. The
+roles are declared now. Then the substitute for a role that `--posts N` slices off was `posts[0]`,
+which walked straight back into the same collision; a missing role contributes no rows instead, and
+says which ones it did not capture.
+
+### Ghost's defaults are not what anyone assumes
+
+Two claims made while designing this were simply wrong, and the screenshots corrected them.
+`accent_color` defaults to **`#FF1A75`, a hot pink** — so an unbranded publication renders the
+theme's single chromatic token pink, not amber and not (as claimed) near-black: every date eyebrow,
+subscribe button and monogram badge. And `portal_button` defaults to **false**, so the demo fixture's
+explicit `false` is belt-and-braces rather than a correction. Both verified against
+`default-settings.json` and in the render.
+
+### Both routings, because seven posts hide the Feed
+
+`bare` is the honest first day, but with seven posts `index.hbs` is unreachable: no `/archive/`, and
+no `/page/2/` to fall through to. The Feed Surface and every pagination partial would go
+unexercised, so the run does both passes. The route lists assert the **absences** too — `/tags/`,
+`/authors/`, `/membership/` and the rest at 404 with the error marker. If one of them ever gained a
+`route:` it would render an empty Directory at 200, and only an asserted 404 catches that.
+
+`upload-routes.mjs` gained `--small`, because its `/archive/page/2/` expectation is the one claim
+that depends on the publication rather than on the file: seven posts have no second page of
+anything, and asserting one failed the script for the publication being small.
+
+### The new audit rule, and why the old ones could not see this
+
+`probe-audit.js` returns early on any element with a zero-sized box, so the entire
+chrome-drawn-for-content-that-is-not-there class was invisible to it by construction. `EMPTYNAV` is
+a second pass: a visible `nav`/`ul`/`ol` with no `a`, no `li` and no text of its own. Narrow
+deliberately — a breadcrumb whose crumb is a `<span>` passes, a decorative `div` cannot trip it, and
+Alpine's `<template>` children are unreachable from `querySelectorAll`. It was proved by reverting
+the footer guard and watching it fire at all twelve widths, naming the landmark.
+
+### What the run actually found
+
+**One reported Orphan was not real.** `navigation.js:151-153` returns an empty string for an empty
+menu, so `navigation.hbs` never executes and its `column` variant cannot draw a heading with nothing
+under it. That was read off the template and inferred; the helper says otherwise, and emptying both
+menus on the demo install confirmed the helper.
+
+**Three empty landmarks were real** — the `<nav>` wrappers in `footer.hbs`, `header.hbs` and
+`menu.hbs` live outside the helper, so an emptied menu left a labelled container holding nothing.
+Each is guarded now. The header needed a second half: with the nav gone, nothing carried the
+`mr-auto` that pushes the controls to the right edge above the nav breakpoint, so the empty branch
+hands it to the wordmark. Two partial calls rather than one computed wrapper, because Handlebars
+takes no block helper inside a hash argument.
+
+**`about/stats.hbs` printed `SUBJECTS 0`** in 36px display type. Every counted figure is guarded on
+its own total now, and the auto-fit grid reflows to three cells unaided. The zero-total mechanism was
+proved directly with a filter matching nothing: the `{{#get}}` main block renders, `total` is 0, the
+guard omits the cell.
+
+**A tier with no benefits drew an empty bordered list.** Not hypothetical — Ghost auto-creates one
+paid tier named after the site with no description and no benefits at all. Guarded, and the `mb-auto`
+that pushes the button to the bottom of the column moves onto the button where the list is gone
+(mutually exclusive with its `mt-[26px]`, because class-string order does not decide which margin
+utility wins).
+
+**The best finding was not an Orphan at all.** The About Surface printed the first fifty words of its
+own body as its standfirst, in 22px italic, truncated mid-sentence, directly above the same words.
+`{{excerpt}}` falls back to the body's opening when no custom excerpt exists, and `{{#if excerpt}}`
+cannot catch it because the fallback makes it always truthy. The post Surfaces already read
+`custom_excerpt` for exactly this reason; the four Page openers that also print `{{content}}` —
+`centered-intro.hbs`, both split heroes, and the two Specimen mastheads — now do too. The
+directories keep the fallback, because a Directory never prints its body, so summarising it is not
+duplication. The demo publication sets a custom excerpt on every page that has one of these
+openers, so its render is unchanged and no Floor moves.
+
+### Two things left alone, on purpose
+
+A1's cover with no photograph is a 660px panel of `#0c0a09` with white titling on it. That is a
+recorded decision (`home/hero.hbs:18-21`) — the alternative is white text on the page background —
+and a run that found it is not licence to overturn it. And the About page's writers masthead holds
+one card in a grid sized for five. Neither is an Orphan: the content is there, there is just very
+little of it.
+
+### The harness after all of it
+
+`gscan --fatal` ✓ · `ghost:i18n` 165 keys across 115 templates · `ghost:audit` 336 checks, 0 failures
+· `ghost:verify` green · `ghost:smoke` 15/15 · `ghost:import` idempotent (104 posts, 14 settings, 5
+authors, all updates) · `pnpm day-one` 19/19 bare, 19/19 routed, 180 checks 0 failures ·
+`day-one:shots` 30 captures over 9 settings groups, no drift · `--posts 5`, `--posts 3` and
+`--posts 1` all generate with every filename still meaning what it says, and at five posts the
+homepage's 6–14 grid band renders nothing at all rather than an empty heading.
+
+### The capture that came out twice, differently
+
+One capture in twenty-six failed shoot.py's byte-identity check on the first run — `font-display:
+swap` letting a frame paint before the variable font's optical size applied, measured as a 5KB-larger
+PNG of visibly lighter type. Eight controlled repeats were identical, so it is a paint race rather
+than a page that moves.
+
+The first fix was a wrapper that recorded the unstable group, kept going and exited non-zero. That
+was the wrong place for it: `shoot.py` already owns this exact policy, and a job that says
+`"scored": false` is captured twice, measured, and reported as `DRIFT … [unscored]` without failing
+the run. The wrapper gave the harness two disagreeing answers to one question — `ghost:shots` exits
+0 on an unscored drift and `day-one:shots` exited 1 — and condemned a whole settings group for one
+bad frame. Every Day-one job carries the flag now and `shoot-day-one.mjs` decides nothing about
+stability; it drives the settings and counts only the batches that actually ran.
+
+### What the review caught that the run did not
+
+Two lenses over the staged diff, and between them: a `secondaries: []` nothing reads; a comment in
+`import.mjs` still asserting the near-black accent the screenshots had already disproved; "four
+outputs" over a list of five; a probe comment offering `<template>` scoping as the reason EMPTYNAV
+is safe when it is the reason it would be unsafe (`post/toc.hbs`'s `<ol>` is exactly the hunted
+shape — `checkVisibility()` and the ancestor's `x-cloak` are what actually save it, and the Day-one
+matrix now audits a post WITH headings so that stays proven); a fourth theme-owned navigation
+wrapper on the design-tokens Surface, unguarded; the two Specimen mastheads with the same
+`{{excerpt}}`-above-`{{content}}` defect; `tiers.hbs` carrying the guarded benefit list twice
+verbatim, now `membership/benefits.hbs`; and `--fixture ./scripts/ghost/fixture.json` deriving an
+image map that does not exist, which would re-upload 4.4 MB as `-1` duplicates — `resolve()` now,
+plus a guard against the derived map colliding with the fixture it is derived from.
+
+The settings read-back the review asked for earned itself immediately, by failing: Ghost NORMALISES
+`icon` to a resized derivative, so a correct write of `…/2026/08/icon-home.png` reads back as
+`…/size/w256h256/…`. Comparing values would need an exemption list per key. The check is on the KEY
+instead, which is the exact test for the failure it guards — a key Ghost does not recognise is
+dropped with a 200 and never appears in the settings list at all.

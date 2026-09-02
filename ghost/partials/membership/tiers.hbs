@@ -87,21 +87,12 @@ currency in Ghost, and `{{price 0}}` with no currency returns a bare `0`. --}}
 									<p class="text-small text-muted mt-[18px] leading-[1.6]">{{description}}</p>
 								{{/if}}
 
-								<ul class="mt-[22px] mb-auto flex list-none flex-col gap-[11px] p-0">
-									{{#foreach benefits}}
-										<li class="flex items-start gap-[11px]">
-											<span
-												aria-hidden="true"
-												class="text-accent flex-none font-mono text-xs leading-[1.6]">&check;</span>
-											<span class="text-small leading-[1.6]">{{this}}</span>
-										</li>
-									{{/foreach}}
-								</ul>
+								{{> "membership/benefits"}}
 
 								<a
 									href="#/portal/signup/free"
 									data-portal="signup/free"
-									class="btn border-text text-text hover:bg-text hover:text-surface font-ui mt-[26px] block rounded-sm border px-[22px] py-[13px] text-center text-[15px] font-semibold no-underline">{{t "Join free"}}</a>
+									class="btn border-text text-text hover:bg-text hover:text-surface font-ui block rounded-sm border px-[22px] py-[13px] text-center text-[15px] font-semibold no-underline {{#if benefits}}mt-[26px]{{else}}mt-auto{{/if}}">{{t "Join free"}}</a>
 							</article>
 						{{else}}
 							<article
@@ -132,23 +123,14 @@ currency in Ghost, and `{{price 0}}` with no currency returns a bare `0`. --}}
 									<p class="text-small text-muted mt-[18px] leading-[1.6]">{{description}}</p>
 								{{/if}}
 
-								<ul class="mt-[22px] mb-auto flex list-none flex-col gap-[11px] p-0">
-									{{#foreach benefits}}
-										<li class="flex items-start gap-[11px]">
-											<span
-												aria-hidden="true"
-												class="text-accent flex-none font-mono text-xs leading-[1.6]">&check;</span>
-											<span class="text-small leading-[1.6]">{{this}}</span>
-										</li>
-									{{/foreach}}
-								</ul>
+								{{> "membership/benefits"}}
 
 								<a
 									href="#/portal/signup/{{id}}/monthly"
 									data-portal="signup/{{id}}/monthly"
 									x-bind:href="yearly ? '#/portal/signup/{{id}}/yearly' : '#/portal/signup/{{id}}/monthly'"
 									x-bind:data-portal="yearly ? 'signup/{{id}}/yearly' : 'signup/{{id}}/monthly'"
-									class="btn font-ui mt-[26px] block rounded-sm border px-[22px] py-[13px] text-center text-[15px] font-semibold no-underline {{#match name @custom.featured_tier}}btn-primary{{else}}border-text text-text hover:bg-text hover:text-surface{{/match}}"
+									class="btn font-ui block rounded-sm border px-[22px] py-[13px] text-center text-[15px] font-semibold no-underline {{#if benefits}}mt-[26px]{{else}}mt-auto{{/if}} {{#match name @custom.featured_tier}}btn-primary{{else}}border-text text-text hover:bg-text hover:text-surface{{/match}}"
 									x-text="yearly ? '{{t "Choose {tier} — {price}/year" tier=name price=(price yearly_price currency=currency)}}' : '{{t "Choose {tier} — {price}/month" tier=name price=(price monthly_price currency=currency)}}'">{{t "Choose {tier} — {price}/month" tier=name price=(price monthly_price currency=currency)}}</a>
 							</article>
 						{{/match}}

@@ -58,8 +58,10 @@ in assets/css/screen.css). --}}
 				<h1
 					class="font-display text-h1 tracking-display sm:text-display max-w-[22ch] leading-[1.04] font-medium">{{title}}</h1>
 
-				{{#if excerpt}}
-					<p class="text-lead text-muted mt-7 max-w-[62ch] leading-[1.55] text-pretty">{{excerpt}}</p>
+				{{!-- `custom_excerpt`, not `{{excerpt}}`: the fifty-word fallback would print the
+				opening of the body that appears below. See centered-intro.hbs. --}}
+				{{#if custom_excerpt}}
+					<p class="text-lead text-muted mt-7 max-w-[62ch] leading-[1.55] text-pretty">{{custom_excerpt}}</p>
 				{{/if}}
 
 				<dl
@@ -498,9 +500,16 @@ in assets/css/screen.css). --}}
 					<div class="flex flex-wrap items-center gap-x-[30px] gap-y-4 px-5 py-[22px] md:px-7">
 						{{> "chrome/wordmark" wrapper="mr-auto" logoHeight="h-5" titleSize="text-2xl"}}
 
-						<nav
-							aria-label="{{t "Specimen menu"}}"
-							class="max-nav:hidden flex flex-wrap items-center gap-[22px]">{{navigation variant="bar"}}</nav>
+						{{!-- The fourth theme-owned navigation wrapper, guarded like the three in
+						chrome/: Ghost's helper renders nothing for an emptied menu, so without this
+						the specimen draws a labelled landmark holding nothing — on the Surface whose
+						whole job is showing a buyer what the theme does. ADR 0003. Here the mark
+						already carries `mr-auto` unconditionally, so nothing else has to move. --}}
+						{{#if @site.navigation}}
+							<nav
+								aria-label="{{t "Specimen menu"}}"
+								class="max-nav:hidden flex flex-wrap items-center gap-[22px]">{{navigation variant="bar"}}</nav>
+						{{/if}}
 
 						<span class="btn btn-primary font-ui max-nav:hidden rounded-sm px-[18px] py-2.5 text-sm font-semibold">Subscribe</span>
 					</div>

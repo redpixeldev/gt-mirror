@@ -1,0 +1,152 @@
+{
+	"version": 2,
+	"site": {
+		"title": "Nadia Okonjo",
+		"description": "Notes on attention, craft, and publishing alone.",
+		"navigation": [
+			{
+				"label": "Home",
+				"url": "/"
+			},
+			{
+				"label": "About",
+				"url": "/about/"
+			}
+		],
+		"secondary_navigation": []
+	},
+	"tiers": [],
+	"recommendations": [],
+	"authors": [
+		{
+			"name": "Nadia Okonjo",
+			"slug": "nadia-okonjo",
+			"owner": true,
+			"bio": null,
+			"location": null,
+			"website": null,
+			"twitter": null,
+			"profile_image": null
+		}
+	],
+	"tags": [],
+	"posts": [
+		{
+			"title": "The long slow work of building an archive from nothing",
+			"slug": "the-long-slow-work-of-building-an-archive-from-nothing",
+			"role": "long-title",
+			"why": "the longest title in the publication — it wraps in every card size and in the post header, and the audit's own heading limit (3 lines, 4 below 380px) is the contract it must not break",
+			"html": "<p>The hardest part of starting was not the writing. It was accepting that for a while there would be nothing to point at — no archive to browse, no back catalogue to justify the subscription, no photograph of me at a desk looking thoughtful.</p>\n<p>So this is the first thing. It is not a manifesto. It is a note that the lights are on.</p>",
+			"custom_excerpt": null,
+			"feature_image": null,
+			"feature_image_alt": null,
+			"published_at": "2026-08-28T09:00:00.000Z",
+			"visibility": "public",
+			"featured": false,
+			"author": "Nadia Okonjo",
+			"tags": []
+		},
+		{
+			"title": "On keeping a list",
+			"slug": "on-keeping-a-list",
+			"role": null,
+			"why": "a body whose only content is a list — no paragraph before it, nothing after",
+			"html": "<ul><li>Write the thing before deciding whether it is any good.</li><li>Publish on a schedule you can keep in a bad week, not a good one.</li><li>Reply to everyone who writes back, for as long as that is possible.</li><li>Do not buy a logo yet.</li><li>Keep the list short enough to remember.</li></ul>",
+			"custom_excerpt": null,
+			"feature_image": null,
+			"feature_image_alt": null,
+			"published_at": "2026-08-21T09:00:00.000Z",
+			"visibility": "public",
+			"featured": false,
+			"author": "Nadia Okonjo",
+			"tags": []
+		},
+		{
+			"title": "What I mean by attention",
+			"slug": "what-i-mean-by-attention",
+			"role": "headings",
+			"why": "three h2 sections, so this is the one post where the table of contents renders at all — and the one that proves the audit’s EMPTYNAV rule does not fire on toc.hbs’s Alpine-filled <ol>",
+			"html": "<p>The word gets used for two different things, and the difference matters more than it sounds.</p>\n<h2>Attention as a resource</h2>\n<p>In the first sense attention is something a reader spends. It is finite, it is depleted by everything else competing for it, and the economics of that are what most writing about media is actually about.</p>\n<p>That framing is useful and slightly grim. It makes every publication a competitor for the same scarce thing, and it makes any argument about quality collapse into an argument about efficiency.</p>\n<h2>Attention as a practice</h2>\n<p>In the second sense attention is something a writer does. It is the difference between describing a room and noticing it. It cannot be bought and it does not scale, which is exactly why it is worth anything.</p>\n<h2>Why both readings survive</h2>\n<p>They survive because they are both true and they pull in opposite directions. A publication that treats attention only as a resource optimises itself into something nobody wants to read. One that treats it only as a practice never finds the people it was written for.</p>\n<p>I do not have a resolution. I have a preference, and it is the second one.</p>",
+			"custom_excerpt": null,
+			"feature_image": null,
+			"feature_image_alt": null,
+			"published_at": "2026-08-14T09:00:00.000Z",
+			"visibility": "public",
+			"featured": false,
+			"author": "Nadia Okonjo",
+			"tags": []
+		},
+		{
+			"title": "Two sentences on revision",
+			"slug": "two-sentences-on-revision",
+			"role": null,
+			"why": "the shortest post the publication has — the smallest reading time the theme ever prints",
+			"html": "<p>Every draft I have ever liked was the fourth one, and every draft I have ever regretted was the first one I sent. The only technique I trust is waiting one day, which is not a technique so much as an admission.</p>",
+			"custom_excerpt": null,
+			"feature_image": null,
+			"feature_image_alt": null,
+			"published_at": "2026-08-07T09:00:00.000Z",
+			"visibility": "public",
+			"featured": false,
+			"author": "Nadia Okonjo",
+			"tags": []
+		},
+		{
+			"title": "A note on borrowed authority",
+			"slug": "a-note-on-borrowed-authority",
+			"role": null,
+			"why": "a blockquote as the body’s centre of gravity, with prose either side",
+			"html": "<p>I keep coming back to a line from an old style guide, which I have never been able to source properly and which I therefore quote with some embarrassment.</p>\n<blockquote><p>Write as though the reader is intelligent, busy, and has never heard of you. Two of those are always true.</p></blockquote>\n<p>What I like about it is the refusal of the third assumption. Most writing about writing assumes an audience that already cares. Almost nobody has one.</p>",
+			"custom_excerpt": null,
+			"feature_image": null,
+			"feature_image_alt": null,
+			"published_at": "2026-07-31T09:00:00.000Z",
+			"visibility": "public",
+			"featured": false,
+			"author": "Nadia Okonjo",
+			"tags": []
+		},
+		{
+			"title": "The setup, for anyone curious",
+			"slug": "the-setup-for-anyone-curious",
+			"role": null,
+			"why": "a fenced code block, so the Syntax palette renders with no feature image above it",
+			"html": "<p>A few people asked what this runs on. The answer is boring and I intend to keep it that way.</p>\n<pre><code class=\"language-sh\">#!/usr/bin/env bash\nset -euo pipefail\n\n# Publish, then get on with the day.\ngit add content/\ngit commit -m \"post: $1\"\ngit push</code></pre>\n<p>That is the whole pipeline. There is no build step, because there is nothing to build.</p>",
+			"custom_excerpt": null,
+			"feature_image": null,
+			"feature_image_alt": null,
+			"published_at": "2026-07-24T09:00:00.000Z",
+			"visibility": "public",
+			"featured": false,
+			"author": "Nadia Okonjo",
+			"tags": []
+		},
+		{
+			"title": "Why I am not going to write about the industry",
+			"slug": "why-i-am-not-going-to-write-about-the-industry",
+			"role": "heading-free",
+			"why": "four hundred words with no headings at all: an empty table of contents, so A2’s rail is share-only",
+			"html": "<p>There is a genre of writing about publishing that consists almost entirely of writing about publishing. It is comfortable to produce and it flatters everyone involved, because it treats the mechanics of the trade as though they were the subject.</p>\n<p>I have written a great deal of it. Most of it was fine and none of it was necessary. The tell is that you can write it without going anywhere or asking anyone anything, which means the only research it requires is having read other pieces of the same kind. That is a closed loop, and closed loops get smaller.</p>\n<p>What I want to do instead is duller to describe and harder to do. I want to write about specific things that happened, to specific people, in enough detail that the general point has to be inferred rather than announced. This is not a new idea. It is the oldest idea in reporting and it keeps being rediscovered because it keeps being abandoned, usually for good reasons: it is slow, it does not scale, and it produces one piece where a trend argument would have produced five.</p>\n<p>The other reason I am avoiding it is more selfish. Writing about the industry means writing for the industry, and the industry is a small audience that already agrees with itself. It rewards you quickly and then holds you there. I have watched several people I admire disappear into that particular cul-de-sac, publishing to a few hundred colleagues and mistaking the response for reach.</p>\n<p>So the plan is: no takes about the platform of the month, no predictions, no pieces whose argument is that a thing is either dying or being reinvented. If something in the trade genuinely changes how a reader encounters writing, that is worth an essay, and I will try to write it from the reader's side rather than the seller's.</p>\n<p>I expect to break this rule. It is easier to hold a position before anything is at stake, and nothing is at stake yet — there is no archive to be consistent with and nobody to be inconsistent in front of. But it is worth writing down now, while it is still cheap, so that later there is something to be caught out by.</p>",
+			"custom_excerpt": null,
+			"feature_image": null,
+			"feature_image_alt": null,
+			"published_at": "2026-07-17T09:00:00.000Z",
+			"visibility": "public",
+			"featured": false,
+			"author": "Nadia Okonjo",
+			"tags": []
+		}
+	],
+	"pages": [
+		{
+			"slug": "about",
+			"title": "About",
+			"template": null,
+			"excerpt": null,
+			"image": null,
+			"image_alt": null,
+			"body": "<p>I am Nadia. I write here about attention, craft, and the small economics of publishing on your own.</p>\n<p>There is not much to look at yet. Posts arrive most Thursdays, and they are usually about something that actually happened rather than about publishing itself.</p>\n<p>If you want to argue with any of it, reply to the email — it comes to me.</p>"
+		}
+	],
+	"concessions": []
+}

@@ -16,6 +16,12 @@ THE WRITER COUNT IS STAFF ACCOUNTS, NOT PUBLISHED WRITERS, the same as the Feed'
 loop's own guard kept. On a publication with an unpublished staff account this figure reads one
 higher than the masthead below it. Recorded as a concession in DECISIONS.md.
 
+A FIGURE OF ZERO IS NOT A FIGURE. Every cell is guarded on its own total, so a publication with no
+**Tags** loses the "Subjects" cell rather than announcing a 36px `0` on the page a buyer is most
+likely to be looking at on their first day. That is ADR 0003, and the auto-fit grid below re-flows
+the remaining cells without any help. "Publishing since" was already guarded — on `oldest` rather
+than on a total, because its value is a date and not a count.
+
 The 1px grid gap over a border-coloured background is what draws the dividers, so the cells sit on
 `--surface` rather than carrying borders of their own — one rule instead of four, and no doubled
 line where two cells meet. --}}
@@ -25,24 +31,30 @@ line where two cells meet. --}}
 	<dl
 		class="border-border bg-border grid grid-cols-[repeat(auto-fit,minmax(min(160px,100%),1fr))] gap-px overflow-hidden rounded-md border">
 		{{#get "posts" limit="1" as |rows posts|}}
-			<div class="bg-surface px-6 py-[26px]">
-				<dt class="text-muted font-mono text-[10.5px] tracking-[0.1em] uppercase">{{t "Posts published"}}</dt>
-				<dd class="font-display tracking-display mt-2.5 text-4xl font-medium">{{posts.total}}</dd>
-			</div>
+			{{#if posts.total}}
+				<div class="bg-surface px-6 py-[26px]">
+					<dt class="text-muted font-mono text-[10.5px] tracking-[0.1em] uppercase">{{t "Posts published"}}</dt>
+					<dd class="font-display tracking-display mt-2.5 text-4xl font-medium">{{posts.total}}</dd>
+				</div>
+			{{/if}}
 		{{/get}}
 
 		{{#get "authors" limit="1" as |rows writers|}}
-			<div class="bg-surface px-6 py-[26px]">
-				<dt class="text-muted font-mono text-[10.5px] tracking-[0.1em] uppercase">{{t "Writers"}}</dt>
-				<dd class="font-display tracking-display mt-2.5 text-4xl font-medium">{{writers.total}}</dd>
-			</div>
+			{{#if writers.total}}
+				<div class="bg-surface px-6 py-[26px]">
+					<dt class="text-muted font-mono text-[10.5px] tracking-[0.1em] uppercase">{{t "Writers"}}</dt>
+					<dd class="font-display tracking-display mt-2.5 text-4xl font-medium">{{writers.total}}</dd>
+				</div>
+			{{/if}}
 		{{/get}}
 
 		{{#get "tags" limit="1" as |rows subjects|}}
-			<div class="bg-surface px-6 py-[26px]">
-				<dt class="text-muted font-mono text-[10.5px] tracking-[0.1em] uppercase">{{t "Subjects"}}</dt>
-				<dd class="font-display tracking-display mt-2.5 text-4xl font-medium">{{subjects.total}}</dd>
-			</div>
+			{{#if subjects.total}}
+				<div class="bg-surface px-6 py-[26px]">
+					<dt class="text-muted font-mono text-[10.5px] tracking-[0.1em] uppercase">{{t "Subjects"}}</dt>
+					<dd class="font-display tracking-display mt-2.5 text-4xl font-medium">{{subjects.total}}</dd>
+				</div>
+			{{/if}}
 		{{/get}}
 
 		{{#get "posts" order="published_at asc" limit="1" as |oldest|}}

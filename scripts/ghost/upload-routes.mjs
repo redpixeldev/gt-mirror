@@ -29,7 +29,7 @@ const BARE = `routes:\n\ncollections:\n  /:\n    permalink: /{slug}/\n    templa
 
 const argv = process.argv.slice(2);
 for (const arg of argv) {
-	if (arg !== '--bare') {
+	if (arg !== '--bare' && arg !== '--small') {
 		console.error(`unknown argument: ${arg}`);
 		process.exit(1);
 	}
@@ -40,15 +40,23 @@ const yaml = bare ? BARE : readFileSync(ROUTES, 'utf8');
 
 /*
  * What the upload has to produce. A 200 from the upload endpoint only says the YAML parsed;
- * these two URLs are the claim the file actually makes, and until they answer with the right
- * Surface marker on the page the configuration has not landed.
+ * these URLs are the claim the file actually makes, and until they answer with the right Surface
+ * marker on the page the configuration has not landed.
+ *
+ * `/archive/page/2/` IS THE CHANNEL'S OWN CLAIM — that /archive/ paginates independently of the
+ * collection at `/`, which is the whole reason it is a `controller: channel` rather than a
+ * `route:`. It is also the one expectation that depends on the PUBLICATION rather than on the
+ * file: a Day-one publication of seven posts has no second page of anything, and asserting one
+ * would fail this script for the publication being small. `--small` drops it, and drops nothing
+ * else — the channel still has to exist and still has to render the Feed.
  */
+const small = argv.includes('--small');
 const expected = bare
 	? [{ path: '/', surface: 'home' }]
 	: [
 			{ path: '/', surface: 'home' },
 			{ path: '/archive/', surface: 'feed' },
-			{ path: '/archive/page/2/', surface: 'feed' },
+			...(small ? [] : [{ path: '/archive/page/2/', surface: 'feed' }]),
 		];
 
 async function upload() {

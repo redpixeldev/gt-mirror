@@ -48,12 +48,15 @@ the same clearance underneath. `pr-3` keeps the scrollbar off the labels. --}}
 			data-surface="page-styleguide">
 
 			{{!-- The masthead reads the Page's own copy, the way every standing Page in this theme
-			does: the h1 is {{title}} and the lede is {{excerpt}}. --}}
+			does: the h1 is {{title}} and the lede is {{custom_excerpt}}. Not `{{excerpt}}` — that
+			falls back to the first fifty words of the body, and the body is printed below, so a
+			Page written without a custom excerpt would set its own opening in 22px above itself.
+			See centered-intro.hbs, where the same defect was measured. --}}
 			<header class="border-border border-b pt-22 pb-14">
 				<h1 class="font-display text-h1 tracking-display max-w-[26ch] leading-[1.06] font-medium text-balance">{{title}}</h1>
 
-				{{#if excerpt}}
-					<p class="text-lead text-muted mt-7 max-w-[62ch] leading-[1.55] text-pretty">{{excerpt}}</p>
+				{{#if custom_excerpt}}
+					<p class="text-lead text-muted mt-7 max-w-[62ch] leading-[1.55] text-pretty">{{custom_excerpt}}</p>
 				{{/if}}
 			</header>
 

@@ -239,3 +239,30 @@ pnpm ghost:routes:bare   # put Ghost's own default routes back
 generated and is not committed. The stylesheet imports the Astro reference build's
 `src/styles/main.css`, which is the single source of truth for every token, font face and
 utility in the theme — see `DECISIONS.md` in the repository root.
+
+### The Day-one publication
+
+The theme was drawn against a publication with 104 posts, 14 subjects, 5 writers and a photograph
+on everything. A buyer's blog on its first day has none of that, and that is the only configuration
+in which the theme's absence paths render at all — the text wordmark, the initial-monogram
+portraits, and every band that has no content to hold. It runs on a second Ghost of its own so the
+scored publication is never disturbed.
+
+```bash
+pnpm day-one:fixture     # the publication, both route lists, the capture matrix, the audit paths
+pnpm day-one:import      # apply it to the Ghost on :2369 (destructive to THAT install only)
+pnpm day-one             # both routings, both smoke passes, then the width audit
+pnpm day-one:shots       # the capture matrix into .shots/day-one/ — unscored artefacts to read
+```
+
+Its Ghost is `~/ghost-mirror/config.day-one.json` — port 2369, its own sqlite file, its own
+content directory with the theme symlinked into `themes/`. Start it from the same tree:
+
+```bash
+cd ~/ghost-mirror && NODE_ENV=day-one /opt/homebrew/opt/node@22/bin/node current/index.js
+```
+
+`--posts N` on the generator changes the publication's size and rewrites all five outputs at once;
+7 is committed because it leaves the homepage grid holding two of its nine slots. Nothing in the
+run is scored: there is no reference drawing of an absence, so the assertions are structural and
+the screenshots are there to be looked at.
