@@ -1,0 +1,97 @@
+{{!-- The archive grid: the rest of the shared window, as cards. Both homepage layouts draw it.
+
+	{{> "home/archive-grid" feed=feed start="6" mt="mt-14"}}         A1, beneath the lead band
+	{{> "home/archive-grid" feed=feed start="2"}}                    A1, in place of it
+	{{> "home/archive-grid" feed=../../feed start="6" narrow=true}}  A2's imageless grid
+
+	feed     the shared post window from home/window.hbs
+	start    the window position the grid opens on — 6 below a lead band, 2 without one
+	mt       the gap above, as a class: the band's 56px, or nothing when the section
+	         heading's own 32px is the gap (home/latest.hbs decides which)
+	narrow   the track arithmetic for A2's 1120px article column rather than A1's page width
+
+A2 CALLS THIS PARTIAL RATHER THAN CARRYING A CARD OF ITS OWN. Its own grid is photographs — two
+tracks of 5/4 images with no excerpt, the image doing the work — and a publication with no
+photographs left that grid drawing title-and-date over 500px of nothing. The card that answers
+is the one already written here, so the two layouts' imageless grids are one partial and not two
+drawings of the same idea. What A2 keeps is the rule above the grid: home/digest.hbs wraps this
+call, because that rule closes the tag strip above it rather than opening the grid.
+
+`start` to `to="14"`, taken with {{#foreach}}'s 1-based inclusive `from`/`to`. Slicing rather than
+excluding is deliberate: core/frontend/helpers/get.js only optimises a filter carrying exactly one
+`id:-` term, so a chain of exclusions would make the most-requested URL on the site uncacheable.
+
+The slice moves because the lead band above it is not always drawn — see home/latest.hbs for the
+condition and docs/adr/0005 for why the posts have to land somewhere rather than be dropped.
+
+THE TRACK COUNT FOLLOWS THE CARDS, AND THAT IS NOT `auto-fill`. Nine cards over three tracks fill
+every row, which is why the window is nine here; `auto-fill` derives the count from the WIDTH
+(four at this page's 1256px content box), so seven cards drew 4 + 3 and left an empty cell. But
+the slice is only nine cards on a publication that HAS fourteen posts: at seven posts it is two,
+and two cards in three fixed tracks left a third of the row empty — an **Underset**
+(CONTEXT.md).
+
+`auto-fit` collapses a track only when that track is empty in EVERY row, so a partly-filled last
+row — five author cards over three tracks — is untouched, and the keyword changes nothing for any
+grid whose item count reaches its track count. `min(360px,100%)` is what pins the count: 1256px of
+content box divided by a 360px track plus a 36px gap derives three tracks and not four, which is
+the arithmetic `auto-fill` got wrong, and the design's own 394px card is the result. Two cards
+then take two tracks instead of leaving a hole, and the demo homepage is byte-identical at the
+1568px capture width.
+
+`*:max-w-[480px]` caps what a collapsed track may do to a card. Without it one card in one track
+sets 1256px wide — larger than the lead story — and with it a sparse row keeps cards at card
+scale and simply ends early. 480px is above the drawn 394px, so it is inert whenever the grid is
+full. It is the cap for both columns: A2's derived card is 328px.
+
+`narrow` IS THE SAME ARITHMETIC OVER A DIFFERENT COLUMN, which is why both numbers live here
+rather than being passed in as a class. A2 narrows its article column to 1120px (home.hbs), and
+`container` takes 2rem off each side, so the content box is 1056px: a 320px track plus a 36px gap
+divides it 3.07 times, deriving three tracks of 328px — the width the design source draws for
+that column. 360px would derive 2.75 and round down to two, and anything at or below 237px would
+derive four. Between a 1024px and a 1184px viewport the column is the viewport rather than
+1120px, so both grids fall to two tracks there; that is the arithmetic, not a special case.
+
+`lg`, not `stack`, is where the tracks start, and the number is the audit's: a card's paragraph
+has to clear 250px (`scripts/verify/probe-audit.js`), and three tracks plus two 36px gaps inside a
+768px viewport leave 211px each — eight NARROW failures, measured. The design source has the
+ragged row instead (`homepage-01.astro` slices seven into an `auto-fill` grid); this is a
+divergence, recorded in DECISIONS.md. --}}
+<div class="{{mt}} grid grid-cols-1 gap-9 *:max-w-[480px] {{#if narrow}}lg:grid-cols-[repeat(auto-fit,minmax(min(320px,100%),1fr))]{{else}}lg:grid-cols-[repeat(auto-fit,minmax(min(360px,100%),1fr))]{{/if}}">
+	{{#foreach feed from=start to="14"}}
+		{{!-- The rule closes an imageless card rather than capping it. A photographed card is
+		capped by its own image and the design draws no rule on it; an imageless one has to say
+		where it ends, and the rule reads better at the foot than at the head because the section
+		heading's own `border-b` already caps the first row — a top rule put a second hairline
+		28px under it and left the last row open. Same direction as the companion rows beside a
+		photographed lead, which have always used `border-b`. --}}
+		<article class="{{post_class}} {{#unless feature_image}}border-border border-b pb-6{{/unless}}">
+			<a
+				href="{{url}}"
+				class="text-text block no-underline">
+				{{#if feature_image}}
+					<img
+						src="{{img_url feature_image size="m"}}"
+						{{#if feature_image_alt}}alt="{{feature_image_alt}}"{{else}}alt=""{{/if}}
+						loading="lazy"
+						decoding="async"
+						class="border-border block aspect-[3/2] w-full rounded-md border object-cover">
+				{{/if}}
+
+				<div class="mt-4 flex items-center gap-2.5">
+					{{#primary_tag}}
+						<span class="font-meta text-meta tracking-meta text-accent uppercase">{{name}}</span>
+					{{/primary_tag}}
+
+					{{> "tier-chip"}}
+				</div>
+
+				<h3 class="font-display tracking-heading mt-2.5 text-[22px] leading-[1.24] font-medium">{{title}}</h3>
+
+				<p class="text-small text-muted mt-2.5 leading-[1.58]">{{excerpt}}</p>
+
+				<p class="font-meta text-meta tracking-meta text-muted mt-3.5 uppercase">{{> "dateline"}}</p>
+			</a>
+		</article>
+	{{/foreach}}
+</div>

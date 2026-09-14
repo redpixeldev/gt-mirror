@@ -388,6 +388,34 @@
 	}
 
 	/*
+	 * Long unbroken strings break rather than push the page.
+	 *
+	 * Ghost's editor accepts any string a writer pastes, and a bare 90-character URL in a
+	 * paragraph is one word the browser will not break: at 320px it widened the document past
+	 * the viewport — measured as `OVERFLOW page +18` on the Day-one publication's /archive/,
+	 * where the excerpt carries it into a list row.
+	 *
+	 * `break-word`, not `anywhere`: both break a word that would otherwise overflow, but
+	 * `anywhere` also lets the intrinsic min-content width collapse, which changes how a grid
+	 * or flex track sizes itself around normal prose. This value affects only a word that does
+	 * not fit, so nothing that already fits is re-wrapped and no capture moves.
+	 */
+	p,
+	li,
+	dd,
+	dt,
+	blockquote,
+	figcaption,
+	h1,
+	h2,
+	h3,
+	h4,
+	h5,
+	h6 {
+		overflow-wrap: break-word;
+	}
+
+	/*
 	 * Setting `--tw-leading` (not just `line-height`) is what makes this hold when
 	 * the element also carries a named size utility: `text-xs` and friends compile
 	 * to `line-height: var(--tw-leading, …)`, so a plain `line-height` here would

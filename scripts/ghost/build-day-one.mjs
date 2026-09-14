@@ -1,5 +1,5 @@
 /*
- * Build the Day-one publication: one Author, seven Posts, no Tags, no images, one About page.
+ * Build the Day-one publication: one Author, fifteen Posts, no Tags, no images, one About page.
  *
  *   node scripts/ghost/build-day-one.mjs
  *   node scripts/ghost/build-day-one.mjs --posts 5
@@ -54,7 +54,7 @@ const AUTHOR = {
 };
 
 /*
- * SEVEN SHAPES, EACH WITH A REASON. These are not seven samples of one thing: every post exists to
+ * TEN SHAPES, EACH WITH A REASON. These are not ten samples of one thing: every post exists to
  * put one absence or one extreme on screen, and the `why` is carried into the fixture so a later
  * reader cannot mistake the set for filler. Order is newest first; dates are fixed.
  *
@@ -132,6 +132,80 @@ git push</code></pre>
 <p>So the plan is: no takes about the platform of the month, no predictions, no pieces whose argument is that a thing is either dying or being reinvented. If something in the trade genuinely changes how a reader encounters writing, that is worth an essay, and I will try to write it from the reader's side rather than the seller's.</p>
 <p>I expect to break this rule. It is easier to hold a position before anything is at stake, and nothing is at stake yet — there is no archive to be consistent with and nobody to be inconsistent in front of. But it is worth writing down now, while it is still cheap, so that later there is something to be caught out by.</p>`,
 	},
+	{
+		role: 'custom-excerpt',
+		title: 'A shorter way of saying it',
+		date: '2026-07-10',
+		excerpt:
+			'Ghost writes a standfirst out of the first fifty words when the author does not. This is the one post where the author did.',
+		why: 'the only post carrying a custom excerpt — every card, the cover and the post header print the authored standfirst here instead of the generated first-fifty-words, which is what truncates mid-sentence on every other post in the publication',
+		html: `<p>An excerpt written by hand is a different object from an excerpt cut out of a paragraph. The generated one stops when it runs out of budget; it ends mid-clause and the reader can see the machine.</p>
+<p>So this post exists to make the difference visible on the page rather than in a field. Everything above the fold here was chosen; everywhere else it was taken.</p>`,
+	},
+	{
+		role: 'table',
+		title: 'What a year of this actually cost',
+		date: '2026-07-03',
+		why: 'the only post with a table — the `mirror-table` wrapper and the horizontal scroll it declares at 320px, which nothing else on this publication reaches',
+		html: `<p>Someone asked what running this costs, so here it is, rounded and complete.</p>
+<table><thead><tr><th>What</th><th>Where</th><th>A year</th></tr></thead><tbody><tr><td>Hosting</td><td>A managed Ghost instance</td><td>$348</td></tr><tr><td>Domain</td><td>Renewed once, grudgingly</td><td>$14</td></tr><tr><td>Email</td><td>Included until it is not</td><td>$0</td></tr><tr><td>Fonts</td><td>Self-hosted, licensed once</td><td>$120</td></tr></tbody></table>
+<p>The number that is missing is the one that matters: the hours. I have deliberately not counted them.</p>`,
+	},
+	{
+		role: 'links',
+		title: 'Five things I read this month',
+		date: '2026-06-26',
+		why: 'the only post whose prose is mostly links — link colour, hover and underline inside body copy, which on an unbranded install is Ghost\u2019s default hot pink rather than the amber the design was drawn in',
+		html: `<p>A month of reading, with the pieces that survived it. Two of these are old and one is about something else entirely.</p>
+<p>I keep going back to <a href="https://ghost.org/">the platform's own documentation</a> for the boring parts, and to <a href="/what-i-mean-by-attention/">what I wrote about attention</a> for the parts I have not settled. The rest are elsewhere: <a href="https://example.com/on-editing">a piece on editing</a> that says in four paragraphs what I have failed to say in twelve, and <a href="https://example.com/rates">an argument about rates</a> I disagree with and cannot refute.</p>
+<p>Next month I intend to read less and finish more.</p>`,
+	},
+	{
+		role: 'unlabelled-code',
+		title: 'One line I keep having to look up',
+		date: '2026-06-19',
+		why: 'a fenced code block that names NO language — the recorded Concession, where main.js draws no language strip and microlighter colours nothing; the labelled block two posts up is the other half of the pair',
+		html: `<p>Every few months I need this and every few months I have forgotten it.</p>
+<pre><code>rsync -avz --delete ./public/ host:/srv/site/</code></pre>
+<p>Writing it down here is cheaper than finding it again.</p>`,
+	},
+	{
+		role: 'deep-headings',
+		title: 'Three small notes on editing',
+		date: '2026-06-12',
+		why: 'h3 sections with no h2 above them — the table of contents built from the only depth present, which is what an author who reaches for the smallest heading produces',
+		html: `<h3>Cut the first paragraph</h3>
+<p>It is almost always a throat-clear. The piece starts where the throat-clear ends, and nobody has ever noticed the removal.</p>
+<h3>Read it aloud once</h3>
+<p>Every sentence that runs out of breath is a sentence with two ideas in it. Split them where the breath ran out.</p>
+<h3>Leave the ending alone</h3>
+<p>The last line is the one most likely to be over-written. If it was right in the draft, it is still right now.</p>`,
+	},
+	{
+		role: 'long-string',
+		title: 'A link I cannot shorten',
+		date: '2026-06-05',
+		why: 'an unbroken 90-character URL inside body copy — the one post that can push the prose column wider than the viewport, which is exactly what the audit\u2019s ESCAPES and OVERFLOW rules exist to catch at 320px',
+		html: `<p>The archive I have been reading from does not believe in short URLs, and I am not going to retype it:</p>
+<p>https://example.com/collections/regional-newspapers/1974/quarterly-index/scanned-volumes/page-0147</p>
+<p>If it breaks, it breaks the way every link to a scanned archive eventually breaks.</p>`,
+	},
+	{
+		role: 'latin-ext',
+		title: 'Notes from Kraków, Timișoara and Đà Nẵng',
+		date: '2026-05-29',
+		why: 'diacritics outside Latin-1 in a title and a body — the one post that requests the `latin-ext` and `vietnamese` subsets fonts.css declares with unicode-range, so a missing subset shows as a fallback glyph instead of never being asked for',
+		html: `<p>Three cities, three notebooks, one observation repeated: the local paper is always the last thing to close and the first thing people miss.</p>
+<p>In Kraków it was a broadsheet run out of two rooms. In Timișoara it was a weekly whose editor also delivered it. In Đà Nẵng it was a noticeboard, which counts.</p>`,
+	},
+	{
+		role: 'punctuated-title',
+		title: '"Who is this for?" — and other questions I stopped dodging',
+		date: '2026-05-22',
+		why: 'curly quotes, a question mark and an em dash in the title — the one post whose title has to survive escaping in a card, a heading, the <title> element and the Open Graph tags without turning into entities',
+		html: `<p>For a year I answered this with a demographic, which is a way of not answering it. The honest answer is a person, and I know who she is.</p>
+<p>She reads three things a week and finishes one. She has no interest in the trade. If a piece cannot survive her skimming the first two paragraphs, it was not finished.</p>`,
+	},
 ];
 
 /*
@@ -156,9 +230,18 @@ const ABOUT = {
 
 /* ── the publication ──────────────────────────────────────────────────────────────────── */
 
+/*
+ * NFD only decomposes letters whose accent is a COMBINING mark. A stroked or barred letter — đ, ł,
+ * ø — is one code point with no decomposition, so the class below deleted it outright and
+ * "Đà Nẵng" slugged to `a-nang`. The map runs first, and it is deliberately the three letters this
+ * publication's titles actually contain rather than a transliteration library.
+ */
+const STROKED = { đ: 'd', ł: 'l', ø: 'o' };
+
 const slugify = (s) =>
 	s
 		.toLowerCase()
+		.replace(/[đłø]/g, (ch) => STROKED[ch])
 		.normalize('NFD')
 		.replace(/[\u0300-\u036f]/g, '')
 		.replace(/[^a-z0-9]+/g, '-')
@@ -178,13 +261,21 @@ if (requested > SHAPES.length) {
 }
 
 /*
- * SEVEN IS THE COMMITTED DEFAULT because of where it falls in the homepage window. Both Layouts
- * slice the same fourteen posts (partials/home/window.hbs): A1 takes 1 for the cover, 2 for the
- * lead, 3–5 for the rows beside it and 6–14 for the grid; A2 takes 1, 2–5 and 6–14. At seven the
- * grid holds two of its nine slots — a ragged partial row, which is what a real small blog looks
- * like — while A2's shortlist is still full. `--posts 5` empties the grid band entirely and
- * `--posts 1` leaves the cover alone on the page; both are worth looking at, and neither is worth
- * a second committed fixture.
+ * FIFTEEN IS THE COMMITTED DEFAULT, AND THE NUMBER IS THE PAGINATION. Both Layouts slice the same
+ * fourteen posts (partials/home/window.hbs) and `docs/routes.example.yaml` sets the `/` collection
+ * to the same fourteen, so a publication with fourteen or fewer has ONE page and the homepage's
+ * pagination control never renders — it is guarded on `pagination.pages` in home.hbs. Fifteen is
+ * the first count that puts the control on screen, and it also puts /page/2/ on screen, which is
+ * index.hbs rendering the Feed layout with the one post that did not fit. Nothing below fifteen
+ * exercises either.
+ *
+ * What it costs is the tidy grid: at ten posts an image-free publication drew nine cards, exactly
+ * three rows of three. At fifteen the window is full, so A1 draws the cover plus 2–14 — thirteen
+ * cards, four rows with a one-card last row (docs/adr/0005). That ragged row is the honest shape
+ * of a full window and the grid's `auto-fit` plus per-card cap is what keeps it a card rather
+ * than a banner. `--posts 10` is the three-full-rows version, `--posts 7` the ragged-grid one this
+ * fixture started as, `--posts 5` empties the grid band entirely and `--posts 1` leaves the cover
+ * alone on the page; none of them is worth a second committed fixture.
  */
 const shapes = SHAPES.slice(0, requested);
 
@@ -197,7 +288,9 @@ const posts = shapes.map((shape) => ({
 	role: shape.role ?? null,
 	why: shape.why,
 	html: shape.html,
-	custom_excerpt: null,
+	/* Null on every shape but one — `custom-excerpt` is the post that exists to carry an authored
+	 * standfirst, so this is the field that makes it different from its neighbours. */
+	custom_excerpt: shape.excerpt ?? null,
 	feature_image: null,
 	feature_image_alt: null,
 	published_at: `${shape.date}T09:00:00.000Z`,
@@ -297,23 +390,34 @@ const absent = [
 	'/sign-up/',
 	/* A taxonomy route exists with zero Tags; only the slug is missing. */
 	'/tag/essays/',
-	/* Seven posts do not fill a page, so there is no page two under either routing. */
-	'/page/2/',
 ].map(errorRoute);
+
+/*
+ * /page/2/ IS THE ONE ROUTE THE TWO LISTS DISAGREE ABOUT, and the disagreement is the point.
+ * `docs/routes.example.yaml` pages `/` at fourteen, so fifteen posts give it a second page —
+ * index.hbs, the Feed layout, one post on it — and that is what makes the homepage's pagination
+ * control render at all. Ghost's defaults page at the theme's `posts_per_page` (18), so under bare
+ * routing fifteen posts still fit on one page and /page/2/ is a 404. Asserting one answer for both
+ * would either miss the control or claim a page that does not exist.
+ */
+const pageTwo = { path: '/page/2/', expect: 'data-surface="feed"', min_bytes: 4000 };
 
 writeFileSync(
 	ROUTES,
 	JSON.stringify(
-		[...present, { path: '/archive/', expect: 'data-surface="feed"', min_bytes: MIN }, ...absent],
+		[...present, { path: '/archive/', expect: 'data-surface="feed"', min_bytes: MIN }, pageTwo, ...absent],
 		null,
 		'\t',
 	) + '\n',
 );
 
 /* Bare: Ghost's defaults, nothing pasted into Labs → Routes. `/` is the posts collection, so
- * home.hbs still owns page 1 — and with seven posts there is no /page/2/ for index.hbs to
- * render, which is why the Feed is only reachable in the other pass. */
-writeFileSync(ROUTES_BARE, JSON.stringify([...present, errorRoute('/archive/'), ...absent], null, '\t') + '\n');
+ * home.hbs still owns page 1 — and with fifteen posts against `posts_per_page: 18` there is no
+ * `/page/2/` for index.hbs to render, which is why both it and the Feed are 404 in this pass. */
+writeFileSync(
+	ROUTES_BARE,
+	JSON.stringify([...present, errorRoute('/archive/'), errorRoute('/page/2/'), ...absent], null, '\t') + '\n',
+);
 
 /* ── the capture matrix and the width sweep ───────────────────────────────────────────── */
 
@@ -349,6 +453,9 @@ const postSurfaces = [
 	['post', 'heading-free'],
 	['post-long', 'long-title'],
 	['post-toc', 'headings'],
+	/* The table post is here for the width sweep rather than for the captures: its whole reason is
+	 * what a table does at 320px, and a reason nothing visits is a claim. */
+	['post-table', 'table'],
 ].flatMap(([name, role]) => {
 	const post = byRole(role);
 	if (!post) {

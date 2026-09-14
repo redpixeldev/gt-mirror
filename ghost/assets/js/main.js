@@ -317,6 +317,38 @@ document.addEventListener('click', (event) => {
 });
 
 /*
+ * …and hiding them when there is nothing to scroll.
+ *
+ * The design draws both buttons unconditionally, against a publication with six featured posts in
+ * a track that always overflows. A publication that has flagged two has a track that fits, and two
+ * buttons that scroll nothing are chrome for content that is not there — the shape
+ * docs/adr/0003 says to omit.
+ *
+ * Measured, not counted. A post-count test is wrong at both ends: three cards fit at 1568px and
+ * two overflow a phone, so the question is the track's own geometry and `scrollWidth` is the only
+ * thing that answers it. `hidden` rather than a class, so the pair leaves the accessibility tree
+ * with it.
+ *
+ * Re-run on resize and after the webfonts settle, because both change the cards' widths — a
+ * ResizeObserver on the track catches the first and `document.fonts.ready` the second. The 1px
+ * allowance absorbs sub-pixel track widths, which otherwise report a 0.4px overflow at some
+ * viewport widths and show a pair of buttons that cannot move.
+ */
+const syncFeaturedControls = () => {
+	for (const track of document.querySelectorAll('[data-featured]')) {
+		const controls = track.closest('section')?.querySelector('[data-featured-controls]');
+		if (controls) controls.hidden = track.scrollWidth <= track.clientWidth + 1;
+	}
+};
+
+for (const track of document.querySelectorAll('[data-featured]')) {
+	new ResizeObserver(syncFeaturedControls).observe(track);
+}
+
+document.fonts?.ready.then(syncFeaturedControls);
+syncFeaturedControls();
+
+/*
  * The code block's language strip.
  *
  * The design draws a header above the code naming its language, with the word `copy` on the right.

@@ -1,4 +1,4 @@
-{{!-- A2's body: a ranked shortlist, the tag strip, then the archive grid.
+{{!-- A2's body: a ranked shortlist, the tag strip, then the grid.
 
 	{{> "home/digest" feed=feed}}
 
@@ -8,76 +8,116 @@ The slices are the same shared query A1 reads, taken with {{#foreach}}'s 1-based
 FOUR IN THE SHORTLIST AND NINE IN THE GRID, so this layout draws all fourteen of the window. The
 design draws three and eight — twelve — and a layout that draws less than the window leaves the
 posts it skips on no page at all, which is the hole home/window.hbs records. The shortlist is a
-vertical list, so a fourth row costs the drawing nothing; the grid is three fixed tracks from
-`lg` for the same reason A1's is, and nine fills them — see home/latest.hbs for why the
-breakpoint is `lg` rather than `stack`.
+vertical list, so a fourth row costs the drawing nothing; nine cards also fill three tracks
+exactly, where a three-row shortlist would leave a tenth card alone on a fourth row.
+
+WHAT THE PUBLICATION'S PHOTOGRAPHS CHANGE HERE, AND WHAT THEY DO NOT. The shortlist is the same
+four rows either way: it is type, and it reads the same on a publication that photographs and one
+that does not. The grid is not. Its cards are 5/4 photographs with the image doing the work and no
+excerpt under the title — which on a publication with no photographs left title-and-date over
+500px of nothing, an **Underset** (CONTEXT.md), twice as wide as the type in it needs.
+
+So when the newest posts carry no image the grid is A1's — home/archive-grid.hbs, called with
+`narrow=true` for this narrower column, cards that carry their excerpt and their tier chip and
+close on a rule. One card for the imageless case in both layouts, not two drawings of it.
+
+THE CONDITION IS A1'S, UNCHANGED. home/latest.hbs derives it in full — why the test is a date
+cutoff rather than an accumulator, why it is `from="2" limit="4"` and never `to="5"`, why the
+`+00:00` in `{{published_at}}` is only safe inside the filter's quotes, why the cutoff is `>=`
+and takes the lead post in with it, and why the empty result is read with `{{#if}}` rather than
+the get's `{{else}}`. Read it there; it is one condition and it now sizes both layouts.
+docs/adr/0005 records the rule the two share: an imageless publication is drawn differently, and
+no post may be dropped to do it. This layout drops none — its slices never move.
+
+`../../feed`: {{#get}} renders its block with the query's own response as the context, so from
+inside the get the window is two frames up — one for the get, one for the {{#foreach}} it sits in.
+
+`{{#if feed.[1]}}` is the one-post case. With a single post the masthead lead IS the publication,
+and the shortlist, the tag strip and the grid are all empty — a heading and two rules over
+nothing, the **Orphan** docs/adr/0003 says to omit. Index access, so it costs no query.
+
+`{{t "Latest"}}`, which is A1's heading too. The design source titles this section "More from
+this week" (`WeeklyDigestSection.astro`) and no theme can know a publication's cadence: on the
+Day-one publication these four rows span five weeks. A divergence, recorded in DECISIONS.md.
 
 The rank is `@number`, which {{#foreach}} sets to the item's absolute position in the query
 rather than to its index within the slice — so the shortlist is numbered 02, 03, 04, 05 as the
 design numbers its own, not 01, 02, 03, 04. The zero-padding is a comparison rather than a
 helper: Handlebars has no string padding and Ghost ships none, and `< 10` is the whole rule. --}}
-<section
-	id="latest"
-	aria-labelledby="a2-latest"
-	class="container pt-14">
-	<h2
-		id="a2-latest"
-		class="font-ui text-muted mb-2 text-xs font-semibold tracking-[0.16em] uppercase">{{t "More from this week"}}</h2>
+{{#if feed.[1]}}
+	<section
+		id="latest"
+		aria-labelledby="a2-latest"
+		class="container pt-14">
+		<h2
+			id="a2-latest"
+			class="font-ui text-muted mb-2 text-xs font-semibold tracking-[0.16em] uppercase">{{t "Latest"}}</h2>
 
-	<div class="flex flex-col">
-		{{#foreach feed from="2" to="5"}}
-			<article
-				class="{{post_class}} border-border max-stack:grid-cols-[40px_minmax(0,1fr)] max-stack:gap-4 grid grid-cols-[64px_minmax(0,1fr)_auto] items-baseline gap-7 border-t py-[30px]">
-				<span class="text-muted font-mono text-xs">{{#match @number "<" 10}}0{{/match}}{{@number}}</span>
+		<div class="flex flex-col">
+			{{#foreach feed from="2" to="5"}}
+				<article
+					class="{{post_class}} border-border max-stack:grid-cols-[40px_minmax(0,1fr)] max-stack:gap-4 grid grid-cols-[64px_minmax(0,1fr)_auto] items-baseline gap-7 border-t py-[30px]">
+					<span class="text-muted font-mono text-xs">{{#match @number "<" 10}}0{{/match}}{{@number}}</span>
 
-				<div>
-					<h3 class="font-display tracking-heading text-[27px] leading-[1.22] font-medium">
-						<a
-							href="{{url}}"
-							class="text-text hover:text-accent no-underline">{{title}}</a>
-					</h3>
+					<div>
+						<h3 class="font-display tracking-heading text-[27px] leading-[1.22] font-medium">
+							<a
+								href="{{url}}"
+								class="text-text hover:text-accent no-underline">{{title}}</a>
+						</h3>
 
-					<p class="text-body text-muted mt-3 max-w-[62ch] leading-[1.6] text-pretty">{{excerpt}}</p>
+						<p class="text-body text-muted mt-3 max-w-[62ch] leading-[1.6] text-pretty">{{excerpt}}</p>
 
-					<p class="font-meta text-meta tracking-meta text-muted mt-3.5 uppercase">
-						{{~#primary_tag}}{{name}}<span aria-hidden="true"> · </span>{{/primary_tag~}}
-						{{> "dateline"}}
-					</p>
-				</div>
+						<p class="font-meta text-meta tracking-meta text-muted mt-3.5 uppercase">
+							{{~#primary_tag}}{{name}}<span aria-hidden="true"> · </span>{{/primary_tag~}}
+							{{> "dateline"}}
+						</p>
+					</div>
 
-				{{> "tier-chip" tight=true}}
-			</article>
-		{{/foreach}}
-	</div>
+					{{> "tier-chip" tight=true}}
+				</article>
+			{{/foreach}}
+		</div>
 
-	<div class="border-border mt-14 border-t pt-7">
-		{{> "tag-strip" wide=true}}
-	</div>
+		{{> "tag-strip" wide=true wrapClass="border-border mt-14 border-t pt-7"}}
 
-	<div class="border-border mt-11 grid grid-cols-1 gap-x-9 gap-y-10 border-t pt-11 lg:grid-cols-3">
-		{{#foreach feed from="6" to="14"}}
-			<article class="{{post_class}}">
-				<a
-					href="{{url}}"
-					class="text-text block no-underline">
-					{{#if feature_image}}
-						<img
-							src="{{img_url feature_image size="m"}}"
-							{{#if feature_image_alt}}alt="{{feature_image_alt}}"{{else}}alt=""{{/if}}
-							loading="lazy"
-							decoding="async"
-							class="border-border block aspect-[5/4] w-full rounded-md border object-cover">
+		{{#foreach feed from="2" limit="4"}}
+			{{#if @last}}
+				{{#get "posts" limit="1" filter="published_at:>='{{published_at}}'+feature_image:-null" as |photographed|}}
+					{{#if photographed}}
+						<div class="border-border mt-11 grid grid-cols-1 gap-x-9 gap-y-10 border-t pt-11 lg:grid-cols-[repeat(auto-fit,minmax(min(360px,100%),1fr))]">
+							{{#foreach ../../feed from="6" to="14"}}
+								<article class="{{post_class}}">
+									<a
+										href="{{url}}"
+										class="text-text block no-underline">
+										{{#if feature_image}}
+											<img
+												src="{{img_url feature_image size="m"}}"
+												{{#if feature_image_alt}}alt="{{feature_image_alt}}"{{else}}alt=""{{/if}}
+												loading="lazy"
+												decoding="async"
+												class="border-border block aspect-[5/4] w-full rounded-md border object-cover">
+										{{/if}}
+
+										{{#primary_tag}}
+											<p class="font-meta text-meta tracking-meta text-accent mt-4 uppercase">{{name}}</p>
+										{{/primary_tag}}
+
+										<h3 class="font-display tracking-heading mt-2.5 text-[23px] leading-[1.22] font-medium">{{title}}</h3>
+
+										<p class="font-meta text-meta tracking-meta text-muted mt-3 uppercase">{{> "dateline"}}</p>
+									</a>
+								</article>
+							{{/foreach}}
+						</div>
+					{{else}}
+						<div class="border-border mt-11 border-t pt-11">
+							{{> "home/archive-grid" feed=../../feed start="6" narrow=true}}
+						</div>
 					{{/if}}
-
-					{{#primary_tag}}
-						<p class="font-meta text-meta tracking-meta text-accent mt-4 uppercase">{{name}}</p>
-					{{/primary_tag}}
-
-					<h3 class="font-display tracking-heading mt-2.5 text-[23px] leading-[1.22] font-medium">{{title}}</h3>
-
-					<p class="font-meta text-meta tracking-meta text-muted mt-3 uppercase">{{> "dateline"}}</p>
-				</a>
-			</article>
+				{{/get}}
+			{{/if}}
 		{{/foreach}}
-	</div>
-</section>
+	</section>
+{{/if}}

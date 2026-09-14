@@ -1,9 +1,19 @@
 {{!-- "Browse by tag" — the pill strip the design draws on both homepage layouts.
 
 	{{> "tag-strip"}}                    A1's: tucked to the right of the section heading, no counts
-	{{> "tag-strip" wide=true}}          A2's: a full-width row, each pill carrying its post count
+	{{> "tag-strip" wide=true wrapClass="…"}}    A2's: a full-width row, each pill carrying its count
 
-	wide    the A2 sizing and layout
+	wide        the A2 sizing and layout
+	wrapClass   classes for a wrapper drawn only when there are pills to put in it
+
+THE WRAPPER IS THIS PARTIAL'S BECAUSE THE RULE IS. A2 sets the strip off with a hairline and
+28px above it, and that wrapper used to sit in home/digest.hbs — where it drew whether or not the
+strip did. On a **Tag**-free publication the pills correctly withheld themselves and the page was
+left with two hairlines 28px apart and nothing between them, which is chrome over nothing: the
+**Orphan** docs/adr/0003 rules on. Passing the classes in keeps the spacing decision with the
+layout that made it and the drawing conditional on the query that answers it. A1 passes none —
+its strip is a flex child of the heading row, and an extra element there would become the flex
+item instead of the pills.
 
 This partial is the homepage's QUERY; the drawing is in tag-pills.hbs, which the tag archive's
 "Other tags" strip shares over a query of its own.
@@ -34,6 +44,12 @@ Two things about the reads below, both of which cost a capture run to learn:
   them. Same shape as post/related.hbs. --}}
 {{#get "tags" include="count.posts" order="count.posts desc" limit="8" as |tags|}}
 	{{#if tags}}
-		{{> "tag-pills" tags=tags label=(t "Browse by tag") wide=../wide}}
+		{{#if ../wrapClass}}
+			<div class="{{../wrapClass}}">
+				{{> "tag-pills" tags=tags label=(t "Browse by tag") wide=../wide}}
+			</div>
+		{{else}}
+			{{> "tag-pills" tags=tags label=(t "Browse by tag") wide=../wide}}
+		{{/if}}
 	{{/if}}
 {{/get}}

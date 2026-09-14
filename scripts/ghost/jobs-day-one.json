@@ -160,6 +160,38 @@
 		"group": "{\"post_layout\":\"Title page\"}"
 	},
 	{
+		"url": "http://localhost:2369/what-a-year-of-this-actually-cost/?mode=light",
+		"out": "day-one-post-table-01-light.png",
+		"height": 6000,
+		"width": 1568,
+		"scored": false,
+		"group": "{\"post_layout\":\"Centered classic\"}"
+	},
+	{
+		"url": "http://localhost:2369/what-a-year-of-this-actually-cost/?mode=dark",
+		"out": "day-one-post-table-01-dark.png",
+		"height": 6000,
+		"width": 1568,
+		"scored": false,
+		"group": "{\"post_layout\":\"Centered classic\"}"
+	},
+	{
+		"url": "http://localhost:2369/what-a-year-of-this-actually-cost/?mode=light",
+		"out": "day-one-post-table-02-light.png",
+		"height": 6000,
+		"width": 1568,
+		"scored": false,
+		"group": "{\"post_layout\":\"Title page\"}"
+	},
+	{
+		"url": "http://localhost:2369/what-a-year-of-this-actually-cost/?mode=dark",
+		"out": "day-one-post-table-02-dark.png",
+		"height": 6000,
+		"width": 1568,
+		"scored": false,
+		"group": "{\"post_layout\":\"Title page\"}"
+	},
+	{
 		"url": "http://localhost:2369/about/?mode=light",
 		"out": "day-one-about-01-light.png",
 		"height": 6000,

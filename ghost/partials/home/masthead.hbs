@@ -5,6 +5,23 @@
 The same first row of the same query A1 leads with — the difference between the two layouts is
 the drawing, never the data.
 
+A PUBLICATION WITH ONE WRITER DOES NOT SIGN ITS OWN HERO. The avatar and the byline are drawn
+only once a second writer has published, which leaves the read time centred alone — and that is
+partials/writers.hbs's rule, one Surface further down: "one chip under the word Writers states
+what every byline on the page already said". Here it is the publication's own name, under the
+publication's own name in the header. A publication with a masthead worth stating states it in
+both places; a solo writer states it in neither.
+
+The test is `writers.[1].count.posts` over `order="count.posts desc"`, which is writers.hbs's
+too, and for its reason: count.posts is NOT filterable on authors in Ghost 6, and Handlebars
+cannot compare a total to 2 — but the SECOND row of a descending order carries the second-highest
+count, so if it has published then at least two writers have. `limit="2"` is all the test reads.
+
+The query wraps the {{#foreach}} rather than sitting inside the section: `writers` is a block
+param, so it stays in scope over the post context the foreach switches to, and every post field
+below reads normally. Only the foreach's own argument is a parent path — `../feed`, one frame up
+for the get.
+
 The face is the writer's, at 32px, drawn by post/avatar.hbs so a publication whose writers
 uploaded photos gets photos here as it does everywhere else.
 
@@ -12,33 +29,37 @@ NO RULE UNDER IT. The design closes this block with a border, which lands 24px a
 home/digest.hbs already draws over its own heading — two hairlines, one gap apart, neither
 separating anything the other does not. The section keeps its bottom margin, so the spacing is
 unchanged. --}}
-{{#foreach feed limit="1"}}
-	<section
-		aria-labelledby="a2-lead"
-		class="container pt-20 text-center">
-		<p class="font-meta text-meta text-muted tracking-[0.16em] uppercase">
-			{{~#primary_tag}}{{name}}<span aria-hidden="true"> · </span>{{/primary_tag~}}
-			{{date format="DD MMM YYYY"}}
-		</p>
+{{#get "authors" include="count.posts" order="count.posts desc" limit="2" as |writers|}}
+	{{#foreach ../feed limit="1"}}
+		<section
+			aria-labelledby="a2-lead"
+			class="container pt-20 text-center">
+			<p class="font-meta text-meta text-muted tracking-[0.16em] uppercase">
+				{{~#primary_tag}}{{name}}<span aria-hidden="true"> · </span>{{/primary_tag~}}
+				{{date format="DD MMM YYYY"}}
+			</p>
 
-		<h1
-			id="a2-lead"
-			class="font-display tracking-display mt-6 text-[clamp(36px,4.6vw,60px)] leading-[1.08] font-medium text-balance">
-			<a
-				href="{{url}}"
-				class="text-text no-underline">{{title}}</a>
-		</h1>
+			<h1
+				id="a2-lead"
+				class="font-display tracking-display mt-6 text-[clamp(36px,4.6vw,60px)] leading-[1.08] font-medium text-balance">
+				<a
+					href="{{url}}"
+					class="text-text no-underline">{{title}}</a>
+			</h1>
 
-		<p class="font-body text-muted mx-auto mt-[22px] max-w-[58ch] text-[21px] leading-[1.55] text-pretty italic">{{excerpt}}</p>
+			<p class="font-body text-muted mx-auto mt-[22px] max-w-[58ch] text-[21px] leading-[1.55] text-pretty italic">{{excerpt}}</p>
 
-		<div class="mt-7 mb-11 flex items-center justify-center gap-3">
-			{{#primary_author}}
-				{{> "post/avatar" size="size-8" textSize="text-xs"}}
-			{{/primary_author}}
+			<div class="mt-7 mb-11 flex items-center justify-center gap-3">
+				{{#if writers.[1].count.posts}}
+					{{#primary_author}}
+						{{> "post/avatar" size="size-8" textSize="text-xs"}}
+					{{/primary_author}}
 
-			{{> "byline-links" linkClass="font-ui text-text text-sm font-semibold no-underline"}}
+					{{> "byline-links" linkClass="font-ui text-text text-sm font-semibold no-underline"}}
+				{{/if}}
 
-			<span class="font-meta text-meta tracking-meta text-muted uppercase">{{reading_time seconds=(t "< 1 min read") minute=(t "1 min read") minutes=(t "% min read")}}</span>
-		</div>
-	</section>
-{{/foreach}}
+				<span class="font-meta text-meta tracking-meta text-muted uppercase">{{reading_time seconds=(t "< 1 min read") minute=(t "1 min read") minutes=(t "% min read")}}</span>
+			</div>
+		</section>
+	{{/foreach}}
+{{/get}}

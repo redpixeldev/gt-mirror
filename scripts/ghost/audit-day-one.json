@@ -60,6 +60,18 @@
 		}
 	},
 	{
+		"path": "/what-a-year-of-this-actually-cost/",
+		"settings": {
+			"post_layout": "Centered classic"
+		}
+	},
+	{
+		"path": "/what-a-year-of-this-actually-cost/",
+		"settings": {
+			"post_layout": "Title page"
+		}
+	},
+	{
 		"path": "/about/",
 		"settings": {
 			"page_hero": "Centered statement"

@@ -1,133 +1,82 @@
-{{!-- A1's body: a lead story with three companion rows beside it, then the archive grid.
+{{!-- A1's body: the lead story with its companions, then the archive grid.
 
 	{{> "home/latest" feed=feed}}
 
-Every slot is a slice of the one query in home/window.hbs, taken with {{#foreach}}'s `from`/`to`, which
-are 1-based and inclusive. Slicing rather than excluding is deliberate and it is not a style
-preference: core/frontend/helpers/get.js only optimises a filter carrying exactly one `id:-`
-term, so a chain of exclusions would turn the most-requested URL on the site into an uncacheable
-per-visitor query. Positions cannot collide, so no exclusion is needed.
+The two bands are partials of their own because each carries a treatment that depends on what the
+publication actually has — see home/lead-block.hbs for the imageless lead and
+home/archive-grid.hbs for the sparse grid. This partial is the section, its heading, the tag
+strip, and the one decision that sizes both bands.
 
-Position 1 is the cover, so this section starts at 2: the lead story, rows 3–5 beside it, and
-6–14 in the grid.
+Position 1 is the cover, so the bands below start at 2: the lead story, its companions at 3–5, and
+6–14 in the grid — UNLESS the lead band is omitted, in which case the grid runs 2–14 instead.
 
-THE GRID IS THREE TRACKS, NOT `auto-fill`, AND NINE CARDS. Auto-fill derives the track count from
-the width — four at this page's 1256px content box — while the slice is a fixed length, so seven
-cards drew 4 + 3 and left an empty cell at the end of the second row. Nine over a fixed three
-fills every row wherever the grid has three tracks, and one track divides nine as cleanly.
+WHEN THE LEAD BAND IS OMITTED, AND WHY THE GRID'S SLICE MOVES WITH IT. A publication with no
+photographs has nothing for the lead band to lead with: home/lead-block.hbs already sets it as
+type when its own post has no image, and on a Day-one publication that band is four posts of
+running text above nine more of the same. So when the newest five posts are all imageless the
+band is not drawn at all and the grid absorbs its four posts. The grid MUST absorb them: the
+window and the `/` collection are both fourteen (home/window.hbs), so a layout that draws fewer
+than fourteen re-opens the pagination hole that number exists to close.
 
-`lg`, not `stack`, is where the three tracks start, and the number is the audit's: a card's
-paragraph has to clear 250px (`scripts/verify/probe-audit.js`), and three tracks plus two 36px
-gaps inside a 768px viewport leave 211px each — eight NARROW failures, measured. At 1024px the
-card is 296px. Between the two the grid is one column, because 9 divides by 3 and by 1 and by
-nothing else that fits a page. The design source has the ragged row instead
-(`homepage-01.astro` slices seven into an `auto-fill` grid); this is a divergence, recorded in
-DECISIONS.md. --}}
-<section
-	id="latest"
-	aria-labelledby="a1-latest"
-	class="container pt-18">
-	<div class="border-border mb-8 flex flex-wrap items-baseline gap-7 border-b pb-3.5">
-		<h2
-			id="a1-latest"
-			class="font-display text-h2 tracking-heading font-medium">{{t "Latest"}}</h2>
+That makes this the one **Underset** (CONTEXT.md) fixed by omitting a band rather than by
+rearranging it — allowed only because no post dies, since the band's four reappear as cards.
+docs/adr/0005 records it.
 
-		{{> "tag-strip"}}
-	</div>
+HOW THE CONDITION IS COMPUTED, WHICH IS THE AWKWARD PART. Handlebars cannot ask "did any of these
+four posts have an image": {{#foreach}} has no accumulator and {{#has any="feature_image"}} answers
+only for one post. NQL can express it as a date cutoff — no post newer than the oldest of the
+four carries an image — so the decision is one extra {{#get}} whose only job is to come back
+empty. Three things about it, each of which cost a probe run:
 
-	<div class="grid items-start gap-11 lg:grid-cols-[1.35fr_1fr]">
-		{{#foreach feed from="2" to="2"}}
-			<article class="{{post_class}}">
-				<a
-					href="{{url}}"
-					class="text-text block no-underline">
-					{{#if feature_image}}
-						<img
-							src="{{img_url feature_image size="l"}}"
-							{{#if feature_image_alt}}alt="{{feature_image_alt}}"{{else}}alt=""{{/if}}
-							loading="lazy"
-							decoding="async"
-							class="border-border block aspect-[16/10] w-full rounded-md border object-cover">
-					{{/if}}
+- `from="2" limit="4"`, NOT `to="5"`. Ghost's foreach sets `@last` on `current === to`
+  (core/frontend/helpers/foreach.js), so `to="5"` never fires it on a publication with fewer than
+  five posts and the whole decision would render nothing. With `limit`, `to` falls back to the
+  window's length, so `@last` lands on position 5 or on the oldest post there is.
+- `{{published_at}}` renders `2026-08-28T09:00:00.000+00:00`, and the `+00:00` is safe only
+  because it sits inside the filter's quotes — unquoted, NQL would read the `+` as its own AND.
+- The cutoff is `>=`, so the test spans positions 1–5 and the cover is in it. That couples the two
+  treatments deliberately: a photographed cover can never sit above a dropped band. Testing 2–5
+  alone would need a second date, and a second date can only reach a filter as `{{../published_at}}`,
+  which is fatal in Ghost 6 — `IncorrectUsageError: unsupported path segment ""`, answered as a
+  200 with a hole in the page.
 
-					{{#primary_tag}}
-						<p class="font-meta text-meta tracking-meta text-accent mt-[18px] uppercase">{{name}}</p>
-					{{/primary_tag}}
+`{{#if photographed}}` and not the get's `{{else}}`: get calls `options.inverse` only for an
+invalid resource or an API error, never for an empty result — and an empty result is the whole
+signal here.
 
-					<h3 class="font-display tracking-heading mt-2.5 text-[32px] leading-[1.18] font-medium text-balance">{{title}}</h3>
+`{{#if feed.[1]}}` around the section is the one-post case. With a single post the cover is the
+publication and both bands below it are empty, so the heading, its rule and the tag strip would
+be chrome over nothing — an **Orphan**, which docs/adr/0003 says to omit. Index access, so it
+costs no query.
 
-					<p class="text-body text-muted mt-3.5 max-w-[56ch] leading-[1.6] text-pretty">{{excerpt}}</p>
+`../../feed`: {{#get}} renders its block with the query's own response as the context, so from
+inside the get the window is two frames up — one for the get, one for the {{#foreach}} it sits
+in. ({{#if}} adds no frame; Handlebars pushes one only when the context object changes.) --}}
+{{#if feed.[1]}}
+	<section
+		id="latest"
+		aria-labelledby="a1-latest"
+		class="container pt-18">
+		<div class="border-border mb-8 flex flex-wrap items-baseline gap-7 border-b pb-3.5">
+			<h2
+				id="a1-latest"
+				class="font-display text-h2 tracking-heading font-medium">{{t "Latest"}}</h2>
 
-					<p class="font-meta text-meta tracking-meta text-muted mt-4 uppercase">{{> "dateline"}}</p>
-				</a>
-			</article>
-		{{/foreach}}
-
-		<div class="flex flex-col gap-7">
-			{{#foreach feed from="3" to="5"}}
-				<article
-					class="{{post_class}} border-border max-stack:grid-cols-[minmax(0,1fr)] grid grid-cols-[minmax(0,1fr)_116px] items-start gap-5 border-b pb-7">
-					<div>
-						{{#primary_tag}}
-							<p class="font-meta text-meta tracking-meta text-accent uppercase">{{name}}</p>
-						{{/primary_tag}}
-
-						<h3 class="font-display tracking-heading mt-2 text-[21px] leading-[1.26] font-medium">
-							<a
-								href="{{url}}"
-								class="text-text hover:text-accent no-underline">{{title}}</a>
-						</h3>
-
-						<p class="text-small text-muted mt-2.5 leading-[1.55]">{{excerpt}}</p>
-
-						<p class="font-meta text-meta tracking-meta text-muted mt-3 uppercase">{{> "dateline"}}</p>
-					</div>
-
-					{{#if feature_image}}
-						<img
-							src="{{img_url feature_image size="s"}}"
-							{{#if feature_image_alt}}alt="{{feature_image_alt}}"{{else}}alt=""{{/if}}
-							width="116"
-							height="88"
-							loading="lazy"
-							decoding="async"
-							class="border-border block h-22 w-[116px] rounded-sm border object-cover">
-					{{/if}}
-				</article>
-			{{/foreach}}
+			{{> "tag-strip"}}
 		</div>
-	</div>
 
-	<div class="mt-14 grid grid-cols-1 gap-9 lg:grid-cols-3">
-		{{#foreach feed from="6" to="14"}}
-			<article class="{{post_class}}">
-				<a
-					href="{{url}}"
-					class="text-text block no-underline">
-					{{#if feature_image}}
-						<img
-							src="{{img_url feature_image size="m"}}"
-							{{#if feature_image_alt}}alt="{{feature_image_alt}}"{{else}}alt=""{{/if}}
-							loading="lazy"
-							decoding="async"
-							class="border-border block aspect-[3/2] w-full rounded-md border object-cover">
+		{{#foreach feed from="2" limit="4"}}
+			{{#if @last}}
+				{{#get "posts" limit="1" filter="published_at:>='{{published_at}}'+feature_image:-null" as |photographed|}}
+					{{#if photographed}}
+						{{> "home/lead-block" feed=../../feed}}
+
+						{{> "home/archive-grid" feed=../../feed start="6" mt="mt-14"}}
+					{{else}}
+						{{> "home/archive-grid" feed=../../feed start="2"}}
 					{{/if}}
-
-					<div class="mt-4 flex items-center gap-2.5">
-						{{#primary_tag}}
-							<span class="font-meta text-meta tracking-meta text-accent uppercase">{{name}}</span>
-						{{/primary_tag}}
-
-						{{> "tier-chip"}}
-					</div>
-
-					<h3 class="font-display tracking-heading mt-2.5 text-[22px] leading-[1.24] font-medium">{{title}}</h3>
-
-					<p class="text-small text-muted mt-2.5 leading-[1.58]">{{excerpt}}</p>
-
-					<p class="font-meta text-meta tracking-meta text-muted mt-3.5 uppercase">{{> "dateline"}}</p>
-				</a>
-			</article>
+				{{/get}}
+			{{/if}}
 		{{/foreach}}
-	</div>
-</section>
+	</section>
+{{/if}}

@@ -1,4 +1,5 @@
-{{!-- A1's cover: the newest post, full-bleed, with the titling over the photo.
+{{!-- A1's cover: the newest post at cover size — full-bleed over its photograph, type-set on the
+page when it has none.
 
 	{{> "home/hero" feed=feed}}
 
@@ -6,60 +7,121 @@ The lead is the first row of the shared query, which is to say the most recent p
 signal, not a position in a fixture: the publication's own reverse-chronological order decides
 what leads the cover, so publishing moves it.
 
-The text colours are literal white rather than theme tokens — the scrim is dark in both Modes,
-so nothing here can resolve against the page. That and the panel background below are the theme's
-only non-token colours, and they are the same colour: #0c0a09 is rgb(12 10 9), the darkest stop of
-the `hero-scrim` gradient in src/styles/main.css.
+THE PHOTOGRAPHED COVER, which is the one the design draws. `h-[min(76vh,660px)]` is the design's
+height, and it is viewport-relative on purpose — worth knowing when reading a capture, since a
+screenshot's window is as tall as the page, so 76vh always resolves past the 660px cap there. The
+text colours are literal white rather than theme tokens, and the panel behind the photograph is
+literal `#0c0a09`: the scrim is dark in both Modes, so nothing there can resolve against the
+page. Those are the theme's only non-token colours and they are the same colour — rgb(12 10 9),
+the darkest stop of the `hero-scrim` gradient in src/styles/main.css.
 
-`h-[min(76vh,660px)]` is the design's height, and it is viewport-relative on purpose. Worth
-knowing when reading a capture: a screenshot's window is as tall as the page, so 76vh always
-resolves past the 660px cap there.
+THE TYPE-SET COVER, which the design does not draw, because Ghost lets a post publish with no
+image. It is not the photographed cover with the photograph missing: a dark 660px panel is a
+place where a picture should be, and this band is instead a cover made of type — eyebrow, rule,
+the title at display size, rule, the standfirst in italic — on the page's own background, closed
+by one hairline. Every colour is a token, so it repaints in dark Mode like everything else, and
+the band's height is its content rather than 76vh.
 
-The panel carries the scrim's own darkest stop as a background. With a feature image the photo
-covers it and it costs nothing; without one — Ghost lets a post publish with no image, and the
-design has no drawing for that — the cover is a dark panel with the titling on it rather than
-white text on the page background. --}}
+It replaces an accent wash and an isometric lattice over that dark panel, which is what this
+branch drew until 2026-09 (docs/adr/0004, superseded in part by docs/adr/0005). The eyebrow
+carries the primary tag where the post has one and the word "Latest" where it does not —
+Handlebars runs a block's inverse on a falsy value, so `{{#primary_tag}}…{{else}}…{{/primary_tag}}`
+is the whole of that. The tag is a link and the fallback is not, because a label that goes
+nowhere should not look clickable.
+
+`clamp(38px,5.4vw,112px)` is the photographed cover's own ramp with its 72px ceiling raised. The
+cap is higher because a type-set cover has no photograph to share the band with, and it may be
+raised at all because the design draws nothing here — this branch carries no Floor. --}}
 {{#foreach feed limit="1"}}
-	<section
-		aria-labelledby="a1-lead"
-		class="border-border relative border-b">
-		<div class="relative h-[min(76vh,660px)] overflow-hidden bg-[#0c0a09]">
-			{{#if feature_image}}
+	{{#if feature_image}}
+		<section
+			aria-labelledby="a1-lead"
+			class="border-border relative border-b">
+			<div class="relative h-[min(76vh,660px)] overflow-hidden bg-[#0c0a09]">
 				<img
 					src="{{img_url feature_image size="xxl"}}"
 					{{#if feature_image_alt}}alt="{{feature_image_alt}}"{{else}}alt=""{{/if}}
 					fetchpriority="high"
 					decoding="async"
 					class="block h-full w-full object-cover">
-			{{/if}}
 
-			<div
-				aria-hidden="true"
-				class="hero-scrim absolute inset-0"></div>
+				<div
+					aria-hidden="true"
+					class="hero-scrim absolute inset-0"></div>
 
-			<div class="absolute inset-x-0 bottom-0 pb-14">
-				<div class="container">
-					<div class="flex items-center gap-3.5">
-						{{#primary_tag}}
+				<div class="absolute inset-x-0 bottom-0 pb-14">
+					<div class="container">
+						<div class="flex items-center gap-3.5">
+							{{#primary_tag}}
+								<a
+									href="{{url}}"
+									class="font-meta tracking-meta border-b border-white/50 text-xs text-white uppercase no-underline">{{name}}</a>
+							{{/primary_tag}}
+
+							<span class="font-meta tracking-meta text-xs text-white/72 uppercase">{{> "dateline"}}</span>
+						</div>
+
+						<h1
+							id="a1-lead"
+							class="font-display tracking-display mt-[18px] max-w-[20ch] text-[clamp(38px,5.4vw,72px)] leading-[1.03] font-medium text-balance text-white">
 							<a
 								href="{{url}}"
-								class="font-meta tracking-meta border-b border-white/50 text-xs text-white uppercase no-underline">{{name}}</a>
-						{{/primary_tag}}
+								class="text-white no-underline">{{title}}</a>
+						</h1>
 
-						<span class="font-meta tracking-meta text-xs text-white/72 uppercase">{{> "dateline"}}</span>
+						<p class="text-lead mt-5 max-w-[56ch] leading-[1.5] text-pretty text-white/82">{{excerpt}}</p>
 					</div>
-
-					<h1
-						id="a1-lead"
-						class="font-display tracking-display mt-[18px] max-w-[20ch] text-[clamp(38px,5.4vw,72px)] leading-[1.03] font-medium text-balance text-white">
-						<a
-							href="{{url}}"
-							class="text-white no-underline">{{title}}</a>
-					</h1>
-
-					<p class="text-lead mt-5 max-w-[56ch] leading-[1.5] text-pretty text-white/82">{{excerpt}}</p>
 				</div>
 			</div>
-		</div>
-	</section>
+		</section>
+	{{else}}
+		<section
+			aria-labelledby="a1-lead"
+			class="border-border border-b">
+			<div class="container pt-14 pb-16">
+				{{!-- The rule under the eyebrow is this row's bottom border, NOT the h1's top border, and
+				that is a measurement constraint rather than taste: the width audit counts a heading's
+				lines as `round(height / lineHeight)` (scripts/verify/probe-audit.js), so 24px of
+				padding plus a 1px rule on the h1 reads as 0.69 of an extra line and turns a genuine
+				four-line title at 320px into a reported five — one over the limit. Keep the h1's box
+				to its own text. --}}
+				<div class="border-border flex flex-wrap items-center gap-3.5 border-b pb-[18px]">
+					{{#primary_tag}}
+						<a
+							href="{{url}}"
+							class="font-meta text-meta tracking-meta text-accent border-accent/45 border-b uppercase no-underline">{{name}}</a>
+					{{else}}
+						<span class="font-meta text-meta tracking-meta text-accent uppercase">{{t "Latest"}}</span>
+					{{/primary_tag}}
+
+					<span class="font-meta text-meta tracking-meta text-muted uppercase">{{> "dateline"}}</span>
+				</div>
+
+				{{!-- `leading-[1]`, and the title's own `my-6` is the only space around it: the rules
+				above and below belong to the eyebrow row and the standfirst, so one symmetric margin
+				on the heading sets both gaps and there is nothing to keep in sync. Newsreader's
+				content area is ~1.24em, so at leading 1 the last line's descenders hang a few px
+				below the h1's own bottom edge — which is why the visible gap under the title always
+				measures smaller than the number in the class, and why a 56px margin here read as 49px
+				against 18px above. --}}
+				{{!-- WHAT STAYS ON THE h1 AND WHY, because it looks arbitrary: the size, the leading and
+				`text-balance`. The width audit counts a heading's lines as `round(height / lineHeight)`
+				(scripts/verify/probe-audit.js) and Tailwind's preflight gives headings
+				`font-size: inherit`, so type declared on the link leaves the h1 computing 16px/normal
+				and a two-line title reports as eight. `text-balance` applies to the block that holds
+				the lines, which is the h1 while the link is inline. Family, tracking, weight, colour
+				and the decoration are the link's. --}}
+				<h1
+					id="a1-lead"
+					class="my-6 text-[clamp(38px,5.4vw,112px)] leading-[1] text-balance">
+					<a
+						href="{{url}}"
+						class="font-display tracking-display text-text font-medium no-underline">{{title}}</a>
+				</h1>
+
+				<p
+					class="font-body text-lead text-muted border-border max-w-[66ch] border-t pt-5 leading-[1.55] text-pretty italic">{{excerpt}}</p>
+			</div>
+		</section>
+	{{/if}}
 {{/foreach}}

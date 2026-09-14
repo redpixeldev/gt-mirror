@@ -68,6 +68,78 @@
 		"min_bytes": 6000
 	},
 	{
+		"path": "/a-shorter-way-of-saying-it/",
+		"expect": "data-surface=\"post\"",
+		"absent": [
+			"data-gate=",
+			"class=\"gh-post-upgrade-cta"
+		],
+		"min_bytes": 6000
+	},
+	{
+		"path": "/what-a-year-of-this-actually-cost/",
+		"expect": "data-surface=\"post\"",
+		"absent": [
+			"data-gate=",
+			"class=\"gh-post-upgrade-cta"
+		],
+		"min_bytes": 6000
+	},
+	{
+		"path": "/five-things-i-read-this-month/",
+		"expect": "data-surface=\"post\"",
+		"absent": [
+			"data-gate=",
+			"class=\"gh-post-upgrade-cta"
+		],
+		"min_bytes": 6000
+	},
+	{
+		"path": "/one-line-i-keep-having-to-look-up/",
+		"expect": "data-surface=\"post\"",
+		"absent": [
+			"data-gate=",
+			"class=\"gh-post-upgrade-cta"
+		],
+		"min_bytes": 6000
+	},
+	{
+		"path": "/three-small-notes-on-editing/",
+		"expect": "data-surface=\"post\"",
+		"absent": [
+			"data-gate=",
+			"class=\"gh-post-upgrade-cta"
+		],
+		"min_bytes": 6000
+	},
+	{
+		"path": "/a-link-i-cannot-shorten/",
+		"expect": "data-surface=\"post\"",
+		"absent": [
+			"data-gate=",
+			"class=\"gh-post-upgrade-cta"
+		],
+		"min_bytes": 6000
+	},
+	{
+		"path": "/notes-from-krakow-timisoara-and-da-nang/",
+		"expect": "data-surface=\"post\"",
+		"absent": [
+			"data-gate=",
+			"class=\"gh-post-upgrade-cta"
+		],
+		"min_bytes": 6000
+	},
+	{
+		"path": "/who-is-this-for-and-other-questions-i-stopped-dodging/",
+		"expect": "data-surface=\"post\"",
+		"absent": [
+			"data-gate=",
+			"class=\"gh-post-upgrade-cta"
+		],
+		"min_bytes": 6000
+	},
+	{
 		"path": "/about/",
 		"expect": "data-surface=\"page-about\"",
 		"min_bytes": 6000
@@ -79,6 +151,12 @@
 	},
 	{
 		"path": "/archive/",
+		"status": 404,
+		"expect": "data-surface=\"error-404\"",
+		"min_bytes": 4000
+	},
+	{
+		"path": "/page/2/",
 		"status": 404,
 		"expect": "data-surface=\"error-404\"",
 		"min_bytes": 4000
@@ -121,12 +199,6 @@
 	},
 	{
 		"path": "/tag/essays/",
-		"status": 404,
-		"expect": "data-surface=\"error-404\"",
-		"min_bytes": 4000
-	},
-	{
-		"path": "/page/2/",
 		"status": 404,
 		"expect": "data-surface=\"error-404\"",
 		"min_bytes": 4000

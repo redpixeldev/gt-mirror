@@ -12,6 +12,13 @@ publication can see the reason for.
 column's min-content width, so a long headline would push the row wider than the page instead of
 wrapping. Below `stack` the thumbnail moves above the text.
 
+THE THUMBNAIL TRACK IS DECLARED ONLY WHEN THERE IS A THUMBNAIL. Track one is the image, so on a
+post with none the headline block became the row's FIRST child and set itself in a 300px column
+with ~950px of the row empty beside it — an **Underset** (CONTEXT.md), and the same one
+`home/lead-block.hbs` carries a note about: a fixed track reserved for content the publication
+does not have. Every imageless row on the Feed, a tag archive and a writer's archive was drawn
+that way. Guarded, so a photographed row is the drawn row exactly.
+
 The excerpt keeps its own `max-w-[62ch]` measure: the row is full-width, the prose inside it is
 not, because a 900px line of body copy is a line nobody finishes.
 
@@ -23,7 +30,7 @@ On a writer's archive every row carries the same face and the same name. That re
 cost of one row everywhere, and it is paid deliberately: the alternative is a second drawing whose
 only difference is which meta fact leads, which is what this partial replaced. --}}
 <article
-	class="{{post_class}} border-border max-stack:grid-cols-[minmax(0,1fr)] max-stack:gap-5 grid grid-cols-[300px_minmax(0,1fr)] items-start gap-9 border-b py-11">
+	class="{{post_class}} border-border max-stack:grid-cols-[minmax(0,1fr)] max-stack:gap-5 grid {{#if feature_image}}grid-cols-[300px_minmax(0,1fr)]{{else}}grid-cols-[minmax(0,1fr)]{{/if}} items-start gap-9 border-b py-11">
 	{{#if feature_image}}
 		<a
 			href="{{url}}"

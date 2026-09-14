@@ -4003,3 +4003,327 @@ The settings read-back the review asked for earned itself immediately, by failin
 `…/size/w256h256/…`. Comparing values would need an exemption list per key. The check is on the KEY
 instead, which is the exact test for the failure it guards — a key Ghost does not recognise is
 dropped with a 200 and never appears in the settings list at all.
+
+## The Underset: what a Layout does when the content is thin rather than absent (2026-09)
+
+The Day-one run (above) found its Orphans and parked two cases as "the content is there, there is
+just very little of it". One of them was A1's homepage lead, and looking at the render again with a
+ruler rather than an eye overturned that: the lead column drew **222px beside a 706px rail — 484px
+of empty column**, a quarter of the band. That is not an Orphan and ADR 0003's rule would delete a
+post if applied to it, so the class has a name of its own now — **Underset**, in CONTEXT.md — and a
+rule of its own in `docs/adr/0004-an-underset-is-fixed-by-arrangement-on-a-per-post-boolean.md`.
+
+### The measurements that chose the fix
+
+Three candidates were built as ui.sh picker options against the Day-one install and photographed,
+which is the only reason the right one was picked:
+
+| treatment                                      | void in the lead band |
+| ---------------------------------------------- | --------------------- |
+| the drawn two columns                          | 484px                 |
+| type-set lead (h1 step, 80-word excerpt)       | 428px                 |
+| type-set lead, companions three across beneath | **0px**               |
+
+**Type recovers 56px of 484.** A Day-one post is about fifty words, so there is no copy to fill a
+column with — an important negative result, because "make the lead bigger" was the intuitive fix
+and it is worth 12%.
+
+**Stretching the rail recovers nothing, by construction.** A grid row's height is set by its
+tallest column, so `items-stretch` plus `justify-between` spreads the column that is already long
+and leaves the short one exactly as empty. The variant rendered pixel-identical to the one without
+it, which is how that was caught rather than shipped.
+
+### What ships
+
+`home/latest.hbs` is now the section shell only; the two bands are `home/lead-block.hbs` and
+`home/archive-grid.hbs`, each owning the treatment its content forces.
+
+- No photograph on the lead → no split. The lead runs the width as a type-set standfirst (the h1
+  step on a 26ch measure, `{{excerpt words="80"}}` at the lead step on 46ch) and the companions run
+  three across beneath it.
+- The archive grid's tracks follow its cards: `auto-fit` over `minmax(min(360px,100%),1fr)` with
+  `*:max-w-[480px]`. Nine cards still derive exactly three 394px tracks at the 1256px content box —
+  `auto-fill` derived four, which is the bug the fixed `lg:grid-cols-3` was pinned to avoid — two
+  cards take two tracks instead of leaving a hole, and one card stays a 480px card rather than a
+  1256px banner. A2's digest grid takes the same expression.
+- Imageless companions and cards carry `border-t`: the drawn card is capped by its own image and an
+  imageless one opened on nothing, which read as loose columns rather than as a grid.
+- The 116px thumbnail track is declared only when there is a thumbnail. It was unconditional, so
+  every rail row on an image-free publication reserved 116px plus a 20px gap — 136px of a 516px
+  column, a second Underset in the same band.
+
+### The imageless cover, and the accent it is built from
+
+A1's cover was 660px of flat `#0c0a09` without a photograph — a recorded decision, and one the
+client overturned on sight. It now carries a 112° wash of the publication's accent off the top-left
+corner and an **isometric lattice** masked in from the top-right: three `repeating-linear-gradient`
+families at 0/60/120° on a 48px pitch. A tiling and not a figure, deliberately — it has no edge to
+align and no centre to be off, what ends it is the mask, and it has no size to get wrong at 400px.
+Two other candidates were built and photographed (a 56px node network with 45° links at 56/√2 =
+39.6px, and the same construction at two scales an octave apart); the lattice was picked for
+reading as structure rather than as a dot field.
+
+### The last pinned colour on the accent panel
+
+`--mirror-accent-strong` was still the design's transcribed amber, and the theme reads it for the
+newsletter overline, the Gate's overline, both initial monograms and every link hover. On Ghost's
+own default accent — `#FF1A75`, a hot pink — that rendered **a brown eyebrow on a pink panel**,
+which is exactly the defect the soft/border/ink tints were derived to avoid, three months earlier,
+in the same file.
+
+It is derived now, and as a RELATIONSHIP rather than a mix, because the design's pair is not on any
+ray from the accent to black or to white. Measured in oklch: Light is the accent at `l − 0.0735`
+and 86.6% of its chroma, Dark at `l + 0.0552` and 87.9%, each with the drawing's own fractional hue
+nudge. Applied to the design's amber, Chrome's computed value is `#8a4708` and `#f0b877` —
+**exactly** the literals, verified by rendering the derived value beside the hex and sampling both
+swatches, so no scored capture moves. On the pink default the overline measures 4.55:1 on the soft
+panel; with the design's amber, 6.41:1.
+
+### Verification
+
+`gscan --fatal` ✓ · `ghost:i18n` 165 keys across 117 templates ✓ · `ghost:audit` 336 checks over 11
+settings groups, 0 failures · `pnpm day-one` 19/19 bare, 19/19 routed, 180 checks 0 failures ·
+`day-one:shots` 30/30 captures over 9 settings groups · `ghost:shots` 56 captures over 11 settings
+groups · prettier clean.
+
+**The Floor proof is a byte comparison, not a score.** Every branch added here is inside an image
+guard and the demo publication photographs every post, so the demo homepage at 1568px must be
+unchanged — and it is: **0 differing rows** against the capture taken before any of this work. That
+is what stands in for `ghost:score`, which cannot run at the moment: its reference PNGs live in
+`~/Downloads/GHOST THEME MARKUP/MIRROR VARIATION A`, a directory no longer on this machine, and
+`report.py` exits 1 rather than scoring against nothing. Worth restoring before the next colour
+change, because a byte comparison proves inertness and cannot prove an improvement.
+
+## The imageless homepage: a cover made of type, and a band that goes away (2026-09)
+
+The client redesigned A1's homepage for a publication with no photographs, and the redesign
+overturns both halves of the entry above. `docs/adr/0005` is the record; this is what changed and
+what it cost.
+
+### The type-set cover replaces the wash and the lattice
+
+The imageless cover is no longer a dark panel dressed with an accent wash and an isometric
+lattice — both utilities are deleted from `assets/css/screen.css`, and `#0c0a09` now appears only
+under a photograph. In its place: eyebrow, rule, the title at the photographed cover's own
+`clamp(38px,5.4vw,…)` ramp with the 72px ceiling raised to **112px**, rule, the standfirst in
+italic at the lead step on a 66ch measure — on `--mirror-bg`, in tokens, at content height rather
+than `min(76vh,660px)`. The eyebrow carries the primary tag as a link where the post has one and
+the word "Latest" where it does not, which is `{{#primary_tag}}…{{else}}…{{/primary_tag}}` and
+nothing more.
+
+The reasoning is one line: a 660px dark panel is a place where a photograph should be, however
+well it is dressed. The measurements start as the mockup's own, read off it rather than guessed —
+the design was built on this theme's tokens (`#faf9f7` page, `#e4e0d9` rules, the 1256px content
+box, `text-h2` headings), so the band is 56px of pad, 18px to the first rule, 26px to the title,
+and a `text-lead` italic standfirst on a 66ch measure.
+
+**Two of them were then corrected against the render, and the correction is the same mistake
+twice: measuring the box instead of the ink.** The mockup's leading works out at ~0.90 and its
+second rule sits 56px under the title's box. Newsreader's content area is ~1.24em, so ANY leading
+under that gives the line box a negative half-leading and the last line's descenders hang below
+the element's own bottom edge — at the 1568px width that 56px measured **49px of visible space
+under the title against 18px above it**, and the client read the band as loose. Leading is
+`1` and the margin is 32px, which measures the rhythm the band actually reads with: 22px from the
+eyebrow's ink to its rule, 23px to the title's cap, **27px** from its descenders to the second
+rule, 26px to the standfirst.
+
+The title's classes are split across the `<h1>` and the `<a>` inside it, and the split is not
+taste. Tailwind's preflight gives headings `font-size: inherit`, so type declared on the link
+leaves the heading computing **16px/normal** — and the width audit counts a heading's lines as
+`round(height / lineHeight)` (`scripts/verify/probe-audit.js`), which turned a two-line title into
+a reported **eight** and failed 12 checks across the width sweep, with the rendered box unchanged
+to the pixel. So the h1 keeps the size, the leading and `text-balance` (the last because
+`text-wrap: balance` applies to the block holding the lines, and the link is inline); family,
+tracking, weight, colour and decoration are the link's.
+
+### The Day-one publication grows from seven Posts to fifteen, and the number is the pagination
+
+Seven was chosen for where it fell in the fourteen-post window. It went to ten to fill the grid
+(nine cards, three rows of three) and then to **fifteen**, which is the first count that renders
+the homepage's pagination control at all: `docs/routes.example.yaml` pages `/` at fourteen and
+`home.hbs` guards the control on `pagination.pages`, so fourteen posts or fewer is one page and no
+control. Fifteen also puts **`/page/2/`** on screen — `index.hbs`, the Feed layout, one post — which
+nothing below fifteen exercised. The cost is the tidy grid: with a full window A1 draws the cover
+plus `2–14`, thirteen cards, four rows with one card in the last. `--posts 10` is the three-row
+version and `--posts 7` the original.
+
+`/page/2/` is now **the one route the two smoke lists disagree about**, and the disagreement is the
+point: Ghost's own defaults page at the theme's `posts_per_page` (18), so under bare routing
+fifteen posts still fit on one page and `/page/2/` is a 404. One answer for both would either miss
+the control or assert a page that does not exist.
+
+`build-day-one.mjs` forbids repeating a shape ("a duplicate post proves nothing the original did
+not"), so each of the eight new posts carries its own reason: an **authored excerpt**, a **table**,
+a **link-dense paragraph**, an **unlabelled code block** (the recorded Concession, paired with the
+labelled one), **h3 sections with no h2** (a contents list built from the only depth present), an
+**unbroken 90-character URL**, **diacritics outside Latin-1** (Kraków / Timișoara / Đà Nẵng — the
+one post that requests the `latin-ext` and `vietnamese` subsets `fonts.css` declares), and a
+**title with curly quotes, a question mark and an em dash**. The table post is wired into
+`postSurfaces` too, because a reason nothing visits is a claim: 17 paths, 204 checks.
+
+`slugify` gained a three-letter map. NFD only decomposes accents that are COMBINING marks, so a
+stroked letter — đ, ł, ø — is one code point with no decomposition and the character class deleted
+it outright: "Đà Nẵng" slugged to `a-nang`.
+
+**Two of the new posts found defects on their first run, which is what they are for.**
+
+1. **`OVERFLOW page +18` at 320px on `/archive/`.** The 90-character URL is one word no browser
+   will break, and in a list row's excerpt it pushed the document wider than the viewport. Fixed in
+   `src/styles/main.css`'s base layer: `overflow-wrap: break-word` on `p, li, dd, dt, blockquote,
+figcaption, h1–h6`. `break-word` and not `anywhere` — both break a word that would overflow, but
+   `anywhere` also lets min-content collapse, which changes how a grid or flex track sizes itself
+   around ordinary prose. Only a word that does not fit is affected, so no capture moves.
+2. **A 300px text column with 950px of empty row beside it**, on every imageless row of the Feed,
+   a tag archive and a writer's archive. `archive/list-row.hbs` declared
+   `grid-cols-[300px_minmax(0,1fr)]` where track one is the thumbnail, so with no image the
+   HEADLINE BLOCK became the row's first child and set itself in the thumbnail's track. Same
+   **Underset** shape as `home/lead-block.hbs`'s, and the same fix: declare the track only when
+   there is an image. It was invisible to the audit (300px clears its 250px prose floor) and
+   invisible to the demo publication, whose one imageless post of 104 is the OLDEST — so it lands
+   on page 1 of no captured Surface, and its author is not the captured one either. Verified rather
+   than argued: `/archive/` and `/author/marisol-ade/` under `feed_layout: List` are **pixel-
+   identical (0 of 3.8M and 0 of 2.2M)** to their pre-change captures.
+
+**A finding left in rather than papered over:** a post whose body opens with a table gets a
+generated excerpt made of cell text (`WhatWhereA yearHostingA managed Ghost instance$348…`) on
+every card that shows it. Nothing in the theme can fix that — `{{excerpt}}` is Ghost's — and it is
+exactly the class of thing this publication exists to surface. A `custom_excerpt` on that one post
+is the buyer's fix, and the fixture deliberately does not apply it.
+
+### The lead band is omitted, and the grid absorbs its four posts
+
+When the newest five posts carry no image, the lead band is not drawn at all and the archive grid
+runs `2–14` rather than `6–14`. The grid HAS to widen: the window and the `/` collection are both
+fourteen, so a layout drawing fewer re-opens the pagination hole that number exists to close. That
+makes this the one **Underset** fixed by omitting a band, allowed only because the four posts
+reappear as cards — `CONTEXT.md`'s own term now says so.
+
+**The condition is a date cutoff, and three things about it cost a probe run each.** Handlebars
+cannot aggregate, so "did any of the newest five carry an image" is asked of NQL from the oldest
+post of the slice: `published_at:>='{{published_at}}'+feature_image:-null`, one extra `{{#get}}`
+whose only job is to come back empty.
+
+- `from="2" limit="4"`, never `to="5"`. Ghost sets `@last` on `current === to`
+  (`core/frontend/helpers/foreach.js:110`), so `to="5"` never fires on a publication with fewer
+  than five posts — the whole decision renders nothing. `limit` lets `to` fall back to the window's
+  length.
+- `{{published_at}}` renders `2026-08-28T09:00:00.000+00:00`, and the `+00:00` survives only
+  because it is inside the filter's quotes. Unquoted, NQL reads that `+` as its own AND.
+- The cutoff is `>=`, so the cover is in the test. Deliberate coupling: a photographed cover can
+  never sit above a dropped band. Excluding it needs a second date, and a second date can only
+  reach a filter as `{{../published_at}}` — fatal in Ghost 6, answered as a 200 with a hole.
+
+### Two defects the redesign made prominent
+
+- **A one-post publication renders no `Latest` section.** With one post both bands are empty and
+  the heading, its rule and the tag strip were chrome over nothing. `{{#if feed.[1]}}`, index
+  access, no query.
+- **The featured strip hides its arrows when the track does not overflow**, measured with
+  `scrollWidth` on resize and after `document.fonts.ready`. A publication that has flagged two
+  posts had two buttons that scrolled nothing. Measured and not counted: three cards fit at 1568px
+  and two overflow a phone. The mockup's `PAID` chip on a featured card was NOT taken — the design
+  source puts the tier on the grid cards, the companion rows and A2's shortlist and deliberately
+  not on a featured slide, so adding it would move a Floor for a Day-one drawing.
+
+### The imageless card's rule moved to its foot
+
+`border-t pt-6` became `border-b pb-6` on the archive grid's imageless cards, as drawn. The
+argument is the doubled hairline: the section heading's own `border-b` already caps the first row,
+so a top rule put a second line 28px under it and left the last row open. Verified aligned rather
+than assumed — the three rules of each grid row share one y (989 and 1295 in the day-one capture),
+because grid items stretch to the row.
+
+### Verification
+
+All three arrangements exercised on the live day-one instance by setting `feature_image` through
+the Admin API and reverting:
+
+- newest five imageless → type-set cover, no band, 6 cards (`2–7`);
+- image on the newest post → photographed cover, ADR 0004's type-set band, 2 cards (`6–7`);
+- image on the OLDEST post → type-set cover, still no band. That one is the cutoff's own proof: an
+  image older than position 5 does not bring the band back.
+
+**The Floor proof is a pixel comparison against the harness's own noise floor.** The demo homepage
+at 1568px differs from its pre-change capture by **3 pixels of 6.07M, each one channel value**,
+inside a featured-card photograph's rounded corner — a band whose markup changed by one attribute.
+The number that makes it a proof: **two captures of identical code differ by exactly that much**
+(Light 3px on one run pair, 0 on another; Dark the reverse), so the difference is at or below what
+the capture resolves. File-level equality is not the test the entry above claimed — a capture and
+its own repeat pass differ by four bytes.
+
+One regression was caught by the audit and fixed rather than waived: hanging the eyebrow's rule on
+the h1 as `border-t pt-6` tipped `/ @320px` to `WRAP h1 5 lines`. `probe-audit.js` counts a
+heading's lines as `round(height / lineHeight)`, so 25px of box on a 36.1px line reads as 0.69 of a
+line, and the title's genuine four lines at 320px reported five. The rule now belongs to the
+eyebrow row's bottom border and the h1's box is its own text: 4 at 320px, 3 at 380px, 2 at 767px,
+measured through the same CDP path the audit uses. The drawn photographed cover has always reported
+4 there and passed for the same reason — its h1 carries no padding.
+
+### The Editorial masthead reads the same cutoff, and its imageless grid IS A1's
+
+A2's grid is photographs: two tracks of 5/4 images, a tag eyebrow, a title, a dateline, no
+excerpt, because the image is the card's mass. On a publication with no photographs that card
+drew title-and-date over 500px of nothing — an **Underset** in the layout whose lead was already
+type — so when the newest posts carry no image A2 now draws `home/archive-grid.hbs`, A1's own
+grid, with `narrow=true`. One card answers the imageless case in both layouts rather than two
+drawings of the same idea. What A2 keeps is the rule above it: that hairline closes the tag strip,
+so the wrapper stays in `home/digest.hbs` and the partial is called inside it.
+
+**The condition is A1's, character for character** — the `published_at:>=…+feature_image:-null`
+cutoff at `{{#if @last}}` of `from="2" limit="4"`, its derivation left in `home/latest.hbs` and
+cited rather than repeated. ADR 0005 records the rule the two layouts now share. A2 satisfies its
+second half for free: 0005 demands that no post be dropped to fix an **Underset**, and A2's
+slices never move — the shortlist is the same four rows either way, because it is type and reads
+the same on a publication that photographs and one that does not. Only the grid's drawing changes.
+
+**Four rows and nine cards, against the mock's three and four.** The design source draws three in
+the shortlist and the new mock keeps that, which at fourteen posts leaves a tenth card alone on a
+fourth row; four and nine fill three tracks exactly, and at the mock's own eight posts give one
+full row of three rather than 3 + 1. The count that ships is the count that is captured, and both
+captured publications have a full fourteen-post window. Divergence, deliberate.
+
+**`narrow` is the same arithmetic over a different column, and both numbers live in the grid.**
+A2 narrows its article column to 1120px, `container` takes 2rem off each side, so the content box
+is 1056px: a 320px track plus a 36px gap divides it 3.07 times → three tracks of **328px**, which
+is the card width the mock draws. A1's 360px would divide 2.75 and round down to two; 237px or
+less would derive four. Passing a class string in would have put the arithmetic at the callsite
+and the explanation nowhere, so the partial holds both literals and takes a boolean.
+
+**The heading is now `{{t "Latest"}}` on both layouts, and the key is deleted.** The design source
+titles A2's section "More from this week" (`WeeklyDigestSection.astro`). No theme can know a
+publication's cadence: those four rows span five weeks on the Day-one publication and two on the
+demo. One string now does both layouts and `en.json` is down to 164 keys. This is the one change
+here that moves a scored Floor, so it was proved rather than asserted: `ghost-homepage-02-light`
+and `-dark` differ from their previous captures at **y 578–588, x 258–432 and nowhere else** —
+1022 and 1014 pixels of an 11×175px band, the heading's own text, in a 3518×1568 capture whose
+height is unchanged. Both baselines re-shot.
+
+**A publication with one writer does not sign its own hero.** The avatar and byline leave the
+masthead until a second writer has published, leaving the read time centred alone. That is
+`partials/writers.hbs`'s rule one Surface further down — "one chip under the word Writers states
+what every byline on the page already said" — and here the byline states the publication's own
+name, under the publication's own name in the header. Same test as the writers strip
+(`writers.[1].count.posts` over `order="count.posts desc"`, because `count.posts` is not
+filterable on authors in Ghost 6), and the query wraps the `{{#foreach}}` rather than sitting
+inside the section: `writers` is a block param, so it survives the context switch to the post and
+every field below reads normally. Only the foreach's argument is a parent path.
+
+**Two defects in the same partial, fixed with it.**
+
+1. **Two hairlines 28px apart with nothing between them**, on every Tag-free publication.
+   `tag-strip.hbs` correctly withholds its pills when the publication has no public tags, but
+   `digest.hbs` wrapped the call in `border-t pt-7` — and a wrapper drawn unconditionally around
+   content that is not is chrome over nothing, the **Orphan** of ADR 0003. The classes are now an
+   argument (`wrapClass`) drawn inside the `{{#if tags}}` that already knows the answer, so the
+   spacing decision stays with the layout that made it. A1 passes none: its strip is a flex child
+   of the heading row, where an added element would become the flex item instead of the pills.
+2. **No one-post guard.** A2 never had A1's `{{#if feed.[1]}}`, so a publication with a single
+   post drew the heading, the tag rule and the grid rule over three empty slices. Proved by
+   building the fixture at `--posts 1` and importing it: `a2-latest` appears 0 times, `a2-lead`
+   once, and the page is the hero and then the newsletter band. Fifteen-post fixture restored,
+   27/27 routes after.
+
+Verified: `gscan --fatal` clean, `ghost:i18n` 164 keys across 117 templates in sync, `ghost:verify`
+clean, `ghost:smoke` 15/15, `day-one:smoke` 27/27 routed and bare, `day-one:audit` 204 checks over
+9 settings groups with 0 failures (the groups include `homepage_layout: Editorial masthead`, so the
+new grid was probed at every width), `ghost:audit` 336 checks over 11 groups with 0 failures.

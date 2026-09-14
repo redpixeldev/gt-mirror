@@ -1,0 +1,118 @@
+{{!-- A1's lead story with its three companions — beside it when it has a photograph, beneath it
+when it does not.
+
+	{{> "home/lead-block" feed=feed}}
+
+	feed    the shared post window from home/window.hbs
+
+The slices are the shared window's, taken with {{#foreach}}'s 1-based inclusive `from`/`to`:
+position 1 is the cover, 2 the lead story, 3–5 the companions.
+
+WHAT THIS BAND DOES WITHOUT PHOTOGRAPHS, AND WHY IT HAS TO DO SOMETHING. The columns are 27fr and
+20fr of a 1256px content box, so the lead is ~696px wide and its `aspect-[16/10]` photograph is
+~435px of the column's height. Ghost lets a post publish with no image and the design draws no
+lead without one, so on an image-free publication this band drew a 222px lead beside a 706px rail
+— 484px of empty column, measured on the Day-one publication. That is an **Underset**
+(CONTEXT.md) and not an **Orphan**: the post is there, the arrangement is not holding it, so the
+fix changes the arrangement rather than omitting the band.
+
+Type alone cannot close it, and this was measured rather than guessed: a Day-one post runs about
+fifty words, so the h1 step of the scale plus an eighty-word excerpt recovered 56px of the 484.
+Hence the arrangement change — with no photograph the lead has no column to be short in. It runs
+the width as a type-set standfirst and the companions run three across beneath it, which is 0px.
+
+THE CONDITION IS THE POST'S OWN `feature_image`, NEVER A POST COUNT. A count threshold would
+re-set this band the day post eight was published, which is the objection
+`docs/adr/0003-the-theme-omits-chrome-it-has-no-content-for.md` records against content
+thresholds; a boolean the post carries itself has no such day. It is also why the whole band sits
+inside the lead's own {{#foreach}}: the field is on the post, reachable only from inside the
+iteration that puts the post in context, so the companions read the window back through
+`../feed` — evaluated in the lead's context, so it resolves one frame up, to this partial's own.
+The alternative was a `:has(> article img)` variant on the container, which works and makes the
+page's geometry depend on a descendant selector nobody would think to look for.
+
+Both branches are inside the image guard, so a publication with photographs renders the drawn
+band exactly: the demo homepage is byte-identical at the 1568px capture width, which is what
+keeps every Floor where it was.
+
+`grid-cols-[27fr_20fr]` is the design's 1.35:1 written as whole numbers — 27/20 is exactly 1.35,
+so this is the same geometry the capture was scored against. --}}
+{{#foreach feed from="2" to="2"}}
+	<div class="grid items-start gap-11 {{#if feature_image}}lg:grid-cols-[27fr_20fr]{{/if}}">
+		<article class="{{post_class}}">
+			<a
+				href="{{url}}"
+				class="text-text block no-underline">
+				{{#if feature_image}}
+					<img
+						src="{{img_url feature_image size="l"}}"
+						{{#if feature_image_alt}}alt="{{feature_image_alt}}"{{else}}alt=""{{/if}}
+						loading="lazy"
+						decoding="async"
+						class="border-border block aspect-[16/10] w-full rounded-md border object-cover">
+				{{/if}}
+
+				{{#primary_tag}}
+					<p class="font-meta text-meta tracking-meta text-accent mt-[18px] uppercase">{{name}}</p>
+				{{/primary_tag}}
+
+				{{!-- The type-set lead takes the h1 step of the scale rather than an arbitrary size, and
+				keeps a 26ch measure so a full-width title still sets as a headline rather than as a line
+				of running text. --}}
+				<h3
+					class="font-display tracking-heading mt-2.5 font-medium text-balance {{#if feature_image}}text-[32px] leading-[1.18]{{else}}max-w-[26ch] text-[clamp(2.125rem,3.4vw,2.875rem)] leading-[1.1]{{/if}}">{{title}}</h3>
+
+				{{!-- Without a photograph the standfirst carries the band: the lead step of the scale on a
+				46ch measure, and Ghost's own excerpt at 80 words rather than the default 50. --}}
+				{{#if feature_image}}
+					<p class="text-body text-muted mt-3.5 max-w-[56ch] leading-[1.6] text-pretty">{{excerpt}}</p>
+				{{else}}
+					<p class="text-lead text-muted mt-4 max-w-[46ch] leading-[1.55] text-pretty">{{excerpt words="80"}}</p>
+				{{/if}}
+
+				<p class="font-meta text-meta tracking-meta text-muted mt-4 uppercase">{{> "dateline"}}</p>
+			</a>
+		</article>
+
+		{{!-- The companions: a vertical rail beside a photographed lead, three across beneath a
+		type-set one. The rule moves with them — `border-b` reads as a divider under a stacked row and
+		`border-t` as a cap above a row of columns, which is the rule the archive grid's own imageless
+		cards carry too. --}}
+		<div class="{{#if feature_image}}flex flex-col gap-7{{else}}mt-3 grid gap-x-9 gap-y-8 lg:grid-cols-3{{/if}}">
+			{{#foreach ../feed from="3" to="5"}}
+				{{!-- The 116px thumbnail track is declared only when there is a thumbnail to put in it. An
+				unconditional track reserved 116px plus its 20px gap in every row of an image-free
+				publication — 136px of a 516px column, and the second Underset this band had. --}}
+				<article
+					class="{{post_class}} border-border max-stack:grid-cols-[minmax(0,1fr)] grid items-start gap-5 {{#if feature_image}}grid-cols-[minmax(0,1fr)_116px]{{else}}grid-cols-[minmax(0,1fr)]{{/if}} {{#if ../feature_image}}border-b pb-7{{else}}border-t pt-6{{/if}}">
+					<div>
+						{{#primary_tag}}
+							<p class="font-meta text-meta tracking-meta text-accent uppercase">{{name}}</p>
+						{{/primary_tag}}
+
+						<h3 class="font-display tracking-heading mt-2 text-[21px] leading-[1.26] font-medium">
+							<a
+								href="{{url}}"
+								class="text-text hover:text-accent no-underline">{{title}}</a>
+						</h3>
+
+						<p class="text-small text-muted mt-2.5 leading-[1.55]">{{excerpt}}</p>
+
+						<p class="font-meta text-meta tracking-meta text-muted mt-3 uppercase">{{> "dateline"}}</p>
+					</div>
+
+					{{#if feature_image}}
+						<img
+							src="{{img_url feature_image size="s"}}"
+							{{#if feature_image_alt}}alt="{{feature_image_alt}}"{{else}}alt=""{{/if}}
+							width="116"
+							height="88"
+							loading="lazy"
+							decoding="async"
+							class="border-border block h-22 w-[116px] rounded-sm border object-cover">
+					{{/if}}
+				</article>
+			{{/foreach}}
+		</div>
+	</div>
+{{/foreach}}

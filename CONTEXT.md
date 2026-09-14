@@ -50,6 +50,13 @@ A heading, landmark or band the theme draws for content the publication does not
 _Avoid_: empty state (that is the deliberate copy shown _instead_ of a band), hole (a pagination
 gap), concession (an Orphan is a defect, not a deliberate reduction)
 
+**Underset**:
+A place where a **Layout**'s arrangement is filled but does not hold, because the publication's
+content is fewer or thinner than the arrangement presumes.
+_Avoid_: orphan (chrome drawn for content that is not there — omitting the chrome fixes an Orphan
+outright, and fixes an Underset only where a neighbouring band takes the content on), hole (a
+pagination gap), empty state (the copy shown _instead_ of a band), whitespace
+
 **Syntax palette**:
 The colour set applied to the tokens inside a code block.
 _Avoid_: syntax theme, code theme (theme is the shipped artifact)
@@ -95,9 +102,9 @@ The invented publication the design was drawn with — 5 **Authors**, 14 **Tags*
 Distinct from **Chrome copy**, which is the theme's own wording.
 
 **Day-one publication**:
-The one-**Author**, seven-**Post**, image-free, **Tag**-free publication on Ghost's own default
+The one-**Author**, fifteen-**Post**, image-free, **Tag**-free publication on Ghost's own default
 configuration — what a buyer has before configuring anything.
-_Avoid_: bare (that is Ghost's default routing), minimal content, starter content
+_Avoid_: bare (that is Ghost's default routing), minimal content, minimal setup, starter content
 
 **Specimen**:
 A rendered instance of one element or **Platform card**, present to be looked at rather than read.
@@ -145,6 +152,10 @@ The **Pixel identity** a Surface has already achieved and may not fall below.
   was drawn with **Demo content**, so an absence has nothing to be scored against.
 - An **Orphan** is what a **Day-one publication** is run to find, and it is always a defect — the
   design drew content in that place, and the theme drew the chrome without it.
+- An **Underset** is the other thing a **Day-one publication** finds, and it is fixed by changing
+  the arrangement or by reassigning its content to a band that can hold it — never by dropping a
+  **Post**, which is what separates it from an **Orphan**, where the chrome simply goes. Having no
+  **Floor**, an Underset is judged by eye.
 
 ## Example dialogue
 
@@ -194,3 +205,6 @@ The **Pixel identity** a Surface has already achieved and may not fall below.
 - "bare" named Ghost's default routing in the harness (`--bare`, `routes-bare.json`) and was
   reached for again to mean "a publication with almost nothing in it" — resolved: the routing is
   **bare**, the publication is the **Day-one publication**, and the two vary independently.
+- "the layout breaks down on a minimal setup" named a publication and a defect at once, and the
+  defect was neither an **Orphan** nor a pagination hole — resolved: the publication is the
+  **Day-one publication**, the defect is an **Underset**.
