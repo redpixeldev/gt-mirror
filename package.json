@@ -44,6 +44,7 @@
 		"ghost:jobs": "node scripts/ghost/build-jobs.mjs",
 		"ghost:shots": ".venv/bin/python3 scripts/verify/shoot.py --jobs scripts/ghost/jobs.json --out-dir .shots/ghost",
 		"ghost:score": "node --env-file=.env scripts/ghost/score.mjs",
+		"ghost:demo": "node scripts/ghost/build-demo-zip.mjs",
 		"day-one:fixture": "GHOST_URL=http://localhost:2369 node scripts/ghost/build-day-one.mjs",
 		"day-one:import": "GHOST_URL=http://localhost:2369 GHOST_SESSION_FILE=.ghost-session-day-one.json node --env-file=.env scripts/ghost/import.mjs --fixture scripts/ghost/fixture-day-one.json --prune",
 		"day-one:routes": "GHOST_URL=http://localhost:2369 GHOST_SESSION_FILE=.ghost-session-day-one.json node --env-file=.env scripts/ghost/upload-routes.mjs --small",

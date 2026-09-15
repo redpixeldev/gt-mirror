@@ -101,6 +101,12 @@ _Avoid_: prototype, mockup (it is measured, and it is not thrown away)
 The invented publication the design was drawn with — 5 **Authors**, 14 **Tags**, 104 **Posts**.
 Distinct from **Chrome copy**, which is the theme's own wording.
 
+**Demo site**:
+The published Ghost a buyer is sent to, running the theme over **Demo content** — the address in
+the theme manifest's `demo` field. A place, not a dataset.
+_Avoid_: demo (unqualified it also names **Demo content**), reference build (that is the Astro
+build), staging
+
 **Day-one publication**:
 The one-**Author**, fifteen-**Post**, image-free, **Tag**-free publication on Ghost's own default
 configuration — what a buyer has before configuring anything.
@@ -139,6 +145,9 @@ The **Pixel identity** a Surface has already achieved and may not fall below.
   **Tier** — never by its **Layout**.
 - A **Directory** lists **Tags** or **Authors**; a **Feed** lists **Posts**. Both paginate.
 - **Demo content** exists so **Pixel identity** is measurable; **Chrome copy** ships with the theme.
+- The **Demo site** publishes **Demo content** but carries no **Floor**: **Pixel identity** is
+  measured on the local install, so the Demo site can lose a Surface — the **Design tokens sheet**
+  — without anything being scored differently.
 - An **Extension** renders only where the design drew nothing, so it may never move a **Floor**.
 - A **Syntax palette** has one set of colours per **Mode**, like every other colour in the theme.
 - A **Platform card** the design draws may have its colour claimed as a **Concession** reduced,
