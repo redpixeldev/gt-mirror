@@ -7,9 +7,8 @@ card layout, and conflating them is exactly the ambiguity CONTEXT.md was written
 Surface pages through posts; that one lists subjects and does not.
 
 The layout picker is `@custom.feed_layout`, the same select the Feed reads, because a buyer who
-asked for a wide row per post meant it wherever posts are listed. One {{#match}} at the top, the
-non-default option matched explicitly so an unrecognised stored value falls through to a layout
-rather than to nothing, and no partial below reads @custom.
+asked for a wide row per post meant it wherever posts are listed. It is read here and handed to
+tag/surface.hbs as `layout`, the pattern home.hbs documents, and no partial below reads @custom.
 
 `posts` and `pagination` are this channel's own: Ghost resolves how many rows a page holds in the
 routing layer, from `posts_per_page` in this theme's package.json or from `limit:` on the route
@@ -22,23 +21,7 @@ in the publication's routes.yaml. Nothing here decides it. --}}
 	class="grow"
 	data-surface="tag">
 
-	{{#tag}}
-		{{> "tag/header" total=../pagination.total}}
-	{{/tag}}
-
-	{{#match @custom.feed_layout "Grid"}}
-		{{> "tag/a2"}}
-	{{else}}
-		{{> "tag/a1" tagName=tag.name}}
-	{{/match}}
-
-	{{pagination pt="pt-13"}}
-
-	{{#tag}}
-		{{> "tag/other-tags" exclude=slug}}
-	{{/tag}}
-
-	{{> "newsletter" anchor="tag-newsletter" pt="pt-18"}}
+	{{> "tag/surface" layout=@custom.feed_layout}}
 
 </main>
 

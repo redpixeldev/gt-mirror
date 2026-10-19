@@ -1,0 +1,42 @@
+{{!-- The homepage Surface's body, in the Layout it is handed.
+
+`layout` is `@custom.homepage_layout` from home.hbs, or a fixed value from a Layout override
+template (ADR 0006). This partial holds the one {{#match}} on it, so a template decides where the
+value comes from and nothing else.
+
+WHY THE PAGINATION IS HERE AND NOT IN THE LAYOUT. {{pagination}} reads its numbers off the
+current context, and the {{#get}} in home/window.hbs renders its block with the query's own
+response as the context — a control inside it would offer nine pages of twelve on a Surface that
+has six pages of eighteen. Called here it reads the page's own pagination. (`@root` would rebind
+it in place, and gscan rejects `@root` as an unknown global, so the structure carries it
+instead.)
+
+`pagination.pages` guards the call because the helper throws outside a paginated context: with
+the layout in docs/routes.example.yaml this Surface IS page 1 of the `/` collection and pages
+through it, but a publication that hands `/` to a `route:` has no pagination at all, and one
+that has fewer posts than a page has no second page to offer. The editorial slots are indifferent
+to all three, which is what the {{#get}} in home/window.hbs buys.
+
+A2 narrows its article column to 1120px and leaves the blocks below it — the subscribe band and
+the writers strip — at page width. The override is a wrapper here because it has to contain the
+pagination too: `--container-max` is what every `container` reads, and the control belongs to the
+grid above it rather than to the page. --}}
+	{{#match layout "Editorial masthead"}}
+		<div style="--container-max:1120px">
+			{{> "home/window" wide=true}}
+
+			{{#if pagination.pages}}
+				{{pagination pt="pt-14"}}
+			{{/if}}
+		</div>
+	{{else}}
+		{{> "home/window"}}
+
+		{{#if pagination.pages}}
+			{{pagination pt="pt-14"}}
+		{{/if}}
+	{{/match}}
+
+	{{> "newsletter" anchor="newsletter" pt="pt-16"}}
+
+	{{> "writers" anchor="authors" headingId="au-head"}}

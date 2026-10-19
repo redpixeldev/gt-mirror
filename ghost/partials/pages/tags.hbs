@@ -4,8 +4,13 @@ Its sibling Surface, the tag archive at /tag/{slug}/, lists one tag's posts — 
 look alike in the card layout and they are not the same thing; CONTEXT.md was written to settle
 exactly this.
 
-Shared by page-tags.hbs and custom-tags.hbs so no markup is duplicated: the first keeps the demo
-slug working, the second lets a buyer apply this layout to a page named anything at all.
+Shared by page-tags.hbs, custom-tags.hbs and the two Layout override templates so no markup is
+duplicated: the first keeps the demo slug working, the second lets a buyer apply this layout to a
+page named anything at all, and the last two pin one Layout whatever the setting says (ADR 0006).
+
+The Layout arrives as `layout` — `@custom.directory_layout`, or a pinned value — and is read two
+frames up, as `../../layout`: `{{#post}}` changes the context once and `{{#get}}` changes it again
+(it renders with the query response as the context). `{{#if}}` adds no frame.
 
 ORDERED BY NAME. A directory is browsed, and a browsed list is alphabetical — which is also the
 order the design draws. `limit="100"` is declared rather than `"all"` because Ghost 6 caps every
@@ -20,7 +25,7 @@ resource or an API error (core/frontend/helpers/get.js), never for an empty resu
 
 	{{#get "tags" include="count.posts" order="name asc" limit="100" as |tags|}}
 		{{#if tags}}
-			{{#match @custom.directory_layout "Cover cards"}}
+			{{#match ../../layout "Cover cards"}}
 				{{> "directory/tag-cards" tags=tags}}
 			{{else}}
 				{{> "directory/tag-rows" tags=tags}}

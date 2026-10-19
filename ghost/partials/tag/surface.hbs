@@ -1,0 +1,22 @@
+{{!-- The tag archive Surface's body, in the Layout it is handed.
+
+`layout` is `@custom.feed_layout` from tag.hbs, or a fixed value from a Layout override template
+(ADR 0006); the {{#match}} is the pattern home.hbs documents. `tag`, `posts` and `pagination` are
+the page's own, because a partial's hash extends the calling context rather than replacing it. --}}
+	{{#tag}}
+		{{> "tag/header" total=../pagination.total}}
+	{{/tag}}
+
+	{{#match layout "Grid"}}
+		{{> "tag/a2"}}
+	{{else}}
+		{{> "tag/a1" tagName=tag.name}}
+	{{/match}}
+
+	{{pagination pt="pt-13"}}
+
+	{{#tag}}
+		{{> "tag/other-tags" exclude=slug}}
+	{{/tag}}
+
+	{{> "newsletter" anchor="tag-newsletter" pt="pt-18"}}

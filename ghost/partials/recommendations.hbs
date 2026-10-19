@@ -12,7 +12,8 @@ and takes no arguments through to the partial, and `recommendations` is not a `{
 (RESOURCES in core/frontend/helpers/get.js lists posts, tags, pages, authors, tiers and
 newsletters and nothing else), so there is no way to query the data from a template and dispatch
 around it. The `@` frame survives — the helper builds its own with `createFrame(options.data)` —
-so `@custom` is readable from in here.
+so `@custom` is readable from in here. A template can read that frame but cannot write to it,
+which is why this is the one Directory with no Layout override — a Concession, see ADR 0006.
 
 The context is the API response, so the rows are `recommendations` and the guard is on that array.
 Ghost's own template guards the same way, and for the same reason every {{#get}} in this theme

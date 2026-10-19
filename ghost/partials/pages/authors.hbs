@@ -1,7 +1,9 @@
 {{!-- The Authors Directory: the masthead. A Surface that lists people, not posts.
 
 Its sibling Surface, the author archive at /author/{slug}/, lists one writer's posts — see
-author.hbs. Shared by page-authors.hbs and custom-authors.hbs so no markup is duplicated.
+author.hbs. Shared by page-authors.hbs, custom-authors.hbs and the two Layout override templates so
+no markup is duplicated. The Layout arrives as `layout` and is read as `../../layout`, for the
+reason partials/pages/tags.hbs gives.
 
 A MASTHEAD LISTS PEOPLE WHO HAVE WRITTEN. Every staff account is an "author" to Ghost, so an owner
 or an editor who has not published yet would render as a row reading "No posts" — on this install
@@ -23,7 +25,7 @@ the Tags Directory, which is alphabetical because a subject list is browsed rath
 
 	{{#get "authors" include="count.posts" order="count.posts desc" limit="100" as |authors|}}
 		{{#if authors.[0].count.posts}}
-			{{#match @custom.directory_layout "Cover cards"}}
+			{{#match ../../layout "Cover cards"}}
 				{{> "directory/author-cards" authors=authors}}
 			{{else}}
 				{{> "directory/author-rows" authors=authors}}

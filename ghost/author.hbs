@@ -6,9 +6,9 @@ Distinct from the Authors Directory, which lists writers rather than posts — s
 partials/pages/authors.hbs. This Surface pages through one writer's work; that one lists people
 and does not.
 
-The layout picker is `@custom.feed_layout`, the same select the Feed and the tag archive read.
-One {{#match}} at the top, the non-default option matched explicitly so an unrecognised stored
-value falls through to a layout rather than to nothing, and no partial below reads @custom.
+The layout picker is `@custom.feed_layout`, the same select the Feed and the tag archive read. It
+is read here and handed to author/surface.hbs as `layout`, the pattern home.hbs documents, and no
+partial below reads @custom.
 
 `posts` and `pagination` are this channel's own: Ghost resolves how many rows a page holds in the
 routing layer, from `posts_per_page` in this theme's package.json. Nothing here decides it, and
@@ -22,16 +22,7 @@ holds whatever the Feed holds. --}}
 	class="grow"
 	data-surface="author">
 
-	{{!-- The Grid layout paginates inside its own column — see partials/author/a2.hbs. --}}
-	{{#match @custom.feed_layout "Grid"}}
-		{{> "author/a2"}}
-	{{else}}
-		{{> "author/a1"}}
-
-		{{pagination pt="pt-13"}}
-	{{/match}}
-
-	{{> "newsletter" anchor="author-newsletter" pt="pt-20"}}
+	{{> "author/surface" layout=@custom.feed_layout}}
 
 </main>
 

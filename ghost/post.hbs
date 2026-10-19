@@ -2,13 +2,8 @@
 
 {{!-- The Post Surface, in whichever layout the publication picked.
 
-The layout picker is the pattern home.hbs documents: one {{#match}} at the top, the
-non-default option matched explicitly so an unrecognised stored value falls through to a
-layout rather than to nothing, and no partial below reading @custom.
-
-What is on this page below the article — the writer, the neighbours, three more posts, the
-subscribe band — is the same in both layouts and belongs to neither, so it is called here
-once. Only the reading column differs, which is the whole of what A1 and A2 are.
+The layout picker is the pattern home.hbs documents: the setting is read here and handed to
+post/surface.hbs as `layout`, which holds the one {{#match}}, and no partial below reads @custom.
 
 `.mirror-content` (in both layout partials) is the scoping hook the Koenig card layer needs:
 Ghost emits cards.min.css out of {{ghost_head}}, BELOW this theme's stylesheet, so every rule
@@ -18,19 +13,7 @@ that layer. --}}
 {{> "chrome/header"}}
 
 <main id="main" class="grow">
-	{{#post}}
-		<article class="{{post_class}}" data-surface="post">
-			{{#match @custom.post_layout "Title page"}}
-				{{> "post/a2"}}
-			{{else}}
-				{{> "post/a1"}}
-			{{/match}}
-		</article>
-
-		{{> "post/related"}}
-
-		{{> "newsletter" anchor="end-newsletter"}}
-	{{/post}}
+	{{> "post/surface" layout=@custom.post_layout}}
 </main>
 
 {{> "chrome/footer"}}

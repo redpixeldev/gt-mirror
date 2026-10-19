@@ -1,0 +1,20 @@
+{{!-- The Feed Surface's body, in the Layout it is handed.
+
+`layout` is `@custom.feed_layout` from index.hbs, or a fixed value from a Layout override template
+(ADR 0006); the {{#match}} is the pattern home.hbs documents. `posts` and `pagination` are the
+page's own, because a partial's hash extends the calling context rather than replacing it. --}}
+	{{> "feed/header"}}
+
+	{{> "feed/filter-bar"}}
+
+	{{#match layout "Grid"}}
+		{{> "feed/a2"}}
+	{{else}}
+		{{> "feed/a1"}}
+	{{/match}}
+
+	{{pagination pt="pt-12"}}
+
+	{{> "newsletter" anchor="newsletter" pt="pt-20"}}
+
+	{{> "writers" anchor="writers" headingId="wr-head"}}

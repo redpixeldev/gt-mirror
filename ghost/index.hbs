@@ -3,9 +3,8 @@
 {{!-- The Feed Surface: every post, newest first, paginated — in whichever layout the
 publication picked.
 
-The layout picker is the pattern home.hbs documents: one {{#match}} at the top, the non-default
-option matched explicitly so an unrecognised stored value falls through to a layout rather than
-to nothing, and no partial below reading @custom.
+The layout picker is the pattern home.hbs documents: the setting is read here and handed to
+feed/surface.hbs as `layout`, which holds the one {{#match}}, and no partial below reads @custom.
 
 No query here. Unlike the homepage, this Surface IS its own query: `posts` is the page's slice of
 the collection or channel that owns this URL, and `pagination` is the shape of the rest of it.
@@ -25,21 +24,7 @@ after it. Both are correct, and neither needs a branch here. --}}
 	class="grow"
 	data-surface="feed">
 
-	{{> "feed/header"}}
-
-	{{> "feed/filter-bar"}}
-
-	{{#match @custom.feed_layout "Grid"}}
-		{{> "feed/a2"}}
-	{{else}}
-		{{> "feed/a1"}}
-	{{/match}}
-
-	{{pagination pt="pt-12"}}
-
-	{{> "newsletter" anchor="newsletter" pt="pt-20"}}
-
-	{{> "writers" anchor="writers" headingId="wr-head"}}
+	{{> "feed/surface" layout=@custom.feed_layout}}
 
 </main>
 

@@ -1,10 +1,14 @@
 {{!-- About: the publication explaining itself.
 
-Shared by page-about.hbs and custom-about.hbs so no markup is duplicated.
+Shared by page-about.hbs, custom-about.hbs and the two Layout override templates, so no markup is
+duplicated.
 
-The layout picker is `@custom.page_hero`, which decides the opener and nothing else: the figures,
-the body, the masthead and the subscribe band are the same below either hero. That is the whole of
-what the design changes between A1 and A2 here.
+The Layout arrives as `layout` — `@custom.page_hero` from the two templates that follow the
+setting, a fixed value from the two that pin one (ADR 0006) — and it decides the opener and nothing
+else: the figures, the body, the masthead and the subscribe band are the same below either hero.
+That is the whole of what the design changes between A1 and A2 here. `{{#post}}` changes the
+context, so the argument is read one frame up, as `../layout`; an unrecognised value falls through
+to the centred statement.
 
 THE BODY IS THE PAGE'S, AND SO IS THE CLOSING NOTE. The design puts the masthead BETWEEN two
 blocks of prose — the mission statement above it and "Get in touch" below — and a Ghost page has
@@ -18,13 +22,13 @@ Concession in DECISIONS.md.
 typography for HTML the theme did not write — which is what puts the markers back on the body's
 lists and the underline back under its contact link, both of which Preflight strips. --}}
 {{#post}}
-	{{#match @custom.page_hero "Split hero"}}
+	{{#match ../layout "Split hero"}}
 		{{> "about/hero-split" eyebrow=(t "About")}}
 	{{else}}
 		{{> "centered-intro" eyebrow=(t "About") headingId="a1-h"}}
 	{{/match}}
 
-	{{#match @custom.page_hero "Split hero"}}
+	{{#match ../layout "Split hero"}}
 		{{> "about/stats" padding="pt-14"}}
 	{{else}}
 		{{> "about/stats"}}

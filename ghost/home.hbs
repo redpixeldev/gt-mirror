@@ -5,9 +5,11 @@
 THE LAYOUT PICKER PATTERN — every later Surface repeats this shape, so it is worth reading
 once rather than re-deciding:
 
-  1. One {{#match}} on the setting, at the top of the template, dispatching to one partial
-	 per layout. Nothing below reads @custom, so a partial can be moved or shared without
-	 dragging a settings dependency with it.
+  1. The template reads the setting once and hands it to the Surface's partial as `layout`
+	 (here home/surface.hbs), and that partial holds the one {{#match}}, dispatching to one
+	 partial per layout. Nothing below the template reads @custom, so a Layout override
+	 template (ADR 0006) renders the same partial with a fixed value, and a partial can be
+	 moved or shared without dragging a settings dependency with it.
   2. The NON-DEFAULT option is the one matched explicitly, and the default lives in the
 	 {{else}}. That is what makes an absent or unrecognised value safe: it cannot match, so
 	 it falls through and renders a layout rather than nothing. Ghost validates a stored
@@ -19,27 +21,10 @@ once rather than re-deciding:
 	 ({{> "post-meta" author=true}}), the way Source threads navigationLayout — it never
 	 reaches back up to @custom.
 
-The dispatch is the {{#match}} here; the query and the two layouts are home/window.hbs, one
-level down, and the layout reaches it as an argument. Rule 3 is why the query is not repeated in
-the two branches: `{{> "home/window"}}` is one query definition, whichever branch calls it.
-
-WHY THE PAGINATION IS HERE AND NOT IN THE LAYOUT. {{pagination}} reads its numbers off the
-current context, and the {{#get}} in home/window.hbs renders its block with the query's own
-response as the context — a control inside it would offer nine pages of twelve on a Surface that
-has six pages of eighteen. Called here it reads the page's own pagination. (`@root` would rebind
-it in place, and gscan rejects `@root` as an unknown global, so the structure carries it
-instead.)
-
-`pagination.pages` guards the call because the helper throws outside a paginated context: with
-the layout in docs/routes.example.yaml this Surface IS page 1 of the `/` collection and pages
-through it, but a publication that hands `/` to a `route:` has no pagination at all, and one
-that has fewer posts than a page has no second page to offer. The editorial slots are indifferent
-to all three, which is what the {{#get}} in home/window.hbs buys.
-
-A2 narrows its article column to 1120px and leaves the blocks below it — the subscribe band and
-the writers strip — at page width. The override is a wrapper here because it has to contain the
-pagination too: `--container-max` is what every `container` reads, and the control belongs to the
-grid above it rather than to the page. --}}
+The query and the two layouts are home/window.hbs, two levels down, and the layout reaches it as
+an argument. Rule 3 is why the query is not repeated in the two branches: `{{> "home/window"}}`
+is one query definition, whichever branch calls it. Why the pagination and the A2 wrapper sit
+where they do is recorded in home/surface.hbs, next to them. --}}
 
 {{> "chrome/header"}}
 
@@ -48,25 +33,7 @@ grid above it rather than to the page. --}}
 	class="grow"
 	data-surface="home">
 
-	{{#match @custom.homepage_layout "Editorial masthead"}}
-		<div style="--container-max:1120px">
-			{{> "home/window" wide=true}}
-
-			{{#if pagination.pages}}
-				{{pagination pt="pt-14"}}
-			{{/if}}
-		</div>
-	{{else}}
-		{{> "home/window"}}
-
-		{{#if pagination.pages}}
-			{{pagination pt="pt-14"}}
-		{{/if}}
-	{{/match}}
-
-	{{> "newsletter" anchor="newsletter" pt="pt-16"}}
-
-	{{> "writers" anchor="authors" headingId="au-head"}}
+	{{> "home/surface" layout=@custom.homepage_layout}}
 
 </main>
 

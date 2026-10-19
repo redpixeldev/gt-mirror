@@ -1,7 +1,8 @@
 {{!-- Membership: the Surface that sells.
 
-Shared by page-membership.hbs and custom-membership.hbs. The layout picker is
-`@custom.page_hero`, the same select About reads, and it decides the opener and nothing else.
+Shared by page-membership.hbs, custom-membership.hbs and the two Layout override templates. The
+Layout arrives as `layout`, read as `../layout` inside `{{#post}}` — the same argument About takes,
+from the same `@custom.page_hero` — and it decides the opener and nothing else.
 
 THE PRICES ARE THE PUBLICATION'S, NEVER THE FIXTURE'S — see membership/tiers.hbs, which is the
 whole reason this Surface exists in the port at all.
@@ -23,13 +24,13 @@ The order follows the rule the About page sets: prose the publication wrote is o
 block, and the sections the theme derives bracket it rather than interrupting it. The design
 interleaves them; a Ghost page has one body. Recorded as a Concession in DECISIONS.md. --}}
 {{#post}}
-	{{#match @custom.page_hero "Split hero"}}
+	{{#match ../layout "Split hero"}}
 		{{> "membership/hero-split" eyebrow=(t "Membership")}}
 	{{else}}
 		{{> "centered-intro" eyebrow=(t "Membership") headingId="mem-h" padding="pt-22 pb-14" titleSpacing="mt-6" titleClass="max-w-[20ch] text-[clamp(36px,5.2vw,64px)]" descriptionClass="text-lead mt-[22px] max-w-[52ch] leading-[1.55]"}}
 	{{/match}}
 
-	{{#match @custom.page_hero "Split hero"}}
+	{{#match ../layout "Split hero"}}
 		{{> "membership/tiers" padding="pt-14"}}
 	{{else}}
 		{{> "membership/tiers"}}

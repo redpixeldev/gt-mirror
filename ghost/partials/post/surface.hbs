@@ -1,0 +1,22 @@
+{{!-- The Post Surface's body, in the Layout it is handed.
+
+`layout` is `@custom.post_layout` from post.hbs, or a fixed value from a Layout override template
+(ADR 0006); the {{#match}} is the pattern home.hbs documents. `{{#post}}` changes the context, so
+the argument is read one frame up, as `../layout`.
+
+What is on this page below the article — the writer, the neighbours, three more posts, the
+subscribe band — is the same in both layouts and belongs to neither, so it is called here once.
+Only the reading column differs, which is the whole of what A1 and A2 are. --}}
+	{{#post}}
+		<article class="{{post_class}}" data-surface="post">
+			{{#match ../layout "Title page"}}
+				{{> "post/a2"}}
+			{{else}}
+				{{> "post/a1"}}
+			{{/match}}
+		</article>
+
+		{{> "post/related"}}
+
+		{{> "newsletter" anchor="end-newsletter"}}
+	{{/post}}
