@@ -17,24 +17,35 @@
  *
  * `--bare` uploads Ghost's own default routes instead, which is how the bare-install behaviour
  * is checked — every template has to render correctly in both configurations.
+ *
+ * `--routes <file>` uploads another file — the Demo site's generated
+ * `dist/mirror-demo-routes.yaml`, which is this one plus the Layout browser's routes. It keeps
+ * `/` and `/archive/`, so the same expectations prove it landed.
  */
 import { readFileSync } from 'node:fs';
 
 import { base, ownerSession, request } from './admin.mjs';
 
-const ROUTES = 'docs/routes.example.yaml';
+const DEFAULT_ROUTES = 'docs/routes.example.yaml';
 
 /* Ghost's own default: `/` is the posts collection and there is nothing else. */
 const BARE = `routes:\n\ncollections:\n  /:\n    permalink: /{slug}/\n    template: index\n\ntaxonomies:\n  tag: /tag/{slug}/\n  author: /author/{slug}/\n`;
 
 const argv = process.argv.slice(2);
-for (const arg of argv) {
-	if (arg !== '--bare' && arg !== '--small') {
+const fileFlag = argv.indexOf('--routes');
+if (fileFlag >= 0 && !argv[fileFlag + 1]) {
+	console.error('--routes needs a path');
+	process.exit(1);
+}
+for (const [index, arg] of argv.entries()) {
+	const isPath = fileFlag >= 0 && index === fileFlag + 1;
+	if (arg !== '--bare' && arg !== '--small' && arg !== '--routes' && !isPath) {
 		console.error(`unknown argument: ${arg}`);
 		process.exit(1);
 	}
 }
 const bare = argv.includes('--bare');
+const ROUTES = fileFlag >= 0 ? argv[fileFlag + 1] : DEFAULT_ROUTES;
 
 const yaml = bare ? BARE : readFileSync(ROUTES, 'utf8');
 

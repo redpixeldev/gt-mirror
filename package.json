@@ -53,7 +53,11 @@
 		"day-one:smoke:bare": ".venv/bin/python3 scripts/verify/smoke.py --base http://localhost:2369 --routes scripts/ghost/routes-day-one-bare.json",
 		"day-one:audit": "GHOST_URL=http://localhost:2369 GHOST_SESSION_FILE=.ghost-session-day-one.json node --env-file=.env scripts/ghost/audit.mjs --surfaces scripts/ghost/audit-day-one.json",
 		"day-one:shots": "GHOST_URL=http://localhost:2369 GHOST_SESSION_FILE=.ghost-session-day-one.json node --env-file=.env scripts/ghost/shoot-day-one.mjs",
-		"day-one": "pnpm day-one:fixture && pnpm day-one:routes:bare && pnpm day-one:smoke:bare && pnpm day-one:routes && pnpm day-one:smoke && pnpm day-one:audit"
+		"day-one": "pnpm day-one:fixture && pnpm day-one:routes:bare && pnpm day-one:smoke:bare && pnpm day-one:routes && pnpm day-one:smoke && pnpm day-one:audit",
+		"demo:import": "pnpm ghost:demo && GHOST_URL=http://localhost:2370 GHOST_SESSION_FILE=.ghost-session-demo.json node --env-file=.env scripts/ghost/import.mjs --fixture dist/mirror-demo-fixture.json --prune",
+		"demo:routes": "GHOST_URL=http://localhost:2370 GHOST_SESSION_FILE=.ghost-session-demo.json node --env-file=.env scripts/ghost/upload-routes.mjs --routes dist/mirror-demo-routes.yaml",
+		"demo:smoke": "node scripts/ghost/demo-smoke.mjs --base http://localhost:2370",
+		"demo": "pnpm demo:import && pnpm demo:routes && pnpm demo:smoke"
 	},
 	"dependencies": {
 		"@tailwindcss/forms": "^0.5.11",

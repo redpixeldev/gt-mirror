@@ -3,6 +3,14 @@
  *
  *   node scripts/ghost/build-demo-zip.mjs        → dist/mirror-demo.zip
  *                                                  dist/mirror-demo-setup.md
+ *                                                  dist/mirror-demo-routes.yaml
+ *                                                  dist/mirror-demo-fixture.json
+ *
+ * THE DEMO SITE IS fixture.json PLUS THE LAYOUT BROWSER. scripts/ghost/demo-overlay.mjs replaces the
+ * primary menu with a menu of every Layout, adds the duplicate Pages and the Post overrides those
+ * entries point at, and produces the routes file the rest of them need (ADR 0006). The scored
+ * install never sees any of it. `mirror-demo-fixture.json` is the same publication in the shape
+ * import.mjs reads, so the local demo install (`pnpm demo:import`) runs exactly what the zip carries.
  *
  * The publication in `fixture.json` reaches a Ghost two ways. `import.mjs` drives the Admin API as
  * the owner, which is complete but needs credentials, and needs them for a PUBLIC install where
@@ -26,8 +34,9 @@
  *   - TIER BENEFITS. `benefits` and `products_benefits` are tables with no importer.
  *   - RECOMMENDATIONS. No importer either. Their images still travel in the zip so the checklist
  *     can name a URL that resolves.
- *   - ROUTES. `routes.yaml` is not importable content; the demo's own menu points at `/archive/`,
- *     which only exists once the theme's routes file is uploaded.
+ *   - ROUTES. `routes.yaml` is not importable content. The Layout browser's alternates live on
+ *     routes (`/archive-grid/`, `/tag-grid/` …), so `mirror-demo-routes.yaml` is written beside
+ *     the zip and uploading it is a checklist step.
  *   - THE DESIGN TOKENS SHEET. A Surface for the scoring harness, not for a reader.
  *   - THEME SETTINGS. `custom_theme_settings` would bind to whichever theme is active at import
  *     time; the demo ships the Layouts a buyer gets on upload instead.
@@ -53,11 +62,16 @@ import {
 } from 'node:fs';
 import { basename } from 'node:path';
 
+import { demoOverlay } from './demo-overlay.mjs';
+
 const FIXTURE = 'scripts/ghost/fixture.json';
+const ROUTES = 'docs/routes.example.yaml';
 const OUT_DIR = 'dist';
 const STAGE = `${OUT_DIR}/mirror-demo`;
 const ZIP = `${OUT_DIR}/mirror-demo.zip`;
 const CHECKLIST = `${OUT_DIR}/mirror-demo-setup.md`;
+const DEMO_ROUTES = `${OUT_DIR}/mirror-demo-routes.yaml`;
+const DEMO_FIXTURE = `${OUT_DIR}/mirror-demo-fixture.json`;
 
 /*
  * THE PHOTOGRAPHS SIT IN `content/mirror-demo/` INSIDE THE ZIP, WHICH IS NOT WHERE THEY END UP,
@@ -93,7 +107,8 @@ const EXPORT_VERSION = '6.60.0';
 /* The one Surface the scoring harness needs and a reader does not. */
 const EXCLUDED_PAGES = new Set(['design-tokens']);
 
-const fixture = JSON.parse(readFileSync(FIXTURE, 'utf8'));
+const overlay = demoOverlay(JSON.parse(readFileSync(FIXTURE, 'utf8')), readFileSync(ROUTES, 'utf8'));
+const fixture = overlay.fixture;
 
 /* ── identifiers ──────────────────────────────────────────────────────────────────────── */
 
@@ -230,6 +245,7 @@ for (const post of fixture.posts) {
 		feature_image: zipRef(post.feature_image),
 		feature_image_alt: post.feature_image_alt ?? null,
 		custom_excerpt: post.custom_excerpt ?? null,
+		custom_template: post.template ?? null,
 		featured: Boolean(post.featured),
 		type: 'post',
 		status: 'published',
@@ -276,6 +292,7 @@ for (const page of pages) {
 		feature_image_alt: page.image_alt ?? null,
 		custom_excerpt: page.excerpt ?? null,
 		custom_template: page.template ?? null,
+		canonical_url: page.canonical_url ?? null,
 		featured: false,
 		type: 'page',
 		status: 'published',
@@ -400,9 +417,12 @@ Ghost's importer cannot carry the rest. The steps below are the whole of it.
 1. **Upload and activate the theme.** \`dist/mirror.zip\`, under Settings → Design & branding →
    Change theme. The importer refuses to set \`active_theme\` itself
    (\`settings-importer.js:99-106\`), and the import writes settings the theme reads.
-2. **Upload the routes file.** \`docs/routes.example.yaml\` from the theme's repository, under
-   Settings → Labs → Routes. The demo's menu links \`/archive/\`, which does not exist on stock
-   Ghost routing.
+2. **Upload the routes file.** \`dist/mirror-demo-routes.yaml\`, under Settings → Labs → Routes.
+   It is the theme's documented \`docs/routes.example.yaml\` plus the routes behind the Layout
+   browser — \`/archive/\` and every alternate Layout (\`/homepage-editorial-masthead/\`,
+   \`/archive-grid/\`, \`/tag-grid/\`, \`/author-grid/\`, \`/404-split-hero/\`) exist only once it is
+   uploaded. Two of them take a record's own URL over: \`/tag/newsletters/\` and
+   \`/author/iben-falk/\` redirect to the Grid routes, by design.
 3. **Delete Ghost's own starter content** — the post *Coming soon*, the page *About this site*
    and the tag *news*, under Posts, Pages and Tags. This one is not housekeeping. Ghost's
    importer never replaces: the starter page already owns the slug \`about\`, so the demo's About
@@ -432,9 +452,12 @@ ${tierLines}
 
 ${recLines}
 
-8. **Check the Layouts.** The demo runs the theme's own defaults — Magazine cover, List,
-   Editorial rows, Centered classic, Centered statement — which is what a buyer sees on upload.
-   Each has an alternate in Settings → Design & branding if you want the other drawing.
+8. **Leave the Layouts on their defaults.** The menu is the Layout browser: every Layout of every
+   Surface, grouped by the setting that picks it. Its default entries link to the real URLs —
+   \`/\`, \`/archive/\`, \`/about/\` — and show Magazine cover, List, Editorial rows, Centered
+   classic and Centered statement only while those are the settings; the alternates go through
+   Layout override templates and do not depend on them. Run \`pnpm demo:smoke\` against the site to
+   check every entry.
 
 ## Not in the zip, by design
 
@@ -453,6 +476,10 @@ ${recLines}
 `;
 
 writeFileSync(CHECKLIST, checklist);
+writeFileSync(DEMO_ROUTES, overlay.routes);
+/* The same publication the zip carries, in import.mjs's shape: the pages the zip leaves out are left
+ * out here too, so the local demo install and the Demo site cannot differ by a Surface. */
+writeFileSync(DEMO_FIXTURE, JSON.stringify({ ...fixture, pages }, null, '\t') + '\n');
 
 const zipBytes = statSync(ZIP).size;
 console.log(
@@ -462,3 +489,5 @@ console.log(
 console.log(`          ${settings.length} settings; tiers, benefits, recommendations and routes are checklist steps`);
 console.log(`          → ${ZIP} (${(zipBytes / 1048576).toFixed(2)} MB)`);
 console.log(`          → ${CHECKLIST}`);
+console.log(`          → ${DEMO_ROUTES} (${overlay.routes.match(/^ {2}\/[^:]+:$/gm).length} routes)`);
+console.log(`          → ${DEMO_FIXTURE} (for pnpm demo:import)`);

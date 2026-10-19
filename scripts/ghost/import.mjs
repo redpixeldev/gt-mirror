@@ -326,6 +326,9 @@ for (const post of fixture.posts) {
 		published_at: post.published_at,
 		visibility: post.visibility,
 		featured: post.featured,
+		/* A Layout override (ADR 0006). Only the Demo site's publication sets one; null elsewhere,
+		 * which is also what clears an override a previous import left behind. */
+		custom_template: post.template ?? null,
 		status: 'published',
 		authors: [{ email: authorEmail.get(post.author) }],
 		tags: post.tags.map((name) => ({ name })),
@@ -361,6 +364,8 @@ for (const page of fixture.pages) {
 		feature_image: remote(page.image),
 		feature_image_alt: page.image_alt ?? null,
 		custom_template: page.template,
+		/* The Demo site's duplicate Pages point at the page they copy (demo-overlay.mjs). */
+		canonical_url: page.canonical_url ?? null,
 		status: 'published',
 	};
 	if (existing) {

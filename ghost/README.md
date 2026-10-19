@@ -273,7 +273,7 @@ pnpm ghost:scan          # gscan, warnings fatal
 pnpm ghost:audit         # the responsive audit: every Surface at twelve widths
 pnpm ghost:score         # capture every Surface in both Modes and score it
 pnpm ghost:zip           # build, scan, stage and zip to dist/mirror.zip
-pnpm ghost:demo          # the demo publication as one import file + its setup checklist
+pnpm ghost:demo          # the demo publication as one import file, its routes file and its checklist
 pnpm ghost:routes:apply  # push docs/routes.example.yaml to the running install
 pnpm ghost:routes:bare   # put Ghost's own default routes back
 ```
@@ -309,3 +309,34 @@ cd ~/ghost-mirror && NODE_ENV=day-one /opt/homebrew/opt/node@22/bin/node current
 7 is committed because it leaves the homepage grid holding two of its nine slots. Nothing in the
 run is scored: there is no reference drawing of an absence, so the assertions are structural and
 the screenshots are there to be looked at.
+
+### The Demo site, locally
+
+The Demo site is the scored publication plus the **Layout browser** — a header menu of every
+Layout of every Surface, so a buyer can see each one without touching a setting (ADR 0006 in the
+repository). `scripts/ghost/demo-overlay.mjs` defines it once; `pnpm ghost:demo` applies it and
+writes the routes file the Demo site needs beside the zip. It runs on a third Ghost of its own so
+neither the scored publication nor the Day-one one is disturbed.
+
+```bash
+pnpm demo:import         # rebuild the demo files, apply them to the Ghost on :2370 (destructive to THAT install)
+pnpm demo:routes         # upload dist/mirror-demo-routes.yaml there
+pnpm demo:smoke          # walk every Layout browser entry: status, Surface, Layout, Gate, canonical
+pnpm demo                # all three
+```
+
+`demo:smoke` takes `--base`, so `node scripts/ghost/demo-smoke.mjs --base https://mirror.ghost.io`
+checks the published Demo site the same way. It fails when an entry renders a Layout other than the
+one its label names — which is what happens if someone changes a Layout setting on the Demo site,
+because the default entries link to the real URLs.
+
+Its Ghost is `~/ghost-mirror/config.demo.json` — port 2370, its own sqlite file, its own content
+directory with the theme symlinked into `themes/`. Start it from the same tree:
+
+```bash
+cd ~/ghost-mirror && NODE_ENV=demo /opt/homebrew/opt/node@22/bin/node current/index.js
+```
+
+On a fresh database, create the owner with the `.env` credentials the scripts sign in with — at
+`http://localhost:2370/ghost/`, or `POST /ghost/api/admin/authentication/setup/` — and activate
+MIRROR before the first `pnpm demo`.

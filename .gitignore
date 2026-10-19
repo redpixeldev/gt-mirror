@@ -32,6 +32,7 @@ pnpm-debug.log*
 # the cached Ghost owner session; a credential, and per-install — one per Ghost
 .ghost-session.json
 .ghost-session-day-one.json
+.ghost-session-demo.json
 
 # macOS-specific files
 .DS_Store
