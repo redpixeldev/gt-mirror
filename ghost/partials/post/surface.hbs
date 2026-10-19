@@ -2,13 +2,17 @@
 
 `layout` is `@custom.post_layout` from post.hbs, or a fixed value from a Layout override template
 (ADR 0006); the {{#match}} is the pattern home.hbs documents. `{{#post}}` changes the context, so
-the argument is read one frame up, as `../layout`.
+the argument is read one frame up, as `../layout`. `data-layout` names the Layout that rendered,
+for the demo smoke run, so it is decided by the same match the dispatch uses.
 
 What is on this page below the article — the writer, the neighbours, three more posts, the
 subscribe band — is the same in both layouts and belongs to neither, so it is called here once.
 Only the reading column differs, which is the whole of what A1 and A2 are. --}}
 	{{#post}}
-		<article class="{{post_class}}" data-surface="post">
+		<article
+			class="{{post_class}}"
+			data-surface="post"
+			data-layout="{{#match ../layout "Title page"}}Title page{{else}}Centered classic{{/match}}">
 			{{#match ../layout "Title page"}}
 				{{> "post/a2"}}
 			{{else}}

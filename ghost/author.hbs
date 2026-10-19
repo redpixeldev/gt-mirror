@@ -20,7 +20,8 @@ holds whatever the Feed holds. --}}
 <main
 	id="main"
 	class="grow"
-	data-surface="author">
+	data-surface="author"
+	data-layout="{{#match @custom.feed_layout "Grid"}}Grid{{else}}List{{/match}}">
 
 	{{> "author/surface" layout=@custom.feed_layout}}
 

@@ -1,0 +1,20 @@
+{{!< default}}
+
+{{!-- A Layout override (ADR 0006): the feed Surface in the Grid layout whatever
+`feed_layout` says. Inert until a routes.yaml entry names it as a template; index.hbs follows
+the setting. Name it from a `controller: channel` route, which is what supplies
+`posts` and `pagination`. --}}
+
+{{> "chrome/header"}}
+
+<main
+	id="main"
+	class="grow"
+	data-surface="feed"
+	data-layout="Grid">
+
+	{{> "feed/surface" layout="Grid"}}
+
+</main>
+
+{{> "chrome/footer"}}

@@ -10,7 +10,8 @@ partial, no duplicated markup. --}}
 <main
 	id="main"
 	class="grow"
-	data-surface="page-recommendations">
+	data-surface="page-recommendations"
+	data-layout="{{#match @custom.directory_layout "Cover cards"}}Cover cards{{else}}Editorial rows{{/match}}">
 
 	{{> "pages/recommendations"}}
 

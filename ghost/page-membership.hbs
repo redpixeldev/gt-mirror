@@ -10,7 +10,8 @@ partial, no duplicated markup. --}}
 <main
 	id="main"
 	class="grow"
-	data-surface="page-membership">
+	data-surface="page-membership"
+	data-layout="{{#match @custom.page_hero "Split hero"}}Split hero{{else}}Centered statement{{/match}}">
 
 	{{> "pages/membership" layout=@custom.page_hero}}
 

@@ -1,0 +1,18 @@
+{{!< default}}
+
+{{!-- A Layout override (ADR 0006): this page in the Editorial rows layout whatever `directory_layout`
+says, chosen per page from the template picker. custom-authors.hbs follows the setting. --}}
+
+{{> "chrome/header"}}
+
+<main
+	id="main"
+	class="grow"
+	data-surface="page-authors"
+	data-layout="Editorial rows">
+
+	{{> "pages/authors" layout="Editorial rows"}}
+
+</main>
+
+{{> "chrome/footer"}}

@@ -19,7 +19,8 @@ in the publication's routes.yaml. Nothing here decides it. --}}
 <main
 	id="main"
 	class="grow"
-	data-surface="tag">
+	data-surface="tag"
+	data-layout="{{#match @custom.feed_layout "Grid"}}Grid{{else}}List{{/match}}">
 
 	{{> "tag/surface" layout=@custom.feed_layout}}
 

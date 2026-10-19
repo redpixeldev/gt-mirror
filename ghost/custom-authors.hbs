@@ -10,7 +10,8 @@ partial, no duplicated markup. --}}
 <main
 	id="main"
 	class="grow"
-	data-surface="page-authors">
+	data-surface="page-authors"
+	data-layout="{{#match @custom.directory_layout "Cover cards"}}Cover cards{{else}}Editorial rows{{/match}}">
 
 	{{> "pages/authors" layout=@custom.directory_layout}}
 

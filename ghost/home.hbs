@@ -31,7 +31,8 @@ where they do is recorded in home/surface.hbs, next to them. --}}
 <main
 	id="main"
 	class="grow"
-	data-surface="home">
+	data-surface="home"
+	data-layout="{{#match @custom.homepage_layout "Editorial masthead"}}Editorial masthead{{else}}Magazine cover{{/match}}">
 
 	{{> "home/surface" layout=@custom.homepage_layout}}
 

@@ -22,7 +22,8 @@ after it. Both are correct, and neither needs a branch here. --}}
 <main
 	id="main"
 	class="grow"
-	data-surface="feed">
+	data-surface="feed"
+	data-layout="{{#match @custom.feed_layout "Grid"}}Grid{{else}}List{{/match}}">
 
 	{{> "feed/surface" layout=@custom.feed_layout}}
 

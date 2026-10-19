@@ -23,7 +23,8 @@ message centres in whatever space is left and the foot sits on the bottom edge. 
 <main
 	id="main"
 	class="flex grow items-center"
-	data-surface="error-404">
+	data-surface="error-404"
+	data-layout="{{#match @custom.page_hero "Split hero"}}Split hero{{else}}Centered statement{{/match}}">
 
 	{{#match @custom.page_hero "Split hero"}}
 		{{> "error/a2"}}

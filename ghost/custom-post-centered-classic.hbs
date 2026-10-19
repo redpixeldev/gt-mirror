@@ -1,0 +1,12 @@
+{{!< default}}
+
+{{!-- A Layout override (ADR 0006): this Post in the Centered classic layout whatever `post_layout`
+says, chosen per post from the template picker. post.hbs follows the setting. --}}
+
+{{> "chrome/header"}}
+
+<main id="main" class="grow">
+	{{> "post/surface" layout="Centered classic"}}
+</main>
+
+{{> "chrome/footer"}}

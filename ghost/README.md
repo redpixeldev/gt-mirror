@@ -213,6 +213,40 @@ at `/` always and the feed at a URL of its own, upload `docs/routes.example.yaml
 theme's repository under **Settings → Labs → Routes** — it puts the feed at `/archive/`, and both
 pages then page independently. Nothing else about the theme changes either way.
 
+### One post, page or URL in the other layout
+
+Every layout setting picks a layout for the whole publication. Each layout is also a template, so
+one post, page or URL can have the other one regardless of the setting:
+
+- **Posts and pages**: in the post or page settings menu, **Template** lists both layouts of the
+  post and of About, Membership, the subject list and the writer list — _Post Title Page_, _About
+  Split Hero_, _Tags Cover Cards_ and so on. _Default_ follows the setting. Ghost gives a page
+  whose URL is `about`, `membership`, `tags`, `authors` or `recommendations` its own template
+  first, so on those five the menu has no effect; change the setting, or use another URL.
+- **Recommendations** has no such template: Ghost renders that list through a helper that passes
+  nothing through from the page, so it always follows **Directory layout**.
+- **The front page, the feed, a subject, a writer and the error page** have no settings menu, so
+  a route picks the layout instead, in **Settings → Labs → Routes**. The templates are
+  `layout-home-magazine-cover`, `layout-home-editorial-masthead`, `layout-feed-list`,
+  `layout-feed-grid`, `layout-tag-list`, `layout-tag-grid`, `layout-author-list`,
+  `layout-author-grid`, `layout-error-centered-statement` and `layout-error-split-hero`:
+
+  ```yaml
+  routes:
+    /gallery/:
+      controller: channel
+      template: layout-feed-grid
+    /essays-as-cards/:
+      controller: channel
+      filter: tag:essays
+      data: tag.essays
+      template: layout-tag-grid
+  ```
+
+  A subject or writer route needs `data:`, and Ghost then redirects that subject's own URL to the
+  route. A route answers 200, so the two error-page templates tell search engines not to index
+  them.
+
 ## Support and debugging
 
 **`?mode=light` / `?mode=dark`** on any URL forces that mode for the page view, ahead of both

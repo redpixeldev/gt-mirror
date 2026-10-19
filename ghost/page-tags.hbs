@@ -10,7 +10,8 @@ no duplicated markup. --}}
 <main
 	id="main"
 	class="grow"
-	data-surface="page-tags">
+	data-surface="page-tags"
+	data-layout="{{#match @custom.directory_layout "Cover cards"}}Cover cards{{else}}Editorial rows{{/match}}">
 
 	{{> "pages/tags" layout=@custom.directory_layout}}
 

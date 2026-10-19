@@ -1,0 +1,19 @@
+{{!< default}}
+
+{{!-- A Layout override (ADR 0006): the homepage Surface in the Editorial masthead layout whatever
+`homepage_layout` says. Inert until a routes.yaml entry names it as a template; home.hbs follows
+the setting. --}}
+
+{{> "chrome/header"}}
+
+<main
+	id="main"
+	class="grow"
+	data-surface="home"
+	data-layout="Editorial masthead">
+
+	{{> "home/surface" layout="Editorial masthead"}}
+
+</main>
+
+{{> "chrome/footer"}}

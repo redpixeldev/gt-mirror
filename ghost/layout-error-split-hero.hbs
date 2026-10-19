@@ -1,0 +1,23 @@
+{{!< default}}
+
+{{!-- A Layout override (ADR 0006): the error page in the Split hero layout whatever `page_hero`
+says, for a routes.yaml entry to name. Ghost has no route that renders an error template on
+request, so this answers 200 where error-404.hbs answers 404: hence the robots tag, which keeps a
+page that reads as a 404 out of search results, and the status passed in by hand, since a route
+carries none. error-404.hbs, which a missing URL actually reaches, follows the setting. --}}
+
+{{#contentFor "head"}}<meta name="robots" content="noindex">{{/contentFor}}
+
+{{> "chrome/header"}}
+
+<main
+	id="main"
+	class="flex grow items-center"
+	data-surface="error-404"
+	data-layout="Split hero">
+
+	{{> "error/a2" statusCode=404}}
+
+</main>
+
+{{> "chrome/footer" slim=true}}

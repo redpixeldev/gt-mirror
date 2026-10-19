@@ -1,0 +1,21 @@
+{{!< default}}
+
+{{!-- A Layout override (ADR 0006): the tag archive Surface in the List layout whatever
+`feed_layout` says. Inert until a routes.yaml entry names it as a template; tag.hbs follows
+the setting. Name it from a `controller: channel` route with `data: tag.{slug}`,
+which supplies the `tag`; a channel with `data:` redirects that Tag's own URL to itself. Not
+`tag-{layout}.hbs`: Ghost would resolve that for a Tag whose slug is the layout's name. --}}
+
+{{> "chrome/header"}}
+
+<main
+	id="main"
+	class="grow"
+	data-surface="tag"
+	data-layout="List">
+
+	{{> "tag/surface" layout="List"}}
+
+</main>
+
+{{> "chrome/footer"}}

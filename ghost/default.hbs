@@ -45,6 +45,9 @@
 		})();
 	</script>
 
+	{{!-- A template's own additions to <head>, via {{#contentFor "head"}}. Only the Layout
+	override templates for the error page use it, for their robots tag. --}}
+	{{{block "head"}}}
 	{{ghost_head}}
 
 </head>

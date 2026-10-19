@@ -1,0 +1,18 @@
+{{!< default}}
+
+{{!-- A Layout override (ADR 0006): this page in the Split hero layout whatever `page_hero`
+says, chosen per page from the template picker. custom-membership.hbs follows the setting. --}}
+
+{{> "chrome/header"}}
+
+<main
+	id="main"
+	class="grow"
+	data-surface="page-membership"
+	data-layout="Split hero">
+
+	{{> "pages/membership" layout="Split hero"}}
+
+</main>
+
+{{> "chrome/footer"}}

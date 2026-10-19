@@ -1,0 +1,18 @@
+{{!< default}}
+
+{{!-- A Layout override (ADR 0006): this page in the Cover cards layout whatever `directory_layout`
+says, chosen per page from the template picker. custom-tags.hbs follows the setting. --}}
+
+{{> "chrome/header"}}
+
+<main
+	id="main"
+	class="grow"
+	data-surface="page-tags"
+	data-layout="Cover cards">
+
+	{{> "pages/tags" layout="Cover cards"}}
+
+</main>
+
+{{> "chrome/footer"}}

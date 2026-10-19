@@ -1,0 +1,22 @@
+{{!< default}}
+
+{{!-- A Layout override (ADR 0006): the author Surface in the List layout whatever
+`feed_layout` says. Inert until a routes.yaml entry names it as a template; author.hbs follows
+the setting. Name it from a `controller: channel` route with
+`data: author.{slug}`, which supplies the `author`; a channel with `data:` redirects that Author's
+own URL to itself. Not `author-{layout}.hbs`: Ghost would resolve that for an Author whose slug
+is the layout's name. --}}
+
+{{> "chrome/header"}}
+
+<main
+	id="main"
+	class="grow"
+	data-surface="author"
+	data-layout="List">
+
+	{{> "author/surface" layout="List"}}
+
+</main>
+
+{{> "chrome/footer"}}
