@@ -34,6 +34,31 @@ document.addEventListener('alpine:init', () => {
 	});
 
 	/*
+	 * Which of the bar's submenus is open — chrome/nav-group.hbs. One at a time, keyed by the
+	 * parent item's slug, with a 200ms grace period on close so a diagonal move from a label down
+	 * to a lower item does not lose the panel. Ported from the reference build's `nav` store.
+	 */
+	Alpine.store('nav', {
+		open: null,
+		timer: 0,
+
+		show(key) {
+			clearTimeout(this.timer);
+			this.open = key;
+		},
+
+		hide() {
+			clearTimeout(this.timer);
+			this.timer = setTimeout(() => (this.open = null), 200);
+		},
+
+		hideNow() {
+			clearTimeout(this.timer);
+			this.open = null;
+		},
+	});
+
+	/*
 	 * The chrome's collapsed menu. One component on the <header>, so the burger, the bar and
 	 * the overlay all read the same open state.
 	 *

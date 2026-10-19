@@ -1,0 +1,23 @@
+{{!-- One menu item with no submenu, in the bar or the overlay.
+
+Called by chrome/nav-tree.hbs with the item as its context and `variant` alongside. The markup is
+the one these two shapes drew before submenus existed, so a flat menu renders as it always did.
+--}}
+{{!-- The current item's marker is an absolute `::after`, not a `border-b-2 pb-[3px]`: a border
+makes that one item 5px taller than its neighbours, and in the bar's `items-center` row that
+lifts its label off the line the rest of the menu sits on. A pseudo-element costs no layout, so
+every label stays on one line whether or not it is current. --}}
+{{#match variant "bar"}}
+	<a
+		href="{{url}}"
+		{{#if current}}aria-current="page"{{/if}}
+		class="font-ui relative text-[15px] no-underline {{#if current}}text-text after:bg-accent after:absolute after:inset-x-0 after:-bottom-[5px] after:h-[2px]{{else}}text-muted hover:text-text{{/if}}">{{> "chrome/nav-label" iconSize="h-[15px]"}}</a>
+{{/match}}
+
+{{#match variant "overlay"}}
+	<a
+		href="{{url}}"
+		{{#if current}}aria-current="page"{{/if}}
+		x-on:click="close()"
+		class="font-ui text-[17px] no-underline {{#if current}}text-accent{{else}}text-text hover:text-accent{{/if}}">{{> "chrome/nav-label" iconSize="h-[17px]"}}</a>
+{{/match}}

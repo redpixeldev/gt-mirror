@@ -1,0 +1,3 @@
+{{!-- A submenu item's label without its parent's name: "Feed / Grid" displays as "Grid". The last
+" / " segment, trimmed at both ends for the reason chrome/nav-label.hbs gives. --}}
+{{~#split label separator=" / "~}}{{~#foreach this~}}{{~#if @last~}}{{this}}{{~/if~}}{{~/foreach~}}{{~/split~}}

@@ -1,0 +1,38 @@
+{{!-- The primary menu as a tree, for the two shapes that can open a submenu: the bar and the
+overlay. Called from navigation.hbs, whose context — `navigation` and `variant` — it shares.
+
+THE CONVENTION IS IN THE LABELS. Ghost's menu is flat, so a submenu item names its parent:
+"Feed / Grid" belongs to the item labelled "Feed" and displays as "Grid". A label with no " / "
+is a top-level item. A buyer writes this in Settings → Navigation and nothing else.
+
+A PARENT IS AN ITEM WHOSE NEXT ITEM IS ONE OF ITS CHILDREN. Handlebars can test one item but
+cannot ask whether any item in a list matches, and a parent has to know before it draws itself —
+a dropdown carries aria-expanded and a panel, a plain link does not. So the test looks one item
+ahead (`from=@number limit=2` is this item and the next), and the rule a buyer follows is "put
+each submenu directly under its parent". The children themselves are then collected by prefix
+from anywhere in the menu. A child whose parent is missing, or whose parent is not followed by a
+child, renders nowhere. A flat menu renders exactly as it did before submenus existed.
+
+THE FRAMES ARE COUNTED, NOT GUESSED. Inside the outer loop, `../` is this partial's context.
+Inside the inner loop only the SECOND iteration renders anything, and there `../../` is this
+partial's context. The inner loop's first iteration is the outer item itself, the same object,
+and Handlebars pushes no frame for a context that has not changed — a path read there would
+resolve one level shallower than it looks, which is why nothing is read there. The last item has
+no next item, so the outer loop draws it directly. --}}
+{{#foreach navigation as |item|}}
+	{{#match item.label "~" " / "}}{{else}}
+		{{#if @last}}
+			{{> "chrome/nav-item" item variant=../variant}}
+		{{else}}
+			{{#foreach ../navigation from=@number limit=2}}
+				{{#unless @first}}
+					{{#match label "~^" (concat item.label " / ")}}
+						{{> "chrome/nav-group" item variant=../../variant items=../../navigation}}
+					{{else}}
+						{{> "chrome/nav-item" item variant=../../variant}}
+					{{/match}}
+				{{/unless}}
+			{{/foreach}}
+		{{/if}}
+	{{/match}}
+{{/foreach}}

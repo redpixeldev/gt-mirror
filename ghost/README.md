@@ -167,6 +167,14 @@ More settings arrive with the layouts they control; each one is documented here 
   secondary menu to put it in the footer.
 - Below 1200px the header collapses to a menu button, and the panel it opens carries search,
   the whole menu and the subscribe button.
+- **Submenus** are written in the labels. Name the parent in the child's label — `Feed / Grid`
+  belongs to the item labelled `Feed` and shows as `Grid` — and put the first child directly
+  under its parent in the list; the rest are collected wherever they sit. On a wide screen the
+  parent opens a panel on hover or keyboard focus, and its label still goes to its own URL;
+  give a parent the URL `#` and it becomes a heading that only opens its panel. Below 1200px the
+  panel lists each group under its heading. A child whose parent is missing, or whose parent is
+  not followed by a child, is not shown. The footer's **Sections** column lists only the
+  top-level items.
 - **Search is Ghost's own.** The ⌕ button in the header opens the platform's search on every page
   except sign-in and sign-up, which carry no chrome at all, and `⌘K` works wherever the button
   does. Nothing about the search index lives in this theme.

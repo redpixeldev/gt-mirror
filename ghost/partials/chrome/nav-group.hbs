@@ -1,0 +1,96 @@
+{{!-- One menu item with a submenu, in the bar or the overlay.
+
+Called by chrome/nav-tree.hbs with the parent item as its context, plus `variant` and `items` (the
+whole menu, from which the children are collected by their "Parent / " prefix). Inside the
+children loop `../label` is the parent's label: the loop's items are other objects, so the frame
+is always pushed.
+
+THE BAR is the reference build's NavDropdown, ported: the panel opens on hover AND on keyboard
+focus, so a pointer and a keyboard reach the same places; Escape closes it and puts focus back on
+the label (the reference build closed the panel around the focused item, which dropped focus to
+<body>; focusing the label first re-opens it through `focusin`, so the close comes second); focus
+leaving the group closes it (`relatedTarget` is checked, so moving between the label and its own
+panel does not); one panel is open at a time, with a 200ms grace period on close so a diagonal move
+from the label down to a lower item does not lose it. All of that state is the `nav` store in
+assets/js/main.js. The label still navigates, unless its URL is `#` — a parent that is only a
+heading, like the demo's Others — which renders as a button instead, and a click on that button
+opens the panel: that is how a keyboard brings it back after Escape. It opens rather than toggles,
+because a pointer has already opened it on the way in. The panel's box starts flush under the
+label and its visible 8px offset is its own transparent padding, so there is no dead zone to cross
+on the way down.
+
+The parent reads as current when it or any child is: `:has([aria-current=page])` on the group, so
+the marker is decided by the same flags Ghost computed for each item and nothing is compared twice.
+
+THE OVERLAY draws a group as a heading with its children listed under it, the reference build's
+mobile menu, because a panel that opens inside a full-screen panel is a second navigation problem.
+The heading is a link when the parent has a URL of its own, so a parent page stays reachable below
+the breakpoint too. Space opens above every group but the first, and below one that a plain item
+follows — without it a top-level link reads as the last child of the group above it. --}}
+{{#match variant "bar"}}
+	<div
+		class="group/nav relative"
+		x-on:mouseenter="$store.nav.show('{{slug}}')"
+		x-on:mouseleave="$store.nav.hide()"
+		x-on:focusin="$store.nav.show('{{slug}}')"
+		x-on:focusout="if (!$el.contains($event.relatedTarget)) $store.nav.hideNow()"
+		x-on:keydown.escape="$el.firstElementChild.focus(); $store.nav.hideNow()">
+		<{{#match url "~$" "#"}}button{{else}}a{{/match}}
+			{{#match url "~$" "#"}}type="button" x-on:click="$store.nav.show('{{slug}}')"{{else}}href="{{url}}"{{/match}}
+			{{#if current}}aria-current="page"{{/if}}
+			aria-haspopup="true"
+			aria-expanded="false"
+			aria-controls="nav-menu-{{slug}}"
+			x-bind:aria-expanded="($store.nav.open === '{{slug}}').toString()"
+			class="font-ui text-muted hover:text-text group-has-[[aria-current=page]]/nav:text-text group-has-[[aria-current=page]]/nav:after:bg-accent relative flex cursor-pointer items-center gap-1 border-0 bg-transparent p-0 text-[15px] no-underline after:absolute after:inset-x-0 after:-bottom-[5px] after:h-[2px]">{{> "chrome/nav-label" iconSize="h-[15px]"}}<span
+				aria-hidden="true"
+				class="text-[9px] leading-none opacity-70">▾</span></{{#match url "~$" "#"}}button{{else}}a{{/match}}>
+
+		<div
+			x-show="$store.nav.open === '{{slug}}'"
+			x-cloak
+			class="absolute top-full left-0 z-40 pt-2">
+			<div
+				id="nav-menu-{{slug}}"
+				class="border-border bg-surface min-w-[15rem] rounded-md border py-2 shadow-md">
+				<ul class="flex list-none flex-col">
+					{{#foreach items}}
+						{{#match label "~^" (concat ../label " / ")}}
+							<li>
+								<a
+									href="{{url}}"
+									{{#if current}}aria-current="page"{{/if}}
+									class="font-ui hover:bg-surface-2 block px-4 py-2 text-sm whitespace-nowrap no-underline {{#if current}}text-accent font-semibold{{else}}text-text{{/if}}">{{> "chrome/nav-child-label"}}</a>
+							</li>
+						{{/match}}
+					{{/foreach}}
+				</ul>
+			</div>
+		</div>
+	</div>
+{{/match}}
+
+{{#match variant "overlay"}}
+	<div class="not-first:pt-5 [&:has(+a)]:pb-5">
+		{{#match url "~$" "#"}}
+			<p class="font-meta text-meta tracking-meta text-muted uppercase">{{label}}</p>
+		{{else}}
+			<a
+				href="{{url}}"
+				{{#if current}}aria-current="page"{{/if}}
+				x-on:click="close()"
+				class="font-meta text-meta tracking-meta hover:text-accent uppercase no-underline {{#if current}}text-accent{{else}}text-muted{{/if}}">{{label}}</a>
+		{{/match}}
+		<div class="mt-3 flex flex-col gap-2.5">
+			{{#foreach items}}
+				{{#match label "~^" (concat ../label " / ")}}
+					<a
+						href="{{url}}"
+						{{#if current}}aria-current="page"{{/if}}
+						x-on:click="close()"
+						class="font-ui text-[17px] no-underline {{#if current}}text-accent{{else}}text-text hover:text-accent{{/if}}">{{> "chrome/nav-child-label"}}</a>
+				{{/match}}
+			{{/foreach}}
+		</div>
+	</div>
+{{/match}}
