@@ -21,6 +21,11 @@ The arrangement one Variant prescribes for one surface, e.g. A1's magazine cover
 masthead.
 _Avoid_: variant (a Layout is a Variant's treatment of a single surface, not a direction)
 
+**Layout override**:
+A single record's or route's choice of **Layout** that takes precedence over the publication's
+per-**Surface** choice.
+_Avoid_: variant page, forced layout, alternate template
+
 **Surface**:
 A distinct page kind a reader can be on — homepage, feed, post, tag archive, author, directory,
 about, membership, auth, error.
@@ -107,6 +112,11 @@ the theme manifest's `demo` field. A place, not a dataset.
 _Avoid_: demo (unqualified it also names **Demo content**), reference build (that is the Astro
 build), staging
 
+**Layout browser**:
+The **Demo site**'s menu that reaches every **Layout** of every **Surface**, plus an Others group for
+the Surfaces that have only one.
+_Avoid_: variant browser (its name in the **Reference build**), dropdown, demo menu
+
 **Day-one publication**:
 The one-**Author**, fifteen-**Post**, image-free, **Tag**-free publication on Ghost's own default
 configuration — what a buyer has before configuring anything.
@@ -138,8 +148,8 @@ The **Pixel identity** a Surface has already achieved and may not fall below.
 
 ## Relationships
 
-- A **Variant** prescribes one **Layout** per **Surface**; the theme ships both A **Layouts** and
-  lets the publication owner pick per Surface.
+- A **Variant** prescribes one **Layout** per **Surface**; the theme ships both A **Layouts**, lets
+  the publication owner pick per Surface, and lets a **Layout override** pick per record or route.
 - Every **Surface** renders in both **Modes**, so a Surface has two **Pixel identity** figures.
 - A **Post** has exactly one **Gate** state, decided by its access level against the reader's
   **Tier** — never by its **Layout**.
@@ -165,6 +175,8 @@ The **Pixel identity** a Surface has already achieved and may not fall below.
   the arrangement or by reassigning its content to a band that can hold it — never by dropping a
   **Post**, which is what separates it from an **Orphan**, where the chrome simply goes. Having no
   **Floor**, an Underset is judged by eye.
+- The **Layout browser** exists only on the **Demo site**: it reaches the second **Layout** of a
+  **Surface** through a **Layout override**, never by changing the publication's own choice.
 
 ## Example dialogue
 
@@ -217,3 +229,5 @@ The **Pixel identity** a Surface has already achieved and may not fall below.
 - "the layout breaks down on a minimal setup" named a publication and a defect at once, and the
   defect was neither an **Orphan** nor a pagination hole — resolved: the publication is the
   **Day-one publication**, the defect is an **Underset**.
+- "page variants" and "the dropdown" named the **Demo site**'s menu of every arrangement — resolved:
+  each arrangement is a **Layout**, and the menu is the **Layout browser**.

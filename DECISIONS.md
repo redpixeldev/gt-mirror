@@ -953,6 +953,10 @@ review affordance, not a publication's menu. The fixture seeds the menu the Surf
 — Archive, Subjects, Writers, About, Membership — because the theme renders
 `{{navigation}}` from the publication's own settings and a buyer edits it in admin.
 
+Still true of the fixture and the scored install. The **Demo site** now carries its own menu — the
+**Layout browser**, a demo-only overlay over this one — see
+[ADR 0006](docs/adr/0006-every-layout-is-pinnable-and-the-demo-browses-them.md).
+
 ### What the Ghost API would not do, and what it did instead
 
 Four findings, each of which changed the design of the importer:
