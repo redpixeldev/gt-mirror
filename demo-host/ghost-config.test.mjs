@@ -4,15 +4,13 @@ import { test } from 'node:test';
 import { ghostConfig } from './ghost-config.mjs';
 
 /* What Laravel Cloud injects into a Node environment with a MySQL database and a public bucket
- * attached, plus the AWS_URL the operator copies in by hand (Cloud does not inject it). */
+ * attached, plus the AWS_URL the operator copies in by hand (Cloud does not inject it). A Node app
+ * gets the database as one DATABASE_URL — the DB_HOST/DB_USERNAME/… family is what a Laravel app
+ * gets, and a Node deploy received none of it. The password here needs percent-decoding. */
 const cloud = {
 	PORT: '8080',
 	APP_URL: 'https://mirror-demo-main-abc123.laravel.cloud',
-	DB_HOST: 'db-123.us-east-2.public.db.laravel.cloud',
-	DB_PORT: '3306',
-	DB_USERNAME: 'ghost',
-	DB_PASSWORD: '01234',
-	DB_DATABASE: 'main',
+	DATABASE_URL: 'mysql://ghost:p%40ss%3A01234@db-123.us-east-2.public.db.laravel.cloud:3307/main',
 	AWS_BUCKET: 'fls-mirror-demo',
 	AWS_ENDPOINT_URL: 'https://acct.r2.cloudflarestorage.com',
 	AWS_REGION: 'auto',
@@ -28,9 +26,9 @@ test('Ghost talks to the attached MySQL database, not its default SQLite file', 
 		client: 'mysql',
 		connection: {
 			host: 'db-123.us-east-2.public.db.laravel.cloud',
-			port: 3306,
+			port: 3307,
 			user: 'ghost',
-			password: '01234',
+			password: 'p@ss:01234',
 			database: 'main',
 		},
 	});
@@ -86,14 +84,14 @@ test('routes.yaml and redirects survive a reboot because they live in the bucket
 });
 
 test('a missing variable stops the boot and names every one that is missing', () => {
-	const { AWS_URL, DB_PASSWORD, ...partial } = cloud;
+	const { AWS_URL, DATABASE_URL, ...partial } = cloud;
 	assert.throws(() => ghostConfig(partial, { contentPath: CONTENT }), {
-		message: 'missing environment variables: DB_PASSWORD, AWS_URL',
+		message: 'missing environment variables: DATABASE_URL, AWS_URL',
 	});
 });
 
-test('MySQL’s standard port is assumed when Cloud injects no DB_PORT', () => {
-	const { DB_PORT, ...withoutPort } = cloud;
+test('MySQL’s standard port is assumed when DATABASE_URL names none', () => {
+	const withoutPort = { ...cloud, DATABASE_URL: 'mysql://ghost:secret@db-123.example/main' };
 	assert.equal(ghostConfig(withoutPort, { contentPath: CONTENT }).database.connection.port, 3306);
 });
 

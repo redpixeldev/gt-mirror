@@ -1,7 +1,7 @@
 /*
  * Laravel Cloud's environment, as Ghost configuration.
  *
- * Cloud injects its own names (PORT, DB_*, AWS_*, APP_URL); Ghost reads only its own nested keys
+ * Cloud injects its own names (PORT, DATABASE_URL, AWS_*, APP_URL); Ghost reads only its own nested keys
  * and falls back without a word when one is absent — to SQLite, to local disk, to 127.0.0.1. On a
  * Cloud instance every one of those fallbacks is a silent failure: the disk is wiped on each deploy,
  * reboot and wake, and the startup probe arrives over IPv6. So the mapping is explicit and a
@@ -15,10 +15,7 @@
 const REQUIRED = [
 	'PORT',
 	'APP_URL',
-	'DB_HOST',
-	'DB_USERNAME',
-	'DB_PASSWORD',
-	'DB_DATABASE',
+	'DATABASE_URL',
 	'AWS_BUCKET',
 	'AWS_ENDPOINT_URL',
 	'AWS_REGION',
@@ -42,6 +39,10 @@ export function ghostConfig(env, { contentPath }) {
 		secretAccessKey: env.AWS_SECRET_ACCESS_KEY,
 	};
 
+	/* A Node app gets its database as one `mysql://user:pass@host:port/name` (the DB_HOST family
+	 * is a Laravel app's). Credentials are percent-encoded in a URL; Ghost wants them raw. */
+	const db = new URL(env.DATABASE_URL);
+
 	return {
 		url: env.APP_URL,
 		server: { host: '::', port: Number(env.PORT) },
@@ -52,11 +53,11 @@ export function ghostConfig(env, { contentPath }) {
 		database: {
 			client: 'mysql',
 			connection: {
-				host: env.DB_HOST,
-				port: Number(env.DB_PORT || 3306),
-				user: env.DB_USERNAME,
-				password: env.DB_PASSWORD,
-				database: env.DB_DATABASE,
+				host: db.hostname,
+				port: Number(db.port || 3306),
+				user: decodeURIComponent(db.username),
+				password: decodeURIComponent(db.password),
+				database: decodeURIComponent(db.pathname.slice(1)),
 			},
 		},
 		/* Keys carry no `content/` segment: Ghost rewrites `/content/images/` in the publication
