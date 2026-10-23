@@ -2,15 +2,16 @@
 	"name": "mirror",
 	"description": "MIRROR — an editorial theme for considered publications, in two layouts and two modes",
 	"demo": "https://mirror.redpixelthemes.com",
-	"version": "0.1.0",
+	"version": "1.0.0",
 	"engines": {
 		"ghost": ">=6.0.0",
 		"node": ">=22.12.0"
 	},
-	"license": "MIT",
+	"license": "SEE LICENSE IN LICENSE",
 	"author": {
-		"name": "MIRROR",
-		"email": "hello@example.com"
+		"name": "Red Pixel Themes",
+		"email": "hello@redpixelthemes.com",
+		"url": "https://redpixelthemes.com"
 	},
 	"gpm": {
 		"type": "theme",

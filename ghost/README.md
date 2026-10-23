@@ -262,6 +262,13 @@ the visitor's stored choice and the **Default appearance** setting. Nothing is w
 visitor's browser, so it is safe to send someone a link. It exists so a screenshot or a bug
 report can address a colour mode directly instead of describing it.
 
+## License
+
+One license covers one Ghost publication on one domain, with its staging and local copies. You
+may modify the theme for that publication but not redistribute or resell it. The full terms are
+in `LICENSE`. The fonts, Alpine.js and microlighter keep their own open-source licenses, listed in
+`THIRD-PARTY-NOTICES.md`.
+
 ## Development
 
 From the repository root, not from this directory:

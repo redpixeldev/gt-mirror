@@ -1,0 +1,42 @@
+MIRROR Theme License — Single Site
+
+Copyright (c) 2026 Red Pixel Themes <hello@redpixelthemes.com>. All rights reserved.
+
+This license covers the MIRROR theme for Ghost (the "Theme"): its templates, stylesheets, scripts,
+locale files and documentation. It does not cover the third-party components listed in
+THIRD-PARTY-NOTICES.md, which remain under their own licenses, and it does not cover the content of
+the demo site at https://mirror.redpixelthemes.com.
+
+1. GRANT. Each license you purchase lets you install and use the Theme on one Ghost publication,
+   served from one domain. Staging and local development copies of that same publication are
+   included.
+
+2. MODIFICATION. You may modify the Theme for use on that publication. Modified versions remain
+   subject to this license.
+
+3. CLIENT WORK. You may buy a license on behalf of a client for the client's publication. The
+   license then belongs to the client, and you may not use it for any other publication.
+
+4. RESTRICTIONS. You may not:
+   a. use one license for more than one publication;
+   b. redistribute, share, sublicense, sell, rent or give away the Theme or any modified version
+      of it, whether alone or as part of another theme, template, product or service;
+   c. make the Theme's files available for others to download, including in a public code
+      repository;
+   d. remove or alter this license or the copyright notices in the Theme.
+
+5. OWNERSHIP. The Theme is licensed, not sold. Red Pixel Themes keeps all copyright and other
+   rights in the Theme that this license does not expressly grant.
+
+6. TERMINATION. This license ends automatically if you breach it. You must then stop using the
+   Theme and delete every copy you hold.
+
+7. NO WARRANTY. The Theme is provided "as is", without warranty of any kind, express or implied,
+   including the warranties of merchantability, fitness for a particular purpose and
+   non-infringement.
+
+8. LIMITATION OF LIABILITY. To the extent the law allows, Red Pixel Themes is not liable for any
+   claim, damages or other liability arising from the Theme or its use, and its total liability
+   under this license is limited to the price you paid for it.
+
+Additional licenses for further publications are available from https://redpixelthemes.com.

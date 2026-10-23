@@ -4428,3 +4428,21 @@ The same run found `.venv` broken: Homebrew moved Python from 3.14 to 3.15 and t
 symlink pointed at the removed one, which failed `ghost:smoke` and `day-one` with
 `.venv/bin/python3: No such file or directory`. `python3 -m venv --clear .venv` and
 `pnpm verify:venv`'s two packages repair it.
+
+## MIRROR 1.0.0 is sold under a single-site license (2026-10)
+
+The theme goes on sale, so `ghost/package.json` is `1.0.0` and no longer MIT. `ghost/LICENSE` grants
+one Ghost publication on one domain per license, with its staging and local copies. It allows
+modification for that publication and transfer to a client, and forbids redistribution and resale.
+`license` is `SEE LICENSE IN LICENSE`, npm's spelling for custom terms, and gscan does not read the
+field. `author` is Red Pixel Themes, which Ghost admin shows, where it was a placeholder. The root
+`package.json` is `UNLICENSED`, and the repository went private: it was public, so every commit
+before this one stays MIT for anyone who already has it.
+
+The zip ships four components the theme does not own, and none of their notices shipped before.
+Newsreader and Archivo are under the SIL OFL 1.1, which must travel with the fonts. Alpine.js is
+MIT and bundled into `main.js`, and microlighter is MIT and copied into `assets/built/`.
+`ghost/THIRD-PARTY-NOTICES.md` carries their texts verbatim, the OFL from google/fonts and the MIT
+texts from each project, and `LICENSE` exempts them. `LICENSE` also excludes the Demo site's
+content. `dist/mirror-demo.zip` carries 27 Pexels photographs and is not a buyer deliverable. Check
+the Pexels terms before shipping it to anyone.
