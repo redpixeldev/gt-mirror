@@ -40,6 +40,7 @@ Surface's Floor, was taken with it. --}}
 				{{#if feature_image}}
 					<img
 						src="{{img_url feature_image size="xl"}}"
+						{{> "image-srcset" image=feature_image sizes="(min-width: 768px) 600px, 100vw"}}
 						{{#if feature_image_alt}}alt="{{feature_image_alt}}"{{else}}alt=""{{/if}}
 						decoding="async"
 						class="border-border block aspect-[4/3] w-full rounded-md border object-cover">

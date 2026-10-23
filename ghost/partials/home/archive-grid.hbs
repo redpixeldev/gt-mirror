@@ -72,6 +72,7 @@ divergence, recorded in DECISIONS.md. --}}
 				{{#if feature_image}}
 					<img
 						src="{{img_url feature_image size="m"}}"
+						{{> "image-srcset" image=feature_image sizes="(min-width: 768px) 480px, 100vw"}}
 						{{#if feature_image_alt}}alt="{{feature_image_alt}}"{{else}}alt=""{{/if}}
 						loading="lazy"
 						decoding="async"

@@ -1,0 +1,19 @@
+{{!-- The srcset and sizes of a fluid photograph, written inside the <img> tag:
+
+	<img src="{{img_url feature_image size="m"}}" {{> "image-srcset" image=feature_image sizes="(min-width: 768px) 460px, 100vw"}} …>
+
+Every candidate is one of package.json's image_sizes, in WebP, so the browser picks the smallest
+file that covers the slot at the screen's density. `ml` (800px) exists for phones: a ~372px card at
+2x needs 744px, which 600 misses and 960 overshoots by a third. The `src` stays a JPEG at the size
+the slot used to ask for, for anything that reads `src` alone.
+
+`sizes` is the slot's rendered width, measured on every Layout of every Surface at 390, 768, 1024,
+1440 and 1568px (DECISIONS.md, "Responsive images"). It errs wide, never narrow: a slot that says
+460px and renders 480px fetches a slightly blurry image, one that says 480px and renders 460px
+fetches a few kilobytes more.
+
+Ghost resizes on request and never enlarges, so a 1200px original answers the 2000w candidate with
+its own 1200px. An image Ghost does not host (an external URL) comes back unsized for every
+candidate, and the browser downloads it once. --}}
+srcset="{{img_url image size="s" format="webp"}} 320w, {{img_url image size="m" format="webp"}} 600w, {{img_url image size="ml" format="webp"}} 800w, {{img_url image size="l" format="webp"}} 960w, {{img_url image size="xl" format="webp"}} 1200w, {{img_url image size="xxl" format="webp"}} 2000w"
+sizes="{{sizes}}"

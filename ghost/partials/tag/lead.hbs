@@ -18,6 +18,7 @@ width and height are the design's own, and they are what keeps CLS at zero while
 		{{#if feature_image}}
 			<img
 				src="{{img_url feature_image size="xl"}}"
+				{{> "image-srcset" image=feature_image sizes="(min-width: 1312px) 1256px, 100vw"}}
 				{{#if feature_image_alt}}alt="{{feature_image_alt}}"{{else}}alt=""{{/if}}
 				width="1120"
 				height="630"

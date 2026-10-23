@@ -39,6 +39,7 @@ only difference is which meta fact leads, which is what this partial replaced. -
 			class="block">
 			<img
 				src="{{img_url feature_image size="m"}}"
+				{{> "image-srcset" image=feature_image sizes="(min-width: 768px) 460px, 100vw"}}
 				alt=""
 				loading="lazy"
 				decoding="async"
