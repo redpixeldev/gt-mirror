@@ -11,6 +11,7 @@ import { createRequire } from 'node:module';
 import { join } from 'node:path';
 
 import { ghostConfig } from './ghost-config.mjs';
+import { installNoTransform } from './no-transform.mjs';
 
 const here = import.meta.dirname;
 const env = process.env.NODE_ENV ?? 'production';
@@ -19,5 +20,6 @@ process.env.NODE_ENV = env;
 const config = ghostConfig(process.env, { contentPath: join(here, 'content') });
 writeFileSync(join(here, `config.${env}.json`), JSON.stringify(config, null, '\t') + '\n');
 
+installNoTransform();
 process.chdir(here);
 createRequire(import.meta.url)('./current/index.js');

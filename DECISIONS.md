@@ -4391,3 +4391,25 @@ Measured on the Demo site and the Reference build: 393px wide, cover 262px, h1 a
 ends at 735px of 852. 767px wide, cover 511px. 768px and 1568px wide, cover 520px, as before.
 Captures run at 1568px, so no Floor or Parity figure moves.
 
+## The Demo site's HTML says `no-transform`, so Cloudflare injects nothing (2026-10)
+
+Lighthouse gave the Demo site Best Practices 77 for "Uses deprecated APIs": `FencedFrame`, the
+persistent storage quota and Protected Audience, each charged to a first-party `main.js:1`. That
+file is not the theme's. It is Cloudflare's JavaScript Detections script,
+`/cdn-cgi/challenge-platform/scripts/jsd/main.js`, which the edge writes into every HTML page. Read
+from DevTools' deprecation issues, the live site reported all three from that URL. The local Demo
+site reported none, and its HTML has no `challenge-platform` reference.
+
+Two Cloudflare layers sit in front of the site: the `redpixelthemes.com` zone and Laravel Cloud's
+edge behind the `to.laravel.cloud` CNAME. Under Bot Fight Mode the injection cannot be turned off.
+An origin `Cache-Control: no-transform` stops it on either layer, so `demo-host/no-transform.mjs`
+adds the directive to every HTML response by wrapping Node's `writeHead`, because Ghost has no
+setting for extra directives. `start.mjs` installs it before Ghost loads, so Ghost's compression
+middleware wraps the patched `writeHead`. The directive also stops Cloudflare recompressing the
+page, which costs nothing because Ghost already compresses at the origin. Assets do not get it.
+
+Verified on a copy of the local Demo site with the patch loaded: home, a post and a 404 carry
+`no-transform` with `Content-Encoding: br`. `screen.css` keeps `public, max-age=31536000` alone.
+`demo-host/no-transform.test.mjs` runs in `pnpm demo-host:test`. Not verified: the live site, which
+needs a deploy.
+
