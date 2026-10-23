@@ -15,7 +15,7 @@ const { post } = Astro.props;
 		alt={post.alt}
 		fetchpriority='high'
 		decoding='async'
-		class='block h-[min(58vh,520px)] w-full object-cover'
+		class='max-stack:aspect-[3/2] max-stack:h-auto block h-[min(58vh,520px)] w-full object-cover'
 	/>
 	<figcaption class='font-ui text-muted container py-3 text-[13px]'>{post.caption}</figcaption>
 </figure>

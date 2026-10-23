@@ -8,7 +8,10 @@ an empty one must not leave a 40px band of padding behind.
 
 `h-[min(58vh,520px)]` is the design's own height. It is viewport-relative on purpose, which
 is worth knowing when reading a capture: the screenshot's window is as tall as the page, so
-58vh always resolves past the 520px cap there. --}}
+58vh always resolves past the 520px cap there. Below `stack` the photo is `aspect-[3/2]`
+instead: 58vh of a phone is a portrait box (494px tall at 393×852) that pushes the titling
+under the fold and crops a landscape photo to its middle third. 3/2 is 511px at 767px wide,
+so it meets the 520px cap at the breakpoint without a jump. --}}
 {{#if feature_image}}
 	<figure class="border-border m-0 border-b">
 		<img
@@ -16,7 +19,7 @@ is worth knowing when reading a capture: the screenshot's window is as tall as t
 			{{#if feature_image_alt}}alt="{{feature_image_alt}}"{{else}}alt=""{{/if}}
 			fetchpriority="high"
 			decoding="async"
-			class="block h-[min(58vh,520px)] w-full object-cover">
+			class="max-stack:aspect-[3/2] max-stack:h-auto block h-[min(58vh,520px)] w-full object-cover">
 
 		{{#if feature_image_caption}}
 			<figcaption class="font-ui text-muted container py-3 text-[13px]">{{{feature_image_caption}}}</figcaption>

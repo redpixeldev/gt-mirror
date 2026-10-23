@@ -4370,3 +4370,24 @@ R2: fresh boot with schema creation 4.4 s; `pnpm demo:cloud` 31/31 `demo:smoke`;
 re-seed, routes coming from the bucket; a re-seed uploads 0 of 27 images. `pnpm demo-host:test`
 11 tests, in the gate. Not verified: anything on Cloud itself — Node 22's patch level, R2's
 behaviour against MinIO's, Laravel MySQL's TLS requirement, and Plunk SMTP.
+
+## A1's post cover is 3/2 on a phone (2026-10)
+
+Reported from a 393×852 viewport: the cover filled the screen and the excerpt barely reached the
+fold. `h-[min(58vh,520px)]` is the design's height at 1568px. On a phone it resolves to a 494px
+portrait box, which crops a landscape photo to its middle third and puts the eyebrow at about 640px.
+Below `stack` the photo is now `aspect-[3/2]` (`max-stack:aspect-[3/2] max-stack:h-auto`), in
+`ghost/partials/post/hero.hbs` and `src/components/post/PostHero.astro` alike.
+
+- **Why an aspect ratio, not a smaller vh.** It follows the width, so a phone held sideways gets
+  the same proportion instead of a strip about 141px tall, and the crop no longer moves with the
+  browser chrome.
+- **Why 3/2.** It measures 511px at 767px wide, against the 520px cap at 768, so the breakpoint has
+  no jump. 4/3 would be 575px at 767 and drop by 55px crossing it.
+- **Not changed:** the homepage's A1 cover, whose titling sits on the photo and is above the fold
+  already, and the 64px `pt-16` above the eyebrow.
+
+Measured on the Demo site and the Reference build: 393px wide, cover 262px, h1 at 444px, byline
+ends at 735px of 852. 767px wide, cover 511px. 768px and 1568px wide, cover 520px, as before.
+Captures run at 1568px, so no Floor or Parity figure moves.
+
