@@ -28,10 +28,13 @@ migrated from the VPS. Only the Demo site moves; the three harness Ghosts stay l
   `routes.yaml`, `S3RedirectsStore` for redirects — so no third-party adapter, and a routes upload
   through Admin or `upload-routes.mjs` persists as on any Ghost. The public bucket makes
   `routes.yaml` publicly readable; it is the Demo site's public routing anyway.
-- Bucket keys carry no `content/` segment (`images/…`, not `content/images/…`). Ghost rewrites
-  `/content/images/` in the publication icon's URL into a `/size/w256h256/` path only its local
-  resizer can serve; on a bucket that is a 404 favicon on every page. With `urls.image` unset,
-  Ghost treats bucket URLs as external, so `img_url` serves originals rather than resized copies.
+- Image keys sit under `content/images/`, with `urls.image` set to the bucket, so `img_url` builds
+  the same `/size/…` URLs on the Demo site as on a buyer's Ghost. The bucket cannot resize, so
+  `demo-host/presize.mjs` uploads every size those URLs can name, the publication icon's
+  `w256h256` included, made by Ghost's own transform, with a year-long Cache-Control. It runs on
+  the Cloud environment as the last step of `pnpm demo:cloud`. An image uploaded through Admin has
+  no sizes until it runs again. (Until 2026-10 keys had no `content/` segment, which kept the
+  favicon from 404ing but left every image unsized; see DECISIONS.md.)
 - Ghost stores absolute image URLs, so moving the bucket means re-seeding.
 - Content is seeded by `pnpm demo:cloud`, which creates the owner, activates MIRROR, and runs the
   `pnpm demo` pipeline against the Cloud URL with its own session and image map. It needs

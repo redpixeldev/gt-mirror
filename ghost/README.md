@@ -382,8 +382,10 @@ One-time setup, in the Cloud dashboard:
 
 Then deploy, and seed on the `*.laravel.cloud` address. `pnpm demo:cloud` creates the owner from
 `DEMO_CLOUD_ADMIN_EMAIL` / `DEMO_CLOUD_ADMIN_PASSWORD` in `.env` (not the local harness's login:
-this one is public, and password-only), activates MIRROR, runs the Demo import and routes, and ends
-with `demo:smoke`. It is safe to re-run.
+this one is public, and password-only), activates MIRROR, runs the Demo import and routes, makes
+every image size on the environment (`demo-host/presize.mjs`, through `cloud command:run`; the
+bucket cannot resize), and ends with `demo:smoke`. It is safe to re-run. `--environment` takes the
+environment's ID from `cloud environment:list mirror-demo --json`.
 
 Pages sit in Cloud's edge cache for an hour, and that includes the first seed: any visit before it
 caches Ghost's default theme, and the routes check inside `demo:cloud` then fails with
@@ -393,7 +395,7 @@ does not mean the page was not cached — a purge still cleared it.
 
 ```bash
 cloud deploy mirror-demo main -n && cloud deploy:monitor -n
-pnpm demo:cloud --base https://<environment>.laravel.cloud
+pnpm demo:cloud --base https://<environment>.laravel.cloud --environment env-<id>
 ```
 
 To move `mirror.redpixelthemes.com` across: attach it as a custom domain, set `url` to it on the

@@ -53,21 +53,28 @@ const bucket = {
 	secretAccessKey: 'secret',
 };
 
-/* No `content/` in the keys. Ghost rewrites a `/content/images/` segment into `/size/w256h256/`
- * for the publication icon (core/server/lib/image/blog-icon.js), a path only Ghost's own
- * on-demand resizer can answer; on the bucket it is a 404 favicon on every page. */
-test('uploads land in the bucket under keys Ghost will not rewrite into resize paths', () => {
+/* Under `content/images/`: it is the segment Ghost splits on to insert `/size/w…/`
+ * (frontend/utils/images.js getImageWithSize), so without it every theme size is the original. */
+test('uploads land under content/images/, where Ghost can build size URLs into them', () => {
 	assert.deepEqual(ghostConfig(cloud, { contentPath: CONTENT }).storage, {
 		active: 'S3Storage',
 		media: { adapter: 'S3Storage', staticFileURLPrefix: 'media' },
 		files: { adapter: 'S3Storage', staticFileURLPrefix: 'files' },
 		S3Storage: {
 			...bucket,
-			staticFileURLPrefix: 'images',
+			staticFileURLPrefix: 'content/images',
 			cdnUrl: 'https://fls-mirror-demo.laravel.cloud/',
 			multipartUploadThresholdBytes: 52428800,
 			multipartChunkSizeBytes: 10485760,
 		},
+	});
+});
+
+/* Without `urls.image` Ghost treats a bucket URL as external and `img_url` returns it unsized,
+ * whatever the theme asks for (core/server/adapters/storage/utils.js isInternalImage). */
+test('bucket images count as Ghost’s own, so img_url sizes them', () => {
+	assert.deepEqual(ghostConfig(cloud, { contentPath: CONTENT }).urls, {
+		image: 'https://fls-mirror-demo.laravel.cloud',
 	});
 });
 

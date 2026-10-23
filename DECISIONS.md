@@ -4446,3 +4446,49 @@ MIT and bundled into `main.js`, and microlighter is MIT and copied into `assets/
 texts from each project, and `LICENSE` exempts them. `LICENSE` also excludes the Demo site's
 content. `dist/mirror-demo.zip` carries 27 Pexels photographs and is not a buyer deliverable. Check
 the Pexels terms before shipping it to anyone.
+
+## Responsive images, and a Demo site that serves them (2026-10)
+
+PageSpeed Insights (mobile) gave the Demo site LCP 9.3 s and Speed Index 3.8 s. The LCP element was
+the homepage cover. The same Lighthouse 13.5 run here read LCP 10.1 s, SI 3.7 s, with 1,874 KiB of
+images. Two separate faults.
+
+**The theme had no srcset.** Each photograph asked for one `image_sizes` width, and both covers
+asked for `xxl` (2000px) on every screen. Blocking requests one at a time on the local Demo site
+(which resizes) ranked the causes: blocking every image but the cover took LCP from 6.7 s to
+4.9 s, blocking the fonts to 6.1 s, blocking Ghost's Portal and search scripts did nothing.
+`partials/image-srcset.hbs` now gives every fluid photograph a WebP srcset over the theme's sizes,
+and each call site a `sizes` taken from the slot's widest rendered width on any Layout at 390,
+768, 1024, 1440 and 1568px. A new `ml` size (800px) exists for phones: a ~372px card at 2x needs
+744px, and between `m` (600) and `l` (960) the browser took 960. Fixed-size images (avatars,
+portraits, logo, the 116px thumbnail) were already at 2–3x and are unchanged, as is the
+recommendation card, whose image is another site's and never resized. The Reference build serves
+static files and has no resizer, so it does not change.
+
+The home cover's `sizes` is `100vw`, which undercounts when a landscape photograph fills the
+portrait 76vh box on a phone: the browser picks by width, and the crop then upscales. The Demo
+site's cover is portrait, so it does not show there. A publication with a landscape cover
+photograph gets a slightly soft cover on phones.
+
+Local Demo site, homepage: LCP 6.7 s → 3.8–4.5 s, images 1,050 → 526 KiB.
+
+**The Demo site resized nothing.** Bucket keys had no `content/` segment, and that is the segment
+`getImageWithSize` splits on to insert `/size/…`. So every size came back as the 1200px original,
+and the bucket sent no Cache-Control. Keys are now under `content/images/`, `urls.image` is the
+bucket, and `demo-host/presize.mjs` uploads every size Ghost can name: theme sizes in both formats,
+Ghost's content and internal sizes, with a year-long Cache-Control on every size and every original.
+It uses Ghost's own `@tryghost/image-transform` with Ghost's options from the `_o` original Ghost
+keeps: the 800px WebP cover came out 130,892 bytes, byte-identical to local Ghost's resizer. Routing
+sizes through Ghost instead was ruled out: `S3Storage.serve()` 301s every image to the bucket and
+`saveRaw` stores no Content-Type. The publication icon's `w256h256` is among the sizes, which fixes
+the favicon 404 the old key layout existed to avoid (ADR 0007, amended).
+
+Proved on the deploy unit itself, with Herd MySQL and MinIO standing in for R2. After a seed, the
+six main Surfaces link 150 bucket URLs, 147 of them sizes, and all 147 were 404. After
+`presize.mjs` (27 images × 22 sizes, 594 made, 11 s) all 150 answer 200 with the right
+Content-Type. A second run made nothing. Homepage LCP on that stand-in: 4.6 s.
+
+The cutover re-uploads everything: the Cloud image map (`scripts/ghost/uploaded-images-cloud.json`,
+untracked) caches the old `images/…` URLs, and `import.mjs` reuses any cached URL that still
+answers 200, so it has to be deleted once. The old `images/` objects stay in the bucket,
+unreferenced.

@@ -1,8 +1,8 @@
 /*
  * Seed the Demo site on Laravel Cloud from the repo, and prove it.
  *
- *   node --env-file=.env scripts/ghost/demo-cloud.mjs --base https://mirror-demo-main-xxxx.laravel.cloud
- *   (pnpm demo:cloud --base …)
+ *   node --env-file=.env scripts/ghost/demo-cloud.mjs --base https://mirror-demo-main-xxxx.laravel.cloud --environment env-…
+ *   (pnpm demo:cloud --base … --environment …; the ID is in `cloud environment:list <app> --json`)
  *
  * The Cloud Demo site is derived state (docs/adr/0007): nothing on it is migrated, all of it is
  * rebuilt from demo-overlay.mjs and the fixture. This is the same pipeline as `pnpm demo`, pointed
@@ -16,16 +16,25 @@
  * ITS OWN SESSION AND IMAGE MAP, because both are per install (`admin.mjs`, `import.mjs`). Re-running
  * is safe — the import is idempotent and the map stops the photographs being uploaded twice.
  *
+ * THE IMAGE SIZES ARE MADE ON CLOUD. The bucket cannot resize, so demo-host/presize.mjs uploads every
+ * size Ghost can link to. It runs on the environment through `cloud command:run`, where the bucket
+ * credentials and Ghost's own transform already are, after the import has uploaded the photographs
+ * and before the smoke run looks at the pages.
+ *
  * Cloud's edge caches pages for an hour (ghost-config.mjs). A first seed has nothing cached; after
  * a re-seed, purge the edge cache or redeploy before trusting what a browser shows.
  */
 import { execFileSync } from 'node:child_process';
 
-const flag = process.argv.indexOf('--base');
-if (flag < 0 || !process.argv[flag + 1]) {
-	throw new Error('usage: demo-cloud.mjs --base <Cloud site url>');
+const arg = (name) => {
+	const at = process.argv.indexOf(name);
+	return at < 0 ? null : process.argv[at + 1];
+};
+const base = arg('--base')?.replace(/\/$/, '');
+const environment = arg('--environment');
+if (!base || !environment) {
+	throw new Error('usage: demo-cloud.mjs --base <Cloud site url> --environment <Cloud environment ID>');
 }
-const base = process.argv[flag + 1].replace(/\/$/, '');
 
 const email = process.env.DEMO_CLOUD_ADMIN_EMAIL;
 const password = process.env.DEMO_CLOUD_ADMIN_PASSWORD;
@@ -69,4 +78,5 @@ const run = (...args) => execFileSync(args[0], args.slice(1), { stdio: 'inherit'
 run('pnpm', '-s', 'ghost:demo');
 run('node', 'scripts/ghost/import.mjs', '--fixture', 'dist/mirror-demo-fixture.json', '--prune');
 run('node', 'scripts/ghost/upload-routes.mjs', '--routes', 'dist/mirror-demo-routes.yaml');
+run('cloud', 'command:run', environment, '--cmd', 'node presize.mjs', '-n');
 run('node', 'scripts/ghost/demo-smoke.mjs', '--base', base);

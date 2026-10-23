@@ -50,6 +50,9 @@ export function ghostConfig(env, { contentPath }) {
 		caching: { frontend: { maxAge: 3600 } },
 		security: { staffDeviceVerification: false },
 		logging: { transports: ['stdout'] },
+		/* Bucket URLs count as Ghost's own images only under `urls.image` (storage/utils.js
+		 * isInternalImage); anything else is external, and `img_url` returns it unsized. */
+		urls: { image: env.AWS_URL.replace(/\/+$/, '') },
 		database: {
 			client: 'mysql',
 			connection: {
@@ -60,16 +63,17 @@ export function ghostConfig(env, { contentPath }) {
 				database: decodeURIComponent(db.pathname.slice(1)),
 			},
 		},
-		/* Keys carry no `content/` segment: Ghost rewrites `/content/images/` in the publication
-		 * icon's URL into a `/size/w256h256/` path (core/server/lib/image/blog-icon.js) that only its
-		 * local, on-demand resizer can serve. The bucket has no resizer, so that would be a 404. */
+		/* Images live under `content/images/` because that segment is what Ghost splits on to insert
+		 * `/size/w…/` (frontend/utils/images.js getImageWithSize) — without it no size URL can be
+		 * built. The bucket has no resizer, so presize.mjs uploads every size those URLs name,
+		 * including the publication icon's `/size/w256h256/` (core/server/lib/image/blog-icon.js). */
 		storage: {
 			active: 'S3Storage',
 			media: { adapter: 'S3Storage', staticFileURLPrefix: 'media' },
 			files: { adapter: 'S3Storage', staticFileURLPrefix: 'files' },
 			S3Storage: {
 				...bucket,
-				staticFileURLPrefix: 'images',
+				staticFileURLPrefix: 'content/images',
 				cdnUrl: env.AWS_URL,
 				multipartUploadThresholdBytes: 50 * 1024 * 1024,
 				multipartChunkSizeBytes: 10 * 1024 * 1024,
