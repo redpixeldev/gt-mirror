@@ -4492,3 +4492,15 @@ The cutover re-uploads everything: the Cloud image map (`scripts/ghost/uploaded-
 untracked) caches the old `images/…` URLs, and `import.mjs` reuses any cached URL that still
 answers 200, so it has to be deleted once. The old `images/` objects stay in the bucket,
 unreferenced.
+
+**On Cloud the first run failed.** It made 210 of the 594 sizes, then exited 1 with no output.
+Ghost was refusing connections and restarted at 18:51:10, four seconds after the command ended, so
+`demo:smoke` read 503s (3/31). The instance is `flex-512mb`, and the command runs beside Ghost. No
+log line names an out-of-memory kill, so that cause is inferred, not shown. Locally, resizing all
+of a photograph's sizes at once peaked at 134–143 MiB RSS, and one at a time at 78–83 MiB. Turning
+off sharp's cache changed nothing measurable. `presize.mjs` now resizes one at a time. The re-run
+finished the remaining 384 with exit 0, and every one of the 166 bucket URLs on the six main
+Surfaces answers 200.
+
+Laravel Cloud's environment had **push-to-deploy on**, against this README's setup, so each push
+deployed twice: once from the push, once from the manual `cloud deploy`.

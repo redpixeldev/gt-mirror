@@ -110,33 +110,34 @@ async function main() {
 		counts.present += wanted.length - missing.length;
 		const source = missing.length ? await read(keys.has(originalOf(key)) ? originalOf(key) : key) : null;
 
-		await Promise.all(
-			missing.map(async (variant) => {
-				const Key = variantKey(key, variant);
-				const resize =
-					transform.canTransformFileExtension(ext) &&
-					(variant.format ? transform.canTransformToFormat(variant.format) : transform.shouldResizeFileExtension(ext));
-				const Body = resize
-					? await transform.resizeFromBuffer(source.body, {
-							withoutEnlargement: ext !== '.svg',
-							width: variant.width,
-							height: variant.height,
-							format: variant.format,
-							timeout: 10,
-						})
-					: source.body;
-				await client.send(
-					new s3.PutObjectCommand({
-						Bucket,
-						Key,
-						Body,
-						ContentType: resize && variant.format ? `image/${variant.format}` : source.type,
-						CacheControl: CACHE_CONTROL,
-					}),
-				);
-				counts[resize ? 'made' : 'copied'] += 1;
-			}),
-		);
+		/* One resize at a time. This runs beside the live Ghost on a 512 MiB instance: resizing every
+		 * size of a photograph at once peaked ~60 MiB higher (measured: ~140 vs ~80 MiB), and the
+		 * first Cloud run, which did, died with exit 1 at the moment Ghost restarted. */
+		for (const variant of missing) {
+			const Key = variantKey(key, variant);
+			const resize =
+				transform.canTransformFileExtension(ext) &&
+				(variant.format ? transform.canTransformToFormat(variant.format) : transform.shouldResizeFileExtension(ext));
+			const Body = resize
+				? await transform.resizeFromBuffer(source.body, {
+						withoutEnlargement: ext !== '.svg',
+						width: variant.width,
+						height: variant.height,
+						format: variant.format,
+						timeout: 10,
+					})
+				: source.body;
+			await client.send(
+				new s3.PutObjectCommand({
+					Bucket,
+					Key,
+					Body,
+					ContentType: resize && variant.format ? `image/${variant.format}` : source.type,
+					CacheControl: CACHE_CONTROL,
+				}),
+			);
+			counts[resize ? 'made' : 'copied'] += 1;
+		}
 
 		for (const Key of [key, originalOf(key)].filter((k) => keys.has(k))) {
 			const head = await client.send(new s3.HeadObjectCommand({ Bucket, Key }));
