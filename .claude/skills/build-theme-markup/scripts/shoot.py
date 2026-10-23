@@ -1,11 +1,30 @@
 #!/usr/bin/env python3
-"""Capture full-height screenshots with headless Chrome, several at a time.
+"""Capture full-height screenshots with headless Chrome, one page at a time by default.
 
     python3 shoot.py --jobs jobs.json --out-dir shots
     python3 shoot.py --url http://localhost:4380/homepage-01 --out shots/hp.png --height 4000
 
 jobs.json is a list of `{"url", "out", "height", "width"?}`. `width` defaults to
---width (1568, the design source's canvas).
+--width (1568, the design source's canvas). `--base` replaces the origin of every
+job URL, so a committed jobs file records which pages to shoot at which height and
+the caller says where that origin is today — a jobs file naming a port nobody serves
+any more is a jobs file nobody can run.
+
+`--concurrency` DEFAULTS TO 1, AND RAISING IT MAKES CAPTURES WRONG, NOT JUST SLOW. At 4 the
+origin occasionally serves a page whose stylesheet arrives partly applied: the site header's
+navigation renders as an unstyled vertical list, which is 50px taller, which moves every band
+below it out of register. Measured: the same page captured alone six times is byte-identical, and
+two full 36-shot runs at `--concurrency 1` are byte-identical on all 36; at 4 they are not.
+
+EVERY JOB IS CAPTURED TWICE AND THE RUN FAILS UNLESS THE TWO FILES MATCH, because serialising the
+captures narrowed that failure without closing it. A later run — at `--concurrency 1` — produced a
+page whose two author avatars came out as Chrome's broken-image placeholder, and it scored five
+hundredths of a point away from the truth rather than obviously wrong. Nothing about a finished PNG
+says the page finished: `--virtual-time-budget` settles a failed subresource exactly as it settles
+a loaded one. Two captures of a page that renders deterministically are identical to the byte, so
+the compare is the only completeness test available here that does not depend on knowing what the
+page was supposed to contain. The second pass runs after the whole first pass, so the two are as
+far apart in time as the run allows.
 
 Every job gets its own `--user-data-dir`; Chrome refuses to run concurrent instances
 against a shared profile and will silently drop all but the first.
@@ -27,17 +46,20 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import shutil
 import subprocess
 import sys
 import time
+import urllib.parse
 
 CHROME_CANDIDATES = [
     '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome',
     '/Applications/Chromium.app/Contents/MacOS/Chromium',
     '/usr/bin/google-chrome',
-    '/usr/bin/chromium',
     '/usr/bin/chromium-browser',
 ]
+
+REPEAT_SUFFIX = '.repeat.png'
 
 
 def find_chrome(explicit: str | None) -> str:
@@ -49,10 +71,29 @@ def find_chrome(explicit: str | None) -> str:
     raise SystemExit('Chrome not found — pass --chrome /path/to/chrome')
 
 
+def complete_png(path: str) -> bool:
+    """True once `path` is a PNG that has been written all the way to its IEND chunk."""
+    try:
+        with open(path, 'rb') as f:
+            f.seek(-12, os.SEEK_END)
+            return f.read()[4:8] == b'IEND'
+    except OSError:
+        return False
+
+
 def launch(chrome: str, url: str, out: str, width: int, height: int, profile: str, budget: int):
     os.makedirs(os.path.dirname(out) or '.', exist_ok=True)
     if os.path.exists(out):
         os.remove(out)
+    # A CAPTURE MUST NOT INHERIT ANOTHER RUN'S CACHE. Reusing a profile looks like a kindness — the
+    # images come from disk and the run is faster — until one of them caches a failed response.
+    # Then that profile renders a broken image on every run from then on, identically, so it reads
+    # as a property of the page rather than of the cache. That is exactly what happened: 507MB of
+    # profiles had accumulated, one of them held a bad entry for an author's avatar, and the gated
+    # dark row was five hundredths of a point wrong in run after run until the tree was deleted.
+    # Only this job's own directory is removed, so a caller who points --profiles somewhere of
+    # their own loses nothing else.
+    shutil.rmtree(profile, ignore_errors=True)
     cmd = [
         chrome,
         '--headless=old',
@@ -78,9 +119,25 @@ def main() -> int:
     p.add_argument('--width', type=int, default=1568, help="the design canvas width (default 1568)")
     p.add_argument('--out-dir', default='.', help='prefix for relative `out` paths in --jobs')
     p.add_argument('--profiles', default='', help='where to put Chrome profiles (default <out-dir>/.profiles)')
-    p.add_argument('--concurrency', type=int, default=4)
+    p.add_argument(
+        '--concurrency',
+        type=int,
+        default=1,
+        help='pages at once; above 1 the origin can serve a partly applied stylesheet (see above)',
+    )
     p.add_argument('--budget', type=int, default=28000, help='virtual-time budget in ms')
-    p.add_argument('--timeout', type=int, default=180, help='seconds to wait for all shots')
+    p.add_argument(
+        '--timeout',
+        type=int,
+        default=1200,
+        help='seconds to wait for all shots; a 36-job run is 72 captures and takes about 220',
+    )
+    p.add_argument(
+        '--once',
+        action='store_true',
+        help='capture each job once and skip the stability compare — for iterating, never for a recorded run',
+    )
+    p.add_argument('--base', help='replace the origin of every job URL, e.g. http://localhost:4380')
     args = p.parse_args()
 
     if args.jobs:
@@ -91,12 +148,24 @@ def main() -> int:
     else:
         raise SystemExit('pass --jobs, or both --url and --out')
 
+    if args.base:
+        origin = args.base.rstrip('/')
+        for job in jobs:
+            job['url'] = origin + urllib.parse.urlsplit(job['url'])._replace(scheme='', netloc='').geturl()
+
     chrome = find_chrome(os.environ.get('CHROME_BIN'))
     profiles = args.profiles or os.path.join(args.out_dir, '.profiles')
     for job in jobs:
         job['out'] = job['out'] if os.path.isabs(job['out']) else os.path.join(args.out_dir, job['out'])
 
-    pending, running = list(enumerate(jobs)), []
+    # Every job is captured TWICE, into separate profiles and separated in time by the whole first
+    # pass, and the run fails unless the two files are byte-identical. See the note at the top: a
+    # capture that dropped one image scores like a page that moved, and nothing about a finished PNG
+    # says the page finished. The compare is what turns that into a failure instead of a number.
+    repeats = [{**job, 'out': job['out'] + REPEAT_SUFFIX, 'first': job['out']} for job in jobs]
+    queue = jobs if args.once else jobs + repeats
+
+    pending, running = list(enumerate(queue)), []
     deadline = time.time() + args.timeout
     while pending or running:
         while pending and len(running) < args.concurrency:
@@ -114,17 +183,116 @@ def main() -> int:
         time.sleep(1)
         for entry in list(running):
             proc, job = entry
-            if proc.poll() is not None or os.path.exists(job['out']):
+            # Chrome with --screenshot writes the file and then does NOT exit, so the file is the
+            # completion signal — but the file APPEARS while it is still being written, and
+            # terminating on the strength of its existence truncates it. `complete_png` waits for
+            # the IEND chunk, which is the end of a PNG by definition.
+            if proc.poll() is not None or complete_png(job['out']):
                 if proc.poll() is None:
                     proc.terminate()
                 running.remove(entry)
                 size = os.path.getsize(job['out']) if os.path.exists(job['out']) else 0
-                print(f'{"ok " if size else "MISS"} {job["out"]}  {size:,} bytes  <- {job["url"]}')
+                label = 'again' if 'first' in job else ('ok ' if size else 'MISS')
+                print(f'{label} {job["out"]}  {size:,} bytes  <- {job["url"]}')
         if time.time() > deadline:
             for proc, job in running:
                 proc.terminate()
                 print(f'TIMEOUT {job["out"]} <- {job["url"]}')
             return 1
+
+    return 0 if args.once else compare(repeats)
+
+
+def jitter(first: str, second: str) -> tuple[int, int] | None:
+    """
+    How far two captures of one URL differ: (pixels touched, worst per-pixel channel delta).
+
+    None where they cannot be compared at all — a missing file or a different size, both of which
+    are failures of a different kind and are reported as unbounded.
+    """
+    from PIL import Image
+    import numpy as np
+
+    if not (os.path.exists(first) and os.path.exists(second)):
+        return None
+    a = np.asarray(Image.open(first).convert('RGB'), dtype=np.int16)
+    b = np.asarray(Image.open(second).convert('RGB'), dtype=np.int16)
+    if a.shape != b.shape:
+        return None
+    delta = np.abs(a - b)
+    return int(np.count_nonzero(delta.max(axis=2))), int(delta.max())
+
+
+"""
+What counts as the same capture twice.
+
+Byte equality was the first rule and it was too strong. A real browser rasterises a rounded corner
+over a JPEG through a pipeline that is not bit-deterministic, so a capture of an unchanged page
+comes back with a handful of pixels one or two levels off — measured across this theme's 54
+captures: 3 pixels at delta 3 on a card's border radius, 12 at delta 2 on a grid's last row, 32 at
+delta 2 down one column of thumbnails, each on a frame of four to seven million pixels.
+
+Nothing a template can do lands in that envelope. A layout that moved, a string that changed, an
+image that loaded late — the failures this check exists to catch — all touch thousands of pixels
+at full contrast, and the first two of those were caught by this check in exactly that form
+earlier in this port.
+
+So the bound is stated rather than implied: at most two levels on any channel, and at most one
+pixel in twenty thousand. A capture outside it is unstable and fails the run.
+
+ONE CLASS OF PAGE IS REPORTED RATHER THAN FAILED, and a job says so itself with `"scored": false`.
+The reason is Ghost's own responsive images, measured on the style guide: an image card is served
+`srcset` with `w600`, `w1000` and the original, and the platform's resizer ROUNDS each variant
+independently — `pexels-7319071` is 1200x800 and 600x400, both 1.5, but its `w1000` is 1000x667,
+which is 1.49925. The declared `width`/`height` give the layout one ratio and the decoded candidate
+gives it another, so the first figure on the page settles 0.2px taller or shorter depending on which
+file finished first, and every band below it shifts a whole row. That is a property of the platform's
+image pipeline, not of a template: no rule in a stylesheet can pin a height the browser recomputes
+on decode.
+
+A page in that state is unfit to SCORE and perfectly fit to look at, which is exactly what an
+unscored Surface is for. So the guard keeps its full strength everywhere a number is produced, the
+measurement is still printed for every capture, and an unscored specimen page does not fail a run
+over a rounding difference in somebody else's JPEG resizer.
+"""
+MAX_JITTER_DELTA = 2
+MAX_JITTER_FRACTION = 1 / 20_000
+
+
+def compare(repeats: list[dict]) -> int:
+    """Fail the run on any scored capture that did not come out the same twice, within the bound."""
+    unstable = []
+    drifted = []
+    for job in repeats:
+        first, second = job['first'], job['out']
+        measured = jitter(first, second)
+        touched, worst = measured if measured else (None, None)
+        if measured is not None:
+            pixels = job.get('width', 0) * job.get('height', 0)
+            allowed = max(1, int(pixels * MAX_JITTER_FRACTION)) if pixels else 0
+            if worst <= MAX_JITTER_DELTA and touched <= allowed:
+                os.remove(second)
+                continue
+        (drifted if job.get('scored') is False else unstable).append((job, measured))
+
+    for job, measured in drifted:
+        detail = 'not comparable' if measured is None else f'{measured[0]} px, delta {measured[1]}'
+        print(f'DRIFT    {job["first"]} != {job["out"]}  ({detail})  <- {job["url"]}  [unscored]')
+        # The pair is reported, not kept: there is nothing to diff a drifted unscored capture
+        # against, and a leftover .repeat.png is one more 7MB file per run.
+        if os.path.exists(job['out']):
+            os.remove(job['out'])
+
+    for job, measured in unstable:
+        detail = 'not comparable' if measured is None else f'{measured[0]} px, delta {measured[1]}'
+        print(f'UNSTABLE {job["first"]} != {job["out"]}  ({detail})  <- {job["url"]}')
+    if unstable:
+        print(
+            f'\n{len(unstable)} capture(s) came out differently the second time, beyond the jitter '
+            'bound. Both files are on disk; diff them. A page that renders twice the same is the '
+            'only page worth scoring.'
+        )
+        return 1
     return 0
 
 

@@ -143,6 +143,12 @@ The percentage of pixels matching the design source at a fixed capture width, pe
 **Mode**.
 _Avoid_: accuracy, fidelity, score
 
+**Parity**:
+The percentage of pixels at which the Ghost render of a Surface matches the **Reference build**'s
+render of the same Surface, same content, same width, per **Mode**. A parity gap is a port defect;
+an identity gap that parity does not share is content- or platform-derived.
+_Avoid_: identity (that is measured against the design source, not the Reference build), accuracy
+
 **Floor**:
 The **Pixel identity** a Surface has already achieved and may not fall below.
 
@@ -151,6 +157,9 @@ The **Pixel identity** a Surface has already achieved and may not fall below.
 - A **Variant** prescribes one **Layout** per **Surface**; the theme ships both A **Layouts**, lets
   the publication owner pick per Surface, and lets a **Layout override** pick per record or route.
 - Every **Surface** renders in both **Modes**, so a Surface has two **Pixel identity** figures.
+- A Surface has a **Parity** figure whether or not a design original exists; it has a **Pixel
+  identity** figure only where the design drew it, so Parity is the axis every port carries and
+  identity the one it earns.
 - A **Post** has exactly one **Gate** state, decided by its access level against the reader's
   **Tier** — never by its **Layout**.
 - A **Directory** lists **Tags** or **Authors**; a **Feed** lists **Posts**. Both paginate.

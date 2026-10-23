@@ -527,12 +527,10 @@
  * can paint, and written out rather than grouped: `:is()` does not accept a pseudo-element.
  * The registry names are microlighter's own (dist/themes/*.css).
  *
- * `pnpm ghost:css` PRINTS 33 WARNINGS FOR THIS SECTION AND THAT IS EXPECTED. Tailwind minifies
- * with Lightning CSS, which does not know `::highlight()` yet and reports "not recognized as a
- * valid pseudo-element" once per selector. It emits every rule unchanged — verified in
- * assets/built/screen.css — splitting each selector list into one rule per selector, which is if
- * anything safer: a browser that rejects the pseudo-element drops that rule alone instead of the
- * whole list. Nothing to fix here, and `@supports selector(::highlight(x))` only halves the count.
+ * Tailwind minifies with Lightning CSS, which only learned `::highlight()` in 1.33.0; Tailwind
+ * 4.3.3 pins 1.32.0, so pnpm-workspace.yaml overrides it. Without that override `pnpm ghost:css`
+ * prints one "not recognized as a valid pseudo-element" warning per selector here (the output
+ * is still correct, just split into one rule per selector).
  */
 .mirror-content ::highlight(comment),
 .mirror-content ::highlight(quote) {

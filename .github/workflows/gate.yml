@@ -1,0 +1,27 @@
+# The static half of the done-gate (scripts/gate.mjs): build the theme assets, gscan, the locale
+# check, and prettier + eslint on the files the push or pull request changed. Everything that needs
+# a running Ghost stays local — `pnpm gate`.
+name: gate
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+jobs:
+  static:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: gate (static)
+        env:
+          BASE: ${{ github.event_name == 'pull_request' && github.event.pull_request.base.sha || github.event.before }}
+        run: node scripts/gate.mjs --static --base "$BASE"

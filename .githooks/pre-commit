@@ -1,0 +1,5 @@
+#!/bin/sh
+# The static half of the done-gate (scripts/gate.mjs), with prettier and eslint limited to what is
+# being committed. The checks that need a running Ghost are `pnpm gate`, run before calling a change
+# done. Wired by `pnpm install` (the `prepare` script sets core.hooksPath to this directory).
+exec node scripts/gate.mjs --static --staged

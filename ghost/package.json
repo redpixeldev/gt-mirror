@@ -1,7 +1,7 @@
 {
 	"name": "mirror",
 	"description": "MIRROR — an editorial theme for considered publications, in two layouts and two modes",
-	"demo": "https://mirror.ghost.io",
+	"demo": "https://mirror.redpixelthemes.com",
 	"version": "0.1.0",
 	"engines": {
 		"ghost": ">=6.0.0",

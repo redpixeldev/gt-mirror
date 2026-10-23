@@ -6,3 +6,16 @@ dist
 # public/probe-mobile.html, which lives under an ignored path — so formatting this
 # file would break the drift check that keeps the two builds audited identically.
 scripts/verify/probe-audit.js
+
+# Ghost templates. No Handlebars plugin is configured, so Prettier falls back to its glimmer
+# printer, which single-quotes attributes, collapses {{!-- --}} comments and deletes <!DOCTYPE html>.
+*.hbs
+
+# Written by scripts (build-fixture, build-routes, build-day-one, build-jobs, the verify harness)
+# and by pnpm. Their formatting belongs to whatever wrote them.
+pnpm-lock.yaml
+scripts/ghost/*.json
+scripts/verify/*.json
+
+# Skills vendored from elsewhere; their upstream owns the formatting.
+.claude/

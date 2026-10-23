@@ -2,3 +2,9 @@ onlyBuiltDependencies:
   - esbuild
   - sharp
   - workerd
+
+# @tailwindcss/node 4.3.3 pins lightningcss 1.32.0, which does not parse `::highlight()` and
+# prints one warning per selector in screen.css's syntax-colour block. 1.33.0 parses it.
+# Drop this override once a Tailwind release pins >= 1.33.0 itself.
+overrides:
+  lightningcss: 1.33.0

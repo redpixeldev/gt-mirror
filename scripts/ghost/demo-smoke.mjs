@@ -2,7 +2,7 @@
  * Walk the Demo site's Layout browser and prove every entry renders what its label promises.
  *
  *   node scripts/ghost/demo-smoke.mjs --base http://localhost:2370     (pnpm demo:smoke)
- *   node scripts/ghost/demo-smoke.mjs --base https://mirror.ghost.io   (the published Demo site)
+ *   node scripts/ghost/demo-smoke.mjs --base https://mirror.redpixelthemes.com   (the published Demo site)
  *
  * THE EXPECTATIONS ARE DERIVED, NOT WRITTEN. They come from scripts/ghost/demo-overlay.mjs — the
  * same list the menu, the routes file and the duplicate Pages were built from — so this run cannot

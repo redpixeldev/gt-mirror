@@ -267,16 +267,25 @@ report can address a colour mode directly instead of describing it.
 From the repository root, not from this directory:
 
 ```bash
-pnpm ghost:build         # compile assets/built/screen.css and assets/built/main.js
-pnpm ghost:dev           # the same two, in watch mode
-pnpm ghost:scan          # gscan, warnings fatal
-pnpm ghost:audit         # the responsive audit: every Surface at twelve widths
-pnpm ghost:score         # capture every Surface in both Modes and score it
-pnpm ghost:zip           # build, scan, stage and zip to dist/mirror.zip
-pnpm ghost:demo          # the demo publication as one import file, its routes file and its checklist
-pnpm ghost:routes:apply  # push docs/routes.example.yaml to the running install
-pnpm ghost:routes:bare   # put Ghost's own default routes back
+pnpm ghost:build          # compile assets/built/screen.css and assets/built/main.js
+pnpm ghost:dev            # the same two, in watch mode
+pnpm ghost:scan           # gscan, warnings fatal
+pnpm ghost:audit          # the responsive audit: every Surface at twelve widths
+pnpm ghost:score          # capture every Surface in both Modes and score it
+pnpm ghost:snapshot       # save every Layout-bearing Surface's HTML in both Layouts to <dir>
+pnpm ghost:snapshot:diff  # compare two snapshot dirs, ignoring whitespace and save-time noise
+pnpm ghost:zip            # build, scan, stage and zip to dist/mirror.zip
+pnpm ghost:demo           # the demo publication as one import file, its routes file and its checklist
+pnpm ghost:routes:apply   # push docs/routes.example.yaml to the running install
+pnpm ghost:routes:bare    # put Ghost's own default routes back
 ```
+
+`pnpm gate` runs every check a change has to pass: the build, gscan, Prettier and ESLint on
+changed files, then the fixture, smoke, audit, Day-one, Demo site and score runs against the three
+local Ghosts. It refuses to start until all three are listening, and prints the command for any
+that isn't. `pnpm gate:static` is the part that needs no Ghost. `pnpm install` registers it as the
+pre-commit hook (`.githooks/`), and CI runs it on every push and pull request
+(`.github/workflows/gate.yml`).
 
 `assets/css/` and `assets/js/` are sources and are excluded from the zip; `assets/built/` is
 generated and is not committed. The stylesheet imports the Astro reference build's
@@ -325,7 +334,7 @@ pnpm demo:smoke          # walk every Layout browser entry: status, Surface, Lay
 pnpm demo                # all three
 ```
 
-`demo:smoke` takes `--base`, so `node scripts/ghost/demo-smoke.mjs --base https://mirror.ghost.io`
+`demo:smoke` takes `--base`, so `node scripts/ghost/demo-smoke.mjs --base https://mirror.redpixelthemes.com`
 checks the published Demo site the same way. It fails when an entry renders a Layout other than the
 one its label names — which is what happens if someone changes a Layout setting on the Demo site,
 because the default entries link to the real URLs.
