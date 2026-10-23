@@ -4504,3 +4504,28 @@ Surfaces answers 200.
 
 Laravel Cloud's environment had **push-to-deploy on**, against this README's setup, so each push
 deployed twice: once from the push, once from the manual `cloud deploy`.
+
+## Two font faces are preloaded (2026-10)
+
+After the responsive images, fonts held up Speed Index: blocking them on the live Demo site took SI
+from 3.5 s to 2.5 s. Every face is `font-display: swap`, so the page paints in the fallback and
+repaints when the woff2 arrives, and SI counts the repaint. The 2026-08 entry above declined
+preloads because `{{asset}}` always appends `?v=` and the static stylesheet's `url()` has none, so
+a preload could never match. Its alternative was to re-declare all 24 faces in a template, which
+was rejected as a second source of truth.
+
+Two faces are enough: Newsreader roman (latin) and Archivo Regular, the pair the Reference build
+already preloads. `ghost/default.hbs` preloads them through `{{asset}}` and re-declares just
+those two `@font-face` rules after `screen.css` with the same `{{asset}}` URLs. A later rule with
+the same descriptors replaces the earlier one, so each face is fetched once, at the preloaded URL.
+The other 22 stay in `src/styles/fonts.css` alone. The copy is guarded:
+`scripts/ghost/rewrite-font-urls.mjs` (run by `ghost:css`, so by every build, the hook and CI)
+fails when the template's descriptors differ from `fonts.css`, or when a preload names a face the
+template does not re-declare. Both failures were provoked once and reverted.
+
+Local Demo site, Lighthouse 13.5 mobile, three runs each, all identical: homepage SI 2.6 → 2.1 s and
+FCP 2.6 → 1.5 s; post page SI 3.5 → 2.6 s and FCP 3.5 → 2.6 s. LCP unchanged (4.4–4.5 s). Every
+font file appears once in the request list.
+
+Ghost's Portal script (`portal.min.js`, 669 KB, injected by `{{ghost_head}}` whenever members are
+on) costs about as much SI (blocked: 3.5 → 2.4 s live) and is not the theme's to remove.

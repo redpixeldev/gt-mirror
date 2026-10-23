@@ -372,7 +372,7 @@ One-time setup, in the Cloud dashboard:
   `npm install -g pnpm && npm run build`, start command `node start.mjs` (not through npm, so
   Cloud's SIGTERM reaches Ghost's own shutdown handler directly), Node 22.
 - **Compute**: one Flex instance, scale-to-zero on, never more than one replica — Ghost keeps its
-  scheduler and caches in process. **Push to deploy off**.
+  scheduler and caches in process. **Push to deploy on**: every push to `main` deploys.
 - **Laravel MySQL** (Flex) and a **public** Laravel Object Storage bucket attached as the default
   disk. Copy the bucket's public URL into the environment as `AWS_URL`; Cloud does not inject it.
 - **Mail**: Plunk SMTP as Ghost's own variables — `mail__transport=SMTP`, `mail__from`,
@@ -403,6 +403,8 @@ environment, redeploy, point DNS at Cloud, and run
 `node scripts/ghost/demo-smoke.mjs --base https://mirror.redpixelthemes.com`. Keep the old server
 for 14 days as the rollback, then shut it down.
 
-Every later deploy is manual and follows a passing `pnpm gate`, then that same smoke run. A deploy
+Push-to-deploy is on, so a push to `main` is a deploy: run `pnpm gate` before pushing, not just the
+`gate:static` the pre-commit hook and CI run, then that same smoke run. Don't also run
+`cloud deploy` after a push; that deploys the same commit twice. A deploy
 purges the edge cache; a re-seed does not, so purge after one. To upgrade Ghost, bump `GHOST_VERSION` in
 `demo-host/build.mjs` in the same commit as the local `~/ghost-mirror` upgrade.

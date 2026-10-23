@@ -50,8 +50,9 @@ migrated from the VPS. Only the Demo site moves; the three harness Ghosts stay l
 - Ghost's frontend `maxAge` is raised to an hour so Cloud's edge serves warm pages without waking
   the instance. Deploys purge the edge; a re-seed or Admin edit without a deploy needs a manual
   purge or stays stale for up to an hour.
-- Deploys are manual and follow a passing `pnpm gate`; CI runs only `gate:static`, so push-to-deploy
-  would publish builds nobody scored. `demo:smoke --base https://mirror.redpixelthemes.com` runs
+- Push-to-deploy is on (changed 2026-10; it was off): every push to `main` deploys, so the full
+  `pnpm gate` belongs before the push. CI runs only `gate:static`, so a push that skipped the full
+  gate publishes a build nobody scored. `demo:smoke --base https://mirror.redpixelthemes.com` runs
   after each deploy.
 - Member mail (magic links) goes through Plunk SMTP, so the Membership Surface and the **Gate** can
   be tried for real.

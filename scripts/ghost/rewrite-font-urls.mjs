@@ -25,6 +25,13 @@
  * stylesheet whose font URLs are still absolute. Before this, the watcher let Tailwind write
  * BUILT_CSS directly and rewrote it 60ms later; a page captured in that window rendered in
  * fallback fonts, and `ghost:score` failed it as unstable.
+ *
+ * THE TWO PRELOADED FACES ARE DECLARED TWICE. ghost/default.hbs re-declares Newsreader roman
+ * (latin) and Archivo Regular with {{asset}} URLs so its preloads match (see the comment there).
+ * A later @font-face only replaces an earlier one with the same descriptors, so a fonts.css edit
+ * the template does not follow leaves both rules live and the face is fetched twice, or renders
+ * with the wrong range. `checkCriticalFaces` fails the build when the two disagree, and when a
+ * preload names a face the template does not re-declare.
  */
 import { readFileSync, renameSync, writeFileSync, readdirSync } from 'node:fs';
 
@@ -84,12 +91,71 @@ export function rewriteFontUrls({ from = BUILT_CSS } = {}) {
 	return { rewritten, faces: referenced.size, files: onDisk.size, bytes: Buffer.byteLength(after) };
 }
 
+const FONTS_CSS = 'src/styles/fonts.css';
+const TEMPLATE = 'ghost/default.hbs';
+
+/* One @font-face block as a descriptor map, with `src` reduced to file + format. The template's
+ * {{asset "fonts/x.woff2"}} becomes the Astro spelling /fonts/x.woff2 first: its closing `}}` would
+ * otherwise end the block early. */
+function faces(css) {
+	const plain = css.replace(/\{\{asset "fonts\/([^"]+)"\}\}/g, '/fonts/$1');
+	return [...plain.matchAll(/@font-face\s*\{([^}]*)\}/g)].map(([, body]) => {
+		const descriptors = {};
+		for (const declaration of body.split(';')) {
+			const at = declaration.indexOf(':');
+			if (at < 0) continue;
+			const name = declaration.slice(0, at).trim();
+			let value = declaration
+				.slice(at + 1)
+				.replace(/\s+/g, ' ')
+				.trim();
+			if (name === 'src') {
+				const file = value.match(/fonts\/([^'")]+\.woff2)/)?.[1];
+				value = `${file} ${value.match(/format\(([^)]*)\)/)?.[1] ?? ''}`;
+			}
+			descriptors[name] = value.replace(/['"]/g, '');
+		}
+		return descriptors;
+	});
+}
+
+export function checkCriticalFaces() {
+	const template = readFileSync(TEMPLATE, 'utf8');
+	const declared = faces(template);
+	const source = new Map(faces(readFileSync(FONTS_CSS, 'utf8')).map((face) => [face.src.split(' ')[0], face]));
+	const preloaded = [...template.matchAll(/rel="preload" as="font"[^>]*\{\{asset "fonts\/([^"]+)"\}\}/g)].map(
+		(m) => m[1],
+	);
+
+	for (const face of declared) {
+		const file = face.src.split(' ')[0];
+		const original = source.get(file);
+		if (!original) throw new Error(`${TEMPLATE} declares ${file}, which ${FONTS_CSS} does not`);
+		const differing = [...new Set([...Object.keys(face), ...Object.keys(original)])].filter(
+			(name) => face[name] !== original[name],
+		);
+		if (differing.length) {
+			throw new Error(
+				`${TEMPLATE}'s @font-face for ${file} differs from ${FONTS_CSS} in ${differing.join(', ')}. ` +
+					'Copy the descriptors across, or the face is fetched twice.',
+			);
+		}
+	}
+	const undeclared = preloaded.filter((file) => !declared.some((face) => face.src.startsWith(`${file} `)));
+	if (undeclared.length) {
+		throw new Error(`${TEMPLATE} preloads ${undeclared.join(', ')} without re-declaring it: fetched twice.`);
+	}
+	return preloaded.length;
+}
+
 if (import.meta.url === `file://${process.argv[1]}`) {
 	const result = rewriteFontUrls();
+	const preloads = checkCriticalFaces();
 	const action = result.rewritten
 		? `rewrote ${result.rewritten} font URL(s) to ../fonts/`
 		: 'font URLs already relative (the ghost:dev watcher got there first)';
 	console.log(
-		`${action} · ${result.faces} faces · ${result.files} files · ${(result.bytes / 1024).toFixed(1)} KB stylesheet`,
+		`${action} · ${result.faces} faces · ${result.files} files · ${preloads} preloaded, matching fonts.css · ` +
+			`${(result.bytes / 1024).toFixed(1)} KB stylesheet`,
 	);
 }
