@@ -362,7 +362,8 @@ boot when one is missing; `pnpm demo-host:test` covers it, and the gate runs it.
 One-time setup, in the Cloud dashboard:
 
 - **Application** from `redpixeldev/gt-mirror`, root directory `demo-host`. Build command
-  `npm install -g pnpm && npm run build`, start command `npm start`, Node 22.
+  `npm install -g pnpm && npm run build`, start command `node start.mjs` (not through npm, so
+  Cloud's SIGTERM reaches Ghost's own shutdown handler directly), Node 22.
 - **Compute**: one Flex instance, scale-to-zero on, never more than one replica — Ghost keeps its
   scheduler and caches in process. **Push to deploy off**.
 - **Laravel MySQL** (Flex) and a **public** Laravel Object Storage bucket attached as the default
