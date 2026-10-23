@@ -17,6 +17,8 @@ export default [
 			'.profiles/',
 			'.venv/',
 			'.claude/',
+			'demo-host/current/',
+			'demo-host/content/',
 		],
 	},
 	tailwind.configs.recommended,

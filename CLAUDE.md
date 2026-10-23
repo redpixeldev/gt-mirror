@@ -8,6 +8,7 @@ This repo holds the **MIRROR** magazine theme twice. `src/` is an Astro + Tailwi
 - **Ghost platform behaviour** (helpers, template resolution, Handlebars frames, `{{#get}}`) → `docs/ghost-platform.md`. Look there before reading Ghost's source.
 - **Why the theme is the way it is** → `docs/adr/` for decisions, `DECISIONS.md` for the running log (large; grep it, don't read it whole).
 - **Proving a refactor didn't change the render** → `pnpm ghost:snapshot <dir>` before and after, then `pnpm ghost:snapshot:diff <a> <b>`.
+- **The published Demo site** → `demo-host/` is its Laravel Cloud app (ADR 0007); setup, seeding (`pnpm demo:cloud`) and deploys are in `ghost/README.md`, "The Demo site on Laravel Cloud".
 - **Done** = `pnpm gate` passes. It runs every check and fails up front if a Ghost isn't running. `pnpm gate:static` is the subset the pre-commit hook and CI run.
 - **Review** applies `CODING_STANDARDS.md`.
 

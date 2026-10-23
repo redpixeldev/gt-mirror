@@ -77,6 +77,7 @@ const lintable = files.filter((file) => /\.(m?js|ts|astro)$/.test(file));
 const checks = [
 	{ name: 'build', cmd: 'pnpm -s ghost:build', fatal: true },
 	{ name: 'gscan', cmd: 'pnpm -s ghost:scan' },
+	{ name: 'demo-host', cmd: 'pnpm -s demo-host:test' },
 	{
 		name: 'prettier',
 		cmd: files.length ? ['npx', 'prettier', '--check', '--ignore-unknown', ...files] : null,

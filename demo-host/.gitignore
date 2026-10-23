@@ -1,0 +1,5 @@
+# Assembled by build.mjs on every deploy: the unpacked Ghost and its content directory
+current/
+content/
+# Written by start.mjs at boot from Cloud's environment
+config.*.json

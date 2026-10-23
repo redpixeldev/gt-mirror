@@ -41,6 +41,10 @@ import { api, base, ownerSession } from './admin.mjs';
  * default fixture and would otherwise derive a map that does not exist. And the derived name has to
  * differ from the fixture it is derived from: `.replace(/\.json$/…)` is a no-op on a path with the
  * extension left off, and the import writes the map back — over the fixture it had just read.
+ *
+ * GHOST_IMAGE_MAP overrides the derived name, for one fixture applied to two installs: the Demo
+ * fixture goes to the local :2370 Ghost and to Laravel Cloud, and a shared map would hand Cloud
+ * the localhost URLs — which pass the HEAD check below whenever the local Ghost is running.
  */
 const DEFAULT_FIXTURE = 'scripts/ghost/fixture.json';
 const flag = process.argv.indexOf('--fixture');
@@ -49,9 +53,10 @@ if (flag >= 0 && !process.argv[flag + 1]) {
 }
 const FIXTURE = flag < 0 ? DEFAULT_FIXTURE : process.argv[flag + 1];
 const IMAGE_MAP =
-	resolve(FIXTURE) === resolve(DEFAULT_FIXTURE)
+	process.env.GHOST_IMAGE_MAP ??
+	(resolve(FIXTURE) === resolve(DEFAULT_FIXTURE)
 		? 'scripts/ghost/uploaded-images.json'
-		: FIXTURE.replace(/\.json$/, '-images.json');
+		: FIXTURE.replace(/\.json$/, '-images.json'));
 if (resolve(IMAGE_MAP) === resolve(FIXTURE)) {
 	throw new Error(`--fixture ${FIXTURE} must end in .json; the image map is derived from it and would overwrite it`);
 }
@@ -250,7 +255,31 @@ if (missing.length) {
 	}
 }
 
-const afterUsers = await api('GET', '/users/?limit=all');
+/*
+ * THE IMPORT FINISHES LATER. Ghost runs every /db/ import as a background job outside the testing
+ * env (`import-manager.js:546`), so the 200 above means "queued". SQLite on a local install wins
+ * that race every time; MySQL — the Laravel Cloud Demo site — loses it, and a single read here
+ * then reports users missing that land a moment later. So poll until they are all there. The
+ * upload's `problems` above are therefore only seen when the job happens to finish first; a job
+ * that fails, or never finishes, surfaces here instead.
+ */
+let afterUsers;
+let stillMissing = missing;
+for (let attempt = 0; attempt < 40 && stillMissing.length; attempt += 1) {
+	if (attempt) {
+		await new Promise((done) => setTimeout(done, 500));
+	}
+	afterUsers = await api('GET', '/users/?limit=all');
+	const present = new Set(afterUsers.users.map((u) => u.email));
+	stillMissing = missing.filter((a) => !present.has(a.email));
+}
+if (stillMissing.length) {
+	throw new Error(
+		`Ghost's import job had not created ${stillMissing.map((a) => a.email).join(', ')} after 20 s; ` +
+			`its outcome is in the Ghost log ("site-content-import").`,
+	);
+}
+afterUsers ??= await api('GET', '/users/?limit=all');
 const userByEmail = new Map(afterUsers.users.map((u) => [u.email, u]));
 
 let authorsUpdated = 0;

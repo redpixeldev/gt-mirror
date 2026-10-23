@@ -349,3 +349,45 @@ cd ~/ghost-mirror && NODE_ENV=demo /opt/homebrew/opt/node@22/bin/node current/in
 On a fresh database, create the owner with the `.env` credentials the scripts sign in with — at
 `http://localhost:2370/ghost/`, or `POST /ghost/api/admin/authentication/setup/` — and activate
 MIRROR before the first `pnpm demo`.
+
+### The Demo site on Laravel Cloud
+
+The published Demo site is a Laravel Cloud app built from `demo-host/` (ADR 0007 in the repository).
+Nothing on it is migrated: it is rebuilt from the repository like the local one. Cloud's disk is
+wiped on every deploy, reboot and wake, so everything Ghost writes goes to the bucket through the
+S3 adapters Ghost ships (uploads, `routes.yaml`, redirects); the theme is the one thing baked into
+the deploy. `demo-host/ghost-config.mjs` maps Cloud's variables to Ghost's config and refuses to
+boot when one is missing; `pnpm demo-host:test` covers it, and the gate runs it.
+
+One-time setup, in the Cloud dashboard:
+
+- **Application** from `redpixeldev/gt-mirror`, root directory `demo-host`. Build command
+  `npm install -g pnpm && npm run build`, start command `npm start`, Node 22.
+- **Compute**: one Flex instance, scale-to-zero on, never more than one replica — Ghost keeps its
+  scheduler and caches in process. **Push to deploy off**.
+- **Laravel MySQL** (Flex) and a **public** Laravel Object Storage bucket attached as the default
+  disk. Copy the bucket's public URL into the environment as `AWS_URL`; Cloud does not inject it.
+- **Mail**: Plunk SMTP as Ghost's own variables — `mail__transport=SMTP`, `mail__from`,
+  `mail__options__host`, `mail__options__port`, `mail__options__secure`,
+  `mail__options__auth__user`, `mail__options__auth__pass`. Any variable in Ghost's own `a__b`
+  spelling overrides what `ghost-config.mjs` derives.
+
+Then deploy, and seed on the `*.laravel.cloud` address. `pnpm demo:cloud` creates the owner from
+`DEMO_CLOUD_ADMIN_EMAIL` / `DEMO_CLOUD_ADMIN_PASSWORD` in `.env` (not the local harness's login:
+this one is public, and password-only), activates MIRROR, runs the Demo import and routes, and ends
+with `demo:smoke`. It is safe to re-run.
+
+```bash
+cloud deploy mirror-demo main -n && cloud deploy:monitor -n
+pnpm demo:cloud --base https://<environment>.laravel.cloud
+```
+
+To move `mirror.redpixelthemes.com` across: attach it as a custom domain, set `url` to it on the
+environment, redeploy, point DNS at Cloud, and run
+`node scripts/ghost/demo-smoke.mjs --base https://mirror.redpixelthemes.com`. Keep the old server
+for 14 days as the rollback, then shut it down.
+
+Every later deploy is manual and follows a passing `pnpm gate`, then that same smoke run. Pages
+sit in Cloud's edge cache for an hour; a deploy purges it, a re-seed does not, so purge from the
+environment's **Edge network** card after one. To upgrade Ghost, bump `GHOST_VERSION` in
+`demo-host/build.mjs` in the same commit as the local `~/ghost-mirror` upgrade.

@@ -60,6 +60,8 @@
 		"demo:routes": "GHOST_URL=http://localhost:2370 GHOST_SESSION_FILE=.ghost-session-demo.json node --env-file=.env scripts/ghost/upload-routes.mjs --routes dist/mirror-demo-routes.yaml",
 		"demo:smoke": "node scripts/ghost/demo-smoke.mjs --base http://localhost:2370",
 		"demo": "pnpm demo:import && pnpm demo:routes && pnpm demo:smoke",
+		"demo:cloud": "node --env-file=.env scripts/ghost/demo-cloud.mjs",
+		"demo-host:test": "cd demo-host && node --test",
 		"gate": "node scripts/gate.mjs",
 		"gate:static": "node scripts/gate.mjs --static",
 		"prepare": "git config core.hooksPath .githooks || true"

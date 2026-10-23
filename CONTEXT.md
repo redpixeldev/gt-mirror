@@ -117,6 +117,14 @@ The **Demo site**'s menu that reaches every **Layout** of every **Surface**, plu
 the Surfaces that have only one.
 _Avoid_: variant browser (its name in the **Reference build**), dropdown, demo menu
 
+**Seed**:
+To put **Demo content** and the **Layout browser** onto a Ghost from the repository, replacing what
+the repository does not hold. The **Demo site** is only ever seeded, never migrated or edited by hand,
+so the repository stays its source of truth.
+_Avoid_: migrate (nothing is carried over from another install), import (one step of seeding, and
+also Ghost's own JSON importer), seed (unqualified in the fixture generator, where it is the random
+number seed)
+
 **Day-one publication**:
 The one-**Author**, fifteen-**Post**, image-free, **Tag**-free publication on Ghost's own default
 configuration — what a buyer has before configuring anything.

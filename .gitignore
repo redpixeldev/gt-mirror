@@ -9,6 +9,7 @@ ghost/assets/built/
 # publication has no images, so its map is always empty.
 scripts/ghost/uploaded-images.json
 scripts/ghost/fixture-day-one-images.json
+scripts/ghost/uploaded-images-cloud.json
 
 # generated types
 .astro/
@@ -33,6 +34,7 @@ pnpm-debug.log*
 .ghost-session.json
 .ghost-session-day-one.json
 .ghost-session-demo.json
+.ghost-session-cloud.json
 
 # macOS-specific files
 .DS_Store

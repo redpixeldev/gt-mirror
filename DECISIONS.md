@@ -4331,3 +4331,42 @@ Verified: `gscan --fatal` clean, `ghost:i18n` 164 keys across 117 templates in s
 clean, `ghost:smoke` 15/15, `day-one:smoke` 27/27 routed and bare, `day-one:audit` 204 checks over
 9 settings groups with 0 failures (the groups include `homepage_layout: Editorial masthead`, so the
 new grid was probed at every width), `ghost:audit` 336 checks over 11 groups with 0 failures.
+
+## The Demo site moves to Laravel Cloud, rebuilt from the repo (2026-10)
+
+ADR 0007 records the decision; this records what building it found. `demo-host/` is the Cloud
+app: `build.mjs` assembles Ghost and the theme, `start.mjs` boots it, `ghost-config.mjs` maps
+Cloud's variables to Ghost's config, and `pnpm demo:cloud` seeds it. Nothing is provisioned yet.
+
+**Ghost already ships the adapters.** 6.60's `core/server/adapters/` holds `S3Storage`,
+`S3RouteSettingsStore` and `S3RedirectsStore`, so the community storage adapter the ADR planned on
+is not needed, and `routes.yaml` lives in the bucket instead of being baked at build. Only the
+theme is baked, because there is no remote theme store.
+
+**Ghost cannot be an npm dependency.** The published `ghost` package is a pnpm root project whose
+dependencies are `file:components/*.tgz` inside itself; `npm install ghost@6.60.0` fails with
+ENOENT on the first one. `build.mjs` does what Ghost-CLI does — `npm pack`, unpack, `pnpm install
+--prod --frozen-lockfile` inside — and unpacks into `current/`, because `@tryghost/root-utils`
+finds Ghost's package.json through a `current` directory under the working directory (named
+anything else, boot dies reading `version` of undefined). `pnpm` is called directly, not through
+corepack: under corepack it refuses to switch between Ghost's pinned 11.x and this repo's 10.x.
+
+**The importer raced Ghost's background job.** Ghost runs every `/db/` import as a job outside the
+testing env (`import-manager.js:546`), so `import.mjs`'s single read after the upload only ever
+passed because local SQLite finished first. Against MySQL it reported five writers missing that
+were in the table. It now polls. `GHOST_IMAGE_MAP` also lets one fixture keep a map per install:
+the Demo fixture's shared map would have handed Cloud the localhost URLs, which pass the HEAD
+check whenever the local Ghost is up.
+
+**A favicon 404 from a key prefix.** With keys under `content/images/`, `blog-icon.js:134`
+rewrote the icon to `content/images/size/w256h256/…`, which only Ghost's local resizer answers.
+Keys are now `images/…`, which the rewrite leaves alone. Everything else on the bucket is served
+as the original: without `urls.image`, Ghost treats bucket URLs as external and `img_url` adds no
+size.
+
+Verified locally on the deploy unit itself, Herd MySQL 8.0.36 and a MinIO bucket standing in for
+R2: fresh boot with schema creation 4.4 s; `pnpm demo:cloud` 31/31 `demo:smoke`; 24/24 bucket URLs
+200 across five Surfaces; disk wiped by a rebuild and rebooted (1.6 s) with 31/31 again and no
+re-seed, routes coming from the bucket; a re-seed uploads 0 of 27 images. `pnpm demo-host:test`
+11 tests, in the gate. Not verified: anything on Cloud itself — Node 22's patch level, R2's
+behaviour against MinIO's, Laravel MySQL's TLS requirement, and Plunk SMTP.

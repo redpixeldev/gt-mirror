@@ -1,0 +1,13 @@
+{
+	"name": "mirror-demo-host",
+	"private": true,
+	"description": "The MIRROR Demo site as a Laravel Cloud app: Ghost, configured from Cloud's environment, with the theme baked in",
+	"engines": {
+		"node": "^22.23.1"
+	},
+	"scripts": {
+		"build": "node build.mjs",
+		"start": "node start.mjs",
+		"test": "node --test"
+	}
+}
