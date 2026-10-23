@@ -378,6 +378,12 @@ Then deploy, and seed on the `*.laravel.cloud` address. `pnpm demo:cloud` create
 this one is public, and password-only), activates MIRROR, runs the Demo import and routes, and ends
 with `demo:smoke`. It is safe to re-run.
 
+Pages sit in Cloud's edge cache for an hour, and that includes the first seed: any visit before it
+caches Ghost's default theme, and the routes check inside `demo:cloud` then fails with
+`/ rendered without data-surface="home"`. Purge from the environment's **Edge network** card and
+run `demo:cloud` again (or just `demo-smoke --base …`). `cf-cache-status: DYNAMIC` on the response
+does not mean the page was not cached — a purge still cleared it.
+
 ```bash
 cloud deploy mirror-demo main -n && cloud deploy:monitor -n
 pnpm demo:cloud --base https://<environment>.laravel.cloud
@@ -388,7 +394,6 @@ environment, redeploy, point DNS at Cloud, and run
 `node scripts/ghost/demo-smoke.mjs --base https://mirror.redpixelthemes.com`. Keep the old server
 for 14 days as the rollback, then shut it down.
 
-Every later deploy is manual and follows a passing `pnpm gate`, then that same smoke run. Pages
-sit in Cloud's edge cache for an hour; a deploy purges it, a re-seed does not, so purge from the
-environment's **Edge network** card after one. To upgrade Ghost, bump `GHOST_VERSION` in
+Every later deploy is manual and follows a passing `pnpm gate`, then that same smoke run. A deploy
+purges the edge cache; a re-seed does not, so purge after one. To upgrade Ghost, bump `GHOST_VERSION` in
 `demo-host/build.mjs` in the same commit as the local `~/ghost-mirror` upgrade.
