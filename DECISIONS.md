@@ -4413,3 +4413,18 @@ Verified on a copy of the local Demo site with the patch loaded: home, a post an
 `demo-host/no-transform.test.mjs` runs in `pnpm demo-host:test`. Not verified: the live site, which
 needs a deploy.
 
+## The gate no longer scores Pixel identity: the reference PNGs are gone (2026-10)
+
+The design's reference PNGs (`references` in `scripts/verify/prep.json`, MIRROR VARIATION A) no
+longer exist, and `report.py` cannot score a capture without them. `pnpm gate` refused to start
+while that directory was missing and ran `ghost:score` last, so no change could pass the gate at
+all. Both are gone from `scripts/gate.mjs`. That also drops the refusals the capture run carried
+besides the score: the settings read-back, the Layout guard and the check for errors Ghost logged
+during the captures. Page status remains in `ghost:smoke`. `pnpm ghost:score --refs DIR` still
+works by hand if a set of reference PNGs is ever restored. The recorded Floors in
+`scripts/verify/baseline-scores.json` stand as the last measurement. Nothing can re-measure them.
+
+The same run found `.venv` broken: Homebrew moved Python from 3.14 to 3.15 and the venv's `python3`
+symlink pointed at the removed one, which failed `ghost:smoke` and `day-one` with
+`.venv/bin/python3: No such file or directory`. `python3 -m venv --clear .venv` and
+`pnpm verify:venv`'s two packages repair it.

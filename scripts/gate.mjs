@@ -21,9 +21,9 @@
  * parity scores depend on, so reformatting them is a decision, not a gate.
  */
 import { spawnSync } from 'node:child_process';
-import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { mkdirSync, writeFileSync } from 'node:fs';
 import { connect } from 'node:net';
-import { homedir, tmpdir } from 'node:os';
+import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
 const argv = process.argv.slice(2);
@@ -91,7 +91,6 @@ const checks = [
 	{ name: 'audit', cmd: 'pnpm -s ghost:audit', needs: 2368 },
 	{ name: 'day-one', cmd: 'pnpm -s day-one', needs: 2369 },
 	{ name: 'demo', cmd: 'pnpm -s demo', needs: 2370 },
-	{ name: 'score', cmd: 'pnpm -s ghost:score', needs: 2368 },
 ].filter((check) => !(STATIC && check.needs));
 
 const listening = (port) =>
@@ -115,22 +114,11 @@ for (const port of ports) {
 	}
 }
 
-/* `ghost:score` compares captures against the design's reference PNGs, which live outside the repo
- * at the path scripts/verify/prep.json records. Checked here so a missing directory fails in a
- * second rather than after every capture has been taken. */
-const PREP = 'scripts/verify/prep.json';
-const references = JSON.parse(readFileSync(PREP, 'utf8')).references?.replace(/^~(?=\/)/, homedir());
-const missingRefs = !STATIC && !(references && existsSync(references));
-
-if (down.length || missingRefs) {
+if (down.length) {
 	console.error('gate: not started.\n');
 	for (const port of down) {
 		console.error(`  :${port}  ${INSTANCES[port].name} is not listening. Start it:`);
 		console.error(`         ${INSTANCES[port].start}\n`);
-	}
-	if (missingRefs) {
-		console.error(`  The design's reference PNGs are not at ${references ?? '(no "references" in prep.json)'}.`);
-		console.error(`         Restore them there, or point "references" in ${PREP} at where they are.\n`);
 	}
 	process.exit(1);
 }

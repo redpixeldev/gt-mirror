@@ -281,7 +281,7 @@ pnpm ghost:routes:bare    # put Ghost's own default routes back
 ```
 
 `pnpm gate` runs every check a change has to pass: the build, gscan, Prettier and ESLint on
-changed files, then the fixture, smoke, audit, Day-one, Demo site and score runs against the three
+changed files, then the fixture, smoke, audit, Day-one and Demo site runs against the three
 local Ghosts. It refuses to start until all three are listening, and prints the command for any
 that isn't. `pnpm gate:static` is the part that needs no Ghost. `pnpm install` registers it as the
 pre-commit hook (`.githooks/`), and CI runs it on every push and pull request
