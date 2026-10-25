@@ -4529,3 +4529,17 @@ font file appears once in the request list.
 
 Ghost's Portal script (`portal.min.js`, 669 KB, injected by `{{ghost_head}}` whenever members are
 on) costs about as much SI (blocked: 3.5 → 2.4 s live) and is not the theme's to remove.
+
+## MIRROR's icon is the Demo publication's, not the theme's (2026-10)
+
+The "M" on the accent (`public/img/mirror-icon.png`, 512px) is the **Demo content**'s publication
+icon (`icon` in `build-fixture.mjs`) and, resized to 32px, the Reference build's `favicon.png`. The
+theme ships no favicon. Ghost's icon is a publication setting, emitted by `{{ghost_head}}`, and a
+`<link rel="icon">` in `default.hbs` would put MIRROR's mark on every buyer's site and compete
+with the icon they upload. A **Day-one publication** keeps Ghost's default icon for the same
+reason.
+
+It is a new file, not a replacement for `icon-home.png`: that file is also the ghost.org favicon
+in the **Style guide**'s bookmark-card specimen, which stays as it is. Regenerating the fixture
+changed only the `icon` line. Ghost stores and serves the icon as its `w256h256` size, which on the
+Demo site's bucket `presize.mjs` uploads.

@@ -6,7 +6,7 @@
 		"description": "Independent writing on media, craft, and the cost of attention.",
 		"accent_color": "#a8580c",
 		"logo": "/img/logo.png",
-		"icon": "/img/icon-home.png",
+		"icon": "/img/mirror-icon.png",
 		"portal_button": false,
 		"comments_enabled": "all",
 		"recommendations_enabled": true,

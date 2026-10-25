@@ -1432,7 +1432,10 @@ const fixture = {
 		 */
 		accent_color: '#a8580c',
 		logo: '/img/logo.png',
-		icon: '/img/icon-home.png',
+		/* The publication icon (favicon): MIRROR's "M" on the accent. A setting, not a theme file —
+		 * a buyer's own icon is theirs. Not icon-home.png, which is the Style guide's bookmark
+		 * specimen favicon for ghost.org and must stay what it is. */
+		icon: '/img/mirror-icon.png',
 		/*
 		 * Settings that change what a template renders or what a capture contains.
 		 * portal_button false is not cosmetic: Ghost injects a floating button into <body> at
